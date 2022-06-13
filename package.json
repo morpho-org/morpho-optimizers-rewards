@@ -13,7 +13,8 @@
     "build-ts": "tsc",
     "watch-ts": "tsc -w",
     "lint": "eslint . --ext .ts",
-    "start": "ts-node ./src/${SCRIPT:-index}"
+    "start": "ts-node ./src/${SCRIPT:-index}",
+    "start:age1": "ts-node ./src/ages/age-one.ts"
   },
   "devDependencies": {
     "@types/jest": "^28.1.1",
@@ -32,6 +33,7 @@
   },
   "dependencies": {
     "axios": "^0.27.2",
+    "dotenv": "^16.0.1",
     "ethers": "^5.6.8",
     "merkletreejs": "^0.2.31"
   }
