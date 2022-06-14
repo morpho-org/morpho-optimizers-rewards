@@ -1,5 +1,5 @@
 import { BigNumber, ethers, providers } from "ethers";
-import { parseUnits } from "ethers/lib/utils";
+import { formatUnits, parseUnits } from "ethers/lib/utils";
 import { fetchUsers } from "../subgraph/fetch";
 import {
   Balance,
@@ -17,18 +17,13 @@ const BASE_UNITS = BigNumber.from(10_000);
 
 export const ageOneSettings = {
   initialBlock: 14911330,
-  initialTimestamp: BigNumber.from(10),
-  finalTimestamp: BigNumber.from(100),
+  initialTimestamp: BigNumber.from(1654465404),
+  finalTimestamp: BigNumber.from(1655200262), // now
   totalEmission: BigNumber.from(5_000_000),
   subgraphUrl: "https://api.thegraph.com/subgraphs/name/morpho-labs/morphoages",
 };
 
 const main = async () => {
-  const provider = new providers.JsonRpcProvider(process.env.RPC_URL, 1);
-  const initialBlock = await provider.getBlock(ageOneSettings.initialBlock);
-  ageOneSettings.initialTimestamp = BigNumber.from(initialBlock.timestamp);
-  const currentBlock = await provider.getBlock("latest");
-  ageOneSettings.finalTimestamp = BigNumber.from(currentBlock.timestamp);
   const ageOneMarketsParameters = await getMarketsConfiguration(
     ageOneSettings.initialBlock
   );
@@ -45,7 +40,9 @@ const main = async () => {
   const total = totalBorrowUSD.add(totalSupplyUSD);
 
   const marketsEmissions: {
-    [market: string]: { supply: BigNumber; borrow: BigNumber } | undefined;
+    [market: string]:
+      | { supply: BigNumber; borrow: BigNumber; p2pIndexCursor: BigNumber }
+      | undefined;
   } = {};
   Object.keys(ageOneMarketsParameters).forEach((marketAddress) => {
     const market: Market = ageOneMarketsParameters[marketAddress];
@@ -62,13 +59,18 @@ const main = async () => {
       borrow: marketEmission
         .mul(BASE_UNITS.sub(market.p2pIndexCursor))
         .div(BASE_UNITS),
+      p2pIndexCursor: market.p2pIndexCursor,
     };
   });
 
   console.log("Markets Emissions", JSON.stringify(marketsEmissions, null, 2));
 
   const formattedMarketsEmission: {
-    [market: string]: { supply: string; borrow: string };
+    [market: string]: {
+      supply: string;
+      borrow: string;
+      p2pIndexCursor: string;
+    };
   } = {};
   Object.keys(marketsEmissions).forEach((m) => {
     const marketEmission = marketsEmissions[m];
@@ -76,6 +78,7 @@ const main = async () => {
     formattedMarketsEmission[m] = {
       supply: marketEmission.supply.toString(),
       borrow: marketEmission.borrow.toString(),
+      p2pIndexCursor: formatUnits(marketEmission.p2pIndexCursor, 4),
     };
   });
 
@@ -88,6 +91,13 @@ const main = async () => {
     JSON.stringify(
       {
         totalEmission: ageOneSettings.totalEmission.toString(),
+        parameters: {
+          initialBlock: ageOneSettings.initialBlock.toString(),
+          initialTimestamp: ageOneSettings.initialTimestamp.toString(),
+          totalSupply: formatUnits(totalSupplyUSD),
+          totalBorrow: formatUnits(totalBorrowUSD),
+          total: formatUnits(total),
+        },
         markets: formattedMarketsEmission,
       },
       null,
