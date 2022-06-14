@@ -1,8 +1,13 @@
-import { BigNumber, ethers } from "ethers";
+import { BigNumber, ethers, providers } from "ethers";
 import { parseUnits } from "ethers/lib/utils";
 import { fetchUsers } from "../subgraph/fetch";
-import { Balance, Market, Type } from "../subgraph/users.types";
-import { MultiplicatorPerMarkets, UserMultiplicators } from "../types";
+import {
+  Balance,
+  Market,
+  MultiplicatorPerMarkets,
+  TransactionType,
+  UserMultiplicators,
+} from "../types";
 import * as fs from "fs";
 import path from "path";
 import { MerkleTree } from "merkletreejs";
@@ -11,18 +16,23 @@ import { getMarketsConfiguration } from "../markets";
 const BASE_UNITS = BigNumber.from(10_000);
 
 export const ageOneSettings = {
-  initialBlock: 1,
+  initialBlock: 14908374,
   initialTimestamp: BigNumber.from(10),
   finalTimestamp: BigNumber.from(100),
   totalEmission: BigNumber.from(5_000_000),
-  subgraphUrl:
-    "https://api.thegraph.com/subgraphs/name/morpho-labs/morphocompoundmainnet",
+  subgraphUrl: "https://api.thegraph.com/subgraphs/name/morpho-labs/morphoages",
 };
 
 const main = async () => {
+  const provider = new providers.JsonRpcProvider(process.env.RPC_URL, 1);
+  const initialBlock = await provider.getBlock(ageOneSettings.initialBlock);
+  ageOneSettings.initialTimestamp = BigNumber.from(initialBlock.timestamp);
+  const currentBlock = await provider.getBlock("latest");
+  ageOneSettings.finalTimestamp = BigNumber.from(currentBlock.timestamp);
   const ageOneMarketsParameters = await getMarketsConfiguration(
     ageOneSettings.initialBlock
   );
+  console.log("Markets parameters");
 
   const totalSupplyUSD = Object.values(ageOneMarketsParameters)
     .map((market) => market.totalSupply.mul(market.price).div(parseUnits("1")))
@@ -35,7 +45,7 @@ const main = async () => {
   const total = totalBorrowUSD.add(totalSupplyUSD);
 
   const marketsEmissions: {
-    [market: string]: { supply: BigNumber; borrow: BigNumber };
+    [market: string]: { supply: BigNumber; borrow: BigNumber } | undefined;
   } = {};
   Object.keys(ageOneMarketsParameters).forEach((marketAddress) => {
     const market: Market = ageOneMarketsParameters[marketAddress];
@@ -55,6 +65,35 @@ const main = async () => {
     };
   });
 
+  console.log("Markets Emissions", JSON.stringify(marketsEmissions, null, 2));
+
+  const formattedMarketsEmission: {
+    [market: string]: { supply: string; borrow: string };
+  } = {};
+  Object.keys(marketsEmissions).forEach((m) => {
+    const marketEmission = marketsEmissions[m];
+    if (!marketEmission) return;
+    formattedMarketsEmission[m] = {
+      supply: marketEmission.supply.toString(),
+      borrow: marketEmission.borrow.toString(),
+    };
+  });
+
+  // save the age into a file
+  const ageOneMarketsFilename = "./ages/age1/marketsEmission.json";
+  const ageMarketsPath = path.dirname(ageOneMarketsFilename);
+  await fs.promises.mkdir(ageMarketsPath, { recursive: true });
+  await fs.promises.writeFile(
+    ageOneMarketsFilename,
+    JSON.stringify(
+      {
+        totalEmission: ageOneSettings.totalEmission.toString(),
+        markets: formattedMarketsEmission,
+      },
+      null,
+      2
+    )
+  );
   /// user related ///
 
   const users = await fetchUsers(
@@ -64,12 +103,11 @@ const main = async () => {
   );
 
   const totalMarketMultiplicator: {
-    [market: string]: { supply: BigNumber; borrow: BigNumber };
+    [market: string]: { supply: BigNumber; borrow: BigNumber } | undefined;
   } = {};
   const usersMultiplicators: UserMultiplicators = {};
   users.map(async (user) => {
     const balancesPerMarkets: { [key: string]: Balance[] } = {};
-
     user.balances.forEach((balance) => {
       if (!Array.isArray(balancesPerMarkets[balance.market]))
         balancesPerMarkets[balance.market] = [balance];
@@ -90,10 +128,15 @@ const main = async () => {
 
       // Supply
       const supplyBalances = balances
-        .filter((b) => [Type.Supply, Type.Withdraw].includes(b.type))
-        .sort((b1, b2) => (b1.timestamp.gt(b2.timestamp) ? 1 : -1));
+        .filter((b) =>
+          [TransactionType.Supply, TransactionType.Withdraw].includes(b.type)
+        )
+        .sort((b1, b2) => (b1.timestamp.gt(b2.timestamp) ? 1 : -1)); // asc sorting
       if (supplyBalances.length === 0) {
-        multiplicatorsPerMarkets[marketAddress].supply = BigNumber.from(0);
+        multiplicatorsPerMarkets[marketAddress] = {
+          supply: BigNumber.from(0),
+          borrow: BigNumber.from(0),
+        };
       } else {
         // The multiplicator is a number representing supply(t1) * (t2 - t1), where t1 & t2 are the instant of a supply/withdraw action
         let supplyMultiplicator = BigNumber.from(0);
@@ -108,6 +151,7 @@ const main = async () => {
         });
         const lastBalance = supplyBalances[supplyBalances.length - 1];
         if (lastBalance.timestamp.lt(ageOneSettings.finalTimestamp)) {
+          console.log(lastBalance);
           // we take the delta time from last action until the the end of the age
           supplyMultiplicator = supplyMultiplicator.add(
             lastBalance.underlyingSupplyBalance.mul(
@@ -115,18 +159,26 @@ const main = async () => {
             )
           );
         }
-        multiplicatorsPerMarkets[marketAddress].supply = supplyMultiplicator;
-        if (!totalMarketMultiplicator[marketAddress].supply)
-          totalMarketMultiplicator[marketAddress].supply = supplyMultiplicator;
+        multiplicatorsPerMarkets[marketAddress] = {
+          supply: supplyMultiplicator,
+          borrow: BigNumber.from(0),
+        };
+        if (!totalMarketMultiplicator[marketAddress]?.supply)
+          totalMarketMultiplicator[marketAddress] = {
+            supply: supplyMultiplicator,
+            borrow: BigNumber.from(0),
+          };
         else
-          totalMarketMultiplicator[marketAddress].supply =
-            totalMarketMultiplicator[marketAddress].supply.add(
+          totalMarketMultiplicator[marketAddress]!.supply =
+            totalMarketMultiplicator[marketAddress]!.supply.add(
               supplyMultiplicator
             );
       }
       // Borrow
       const borrowBalances = balances
-        .filter((b) => [Type.Borrow, Type.Repay].includes(b.type))
+        .filter((b) =>
+          [TransactionType.Borrow, TransactionType.Repay].includes(b.type)
+        )
         .sort((b1, b2) => (b1.timestamp.gt(b2.timestamp) ? 1 : -1));
       if (borrowBalances.length === 0) {
         multiplicatorsPerMarkets[marketAddress].borrow = BigNumber.from(0);
@@ -152,11 +204,16 @@ const main = async () => {
           );
         }
         multiplicatorsPerMarkets[marketAddress].borrow = borrowMultiplicator;
-        if (!totalMarketMultiplicator[marketAddress].borrow)
-          totalMarketMultiplicator[marketAddress].borrow = borrowMultiplicator;
+        if (!totalMarketMultiplicator[marketAddress]?.borrow)
+          totalMarketMultiplicator[marketAddress] = {
+            supply:
+              totalMarketMultiplicator[marketAddress]?.supply ??
+              BigNumber.from(0),
+            borrow: borrowMultiplicator,
+          };
         else
-          totalMarketMultiplicator[marketAddress].borrow =
-            totalMarketMultiplicator[marketAddress].borrow.add(
+          totalMarketMultiplicator[marketAddress]!.borrow =
+            totalMarketMultiplicator[marketAddress]!.borrow.add(
               borrowMultiplicator
             );
       }
@@ -168,22 +225,28 @@ const main = async () => {
 
   Object.keys(usersMultiplicators).forEach((userAddress) => {
     const userMultiplicators = usersMultiplicators[userAddress];
+    if (!userMultiplicators) return;
     const totalUserEmission = Object.keys(userMultiplicators)
       .map((marketAddress) => {
         const multiplicators = userMultiplicators[marketAddress];
         const totalMultiplicator = totalMarketMultiplicator[marketAddress];
         const marketEmission = marketsEmissions[marketAddress];
 
-        const supplyRewards = multiplicators.supply
-          .mul(marketEmission.supply)
-          .div(totalMultiplicator.supply);
-        const borrowRewards = multiplicators.borrow
-          .mul(marketEmission.borrow)
-          .div(totalMultiplicator.borrow);
+        const supplyRewards = totalMultiplicator!.supply.eq(0)
+          ? BigNumber.from(0)
+          : multiplicators.supply
+              .mul(marketEmission!.supply)
+              .div(totalMultiplicator!.supply);
+        const borrowRewards = totalMultiplicator!.borrow.eq(0)
+          ? BigNumber.from(0)
+          : multiplicators.borrow
+              .mul(marketEmission!.borrow)
+              .div(totalMultiplicator!.borrow);
 
         return supplyRewards.add(borrowRewards);
       })
       .reduce((a, b) => a.add(b), BigNumber.from(0));
+    if (totalUserEmission.eq(0)) return;
     usersDistribution[userAddress] = totalUserEmission.toString();
   });
 

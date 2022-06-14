@@ -1,0 +1,23 @@
+type User @entity {
+  id: ID!
+  address: Bytes!
+  balances: [Balance!] @derivedFrom(field: "user")
+}
+
+type Balance @entity {
+  id: ID!
+  timestamp: BigInt!
+  blockNumber: Int!
+  market: Bytes!
+  user: User!
+  type: TransactionType
+  underlyingSupplyBalance: BigInt!
+  underlyingBorrowBalance: BigInt!
+}
+
+enum TransactionType {
+  Supply,
+  Borrow,
+  Withdraw,
+  Repay
+}

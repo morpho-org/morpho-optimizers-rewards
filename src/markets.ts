@@ -1,11 +1,10 @@
 import { Contract, providers } from "ethers";
-import { Market } from "./subgraph/users.types";
 import { parseUnits } from "ethers/lib/utils";
 import * as dotenv from "dotenv";
+import { Market } from "./types";
 dotenv.config();
 
 const morphoAddress = "0x8888882f8f843896699869179fb6e4f7e3b58888";
-const lensAddress = "0xe8cfa2edbdc110689120724c4828232e473be1b2";
 
 const provider = new providers.JsonRpcProvider(process.env.RPC_URL, 1);
 export const getMarketsConfiguration = async (blockTag: number) => {
@@ -31,10 +30,11 @@ export const getMarketsConfiguration = async (blockTag: number) => {
 
   await Promise.all(
     markets.map(async (marketAddress) => {
+      console.log("market", marketAddress);
       const price = await oracle.getUnderlyingPrice(marketAddress, {
         blockTag,
       });
-      const p2pIndexCursor = await morpho.p2pIndexCursor(marketAddress, {
+      const { p2pIndexCursor } = await morpho.marketParameters(marketAddress, {
         blockTag,
       });
 
@@ -47,8 +47,8 @@ export const getMarketsConfiguration = async (blockTag: number) => {
       const exchangeRate = await cToken.exchangeRateStored({ blockTag });
       const totalBorrow = await cToken.totalBorrows({ blockTag });
 
-      marketsConfiguration[marketAddress] = {
-        address: marketAddress,
+      marketsConfiguration[marketAddress.toLowerCase()] = {
+        address: marketAddress.toLowerCase(),
         price,
         p2pIndexCursor,
         totalBorrow,
@@ -57,33 +57,4 @@ export const getMarketsConfiguration = async (blockTag: number) => {
     })
   );
   return marketsConfiguration;
-};
-
-export const getUserBalancesUnderlying = async (
-  market: string,
-  user: string,
-  blockTag: number
-) => {
-  const lens = new Contract(
-    lensAddress,
-    require("../abis/Lens.json"),
-    provider
-  );
-
-  const underlyingSupplyBalance = await lens.getUpdatedUserSupplyBalance(
-    user,
-    market,
-    { blockTag }
-  );
-  const underlyingBorrowBalance = await lens.getUpdatedUserBorrowBalance(
-    user,
-    market,
-    {
-      blockTag,
-    }
-  );
-  return {
-    underlyingSupplyBalance,
-    underlyingBorrowBalance,
-  };
 };

@@ -1,0 +1,40 @@
+{
+  "totalEmission": {
+    "type": "BigNumber",
+    "hex": "0x4c4b40"
+  },
+  "markets": {
+    "0x35a18000230da775cac24873d00ff85bccded550": {
+      "supply": "10349",
+      "borrow": "26613"
+    },
+    "0x5d3a536e4d6dbd6114cc1ead35777bab948e3643": {
+      "supply": "293838",
+      "borrow": "587766"
+    },
+    "0x70e36f6bf80a52b3b46b3af8e106cc0ed743e8e4": {
+      "supply": "18800",
+      "borrow": "19567"
+    },
+    "0x4ddc2d193948926d02f9b1fe9e1daa0718270ed5": {
+      "supply": "89324",
+      "borrow": "1027234"
+    },
+    "0x7713dd9ca933848f6819f38b8352d9a15ea73f67": {
+      "supply": "699",
+      "borrow": "1399"
+    },
+    "0xccf4429db6322d5c611ee964527d42e5d685dd6a": {
+      "supply": "297669",
+      "borrow": "595428"
+    },
+    "0x39aa39c021dfbae8fac545936693ac917d5e7563": {
+      "supply": "434724",
+      "borrow": "869579"
+    },
+    "0xf650c3d88d12db855b8bf7d11be6c55a4e07dcc9": {
+      "supply": "290799",
+      "borrow": "436199"
+    }
+  }
+}

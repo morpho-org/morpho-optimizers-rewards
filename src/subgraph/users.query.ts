@@ -1,18 +1,17 @@
 export default `query GetMorphoCompoundAccounts($batchSize: Int!, $lastID: ID!, $startEpoch: Int!, $endEpoch: Int!){
-  accounts(first: $batchSize, where: {id_gt: $lastID}) {
+  users(first: $batchSize, where: {id_gt: $lastID}) {
     address
-    transactions(where: {
-      eventTimestamp_gte: $startEpoch
-      eventTimestamp_lt: $endEpoch
+    balances(where: {
+      timestamp_gte: $startEpoch
+      timestamp_lt: $endEpoch
     }) {
       id
       type
-      market {
-        address
-      }
-      eventTimestamp
-      amount
-      eventBlock
+      market
+      timestamp
+      blockNumber
+      underlyingSupplyBalance
+      underlyingBorrowBalance
     }
   }
 }

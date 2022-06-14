@@ -1,8 +1,8 @@
-import { Balance, GraphUser, User } from "./users.types";
+import { GraphUser } from "./users.types";
 import axios from "axios";
 import usersQuery from "./users.query";
 import { BigNumber } from "ethers";
-import { getUserBalancesUnderlying } from "../markets";
+import { Balance, User } from "../types";
 
 export const fetchUsers = async (
   graphUrl: string,
@@ -10,7 +10,7 @@ export const fetchUsers = async (
   endTimestamp: number
 ): Promise<User[]> => {
   let hasMore = true;
-  const batchSize = 200;
+  const batchSize = 1000;
   let users: User[] = [];
   let offset = "";
   while (hasMore) {
@@ -30,16 +30,11 @@ export const fetchUsers = async (
     const newUsers = await Promise.all(
       newGraphUsers.map(async (graphUser) => {
         const balances: Balance[] = await Promise.all(
-          graphUser.transactions.map(async (tx) => ({
-            timestamp: BigNumber.from(tx.eventTimestamp),
-            blockNumber: tx.eventBlock,
-            market: tx.market.address,
-            type: tx.type,
-            ...(await getUserBalancesUnderlying(
-              tx.market.address,
-              graphUser.address,
-              tx.eventBlock
-            )),
+          graphUser.balances.map(async (b) => ({
+            ...b,
+            timestamp: BigNumber.from(b.timestamp),
+            underlyingBorrowBalance: BigNumber.from(b.underlyingBorrowBalance),
+            underlyingSupplyBalance: BigNumber.from(b.underlyingSupplyBalance),
           }))
         );
         return {
@@ -54,13 +49,13 @@ export const fetchUsers = async (
 };
 
 interface GraphResult {
-  data: { data: { accounts: GraphUser[] } };
+  data: { data: { users: GraphUser[] } };
 }
 
-const fetchBatch = async <T extends Object>(graphUrl: string, parameters: T) =>
+const fetchBatch = async <T extends Object>(graphUrl: string, variables: T) =>
   axios
-    .post<{ query: string; parameters: T }, GraphResult>(graphUrl, {
+    .post<{ query: string; variables: T }, GraphResult>(graphUrl, {
       query: usersQuery,
-      parameters,
+      variables,
     })
-    .then((r) => r.data.data.accounts);
+    .then((r) => r.data.data.users);
