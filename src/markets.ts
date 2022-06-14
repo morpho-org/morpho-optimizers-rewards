@@ -1,4 +1,4 @@
-import { BigNumber, Contract, providers } from "ethers";
+import { Contract, providers } from "ethers";
 import { parseUnits } from "ethers/lib/utils";
 import * as dotenv from "dotenv";
 import { Market } from "./types";
@@ -33,7 +33,6 @@ export const getMarketsConfiguration = async (blockTag: number) => {
 
   await Promise.all(
     markets.map(async (marketAddress) => {
-      console.log("market", marketAddress);
       const price = await oracle.getUnderlyingPrice(marketAddress, {
         blockTag,
       });
@@ -71,12 +70,7 @@ export const getUserBalances = async (
     await lens.getUpdatedUserSupplyBalance(user, market, { blockTag });
   const { totalBalance: underlyingBorrowBalance } =
     await lens.getUpdatedUserBorrowBalance(user, market, { blockTag });
-  console.log(
-    user,
-    market,
-    underlyingBorrowBalance.toString(),
-    underlyingSupplyBalance.toString()
-  );
+
   return {
     underlyingSupplyBalance,
     underlyingBorrowBalance,

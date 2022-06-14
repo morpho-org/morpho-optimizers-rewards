@@ -1,12 +1,10 @@
 import { BigNumber } from "ethers";
-
-export interface MultiplicatorPerMarkets {
-  [markets: string]: { supply: BigNumber; borrow: BigNumber };
-}
-export interface UserMultiplicators {
-  [user: string]: MultiplicatorPerMarkets | undefined;
-}
-
+export type NormalizedObject<T> = { [key: string]: T | undefined };
+export type MultiplicatorPerMarkets = NormalizedObject<{
+  supply: BigNumber;
+  borrow: BigNumber;
+}>;
+export type UserMultiplicators = NormalizedObject<MultiplicatorPerMarkets>;
 export interface User {
   address: string;
   balances: Balance[];
@@ -33,5 +31,11 @@ export interface Market {
   price: BigNumber;
   totalSupply: BigNumber;
   totalBorrow: BigNumber;
+  p2pIndexCursor: BigNumber;
+}
+
+export interface MarketEmission {
+  supply: BigNumber;
+  borrow: BigNumber;
   p2pIndexCursor: BigNumber;
 }

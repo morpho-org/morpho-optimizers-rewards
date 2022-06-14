@@ -18,9 +18,14 @@
       "borrow": "19733",
       "p2pIndexCursor": "0.49"
     },
-    "0x39aa39c021dfbae8fac545936693ac917d5e7563": {
-      "supply": "431481",
-      "borrow": "863092",
+    "0x4ddc2d193948926d02f9b1fe9e1daa0718270ed5": {
+      "supply": "90228",
+      "borrow": "1037622",
+      "p2pIndexCursor": "0.08"
+    },
+    "0xccf4429db6322d5c611ee964527d42e5d685dd6a": {
+      "supply": "298831",
+      "borrow": "597752",
       "p2pIndexCursor": "0.3333"
     },
     "0x7713dd9ca933848f6819f38b8352d9a15ea73f67": {
@@ -28,25 +33,20 @@
       "borrow": "1390",
       "p2pIndexCursor": "0.3333"
     },
-    "0xccf4429db6322d5c611ee964527d42e5d685dd6a": {
-      "supply": "298831",
-      "borrow": "597752",
-      "p2pIndexCursor": "0.3333"
+    "0xf650c3d88d12db855b8bf7d11be6c55a4e07dcc9": {
+      "supply": "289446",
+      "borrow": "434169",
+      "p2pIndexCursor": "0.4"
     },
     "0x35a18000230da775cac24873d00ff85bccded550": {
       "supply": "10487",
       "borrow": "26969",
       "p2pIndexCursor": "0.28"
     },
-    "0xf650c3d88d12db855b8bf7d11be6c55a4e07dcc9": {
-      "supply": "289446",
-      "borrow": "434169",
-      "p2pIndexCursor": "0.4"
-    },
-    "0x4ddc2d193948926d02f9b1fe9e1daa0718270ed5": {
-      "supply": "90228",
-      "borrow": "1037622",
-      "p2pIndexCursor": "0.08"
+    "0x39aa39c021dfbae8fac545936693ac917d5e7563": {
+      "supply": "431481",
+      "borrow": "863092",
+      "p2pIndexCursor": "0.3333"
     }
   }
 }
