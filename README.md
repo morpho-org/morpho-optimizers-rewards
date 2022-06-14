@@ -1,46 +1,55 @@
 # Morpho Rewards emission
 
-## Configuration
+## Get Started
 
-You need to provide a RPC mainnet url first: 
+- Install node dependencies using `yarn`:
+```bash
+yarn
+```
+
+- Provide a mainnet HTTP RPC endpoint URL as environment variable `RPC_URL` inside a local environment file `.env`: 
 ```bash
 cp .env.example .env
 ```
 
-## Age 1
-
-Run the script: 
+- Run the script for the first epoch:
 ```bash
 yarn start:age1
 ```
 
-You can read the code of the first age [here](./src/ages/age-one/index.ts)
+## Epochs
+
+Morpho rewards are distributed through epochs (~3 weeks), with each epoch's per-market distribution ultimately being voted by Morpho protocol's governance, at the beginning of the epoch.
+For now and until governance is set up, each epoch's per-market distribution is computed based on a given total emission distributed over open markets, based on their underlying TVL.
+
+## Epoch #1
+
+You can read the code of the first epoch [here](./src/ages/age-one/index.ts).
 
 Steps by step, the script will:
-- distribute age emission rewards by following the market distribution rule
-- make a snapshot of the users positions at the beginning of the age
-- fetch all the transactions made during the age
-- distribute rewards by following the User distribution rule
-- build the merkle tree from the rewards emitted
+- distribute the epoch's rewards by following the per-market distribution rule (see below)
+- make a snapshot of users' positions at the beginning of the epoch
+- fetch all the transactions completed during the epoch
+- distribute rewards by following the per-user, per-market distribution rule (see below)
+- build the [Merkle Tree](https://en.wikipedia.org/wiki/Merkle_tree) of the rewards distribution
 
 The output is visible in the `ages` directory.
 
 
-### Market distribution rule
+### Per-market distribution rule
 
-At the first block of the epoch, we distribute rewards on each markets depending on the value of 
-`(totalSupply + totalBorrow) * usdPrice`, where the price is taken at the first block (using the Compound Oracle).
-`totalSupply` & `totalBorrow` are the total supplied/borrowed on the underlying pool.
-The distribution between supply & borrow sides for a given market is done by the p2pIndexCursor, taken at the beginning of the epoch
+For each epoch, we distribute a given amount of rewards (e.g. 500k for epoch #1) over all open markets, ponderated by the underlying market-specific USD TVL, computed at the first block of the epoch.
+This means that market ETH with `marketSupply` ETH supplied on the underlying pool, `marketBorrow` ETH borrowed from the underlying pool and a ETH at a price of `marketUSDPrice` at the first block of the epoch (according to Compound's protocol), will get the following amount of rewards distributed:
+$$totalEmission \times \frac{(marketSupply + marketBorrow) \times marketUSDPrice}{totalUSDTVL}$$
 
-### User distribution rule
+### Per-user, per-market distribution rule
 
 For a given market & a given side (supply/borrow), we distribute the rewards proportionally at
 `userBalance * period`, where userBalance is the balance of the user at a given time (at the beginning of the age, or when a transaction occurs)
-and `period` is the delay since another transaction occurs. 
+and `period` is the delay since another transaction occurs.
 
 #### Some specific scenarios
+
 - If the user only made one transaction for a specific market during the age, T is the time from the transaction to the end of the age.
 - If the user has made a transaction before the beginning of the age, we start the delta T from the beginning of the age
 - If the user made a new transaction, we recompute his balance and start a new period with a different balance
-
