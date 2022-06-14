@@ -16,7 +16,7 @@ import { getMarketsConfiguration } from "../markets";
 const BASE_UNITS = BigNumber.from(10_000);
 
 export const ageOneSettings = {
-  initialBlock: 14908374,
+  initialBlock: 14911330,
   initialTimestamp: BigNumber.from(10),
   finalTimestamp: BigNumber.from(100),
   totalEmission: BigNumber.from(5_000_000),
@@ -98,6 +98,8 @@ const main = async () => {
 
   const users = await fetchUsers(
     ageOneSettings.subgraphUrl,
+    ageOneSettings.initialBlock,
+    Object.keys(marketsEmissions),
     ageOneSettings.initialTimestamp.toNumber(),
     ageOneSettings.finalTimestamp.toNumber()
   );

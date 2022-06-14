@@ -1,12 +1,15 @@
-import { Contract, providers } from "ethers";
+import { BigNumber, Contract, providers } from "ethers";
 import { parseUnits } from "ethers/lib/utils";
 import * as dotenv from "dotenv";
 import { Market } from "./types";
 dotenv.config();
 
 const morphoAddress = "0x8888882f8f843896699869179fb6e4f7e3b58888";
-
+const lensAddress = "0xe8cfa2edbdc110689120724c4828232e473be1b2";
 const provider = new providers.JsonRpcProvider(process.env.RPC_URL, 1);
+
+const lens = new Contract(lensAddress, require("../abis/Lens.json"), provider);
+
 export const getMarketsConfiguration = async (blockTag: number) => {
   const morpho = new Contract(
     morphoAddress,
@@ -57,4 +60,25 @@ export const getMarketsConfiguration = async (blockTag: number) => {
     })
   );
   return marketsConfiguration;
+};
+
+export const getUserBalances = async (
+  user: string,
+  market: string,
+  blockTag: number
+) => {
+  const { totalBalance: underlyingSupplyBalance } =
+    await lens.getUpdatedUserSupplyBalance(user, market, { blockTag });
+  const { totalBalance: underlyingBorrowBalance } =
+    await lens.getUpdatedUserBorrowBalance(user, market, { blockTag });
+  console.log(
+    user,
+    market,
+    underlyingBorrowBalance.toString(),
+    underlyingSupplyBalance.toString()
+  );
+  return {
+    underlyingSupplyBalance,
+    underlyingBorrowBalance,
+  };
 };
