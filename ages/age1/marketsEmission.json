@@ -1,52 +1,52 @@
 {
-  "totalEmission": "5000000",
+  "totalEmission": "500000",
   "parameters": {
     "initialBlock": "14911330",
-    "initialTimestamp": "1654465404",
+    "initialTimestamp": "1654473600",
     "totalSupply": "5029046737.626709602986479593",
     "totalBorrow": "1229290760.146744881181640138",
     "total": "6258337497.773454484168119731"
   },
   "markets": {
-    "0x5d3a536e4d6dbd6114cc1ead35777bab948e3643": {
-      "supply": "293015",
-      "borrow": "586119",
+    "0x4ddc2d193948926d02f9b1fe9e1daa0718270ed5": {
+      "supply": "9022",
+      "borrow": "103762",
+      "p2pIndexCursor": "0.08"
+    },
+    "0x35a18000230da775cac24873d00ff85bccded550": {
+      "supply": "1048",
+      "borrow": "2696",
+      "p2pIndexCursor": "0.28"
+    },
+    "0x7713dd9ca933848f6819f38b8352d9a15ea73f67": {
+      "supply": "69",
+      "borrow": "138",
       "p2pIndexCursor": "0.3333"
     },
     "0x70e36f6bf80a52b3b46b3af8e106cc0ed743e8e4": {
-      "supply": "18960",
-      "borrow": "19733",
+      "supply": "1895",
+      "borrow": "1973",
       "p2pIndexCursor": "0.49"
     },
-    "0x4ddc2d193948926d02f9b1fe9e1daa0718270ed5": {
-      "supply": "90228",
-      "borrow": "1037622",
-      "p2pIndexCursor": "0.08"
-    },
     "0xccf4429db6322d5c611ee964527d42e5d685dd6a": {
-      "supply": "298831",
-      "borrow": "597752",
+      "supply": "29883",
+      "borrow": "59774",
       "p2pIndexCursor": "0.3333"
     },
-    "0x7713dd9ca933848f6819f38b8352d9a15ea73f67": {
-      "supply": "695",
-      "borrow": "1390",
+    "0x39aa39c021dfbae8fac545936693ac917d5e7563": {
+      "supply": "43148",
+      "borrow": "86308",
+      "p2pIndexCursor": "0.3333"
+    },
+    "0x5d3a536e4d6dbd6114cc1ead35777bab948e3643": {
+      "supply": "29301",
+      "borrow": "58611",
       "p2pIndexCursor": "0.3333"
     },
     "0xf650c3d88d12db855b8bf7d11be6c55a4e07dcc9": {
-      "supply": "289446",
-      "borrow": "434169",
+      "supply": "28944",
+      "borrow": "43416",
       "p2pIndexCursor": "0.4"
-    },
-    "0x35a18000230da775cac24873d00ff85bccded550": {
-      "supply": "10487",
-      "borrow": "26969",
-      "p2pIndexCursor": "0.28"
-    },
-    "0x39aa39c021dfbae8fac545936693ac917d5e7563": {
-      "supply": "431481",
-      "borrow": "863092",
-      "p2pIndexCursor": "0.3333"
     }
   }
 }
