@@ -1,10 +1,9 @@
-import { GraphUser } from "./users.types";
+import { GraphUser, GraphUserTxs } from "./users.types";
 import axios from "axios";
 import { BigNumber } from "ethers";
-import { Balance, TransactionType, User } from "../types";
-import balancesQuery from "./balances.query";
-import usersQuery from "./users.query";
-import { getUserBalances } from "../markets";
+import { Balance } from "../types";
+import balancesBlockQuery from "./balancesBlock.query";
+import transactionsQuery from "./transactions.query";
 
 export const fetchUsers = async (
   graphUrl: string,
@@ -12,16 +11,13 @@ export const fetchUsers = async (
   markets: string[],
   startTimestamp: number,
   endTimestamp: number
-): Promise<User[]> => {
+): Promise<{ [user: string]: Balance[] }> => {
   let hasMore = true;
   const batchSize = 1000;
-  let users: User[] = await fetchInitialBalance(
-    graphUrl,
-    startBlock,
-    startTimestamp,
-    markets
-  );
+  const userTxs: { [user: string]: Balance[] } = await fetchInitialBalance(graphUrl, startBlock);
+
   let offset = "";
+
   while (hasMore) {
     const params = {
       batchSize,
@@ -29,131 +25,79 @@ export const fetchUsers = async (
       startEpoch: startTimestamp,
       endEpoch: endTimestamp,
     };
-    const newGraphUsers = await fetchBatch<GraphUser>(
-      graphUrl,
-      balancesQuery,
-      params
-    );
-    hasMore = newGraphUsers.length === batchSize;
-    offset =
-      newGraphUsers.length > 0
-        ? newGraphUsers[newGraphUsers.length - 1].address
-        : "";
-    console.log("Balances:", newGraphUsers.length, "Users loaded");
+    const newTxs = await fetchBatchTransactions<GraphUserTxs>(graphUrl, transactionsQuery, params);
 
-    const newUsers = await Promise.all(
-      newGraphUsers.map(async (graphUser) => {
-        const balances: Balance[] = await Promise.all(
-          graphUser.balances.map(async (b) => ({
-            ...b,
-            timestamp: BigNumber.from(b.timestamp),
-            underlyingBorrowBalance: BigNumber.from(b.underlyingBorrowBalance),
-            underlyingSupplyBalance: BigNumber.from(b.underlyingSupplyBalance),
-          }))
-        );
-        const userIndex = users.findIndex(
-          (initialUser) =>
-            initialUser.address.toLowerCase() === graphUser.address
-        );
-        if (userIndex !== null && userIndex !== undefined) {
-          const initialUser = users[userIndex];
-          users[userIndex] = {
-            address: graphUser.address,
-            balances: [...initialUser.balances, ...balances],
-          };
-          return;
-        }
-        return {
-          address: graphUser.address,
-          balances,
-        };
-      })
-    ).then((r) => r.filter(Boolean) as User[]);
-    users = [...users, ...newUsers];
+    hasMore = newTxs.length === batchSize;
+    offset = newTxs.length > 0 ? newTxs[newTxs.length - 1].id : "";
+    newTxs.forEach((transaction) => {
+      const balance: Balance = {
+        market: transaction.market.address,
+        underlyingBorrowBalance: BigNumber.from(transaction.underlyingBorrowBalance),
+        underlyingSupplyBalance: BigNumber.from(transaction.underlyingSupplyBalance),
+        blockNumber: transaction.blockNumber,
+        timestamp: BigNumber.from(transaction.timestamp),
+      };
+      if (!Array.isArray(userTxs[transaction.user.address]))
+        userTxs[transaction.user.address] = [balance];
+      else userTxs[transaction.user.address].push(balance);
+    });
   }
 
-  return users;
+  return userTxs;
 };
 
 interface GraphResult<T> {
-  data: { data: { users: T[] } };
+  data: { data: T };
 }
 
-const fetchBatch = async <U>(
-  graphUrl: string,
-  query: string,
-  variables: object
-) =>
+const fetchBatchTransactions = async <U>(graphUrl: string, query: string, variables: object) =>
   axios
-    .post<{ query: string; variables: object }, GraphResult<U>>(graphUrl, {
+    .post<{ query: string; variables: object }, GraphResult<{ transactions: U[] }>>(graphUrl, {
+      query,
+      variables,
+    })
+    .then((r) => r.data.data.transactions);
+const fetchBatch = async <U>(graphUrl: string, query: string, variables: object) =>
+  axios
+    .post<{ query: string; variables: object }, GraphResult<{ users: U[] }>>(graphUrl, {
       query,
       variables,
     })
     .then((r) => r.data.data.users);
 
-const fetchInitialBalance = async (
-  graphUrl: string,
-  blockTag: number,
-  initialTimestamp: number,
-  markets: string[]
-) => {
-  console.log("Fetch initial balances");
+/**
+ * Make a snapshot of the user balances at the beginning of the epoch
+ * @param graphUrl
+ * @param blockTag
+ */
+const fetchInitialBalance = async (graphUrl: string, blockTag: number) => {
   let hasMore = true;
-  const batchSize = 5;
-  let initialUsers: User[] = [];
+  const batchSize = 1000;
+
+  const userTxs: { [user: string]: Balance[] } = {};
   let offset = "";
   while (hasMore) {
     const params = {
       batchSize,
       lastID: offset,
+      blockTag,
     };
-    const newGraphUsers = await fetchBatch<{ address: string }>(
-      graphUrl,
-      usersQuery,
-      params
+    const newGraphUsers = await fetchBatch<GraphUser>(graphUrl, balancesBlockQuery, params).then(
+      (r) =>
+        r.map(({ address, balances: initialBalances }) => {
+          userTxs[address] = initialBalances.map((initialBalance) => ({
+            timestamp: BigNumber.from(initialBalance.timestamp),
+            blockNumber: initialBalance.blockNumber,
+            market: initialBalance.market.address,
+            underlyingSupplyBalance: BigNumber.from(initialBalance.underlyingSupplyBalance),
+            underlyingBorrowBalance: BigNumber.from(initialBalance.underlyingBorrowBalance),
+          }));
+          return address;
+        })
     );
-    console.log("Initial Balances:", newGraphUsers.length, "Users loaded");
     hasMore = newGraphUsers.length === batchSize;
-    offset =
-      newGraphUsers.length > 0
-        ? newGraphUsers[newGraphUsers.length - 1].address
-        : "";
-
-    const newInitialUsers = await Promise.all(
-      newGraphUsers.map(async (graphUser) => {
-        const balances = await Promise.all(
-          markets.map(async (market) => {
-            const balances = await getUserBalances(
-              graphUser.address,
-              market,
-              blockTag
-            );
-            return [
-              {
-                timestamp: BigNumber.from(initialTimestamp),
-                blockNumber: blockTag,
-                market,
-                type: TransactionType.Supply,
-                ...balances,
-              },
-              {
-                timestamp: BigNumber.from(initialTimestamp),
-                blockNumber: blockTag,
-                market,
-                type: TransactionType.Borrow,
-                ...balances,
-              },
-            ];
-          })
-        ).then((r) => r.flat());
-        return {
-          address: graphUser.address,
-          balances,
-        };
-      })
-    );
-    initialUsers = [...initialUsers, ...newInitialUsers];
+    offset = newGraphUsers.length > 0 ? newGraphUsers[newGraphUsers.length - 1] : "";
   }
 
-  return initialUsers;
+  return userTxs;
 };

@@ -7,12 +7,11 @@ import { computeMerkleTree } from "../../computations/compute-merkle-tree";
 import { computeMarketsEmission } from "../../computations/compute-markets-emission";
 import { computeUsersDistribution } from "../../computations/compute-users-distribution";
 import configuration from "./configuration";
+import { Balance, EpochConfig } from "../../types";
 
-const main = async () => {
+const main = async (ageName: string, configuration: EpochConfig) => {
   console.log("Compute markets parameters");
-  const ageOneMarketsParameters = await getMarketsConfiguration(
-    configuration.initialBlock
-  );
+  const ageOneMarketsParameters = await getMarketsConfiguration(configuration.initialBlock);
 
   console.log(Object.keys(ageOneMarketsParameters).length, "markets found");
 
@@ -41,7 +40,7 @@ const main = async () => {
   });
 
   // save the age into a file
-  const ageOneMarketsFilename = `./ages/${configuration.ageName}/marketsEmission.json`;
+  const ageOneMarketsFilename = `./ages/${configuration.epochName}/marketsEmission.json`;
   const ageMarketsPath = path.dirname(ageOneMarketsFilename);
   await fs.promises.mkdir(ageMarketsPath, { recursive: true });
   await fs.promises.writeFile(
@@ -65,7 +64,7 @@ const main = async () => {
   /// user related ///
   console.log("Fetch Morpho users of the age");
 
-  const users = await fetchUsers(
+  const users: { [user: string]: Balance[] } = await fetchUsers(
     configuration.subgraphUrl,
     configuration.initialBlock,
     Object.keys(marketsEmissions),
@@ -74,32 +73,26 @@ const main = async () => {
   );
 
   console.log("Compute users distribution through markets");
-  const usersDistribution = computeUsersDistribution(
+  const { usersDistribution } = computeUsersDistribution(
     users,
     marketsEmissions,
     configuration.finalTimestamp
   );
 
   // save the age into a file
-  const ageOneFilename = `./ages/${configuration.ageName}/distribution.json`;
+  const ageOneFilename = `./ages/${configuration.epochName}/distribution.json`;
   const agePath = path.dirname(ageOneFilename);
   await fs.promises.mkdir(agePath, { recursive: true });
-  await fs.promises.writeFile(
-    ageOneFilename,
-    JSON.stringify(usersDistribution, null, 2)
-  );
+  await fs.promises.writeFile(ageOneFilename, JSON.stringify(usersDistribution, null, 2));
   const { root, proofs } = computeMerkleTree(usersDistribution);
   // save the age proofs into a file
-  const ageOneProofsFilename = `./ages/${configuration.ageName}/proofs.json`;
+  const ageOneProofsFilename = `./ages/${configuration.epochName}/proofs.json`;
   const ageProofsPath = path.dirname(ageOneProofsFilename);
   await fs.promises.mkdir(ageProofsPath, { recursive: true });
-  await fs.promises.writeFile(
-    ageOneProofsFilename,
-    JSON.stringify({ root, proofs }, null, 2)
-  );
+  await fs.promises.writeFile(ageOneProofsFilename, JSON.stringify({ root, proofs }, null, 2));
 };
 
-main().catch((e) => {
+main(configuration.ageName, configuration.epochs.epoch1).catch((e) => {
   console.error(e);
   process.exit(1);
 });

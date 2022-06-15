@@ -10,11 +10,19 @@ export interface User {
   balances: Balance[];
 }
 
+export interface EpochConfig {
+  initialBlock: number;
+  initialTimestamp: BigNumber;
+  finalTimestamp: BigNumber;
+  totalEmission: BigNumber;
+  subgraphUrl: string;
+  epochName: string;
+}
+
 export interface Balance {
   timestamp: BigNumber;
   blockNumber: number;
   market: string;
-  type: TransactionType;
   underlyingSupplyBalance: BigNumber;
   underlyingBorrowBalance: BigNumber;
 }
@@ -38,4 +46,8 @@ export interface MarketEmission {
   supply: BigNumber;
   borrow: BigNumber;
   p2pIndexCursor: BigNumber;
+}
+
+export interface UsersDistribution {
+  [user: string]: string;
 }

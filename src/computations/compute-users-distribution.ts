@@ -2,9 +2,8 @@ import {
   Balance,
   MarketEmission,
   MultiplicatorPerMarkets,
-  TransactionType,
-  User,
   UserMultiplicators,
+  UsersDistribution,
 } from "../types";
 import { BigNumber } from "ethers";
 
@@ -36,7 +35,7 @@ export const getMultiplicator = (
 };
 
 export const computeUsersDistribution = (
-  users: User[],
+  users: { [user: string]: Balance[] },
   marketsEmissions: {
     [p: string]: MarketEmission | undefined;
   },
@@ -47,9 +46,10 @@ export const computeUsersDistribution = (
 
   // The number of multiple emitted by users
   const usersMultiplicators: UserMultiplicators = {};
-  users.map(async (user) => {
+  Object.keys(users).map(async (userAddress) => {
+    const user = users[userAddress];
     const balancesPerMarkets: { [key: string]: Balance[] } = {};
-    user.balances.forEach((balance) => {
+    user.forEach((balance) => {
       if (!Array.isArray(balancesPerMarkets[balance.market]))
         balancesPerMarkets[balance.market] = [balance];
       else balancesPerMarkets[balance.market].push(balance);
@@ -68,9 +68,7 @@ export const computeUsersDistribution = (
       }
 
       // Supply
-      const supplyBalances = balances
-        .filter((b) => [TransactionType.Supply, TransactionType.Withdraw].includes(b.type))
-        .sort((b1, b2) => (b1.timestamp.gt(b2.timestamp) ? 1 : -1)); // asc sorting
+      const supplyBalances = balances.sort((b1, b2) => (b1.timestamp.gt(b2.timestamp) ? 1 : -1)); // asc sorting
       if (supplyBalances.length === 0) {
         multiplicatorsPerMarkets[marketAddress] = {
           supply: BigNumber.from(0),
@@ -98,9 +96,7 @@ export const computeUsersDistribution = (
       }
 
       // Borrow
-      const borrowBalances = balances
-        .filter((b) => [TransactionType.Borrow, TransactionType.Repay].includes(b.type))
-        .sort((b1, b2) => (b1.timestamp.gt(b2.timestamp) ? 1 : -1));
+      const borrowBalances = balances.sort((b1, b2) => (b1.timestamp.gt(b2.timestamp) ? 1 : -1));
       if (borrowBalances.length === 0) {
         multiplicatorsPerMarkets[marketAddress]!.borrow = BigNumber.from(0);
       } else {
@@ -122,10 +118,10 @@ export const computeUsersDistribution = (
       }
     });
 
-    usersMultiplicators[user.address] = multiplicatorsPerMarkets;
+    usersMultiplicators[userAddress] = multiplicatorsPerMarkets;
   });
 
-  const usersDistribution: { [user: string]: string } = {};
+  const usersDistribution: UsersDistribution = {};
 
   Object.keys(usersMultiplicators).forEach((userAddress) => {
     const userMultiplicators = usersMultiplicators[userAddress];
@@ -150,5 +146,5 @@ export const computeUsersDistribution = (
     usersDistribution[userAddress] = totalUserEmission.toString();
   });
 
-  return usersDistribution;
+  return { usersDistribution, totalMarketMultiplicator, usersMultiplicators };
 };
