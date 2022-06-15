@@ -13,20 +13,20 @@
       "borrow": "103762",
       "p2pIndexCursor": "0.08"
     },
-    "0x35a18000230da775cac24873d00ff85bccded550": {
-      "supply": "1048",
-      "borrow": "2696",
-      "p2pIndexCursor": "0.28"
-    },
-    "0x7713dd9ca933848f6819f38b8352d9a15ea73f67": {
-      "supply": "69",
-      "borrow": "138",
+    "0x5d3a536e4d6dbd6114cc1ead35777bab948e3643": {
+      "supply": "29301",
+      "borrow": "58611",
       "p2pIndexCursor": "0.3333"
     },
     "0x70e36f6bf80a52b3b46b3af8e106cc0ed743e8e4": {
       "supply": "1895",
       "borrow": "1973",
       "p2pIndexCursor": "0.49"
+    },
+    "0x35a18000230da775cac24873d00ff85bccded550": {
+      "supply": "1048",
+      "borrow": "2696",
+      "p2pIndexCursor": "0.28"
     },
     "0xccf4429db6322d5c611ee964527d42e5d685dd6a": {
       "supply": "29883",
@@ -38,15 +38,15 @@
       "borrow": "86308",
       "p2pIndexCursor": "0.3333"
     },
-    "0x5d3a536e4d6dbd6114cc1ead35777bab948e3643": {
-      "supply": "29301",
-      "borrow": "58611",
-      "p2pIndexCursor": "0.3333"
-    },
     "0xf650c3d88d12db855b8bf7d11be6c55a4e07dcc9": {
       "supply": "28944",
       "borrow": "43416",
       "p2pIndexCursor": "0.4"
+    },
+    "0x7713dd9ca933848f6819f38b8352d9a15ea73f67": {
+      "supply": "69",
+      "borrow": "138",
+      "p2pIndexCursor": "0.3333"
     }
   }
 }
