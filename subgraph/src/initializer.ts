@@ -1,6 +1,6 @@
 import { Address, BigInt } from "@graphprotocol/graph-ts";
 import { Balance, Market, User } from "../generated/schema";
-import { WAD } from "./math";
+import { initialIndex } from "./constants";
 
 export function getOrInitUser(userAddress: Address): User {
   let user = User.load(userAddress.toHexString());
@@ -35,8 +35,8 @@ export function getOrInitMarket(poolTokenAddress: Address): Market {
   if (!market) {
     market = new Market(poolTokenAddress.toHexString());
     market.address = poolTokenAddress;
-    market.borrowIndex = WAD();
-    market.supplyIndex = WAD();
+    market.borrowIndex = initialIndex();
+    market.supplyIndex = initialIndex();
     market.save();
   }
   return market;
