@@ -92,6 +92,7 @@ function accrueSupplierMorpho(user: Address, marketAddress: Address, prevBalance
 }
 
 export function handleBorrowed(event: Borrowed): void {
+  if(event.block.number.gt(endEpochBlockNumber)) return;
   const marketAddress = event.params._poolTokenAddress;
   const userAddress = event.params._borrower;
   const newBorrowIndex = updateBorrowIndex(marketAddress, event.block.number);
@@ -126,6 +127,7 @@ export function handleBorrowed(event: Borrowed): void {
 }
 
 export function handleRepaid(event: Repaid): void {
+  if(event.block.number.gt(endEpochBlockNumber)) return;
   const marketAddress = event.params._poolTokenAddress;
   const userAddress = event.params._onBehalf;
   const newBorrowIndex = updateBorrowIndex(marketAddress, event.block.number);
@@ -162,6 +164,7 @@ export function handleRepaid(event: Repaid): void {
 }
 
 export function handleSupplied(event: Supplied): void {
+  if(event.block.number.gt(endEpochBlockNumber)) return;
   const marketAddress = event.params._poolTokenAddress;
   const userAddress = event.params._onBehalf;
   const newSupplyIndex = updateSupplyIndex(marketAddress, event.block.number);
@@ -196,6 +199,7 @@ export function handleSupplied(event: Supplied): void {
 }
 
 export function handleWithdrawn(event: Withdrawn): void {
+  if(event.block.number.gt(endEpochBlockNumber)) return;
   const marketAddress = event.params._poolTokenAddress;
   const userAddress = event.params._supplier;
   const newSupplyIndex = updateSupplyIndex(marketAddress, event.block.number);
