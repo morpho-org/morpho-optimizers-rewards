@@ -41,15 +41,15 @@ export const getMarketsRates = async () => {
   Object.keys(marketsParameters).forEach((marketAddress) => {
     const marketParams = marketsParameters[marketAddress];
     const marketMultiplicators = totalMarketMultiplicator[marketAddress]!;
-    const baseTokenEmission = parseUnits("1000").mul(parseUnits("1")).div(marketParams.price);
+    const baseTokenEmission = parseUnits("1000"); //.mul(parseUnits("1")).div(marketParams.price);
     marketsRates[marketAddress] = {
       supply: baseTokenEmission
         .mul(marketMultiplicators.supply)
-        .mul(3600 * 24 * 365)
+      //  .mul(3600 * 24 * 365)
         .div(totalMultiplicator),
       borrow: baseTokenEmission
         .mul(marketMultiplicators.borrow)
-        .mul(3600 * 24 * 365)
+      //  .mul(3600 * 24 * 365)
         .div(totalMultiplicator),
     };
   });

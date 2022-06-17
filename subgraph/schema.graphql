@@ -2,15 +2,37 @@ type User @entity {
   id: ID!
   address: Bytes!
   balances: [Balance!] @derivedFrom(field: "user")
+  transactions: [Transaction!] @derivedFrom(field: "user")
+}
+
+type Market @entity {
+  id: ID!
+  address: Bytes!
+  supplyIndex: BigInt!
+  supplyUpdateBlockNumber: BigInt!
+  borrowIndex: BigInt!
+  borrowIndexBlockNumber: BigInt!
 }
 
 type Balance @entity {
   id: ID!
   timestamp: BigInt!
   blockNumber: Int!
-  market: Bytes!
+  market: Market!
   user: User!
-  type: TransactionType
+  underlyingSupplyBalance: BigInt!
+  underlyingBorrowBalance: BigInt!
+  userSupplyIndex: BigInt!
+  unclaimedMorpho: BigInt!
+}
+
+type Transaction @entity {
+  id: ID!
+  timestamp: BigInt!
+  blockNumber: Int!
+  market: Market!
+  user: User!
+  type: TransactionType!
   underlyingSupplyBalance: BigInt!
   underlyingBorrowBalance: BigInt!
 }

@@ -21,6 +21,8 @@ dataSources:
       abis:
         - name: Morpho
           file: ./abis/Morpho.json
+        - name: CToken
+          file: ./abis/CToken.json
       eventHandlers:
         - event: Borrowed(indexed address,indexed address,uint256,uint256,uint256)
           handler: handleBorrowed
