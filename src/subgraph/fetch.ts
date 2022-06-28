@@ -34,7 +34,7 @@ export const fetchUsers = async (
         market: transaction.market.address,
         underlyingBorrowBalance: BigNumber.from(transaction.underlyingBorrowBalance),
         underlyingSupplyBalance: BigNumber.from(transaction.underlyingSupplyBalance),
-        blockNumber: transaction.blockNumber,
+        blockNumber: +transaction.blockNumber,
         timestamp: BigNumber.from(transaction.timestamp),
       };
       if (!Array.isArray(userTxs[transaction.user.address]))
@@ -56,7 +56,10 @@ const fetchBatchTransactions = async <U>(graphUrl: string, query: string, variab
       query,
       variables,
     })
-    .then((r) => r.data.data.transactions);
+    .then((r) => {
+      console.log(r.data);
+      return r.data.data.transactions;
+    });
 const fetchBatch = async <U>(graphUrl: string, query: string, variables: object) =>
   axios
     .post<{ query: string; variables: object }, GraphResult<{ users: U[] }>>(graphUrl, {
@@ -87,7 +90,7 @@ const fetchInitialBalance = async (graphUrl: string, blockTag: number) => {
         r.map(({ address, balances: initialBalances }) => {
           userTxs[address] = initialBalances.map((initialBalance) => ({
             timestamp: BigNumber.from(initialBalance.timestamp),
-            blockNumber: initialBalance.blockNumber,
+            blockNumber: +initialBalance.blockNumber,
             market: initialBalance.market.address,
             underlyingSupplyBalance: BigNumber.from(initialBalance.underlyingSupplyBalance),
             underlyingBorrowBalance: BigNumber.from(initialBalance.underlyingBorrowBalance),

@@ -1,21 +1,23 @@
 import { getMarketsRates } from "./getMarketsEmission";
-import { getUserUnclaimedTokensFromDistribution } from "./getUserUnclaimedTokens";
 
-const main = async (address: string) => {
-  const { marketsRates: marketsRatesBN, usersDistribution } = await getMarketsRates();
+const main = async (address?: string) => {
+  const { marketsRates: marketsRatesBN } = await getMarketsRates();
 
-  const marketsRates: {[market: string]: {supply: string, borrow: string}} = {};
-  Object.keys(marketsRatesBN).map(marketAddress => marketsRates[marketAddress] = {
-      supply: marketsRatesBN[marketAddress].supply.toString(),
-      borrow: marketsRatesBN[marketAddress].borrow.toString(),
-  });
+  const marketsRates: { [market: string]: { supply: string; borrow: string } } = {};
+  Object.keys(marketsRatesBN).map(
+    (marketAddress) =>
+      (marketsRates[marketAddress] = {
+        supply: marketsRatesBN[marketAddress].supply.toString(),
+        borrow: marketsRatesBN[marketAddress].borrow.toString(),
+      })
+  );
 
-  const unclaimedRewards = getUserUnclaimedTokensFromDistribution(usersDistribution, address);
+  //const unclaimedRewards = getUserUnclaimedTokensFromDistribution(usersDistribution, address);
 
-  return {marketsRates, unclaimedRewards};
+  return { marketsRates };
 };
 
-main("0x6e632701fd42a9b856294a2172dd63f03eb957c5")
+main()
   .then(console.log)
   .catch((e) => {
     console.error(e);

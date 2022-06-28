@@ -1,5 +1,5 @@
 import { Market, MarketEmission } from "../types";
-import { parseUnits } from "ethers/lib/utils";
+import { formatUnits, parseUnits } from "ethers/lib/utils";
 import { BigNumber } from "ethers";
 import { BASE_UNITS } from "../helpers/maths";
 
@@ -30,6 +30,7 @@ export const computeMarketsEmission = (
       .mul(market.price)
       .div(parseUnits("1"));
     const marketEmission = totalMarketUSD.mul(totalEmission).div(total);
+    console.log(market.address, marketEmission.toString(), formatUnits(totalMarketUSD), totalEmission.toString(), formatUnits(total), totalMarketUSD.mul(10000).div(total).toString());
     marketsEmissions[marketAddress] = {
       supply: marketEmission.mul(market.p2pIndexCursor).div(BASE_UNITS),
       borrow: marketEmission

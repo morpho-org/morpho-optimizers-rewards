@@ -1,4 +1,4 @@
-import { formatUnits } from "ethers/lib/utils";
+import { formatUnits, parseUnits } from "ethers/lib/utils";
 import { fetchUsers } from "../../subgraph/fetch";
 import * as fs from "fs";
 import path from "path";
@@ -21,11 +21,13 @@ const main = async (ageName: string, configuration: EpochConfig) => {
   );
 
   console.log("Markets Emissions");
-
+  const duration = configuration.finalTimestamp.sub(configuration.initialTimestamp);
   const formattedMarketsEmission: {
     [market: string]: {
       supply: string;
       borrow: string;
+      supplyEmissionRate: string;
+      borrowEmissionRate: string;
       p2pIndexCursor: string;
     };
   } = {};
@@ -34,19 +36,23 @@ const main = async (ageName: string, configuration: EpochConfig) => {
     if (!marketEmission) return;
     formattedMarketsEmission[m] = {
       supply: marketEmission.supply.toString(),
+      supplyEmissionRate: marketEmission.supply.mul(parseUnits("1")).div(duration).toString(),
+      borrowEmissionRate: marketEmission.borrow.mul(parseUnits("1")).div(duration).toString(),
       borrow: marketEmission.borrow.toString(),
       p2pIndexCursor: formatUnits(marketEmission.p2pIndexCursor, 4),
     };
   });
 
   // save the age into a file
-  const ageOneMarketsFilename = `./ages/${configuration.epochName}/marketsEmission.json`;
+  const ageOneMarketsFilename = `./ages/${ageName}/${configuration.epochName}/marketsEmission.json`;
   const ageMarketsPath = path.dirname(ageOneMarketsFilename);
   await fs.promises.mkdir(ageMarketsPath, { recursive: true });
   await fs.promises.writeFile(
     ageOneMarketsFilename,
     JSON.stringify(
       {
+        age: ageName,
+        epoch: "epoch1",
         totalEmission: configuration.totalEmission.toString(),
         parameters: {
           initialBlock: configuration.initialBlock.toString(),
@@ -54,6 +60,8 @@ const main = async (ageName: string, configuration: EpochConfig) => {
           totalSupply: formatUnits(liquidity.totalSupply),
           totalBorrow: formatUnits(liquidity.totalBorrow),
           total: formatUnits(liquidity.total),
+          finalTimestamp: configuration.finalTimestamp.toString(),
+          duration: duration.toString(),
         },
         markets: formattedMarketsEmission,
       },
@@ -61,6 +69,7 @@ const main = async (ageName: string, configuration: EpochConfig) => {
       2
     )
   );
+  return;
   /// user related ///
   console.log("Fetch Morpho users of the age");
 
@@ -80,13 +89,13 @@ const main = async (ageName: string, configuration: EpochConfig) => {
   );
 
   // save the age into a file
-  const ageOneFilename = `./ages/${configuration.epochName}/distribution.json`;
+  const ageOneFilename = `./ages/${ageName}/${configuration.epochName}/distribution.json`;
   const agePath = path.dirname(ageOneFilename);
   await fs.promises.mkdir(agePath, { recursive: true });
   await fs.promises.writeFile(ageOneFilename, JSON.stringify(usersDistribution, null, 2));
   const { root, proofs } = computeMerkleTree(usersDistribution);
   // save the age proofs into a file
-  const ageOneProofsFilename = `./ages/${configuration.epochName}/proofs.json`;
+  const ageOneProofsFilename = `./ages/${ageName}/${configuration.epochName}/proofs.json`;
   const ageProofsPath = path.dirname(ageOneProofsFilename);
   await fs.promises.mkdir(ageProofsPath, { recursive: true });
   await fs.promises.writeFile(ageOneProofsFilename, JSON.stringify({ root, proofs }, null, 2));

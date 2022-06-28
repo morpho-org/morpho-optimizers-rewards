@@ -6,11 +6,14 @@ export interface GraphUser {
 }
 
 export interface GraphBalance {
-  market: { address: string };
+  id: string;
   timestamp: string;
-  blockNumber: number;
+  blockNumber: string;
+  market: { address: string; supplyIndex: string}
   underlyingSupplyBalance: string;
   underlyingBorrowBalance: string;
+  userSupplyIndex: string;
+  unclaimedMorpho: string;
 }
 
 export interface GraphUserTxs extends GraphBalance {
