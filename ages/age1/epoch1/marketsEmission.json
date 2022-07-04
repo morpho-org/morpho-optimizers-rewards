@@ -1,0 +1,72 @@
+{
+  "age": "age1",
+  "epoch": "epoch1",
+  "totalEmission": "350000",
+  "parameters": {
+    "initialBlock": "14927832",
+    "initialTimestamp": "1654707606",
+    "totalSupply": "4867973829.081618844732249765",
+    "totalBorrow": "1143872756.77997134084728573",
+    "total": "6011846585.861590185579535495",
+    "finalTimestamp": "1657731600",
+    "duration": "3023994"
+  },
+  "markets": {
+    "0x35a18000230da775cac24873d00ff85bccded550": {
+      "supply": "761",
+      "supplyEmissionRate": "251653938466809",
+      "borrowEmissionRate": "647818745672114",
+      "borrow": "1959",
+      "p2pIndexCursor": "0.28"
+    },
+    "0x39aa39c021dfbae8fac545936693ac917d5e7563": {
+      "supply": "29591",
+      "supplyEmissionRate": "9785403013365767",
+      "borrowEmissionRate": "19573782223112876",
+      "borrow": "59191",
+      "p2pIndexCursor": "0.3333"
+    },
+    "0x4ddc2d193948926d02f9b1fe9e1daa0718270ed5": {
+      "supply": "6458",
+      "supplyEmissionRate": "2135586247856311",
+      "borrowEmissionRate": "24561556669755297",
+      "borrow": "74274",
+      "p2pIndexCursor": "0.08"
+    },
+    "0x5d3a536e4d6dbd6114cc1ead35777bab948e3643": {
+      "supply": "19091",
+      "supplyEmissionRate": "6313173901800069",
+      "borrowEmissionRate": "12628662623007849",
+      "borrow": "38189",
+      "p2pIndexCursor": "0.3333"
+    },
+    "0x70e36f6bf80a52b3b46b3af8e106cc0ed743e8e4": {
+      "supply": "1332",
+      "supplyEmissionRate": "440477064438619",
+      "borrowEmissionRate": "458334242726672",
+      "borrow": "1386",
+      "p2pIndexCursor": "0.49"
+    },
+    "0x7713dd9ca933848f6819f38b8352d9a15ea73f67": {
+      "supply": "50",
+      "supplyEmissionRate": "16534424340789",
+      "borrowEmissionRate": "33399537168393",
+      "borrow": "101",
+      "p2pIndexCursor": "0.3333"
+    },
+    "0xccf4429db6322d5c611ee964527d42e5d685dd6a": {
+      "supply": "21716",
+      "supplyEmissionRate": "7181231179691494",
+      "borrowEmissionRate": "14364446490303882",
+      "borrow": "43438",
+      "p2pIndexCursor": "0.3333"
+    },
+    "0xf650c3d88d12db855b8bf7d11be6c55a4e07dcc9": {
+      "supply": "20980",
+      "supplyEmissionRate": "6937844453395079",
+      "borrowEmissionRate": "10407097368579435",
+      "borrow": "31471",
+      "p2pIndexCursor": "0.4"
+    }
+  }
+}

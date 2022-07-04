@@ -5,19 +5,6 @@ export type MultiplicatorPerMarkets = NormalizedObject<{
   borrow: BigNumber;
 }>;
 export type UserMultiplicators = NormalizedObject<MultiplicatorPerMarkets>;
-export interface User {
-  address: string;
-  balances: Balance[];
-}
-
-export interface EpochConfig {
-  initialBlock: number;
-  initialTimestamp: BigNumber;
-  finalTimestamp: BigNumber;
-  totalEmission: BigNumber;
-  subgraphUrl: string;
-  epochName: string;
-}
 
 export interface Balance {
   timestamp: BigNumber;
@@ -26,14 +13,6 @@ export interface Balance {
   underlyingSupplyBalance: BigNumber;
   underlyingBorrowBalance: BigNumber;
 }
-
-export enum TransactionType {
-  Supply = "Supply",
-  Borrow = "Borrow",
-  Withdraw = "Withdraw",
-  Repay = "Repay",
-}
-
 export interface Market {
   address: string;
   price: BigNumber;
@@ -44,7 +23,9 @@ export interface Market {
 
 export interface MarketEmission {
   supply: BigNumber;
+  supplyRate: BigNumber;
   borrow: BigNumber;
+  borrowRate: BigNumber;
   p2pIndexCursor: BigNumber;
 }
 

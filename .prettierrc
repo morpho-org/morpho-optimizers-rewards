@@ -1,11 +1,5 @@
 {
-  "overrides": [
-    {
-      "files": "*.ts",
-      "options": {
-        "tabWidth": 2,
-        "printWidth": 100
-      }
-    }
-  ]
+  "printWidth": 120,
+  "trailingComma": "all",
+  "singleQuote": false
 }

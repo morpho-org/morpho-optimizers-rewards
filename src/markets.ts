@@ -52,13 +52,10 @@ export const getMarketsConfiguration = async (blockTag: number) => {
   const marketsConfiguration: { [market: string]: Market } = {};
 
   await axios
-    .post<{ blockTag: number }, { data?: { data: { markets: GraphMarketConfiguration[] } } }>(
-      subgraphUrl,
-      {
-        query,
-        variables: { blockTag },
-      }
-    )
+    .post<{ blockTag: number }, { data?: { data: { markets: GraphMarketConfiguration[] } } }>(subgraphUrl, {
+      query,
+      variables: { blockTag },
+    })
     .then((result) => {
       if (!result.data?.data) {
         console.error(result.data);

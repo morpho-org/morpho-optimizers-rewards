@@ -1,33 +1,26 @@
-import { formatUnits, parseUnits } from "ethers/lib/utils";
+import { formatUnits } from "ethers/lib/utils";
 import { fetchUsers } from "../../subgraph/fetch";
 import * as fs from "fs";
 import path from "path";
-import { getMarketsConfiguration } from "../../markets";
 import { computeMerkleTree } from "../../computations/compute-merkle-tree";
-import { computeMarketsEmission } from "../../computations/compute-markets-emission";
-import { computeUsersDistribution } from "../../computations/compute-users-distribution";
 import configuration from "./configuration";
-import { Balance, EpochConfig } from "../../types";
+import { getMarketsEmission } from "./getMarketsEmission";
+import { userBalancesToUnclaimedTokens } from "./getUserUnclaimedTokens";
+import { BigNumber } from "ethers";
+import { now } from "../../helpers/time";
 
-const main = async (ageName: string, configuration: EpochConfig) => {
+const main = async (ageName: string, epoch: keyof typeof configuration.epochs) => {
   console.log("Compute markets parameters");
-  const ageOneMarketsParameters = await getMarketsConfiguration(configuration.initialBlock);
-
-  console.log(Object.keys(ageOneMarketsParameters).length, "markets found");
-
-  const { liquidity, marketsEmissions } = computeMarketsEmission(
-    ageOneMarketsParameters,
-    configuration.totalEmission
-  );
+  const epochConfig = configuration.epochs[epoch];
 
   console.log("Markets Emissions");
-  const duration = configuration.finalTimestamp.sub(configuration.initialTimestamp);
+  const { marketsEmissions, liquidity } = await getMarketsEmission(epoch);
   const formattedMarketsEmission: {
     [market: string]: {
       supply: string;
       borrow: string;
-      supplyEmissionRate: string;
-      borrowEmissionRate: string;
+      supplyRate: string;
+      borrowRate: string;
       p2pIndexCursor: string;
     };
   } = {};
@@ -36,72 +29,87 @@ const main = async (ageName: string, configuration: EpochConfig) => {
     if (!marketEmission) return;
     formattedMarketsEmission[m] = {
       supply: marketEmission.supply.toString(),
-      supplyEmissionRate: marketEmission.supply.mul(parseUnits("1")).div(duration).toString(),
-      borrowEmissionRate: marketEmission.borrow.mul(parseUnits("1")).div(duration).toString(),
+      supplyRate: marketEmission.supplyRate.toString(),
+      borrowRate: marketEmission.borrowRate.toString(),
       borrow: marketEmission.borrow.toString(),
       p2pIndexCursor: formatUnits(marketEmission.p2pIndexCursor, 4),
     };
   });
 
   // save the age into a file
-  const ageOneMarketsFilename = `./ages/${ageName}/${configuration.epochName}/marketsEmission.json`;
-  const ageMarketsPath = path.dirname(ageOneMarketsFilename);
-  await fs.promises.mkdir(ageMarketsPath, { recursive: true });
-  await fs.promises.writeFile(
-    ageOneMarketsFilename,
-    JSON.stringify(
-      {
-        age: ageName,
-        epoch: "epoch1",
-        totalEmission: configuration.totalEmission.toString(),
-        parameters: {
-          initialBlock: configuration.initialBlock.toString(),
-          initialTimestamp: configuration.initialTimestamp.toString(),
-          totalSupply: formatUnits(liquidity.totalSupply),
-          totalBorrow: formatUnits(liquidity.totalBorrow),
-          total: formatUnits(liquidity.total),
-          finalTimestamp: configuration.finalTimestamp.toString(),
-          duration: duration.toString(),
-        },
-        markets: formattedMarketsEmission,
+  const emissionJson = JSON.stringify(
+    {
+      age: ageName,
+      epoch: "epoch1",
+      totalEmission: epochConfig.totalEmission.toString(),
+      parameters: {
+        initialBlock: epochConfig.initialBlock.toString(),
+        initialTimestamp: epochConfig.initialTimestamp.toString(),
+        totalSupply: formatUnits(liquidity.totalSupply),
+        totalBorrow: formatUnits(liquidity.totalBorrow),
+        total: formatUnits(liquidity.total),
+        finalTimestamp: epochConfig.finalTimestamp.toString(),
+        duration: epochConfig.finalTimestamp.sub(epochConfig.initialTimestamp).toString(),
       },
-      null,
-      2
-    )
+      markets: formattedMarketsEmission,
+    },
+    null,
+    2,
   );
-  return;
+  if (process.env.SAVE_FILE) {
+    const ageOneMarketsFilename = `./ages/${ageName}/${epochConfig.epochName}/marketsEmission.json`;
+    const ageMarketsPath = path.dirname(ageOneMarketsFilename);
+    await fs.promises.mkdir(ageMarketsPath, { recursive: true });
+    await fs.promises.writeFile(ageOneMarketsFilename, emissionJson);
+  } else {
+    console.log(emissionJson);
+  }
+
+  console.log("Get current distribution through all users");
+
   /// user related ///
   console.log("Fetch Morpho users of the age");
+  const endDate = BigNumber.from(Math.min(configuration.epochs.epoch1.finalTimestamp.toNumber(), now()));
+  const usersBalances = await fetchUsers(epochConfig.subgraphUrl);
 
-  const users: { [user: string]: Balance[] } = await fetchUsers(
-    configuration.subgraphUrl,
-    configuration.initialBlock,
-    Object.keys(marketsEmissions),
-    configuration.initialTimestamp.toNumber(),
-    configuration.finalTimestamp.toNumber()
+  const usersUnclaimedRewards = usersBalances.map(({ address, balances }) => ({
+    address,
+    unclaimedRewards: userBalancesToUnclaimedTokens(balances, endDate).toString(), // with 18 * 2 decimals
+  }));
+
+  const totalEmitted = usersUnclaimedRewards.reduce((a, b) => a.add(b.unclaimedRewards), BigNumber.from(0));
+  console.log("Total tokens emitted:", formatUnits(totalEmitted, 36), "over", epochConfig.totalEmission.toString());
+  const jsonUnclaimed = JSON.stringify(
+    {
+      date: endDate,
+      epoch,
+      distribution: usersUnclaimedRewards,
+    },
+    null,
+    2,
   );
+  if (process.env.SAVE_FILE) {
+    // save the age into a file
+    const ageOneFilename = `./ages/${ageName}/${epoch}/distribution.json`;
+    const agePath = path.dirname(ageOneFilename);
+    await fs.promises.mkdir(agePath, { recursive: true });
+    await fs.promises.writeFile(ageOneFilename, JSON.stringify(jsonUnclaimed, null, 2));
+  } else {
+    console.log(jsonUnclaimed);
+  }
 
-  console.log("Compute users distribution through markets");
-  const { usersDistribution } = computeUsersDistribution(
-    users,
-    marketsEmissions,
-    configuration.finalTimestamp
-  );
+  console.log("Compute the current merkle Tree");
+  if (now() < epochConfig.finalTimestamp.toNumber()) console.log("This is not the final Merkle tree");
+  const { root, proofs } = computeMerkleTree(usersUnclaimedRewards);
 
-  // save the age into a file
-  const ageOneFilename = `./ages/${ageName}/${configuration.epochName}/distribution.json`;
-  const agePath = path.dirname(ageOneFilename);
-  await fs.promises.mkdir(agePath, { recursive: true });
-  await fs.promises.writeFile(ageOneFilename, JSON.stringify(usersDistribution, null, 2));
-  const { root, proofs } = computeMerkleTree(usersDistribution);
   // save the age proofs into a file
-  const ageOneProofsFilename = `./ages/${ageName}/${configuration.epochName}/proofs.json`;
+  const ageOneProofsFilename = `./ages/${ageName}/${epochConfig.epochName}/proofs.json`;
   const ageProofsPath = path.dirname(ageOneProofsFilename);
   await fs.promises.mkdir(ageProofsPath, { recursive: true });
   await fs.promises.writeFile(ageOneProofsFilename, JSON.stringify({ root, proofs }, null, 2));
 };
 
-main(configuration.ageName, configuration.epochs.epoch1).catch((e) => {
+main("age1", "epoch1").catch((e) => {
   console.error(e);
   process.exit(1);
 });
