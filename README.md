@@ -7,14 +7,9 @@
 yarn
 ```
 
-- Provide a mainnet HTTP RPC endpoint URL as environment variable `RPC_URL` inside a local environment file `.env`: 
-```bash
-cp .env.example .env
-```
-
 - Run the script for the first epoch:
 ```bash
-yarn start:age1
+yarn start:age1:epoch1
 ```
 
 ## Epochs
@@ -25,6 +20,8 @@ For now and until governance is set up, each epoch's per-market distribution is 
 ## Epoch #1
 
 You can read the code of the first epoch [here](./src/ages/age-one/index.ts).
+
+The subgraph used for automatic real time indexation is available on the [hosted service of TheGraph](https://thegraph.com/hosted-service/subgraph/morpho-labs/morphoages?query=Get%20balances%20).
 
 Steps by step, the script will:
 - distribute the epoch's rewards by following the per-market distribution rule (see below)
@@ -53,3 +50,13 @@ and `period` is the delay since another transaction occurs.
 - If the user only made one transaction for a specific market during the age, T is the time from the transaction to the end of the age.
 - If the user has made a transaction before the beginning of the age, we start the delta T from the beginning of the age
 - If the user made a new transaction, we recompute his balance and start a new period with a different balance
+
+## Compute merkle Tree
+At the end of the first epoch, all tokens will be distributed.
+
+In order to compute the merke tree, you can simply run
+
+```bash 
+SAVE_FILE=true yarn run start:age1:epoch1
+```
+and browse the distribution over Morpho's users, and the merkle tree configuration in the folder `ages/age1/epoch1`
