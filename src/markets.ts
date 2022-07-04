@@ -1,7 +1,7 @@
 import { BigNumber } from "ethers";
-import { parseUnits } from "ethers/lib/utils";
 import { Market } from "./types";
 import axios from "axios";
+import { WAD } from "./helpers/constants";
 
 const subgraphUrl = "https://api.thegraph.com/subgraphs/name/morpho-labs/morphocompoundmainnet";
 
@@ -39,7 +39,7 @@ const graphToMarketConfig = (graphMarket: GraphMarketConfiguration) => ({
   price: BigNumber.from(graphMarket.reserveData.usd),
   totalSupply: BigNumber.from(graphMarket.metrics.totalSupplyOnPool)
     .mul(graphMarket.reserveData.supplyPoolIndex)
-    .div(parseUnits("1")),
+    .div(WAD),
   totalBorrow: BigNumber.from(graphMarket.metrics.totalBorrowOnPool),
   p2pIndexCursor: BigNumber.from(graphMarket.p2pIndexCursor),
 });

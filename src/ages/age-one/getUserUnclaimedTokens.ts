@@ -2,7 +2,7 @@ import { now } from "../../helpers/time";
 import configuration from "./configuration";
 import { BigNumber } from "ethers";
 import axios from "axios";
-import { WEI } from "../../helpers/constants";
+import { WAD } from "../../helpers/constants";
 import marketsEmission from "../../../ages/age1/epoch1/marketsEmission.json";
 import { GraphUserBalances, Market, UserBalance } from "../../subgraph/types";
 import { formatGraphBalances } from "../../subgraph/graphBalances.formater";
@@ -27,7 +27,7 @@ export const userBalancesToUnclaimedTokens = (balances: UserBalance[], endDate: 
 
 const getUserUnclaimedTokens = (marketIndex: BigNumber, userIndex: BigNumber, userBalance: BigNumber) => {
   if (userIndex.gt(marketIndex)) return BigNumber.from(0);
-  return marketIndex.sub(userIndex).mul(userBalance); // in 18 * 2 decimals
+  return marketIndex.sub(userIndex).mul(userBalance).div(WAD); // in 18 * 2 decimals
 };
 const computeSupplyIndex = (market: Market, currentTimestamp: BigNumber) => {
   const deltaTimestamp = currentTimestamp.sub(market.supplyUpdateBlockTimestamp);
@@ -35,11 +35,11 @@ const computeSupplyIndex = (market: Market, currentTimestamp: BigNumber) => {
   const totalSupply = market.totalSupplyP2P
     .mul(market.lastP2PSupplyIndex)
     .add(market.totalSupplyOnPool.mul(market.lastPoolSupplyIndex))
-    .div(WEI);
+    .div(WAD);
   // @ts-ignore
   const supplySpeed = BigNumber.from(marketsEmission.markets[market.address].supplyEmissionRate);
   const morphoAccrued = deltaTimestamp.mul(supplySpeed); // in WEI units;
-  const ratio = morphoAccrued.mul(WEI).div(totalSupply); // in 18*2 - decimals units;
+  const ratio = morphoAccrued.mul(WAD).div(totalSupply); // in 18*2 - decimals units;
   return market.supplyIndex.add(ratio);
 };
 const computeBorrowIndex = (market: Market, currentTimestamp: BigNumber) => {
@@ -48,11 +48,11 @@ const computeBorrowIndex = (market: Market, currentTimestamp: BigNumber) => {
   const totalBorrow = market.totalBorrowP2P
     .mul(market.lastP2PBorrowIndex)
     .add(market.totalBorrowOnPool.mul(market.lastPoolBorrowIndex))
-    .div(WEI); // in underlying
+    .div(WAD); // in underlying
   // @ts-ignore
   const borrowSpeed = BigNumber.from(marketsEmission.markets[market.address].borrowEmissionRate);
   const morphoAccrued = deltaTimestamp.mul(borrowSpeed); // in WEI units;
-  const ratio = morphoAccrued.mul(WEI).div(totalBorrow); // in 18*2 - decimals units;
+  const ratio = morphoAccrued.mul(WAD).div(totalBorrow); // in 18*2 - decimals units;
   return market.borrowIndex.add(ratio);
 };
 

@@ -2,7 +2,7 @@ import { Market, MarketEmission } from "../types";
 import { parseUnits } from "ethers/lib/utils";
 import { BigNumber } from "ethers";
 import { BASE_UNITS } from "../helpers/maths";
-import { WEI } from "../helpers/constants";
+import { WAD } from "../helpers/constants";
 
 export const computeMarketsEmission = (
   ageOneMarketsParameters: {
@@ -28,7 +28,7 @@ export const computeMarketsEmission = (
     const market: Market = ageOneMarketsParameters[marketAddress];
     // total market value at the beginning of the age
     const totalMarketUSD = market.totalBorrow.add(market.totalSupply).mul(market.price).div(parseUnits("1"));
-    const marketEmission = totalMarketUSD.mul(totalEmission).mul(WEI).div(total); // in WEI units
+    const marketEmission = totalMarketUSD.mul(totalEmission).mul(WAD).div(total); // in WEI units
     const supplyTokens = marketEmission.mul(market.p2pIndexCursor).div(BASE_UNITS);
     const supplyRate = supplyTokens.div(duration);
     const borrowTokens = marketEmission.sub(supplyTokens);

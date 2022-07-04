@@ -1,3 +1,3 @@
 import { BigNumber } from "ethers";
 
-export const WEI = BigNumber.from(10).pow(18);
+export const WAD = BigNumber.from(10).pow(18);

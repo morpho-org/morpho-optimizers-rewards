@@ -28,10 +28,10 @@ const main = async (ageName: string, epoch: keyof typeof configuration.epochs) =
     const marketEmission = marketsEmissions[m];
     if (!marketEmission) return;
     formattedMarketsEmission[m] = {
-      supply: marketEmission.supply.toString(),
-      supplyRate: marketEmission.supplyRate.toString(),
-      borrowRate: marketEmission.borrowRate.toString(),
-      borrow: marketEmission.borrow.toString(),
+      supply: formatUnits(marketEmission.supply),
+      supplyRate: formatUnits(marketEmission.supplyRate),
+      borrowRate: formatUnits(marketEmission.borrowRate),
+      borrow: formatUnits(marketEmission.borrow),
       p2pIndexCursor: formatUnits(marketEmission.p2pIndexCursor, 4),
     };
   });
@@ -64,12 +64,12 @@ const main = async (ageName: string, epoch: keyof typeof configuration.epochs) =
   } else {
     console.log(emissionJson);
   }
-
+  console.log("duration", epochConfig.finalTimestamp.sub(epochConfig.initialTimestamp).toString());
   console.log("Get current distribution through all users");
 
   /// user related ///
   console.log("Fetch Morpho users of the age");
-  const endDate = BigNumber.from(Math.min(configuration.epochs.epoch1.finalTimestamp.toNumber(), now()));
+  const endDate = configuration.epochs.epoch1.finalTimestamp;
   const usersBalances = await fetchUsers(epochConfig.subgraphUrl);
 
   const usersUnclaimedRewards = usersBalances.map(({ address, balances }) => ({
@@ -79,6 +79,7 @@ const main = async (ageName: string, epoch: keyof typeof configuration.epochs) =
 
   const totalEmitted = usersUnclaimedRewards.reduce((a, b) => a.add(b.unclaimedRewards), BigNumber.from(0));
   console.log("Total tokens emitted:", formatUnits(totalEmitted, 36), "over", epochConfig.totalEmission.toString());
+  return;
   const jsonUnclaimed = JSON.stringify(
     {
       date: endDate,
