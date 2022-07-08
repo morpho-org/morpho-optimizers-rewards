@@ -1,7 +1,6 @@
-import { BigInt } from "@graphprotocol/graph-ts";
+import { Address, BigInt } from "@graphprotocol/graph-ts";
 
-export const startEpochBlockNumber = BigInt.fromI32(14911330 as i32);
+export const startEpochBlockTimestamp = BigInt.fromI32(1654707606 as i32);
 
-export const endEpochBlockNumber = BigInt.fromI32(15011330 as i32);
-export const morphoAddresString = "0x8888882f8f843896699869179fb6e4f7e3b58888";
-
+export const endEpochBlockTimestamp = BigInt.fromI32(1657731600 as i32);
+export const morphoAddress = Address.fromString("0x8888882f8f843896699869179fb6e4f7e3b58888");

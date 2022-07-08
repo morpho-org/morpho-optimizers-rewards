@@ -1,55 +1,79 @@
-import { Address, BigInt } from "@graphprotocol/graph-ts";
-import { morphoAddresString, startEpochBlockNumber } from "./config";
+import { Address, BigInt, log } from "@graphprotocol/graph-ts";
+import { morphoAddress, startEpochBlockTimestamp } from "./config";
 import { initialIndex, WAD } from "./constants";
-import { getOrIniBalance, getOrInitMarket } from "./initializer";
+import { getOrInitMarket } from "./initializer";
 import { Morpho } from "../generated/Morpho/Morpho";
-import { CToken } from "../generated/Morpho/CToken";
+import { getBorrowEmissions, getSupplyEmissions } from "./emissions";
 
-export function updateSupplyIndex(marketAddress: Address, blockNumber: BigInt): BigInt {
-    if(blockNumber.le(startEpochBlockNumber)) return initialIndex();
-    const market = getOrInitMarket(marketAddress);
-    if(market.supplyUpdateBlockNumber.equals(blockNumber)) return market.supplyIndex;
-    const morpho = Morpho.bind(Address.fromString(morphoAddresString));
-    const cToken = CToken.bind(marketAddress);
-    const delta = morpho.deltas(marketAddress);
-    const totalP2PSupply = delta.value2.times(morpho.p2pSupplyIndex(marketAddress)).div(WAD());
-    const totalPoolSupply = cToken.balanceOfUnderlying(Address.fromString(morphoAddresString));
-    const totalSupplyUnderlying = totalP2PSupply.plus(totalPoolSupply);
-    const speed = BigInt.zero();
-    const morphoAccrued = blockNumber.minus(market.supplyUpdateBlockNumber).times(speed);
-    const ratio = morphoAccrued.times(BigInt.fromI32(10).pow(36 as u8)).div(totalSupplyUnderlying);
-    const newMorphoSupplyIndex = market.supplyIndex.plus(ratio);
-    market.supplyIndex = newMorphoSupplyIndex;
-    market.supplyUpdateBlockNumber = blockNumber;
-    market.save();
-    return newMorphoSupplyIndex;
+export function updateSupplyIndex(marketAddress: Address, blockTimestamp: BigInt, decimals: number): BigInt {
+  const market = getOrInitMarket(marketAddress, blockTimestamp, decimals);
+  if (market.supplyUpdateBlockTimestamp.equals(blockTimestamp)) return market.supplyIndex; // nothing to update
+
+  let newMorphoSupplyIndex: BigInt;
+  if (blockTimestamp.le(startEpochBlockTimestamp)) newMorphoSupplyIndex = initialIndex(decimals);
+  else {
+    const totalP2PSupply = market.totalSupplyP2P.times(market.lastP2PSupplyIndex).div(WAD());
+    const totalPoolSupply = market.totalSupplyOnPool.times(market.lastPoolSupplyIndex).div(WAD());
+    const totalSupply = totalPoolSupply.plus(totalP2PSupply); // total supply since last update
+    const supplyEmissions = getSupplyEmissions();
+    let speed = BigInt.zero();
+    if (supplyEmissions.has(marketAddress.toHexString())) {
+      speed = supplyEmissions.get(marketAddress.toHexString());
+    }
+    log.debug("Supply speed for market {}: {}", [marketAddress.toHexString(), speed.toHexString()]);
+    const morphoAccrued = blockTimestamp.minus(market.supplyUpdateBlockTimestamp).times(speed); // WAD
+    if (morphoAccrued.le(BigInt.zero())) {
+      log.error("negative token emission {}", [morphoAccrued.toString()]);
+    }
+    const ratio = morphoAccrued.times(BigInt.fromI32(10).pow(18 as u8)).div(totalSupply); // 18 * 2 - decimals
+    newMorphoSupplyIndex = ratio.plus(market.supplyIndex);
+  }
+  const morpho = Morpho.bind(morphoAddress);
+  market.supplyIndex = newMorphoSupplyIndex;
+  market.supplyUpdateBlockTimestamp = blockTimestamp;
+  market.lastPoolSupplyIndex = morpho.lastPoolIndexes(marketAddress).value1;
+  market.lastP2PSupplyIndex = morpho.p2pSupplyIndex(marketAddress);
+  market.save();
+  return newMorphoSupplyIndex;
 }
 
-export function updateBorrowIndex(marketAddress: Address, blockNumber: BigInt): BigInt {
-    if(blockNumber.le(startEpochBlockNumber)) return initialIndex();
-    const market = getOrInitMarket(marketAddress);
-    if(market.borrowIndexBlockNumber.ge(blockNumber)) return market.borrowIndex;
-    const morpho = Morpho.bind(Address.fromString(morphoAddresString));
-    const cToken = CToken.bind(marketAddress);
-    const delta = morpho.deltas(marketAddress);
-    const totalP2PBorrow = delta.value2.times(morpho.p2pSupplyIndex(marketAddress)).div(WAD());
-    const totalPoolBorrow = cToken.borrowBalanceStored(Address.fromString(morphoAddresString));
-    const totalBorrowUnderlying = totalP2PBorrow.plus(totalPoolBorrow);
-    const speed = BigInt.zero();
-    const morphoAccrued = blockNumber.minus(market.borrowIndexBlockNumber).times(speed);
-    const ratio = morphoAccrued.times(BigInt.fromI32(10).pow(36 as u8)).div(totalBorrowUnderlying);
-    const newMorphoBorrowIndex = market.borrowIndex.plus(ratio);
-    market.supplyIndex = newMorphoBorrowIndex;
-    market.supplyUpdateBlockNumber = blockNumber;
-    market.save();
-    return newMorphoBorrowIndex;
+export function updateBorrowIndex(marketAddress: Address, blockTimestamp: BigInt, decimals: number): BigInt {
+  const market = getOrInitMarket(marketAddress, blockTimestamp, decimals);
+  if (market.borrowUpdateBlockTimestamp.ge(blockTimestamp)) return market.borrowIndex;
+  let newMorphoBorrowIndex: BigInt;
+  if (blockTimestamp.le(startEpochBlockTimestamp)) newMorphoBorrowIndex = initialIndex(decimals);
+  else {
+    const totalP2PBorrow = market.totalBorrowP2P.times(market.lastP2PBorrowIndex).div(WAD()); // in underlying
+    const totalPoolBorrow = market.totalBorrowOnPool.times(market.lastPoolBorrowIndex).div(WAD()); // in underlying
+    const totalBorrowUnderlying = totalP2PBorrow.plus(totalPoolBorrow); // never equals to zero after the beginning of the epoch
+    // this assertion becomes false if we add a market during the epoch.
+    const borrowEmissions = getBorrowEmissions();
+    let speed = BigInt.zero();
+    if (borrowEmissions.has(marketAddress.toHexString())) {
+      speed = borrowEmissions.get(marketAddress.toHexString());
+    }
+    log.warning("Borrow speed for market {}: {}", [marketAddress.toHexString(), speed.toHexString()]);
+    const morphoAccrued = blockTimestamp.minus(market.borrowUpdateBlockTimestamp).times(speed);
+    const ratio = morphoAccrued.times(BigInt.fromI32(10).pow(18 as u8)).div(totalBorrowUnderlying);
+    newMorphoBorrowIndex = market.borrowIndex.plus(ratio);
+  }
+  const morpho = Morpho.bind(morphoAddress);
+  market.borrowIndex = newMorphoBorrowIndex;
+  market.borrowUpdateBlockTimestamp = blockTimestamp;
+  market.lastPoolBorrowIndex = morpho.lastPoolIndexes(marketAddress).value2;
+  market.lastP2PBorrowIndex = morpho.p2pBorrowIndex(marketAddress);
+  market.save();
+  return newMorphoBorrowIndex;
 }
 
-export function accrueBorrowerMorpho(user: Address, marketAddress: Address, prevBalance: BigInt, newIndex: BigInt): BigInt {
-    const balance = getOrIniBalance(user, marketAddress);
-    return prevBalance.times(newIndex.minus(balance.userBorrowIndex)).div(BigInt.fromI32(10).pow(36 as u8));
-}
-export function accrueSupplierMorpho(user: Address, marketAddress: Address, prevBalance: BigInt, newIndex: BigInt): BigInt {
-    const balance = getOrIniBalance(user, marketAddress);
-    return prevBalance.times(newIndex.minus(balance.userSupplyIndex)).div(BigInt.fromI32(10).pow(36 as u8));
+export function accrueMorphoTokens(marketIndex: BigInt, userIndex: BigInt, userBalance: BigInt): BigInt {
+  if (marketIndex.minus(userIndex).lt(BigInt.zero())) {
+    log.error("Inconsistent index computation. User index: {}, market index: {}, substraction: {}", [
+      userIndex.toString(),
+      marketIndex.toString(),
+      marketIndex.minus(userIndex).toString(),
+    ]);
+    return BigInt.zero();
+  }
+  return userBalance.times(marketIndex.minus(userIndex)).div(BigInt.fromI32(10).pow(18 as u8));
 }

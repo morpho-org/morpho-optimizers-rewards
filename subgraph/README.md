@@ -19,3 +19,4 @@ For users which have not made a tx during the epoch, we simply compute the follo
 balance * (finalIndex - initialIndex) 
 ```
 where finalIndex is the index at the last block of the epoch;
+
