@@ -19,7 +19,7 @@ export const computeMerkleTree = (distribution: { address: string; unclaimedRewa
       ),
     };
   });
-  const root = merkleTree.getRoot();
+  const root = merkleTree.getHexRoot();
 
   return {
     root,

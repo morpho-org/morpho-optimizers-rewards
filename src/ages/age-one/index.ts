@@ -79,28 +79,29 @@ const main = async (ageName: string, epoch: keyof typeof configuration.epochs) =
 
   const totalEmitted = usersUnclaimedRewards.reduce((a, b) => a.add(b.unclaimedRewards), BigNumber.from(0));
   console.log("Total tokens emitted:", formatUnits(totalEmitted, 18), "over", epochConfig.totalEmission.toString());
-  return;
   const jsonUnclaimed = JSON.stringify(
     {
-      date: endDate,
+      date: endDate.toString(),
       epoch,
       distribution: usersUnclaimedRewards,
     },
     null,
     2,
   );
+
   if (process.env.SAVE_FILE) {
     // save the age into a file
-    const ageOneFilename = `./ages/${ageName}/${epoch}/distribution.json`;
+    const ageOneFilename = `./ages/${ageName}/${epoch}/usersDistribution.json`;
     const agePath = path.dirname(ageOneFilename);
     await fs.promises.mkdir(agePath, { recursive: true });
-    await fs.promises.writeFile(ageOneFilename, JSON.stringify(jsonUnclaimed, null, 2));
+    await fs.promises.writeFile(ageOneFilename, jsonUnclaimed);
   } else {
     console.log(jsonUnclaimed);
   }
 
   console.log("Compute the current merkle Tree");
-  if (now() < epochConfig.finalTimestamp.toNumber()) console.log("This is not the final Merkle tree");
+  if (now() < epochConfig.finalTimestamp.toNumber())
+    console.log("This is not the final Merkle tree, because the distribution is not finished yet");
   const { root, proofs } = computeMerkleTree(usersUnclaimedRewards);
 
   // save the age proofs into a file
