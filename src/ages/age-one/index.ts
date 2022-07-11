@@ -29,8 +29,8 @@ const main = async (ageName: string, epoch: keyof typeof configuration.epochs) =
     if (!marketEmission) return;
     formattedMarketsEmission[m] = {
       supply: formatUnits(marketEmission.supply),
-      supplyRate: formatUnits(marketEmission.supplyRate),
-      borrowRate: formatUnits(marketEmission.borrowRate),
+      supplyRate: marketEmission.supplyRate.toString(),
+      borrowRate: marketEmission.borrowRate.toString(),
       borrow: formatUnits(marketEmission.borrow),
       p2pIndexCursor: formatUnits(marketEmission.p2pIndexCursor, 4),
     };
@@ -78,7 +78,7 @@ const main = async (ageName: string, epoch: keyof typeof configuration.epochs) =
   }));
 
   const totalEmitted = usersUnclaimedRewards.reduce((a, b) => a.add(b.unclaimedRewards), BigNumber.from(0));
-  console.log("Total tokens emitted:", formatUnits(totalEmitted, 18), "over", epochConfig.totalEmission.toString());
+  console.log("Total tokens emitted:", formatUnits(totalEmitted), "over", epochConfig.totalEmission.toString());
   const jsonUnclaimed = JSON.stringify(
     {
       date: endDate.toString(),

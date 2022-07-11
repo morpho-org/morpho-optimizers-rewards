@@ -27,6 +27,7 @@ export interface MarketEmission {
   borrow: BigNumber;
   borrowRate: BigNumber;
   p2pIndexCursor: BigNumber;
+  marketEmission: BigNumber;
 }
 
 export interface UsersDistribution {

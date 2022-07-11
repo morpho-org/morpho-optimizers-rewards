@@ -16,19 +16,14 @@ export function getOrInitUser(userAddress: Address): User {
   return user;
 }
 
-export function getOrInitBalance(
-  userAddress: Address,
-  marketAddress: Address,
-  currentTimestamp: BigInt,
-  decimals: number
-): Balance {
+export function getOrInitBalance(userAddress: Address, marketAddress: Address, currentTimestamp: BigInt): Balance {
   const id = `${userAddress.toHexString()}-${marketAddress.toHexString()}`;
 
   let balance = Balance.load(id);
   if (!balance) {
-    balance = new Balance(id);
+    const market = getOrInitMarket(marketAddress, currentTimestamp);
 
-    const market = getOrInitMarket(marketAddress, currentTimestamp, decimals);
+    balance = new Balance(id);
     balance.timestamp = currentTimestamp;
     balance.blockNumber = 0;
     balance.market = market.id;
@@ -38,10 +33,6 @@ export function getOrInitBalance(
     balance.underlyingSupplyBalance = BigInt.zero();
     balance.underlyingBorrowBalance = BigInt.zero();
     balance.unclaimedMorpho = BigInt.zero();
-    balance.supplyOnPool = BigInt.zero();
-    balance.supplyP2P = BigInt.zero();
-    balance.borrowOnPool = BigInt.zero();
-    balance.borrowP2P = BigInt.zero();
 
     balance.save();
   }
@@ -49,29 +40,22 @@ export function getOrInitBalance(
   return balance;
 }
 
-export function getOrInitMarket(
-  poolTokenAddress: Address,
-  currentTimestamp: BigInt,
-  decimals: number
-): Market {
+export function getOrInitMarket(poolTokenAddress: Address, currentTimestamp: BigInt): Market {
   let market = Market.load(poolTokenAddress.toHexString());
 
   if (!market) {
     market = new Market(poolTokenAddress.toHexString());
     market.address = poolTokenAddress;
-    market.decimals = decimals as i32;
     market.borrowIndex = initialIndex;
     market.supplyIndex = initialIndex;
     market.supplyUpdateBlockTimestamp = currentTimestamp;
     market.borrowUpdateBlockTimestamp = currentTimestamp;
-    market.totalSupplyOnPool = BigInt.zero();
-    market.totalSupplyP2P = BigInt.zero();
-    market.totalBorrowOnPool = BigInt.zero();
-    market.totalBorrowP2P = BigInt.zero();
     market.lastPoolSupplyIndex = WAD;
     market.lastP2PSupplyIndex = WAD;
     market.lastPoolBorrowIndex = WAD;
     market.lastP2PBorrowIndex = WAD;
+    market.lastTotalSupply = BigInt.zero();
+    market.lastTotalBorrow = BigInt.zero();
 
     market.save();
   }

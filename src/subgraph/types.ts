@@ -10,20 +10,17 @@ export interface GraphUserBalances {
     userBorrowIndex: string;
     unclaimedMorpho: string;
     market: {
-      decimals: number;
       address: string;
       supplyIndex: string;
       borrowIndex: string;
       supplyUpdateBlockTimestamp: string;
       borrowUpdateBlockTimestamp: string;
-      totalSupplyOnPool: string;
-      totalSupplyP2P: string;
-      totalBorrowOnPool: string;
-      totalBorrowP2P: string;
       lastP2PBorrowIndex: string;
       lastPoolBorrowIndex: string;
       lastP2PSupplyIndex: string;
       lastPoolSupplyIndex: string;
+      lastTotalBorrow: string;
+      lastTotalSupply: string;
     };
   }[];
 }
@@ -42,17 +39,14 @@ export interface UserBalance {
 }
 export interface Market {
   address: string;
-  decimals: number;
   supplyIndex: BigNumber;
   borrowIndex: BigNumber;
   supplyUpdateBlockTimestamp: BigNumber;
   borrowUpdateBlockTimestamp: BigNumber;
-  totalSupplyOnPool: BigNumber;
-  totalSupplyP2P: BigNumber;
-  totalBorrowOnPool: BigNumber;
-  totalBorrowP2P: BigNumber;
   lastP2PBorrowIndex: BigNumber;
   lastPoolBorrowIndex: BigNumber;
   lastP2PSupplyIndex: BigNumber;
   lastPoolSupplyIndex: BigNumber;
+  lastTotalBorrow: BigNumber;
+  lastTotalSupply: BigNumber;
 }

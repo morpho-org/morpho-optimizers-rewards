@@ -33,16 +33,12 @@ dataSources:
       eventHandlers:
         - event: Borrowed(indexed address,indexed address,uint256,uint256,uint256)
           handler: handleBorrowed
-        - event: BorrowerPositionUpdated(indexed address,indexed address,uint256,uint256)
-          handler: handleBorrowerPositionUpdated
         - event: P2PIndexesUpdated(indexed address,uint256,uint256,uint256,uint256)
           handler: handleP2PIndexesUpdated
         - event:  Repaid(indexed address,indexed address,indexed address,uint256,uint256,uint256)
           handler: handleRepaid
         - event: Supplied(indexed address,indexed address,indexed address,uint256,uint256,uint256)
           handler: handleSupplied
-        - event: SupplierPositionUpdated(indexed address,indexed address,uint256,uint256)
-          handler: handleSupplierPositionUpdated
         - event: Withdrawn(indexed address,indexed address,indexed address,uint256,uint256,uint256)
           handler: handleWithdrawn
       file: ./src/mapping.ts
