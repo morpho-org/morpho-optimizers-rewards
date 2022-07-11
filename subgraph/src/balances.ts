@@ -6,7 +6,7 @@ import { WAD } from "./constants";
 import { accrueMorphoTokens, updateBorrowIndex, updateSupplyIndex } from "./indexes";
 import { getOrInitBalance, getOrInitMarket } from "./initializer";
 
-export const updateSupplyBalance = (
+export const updateSupplyBalanceAndMarket = (
   marketAddress: Address,
   userAddress: Address,
   blockNumber: BigInt,
@@ -42,7 +42,7 @@ export const updateSupplyBalance = (
   return balance;
 };
 
-export const updateBorrowBalance = (
+export const updateBorrowBalanceAndMarket = (
   marketAddress: Address,
   userAddress: Address,
   blockNumber: BigInt,
