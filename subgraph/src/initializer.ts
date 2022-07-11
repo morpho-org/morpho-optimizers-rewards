@@ -1,27 +1,29 @@
 import { Address, BigInt } from "@graphprotocol/graph-ts";
+
 import { Balance, Market, User } from "../generated/schema";
+
 import { initialIndex, WAD } from "./constants";
 
 export function getOrInitUser(userAddress: Address): User {
   let user = User.load(userAddress.toHexString());
-  if (user === null) {
+
+  if (!user) {
     user = new User(userAddress.toHexString());
     user.address = userAddress;
     user.save();
   }
+
   return user;
 }
-export function getOrIniBalance(
-  userAddress: Address,
-  marketAddress: Address,
-  currentTimestamp: BigInt,
-  decimals: number,
-): Balance {
+
+export function getOrInitBalance(userAddress: Address, marketAddress: Address, currentTimestamp: BigInt): Balance {
   const id = `${userAddress.toHexString()}-${marketAddress.toHexString()}`;
+
   let balance = Balance.load(id);
-  if (balance === null) {
+  if (!balance) {
+    const market = getOrInitMarket(marketAddress, currentTimestamp);
+
     balance = new Balance(id);
-    const market = getOrInitMarket(marketAddress, currentTimestamp, decimals);
     balance.timestamp = currentTimestamp;
     balance.blockNumber = 0;
     balance.market = market.id;
@@ -31,34 +33,32 @@ export function getOrIniBalance(
     balance.underlyingSupplyBalance = BigInt.zero();
     balance.underlyingBorrowBalance = BigInt.zero();
     balance.unclaimedMorpho = BigInt.zero();
-    balance.supplyOnPool = BigInt.zero();
-    balance.supplyP2P = BigInt.zero();
-    balance.borrowOnPool = BigInt.zero();
-    balance.borrowP2P = BigInt.zero();
+
+    balance.save();
   }
+
   return balance;
 }
 
-export function getOrInitMarket(poolTokenAddress: Address, currentTimestamp: BigInt, decimals: number): Market {
+export function getOrInitMarket(poolTokenAddress: Address, currentTimestamp: BigInt): Market {
   let market = Market.load(poolTokenAddress.toHexString());
 
   if (!market) {
     market = new Market(poolTokenAddress.toHexString());
     market.address = poolTokenAddress;
-    market.decimals = decimals as i32;
-    market.borrowIndex = initialIndex(decimals);
-    market.supplyIndex = initialIndex(decimals);
+    market.borrowIndex = initialIndex;
+    market.supplyIndex = initialIndex;
     market.supplyUpdateBlockTimestamp = currentTimestamp;
     market.borrowUpdateBlockTimestamp = currentTimestamp;
-    market.totalSupplyOnPool = BigInt.zero();
-    market.totalSupplyP2P = BigInt.zero();
-    market.totalBorrowOnPool = BigInt.zero();
-    market.totalBorrowP2P = BigInt.zero();
-    market.lastPoolSupplyIndex = WAD();
-    market.lastP2PSupplyIndex = WAD();
-    market.lastPoolBorrowIndex = WAD();
-    market.lastP2PBorrowIndex = WAD();
+    market.lastPoolSupplyIndex = WAD;
+    market.lastP2PSupplyIndex = WAD;
+    market.lastPoolBorrowIndex = WAD;
+    market.lastP2PBorrowIndex = WAD;
+    market.lastTotalSupply = BigInt.zero();
+    market.lastTotalBorrow = BigInt.zero();
+
     market.save();
   }
+
   return market;
 }

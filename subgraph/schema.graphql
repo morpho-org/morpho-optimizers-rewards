@@ -8,19 +8,16 @@ type User @entity {
 type Market @entity {
   id: ID!
   address: Bytes!
-  decimals: Int!
   supplyIndex: BigInt!
   supplyUpdateBlockTimestamp: BigInt!
   borrowIndex: BigInt!
   borrowUpdateBlockTimestamp: BigInt!
-  totalSupplyOnPool: BigInt!
-  totalSupplyP2P: BigInt!
-  totalBorrowOnPool: BigInt!
-  totalBorrowP2P: BigInt!
   lastPoolSupplyIndex: BigInt!
   lastP2PSupplyIndex: BigInt!
   lastPoolBorrowIndex: BigInt!
   lastP2PBorrowIndex: BigInt!
+  lastTotalSupply: BigInt!
+  lastTotalBorrow: BigInt!
 }
 
 type Balance @entity {
@@ -34,10 +31,6 @@ type Balance @entity {
   userSupplyIndex: BigInt!
   userBorrowIndex: BigInt!
   unclaimedMorpho: BigInt!
-  borrowOnPool: BigInt!
-  borrowP2P: BigInt!
-  supplyOnPool: BigInt!
-  supplyP2P: BigInt!
 }
 
 type Transaction @entity {
@@ -51,19 +44,9 @@ type Transaction @entity {
   underlyingBorrowBalance: BigInt!
 }
 
-type PositionUpdate @entity {
-  id: ID!
-  type: TransactionType!
-  market: Market!
-  user: User!
-  balanceOnPool: BigInt!
-  balanceInP2P: BigInt!
-  eventTimestamp: Int!
-}
-
 enum TransactionType {
-  Supply,
-  Borrow,
-  Withdraw,
+  Supply
+  Borrow
+  Withdraw
   Repay
 }

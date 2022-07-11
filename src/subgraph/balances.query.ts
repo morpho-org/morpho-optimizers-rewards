@@ -14,14 +14,12 @@ export default `query GetUsersBalances($lastUser: ID! $size: Int!){
         borrowIndex
         supplyUpdateBlockTimestamp
         borrowUpdateBlockTimestamp
-        totalSupplyOnPool
-        totalSupplyP2P
-        totalBorrowOnPool
-        totalBorrowP2P
         lastP2PBorrowIndex
         lastPoolBorrowIndex
         lastP2PSupplyIndex
         lastPoolSupplyIndex
+        lastTotalBorrow
+        lastTotalSupply
       }
     }
   }
