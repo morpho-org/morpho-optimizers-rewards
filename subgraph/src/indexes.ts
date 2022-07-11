@@ -10,7 +10,8 @@ const computeUpdatedMorphoIndex = (
   emissions: Map<string, BigInt>,
   lastMorphoIndex: BigInt,
   lastUpdateBlockTimestamp: BigInt,
-  lastTotalUnderlying: BigInt
+  lastTotalUnderlying: BigInt,
+  marketSide: string
 ): BigInt => {
   if (blockTimestamp.le(startEpochBlockTimestamp)) return initialIndex;
 
@@ -18,7 +19,7 @@ const computeUpdatedMorphoIndex = (
   if (emissions.has(marketAddress.toHexString())) {
     speed = emissions.get(marketAddress.toHexString());
   }
-  log.debug("Supply speed for market {}: {}", [marketAddress.toHexString(), speed.toHexString()]);
+  log.debug("$MORPHO {} speed for market {}: {}", [marketSide, marketAddress.toHexString(), speed.toHexString()]);
 
   const morphoAccrued = blockTimestamp.minus(lastUpdateBlockTimestamp).times(speed); // WAD
   if (morphoAccrued.le(BigInt.zero())) {
@@ -39,7 +40,8 @@ export function updateSupplyIndex(marketAddress: Address, blockTimestamp: BigInt
     supplyEmissionsEpoch1,
     market.supplyIndex,
     market.supplyUpdateBlockTimestamp,
-    market.lastTotalSupply
+    market.lastTotalSupply,
+    "Supply"
   );
 
   return newMorphoSupplyIndex;
@@ -55,7 +57,8 @@ export function updateBorrowIndex(marketAddress: Address, blockTimestamp: BigInt
     borrowEmissionsEpoch1,
     market.borrowIndex,
     market.borrowUpdateBlockTimestamp,
-    market.lastTotalBorrow
+    market.lastTotalBorrow,
+    "Borrow"
   );
 
   return newMorphoBorrowIndex;
