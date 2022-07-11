@@ -6,7 +6,6 @@ import { WAD } from "../../helpers/constants";
 import marketsEmission from "../../../ages/age1/epoch1/marketsEmission.json";
 import { GraphUserBalances, Market, UserBalance } from "../../subgraph/types";
 import { formatGraphBalances } from "../../subgraph/graphBalances.formater";
-import { parseUnits } from "ethers/lib/utils";
 
 // only for epoch one for now
 export const getUserUnclaimedTokensFromDistribution = async (address: string) => {
@@ -33,27 +32,20 @@ const getUserUnclaimedTokens = (marketIndex: BigNumber, userIndex: BigNumber, us
 const computeSupplyIndex = (market: Market, currentTimestamp: BigNumber) => {
   const deltaTimestamp = currentTimestamp.sub(market.supplyUpdateBlockTimestamp);
   if (deltaTimestamp.lte(0)) return market.supplyIndex;
-  const totalSupply = market.totalSupplyP2P
-    .mul(market.lastP2PSupplyIndex)
-    .add(market.totalSupplyOnPool.mul(market.lastPoolSupplyIndex))
-    .div(WAD);
+
   // @ts-ignore
-  const supplySpeed = parseUnits(marketsEmission.markets[market.address].supplyRate);
+  const supplySpeed = BigNumber.from(marketsEmission.markets[market.address].supplyRate);
   const morphoAccrued = deltaTimestamp.mul(supplySpeed); // in WEI units;
-  const ratio = morphoAccrued.mul(WAD).div(totalSupply); // in 18*2 - decimals units;
+  const ratio = morphoAccrued.mul(WAD).div(market.lastTotalSupply); // in 18*2 - decimals units;
   return market.supplyIndex.add(ratio);
 };
 const computeBorrowIndex = (market: Market, currentTimestamp: BigNumber) => {
   const deltaTimestamp = currentTimestamp.sub(market.borrowUpdateBlockTimestamp);
   if (deltaTimestamp.lte(0)) return market.borrowIndex;
-  const totalBorrow = market.totalBorrowP2P
-    .mul(market.lastP2PBorrowIndex)
-    .add(market.totalBorrowOnPool.mul(market.lastPoolBorrowIndex))
-    .div(WAD); // in underlying
   // @ts-ignore
-  const borrowSpeed = parseUnits(marketsEmission.markets[market.address].borrowRate);
+  const borrowSpeed = BigNumber.from(marketsEmission.markets[market.address].borrowRate);
   const morphoAccrued = deltaTimestamp.mul(borrowSpeed); // in WEI units;
-  const ratio = morphoAccrued.mul(WAD).div(totalBorrow); // in 18*2 - decimals units;
+  const ratio = morphoAccrued.mul(WAD).div(market.lastTotalBorrow); // in 18*2 - decimals units;
   return market.borrowIndex.add(ratio);
 };
 
@@ -65,7 +57,7 @@ export const getUserBalances = async (user: string) =>
     })
     .then((r) => formatGraphBalances(r.data.data.user));
 
-const graphUrl = "";
+const graphUrl = configuration.epochs.epoch1.subgraphUrl;
 const query = `query GetUserBalances($user: ID!){
   user(id: $user) {
     address
@@ -82,14 +74,12 @@ const query = `query GetUserBalances($user: ID!){
         borrowIndex
         supplyUpdateBlockTimestamp
         borrowUpdateBlockTimestamp
-        totalSupplyOnPool
-        totalSupplyP2P
-        totalBorrowOnPool
-        totalBorrowP2P
         lastP2PBorrowIndex
         lastPoolBorrowIndex
         lastP2PSupplyIndex
         lastPoolSupplyIndex
+        lastTotalSupply
+        lastTotalBorrow
       }
     }
   }

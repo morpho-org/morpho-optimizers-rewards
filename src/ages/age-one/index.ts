@@ -29,8 +29,8 @@ const main = async (ageName: string, epoch: keyof typeof configuration.epochs) =
     if (!marketEmission) return;
     formattedMarketsEmission[m] = {
       supply: formatUnits(marketEmission.supply),
-      supplyRate: formatUnits(marketEmission.supplyRate),
-      borrowRate: formatUnits(marketEmission.borrowRate),
+      supplyRate: marketEmission.supplyRate.toString(),
+      borrowRate: marketEmission.borrowRate.toString(),
       borrow: formatUnits(marketEmission.borrow),
       p2pIndexCursor: formatUnits(marketEmission.p2pIndexCursor, 4),
     };
