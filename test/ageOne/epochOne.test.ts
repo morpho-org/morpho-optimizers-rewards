@@ -1,8 +1,9 @@
 import { fetchUsers } from "../../src/subgraph/fetch";
 import { userBalancesToUnclaimedTokens } from "../../src/ages/age-one/getUserUnclaimedTokens";
-import { BigNumber } from "ethers";
+import { BigNumber, BigNumberish } from "ethers";
 import configuration from "../../src/ages/age-one/configuration";
 import { formatUnits } from "ethers/lib/utils";
+import { WAD } from "../../src/helpers/constants";
 
 describe("Test the distribution for the first epoch", () => {
   const epochConfig = configuration.epochs.epoch1;
@@ -16,7 +17,10 @@ describe("Test the distribution for the first epoch", () => {
 
     const totalEmitted = usersUnclaimedRewards.reduce((a, b) => a.add(b.unclaimedRewards), BigNumber.from(0));
     console.log("Total tokens emitted:", formatUnits(totalEmitted, 18), "over", epochConfig.totalEmission.toString());
-
-    expect(totalEmitted.sub(epochConfig.totalEmission).eq(0)).toEqual(true);
+    expectBNApproxEquals(totalEmitted, epochConfig.totalEmission.mul(WAD), 1e8); // 8 over 18 decimals
   });
 });
+export const expectBNApproxEquals = (bn1: BigNumber, bn2: BigNumber, precision: BigNumberish) => {
+  const diff = bn1.gt(bn2) ? bn1.sub(bn2) : bn2.sub(bn1);
+  expect(diff.lte(precision)).toEqual(true);
+};
