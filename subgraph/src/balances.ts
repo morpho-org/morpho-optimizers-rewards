@@ -9,7 +9,7 @@ import { getOrInitBalance, getOrInitMarket } from "./initializer";
 export const updateSupplyBalance = (
   marketAddress: Address,
   userAddress: Address,
-  blockNumber: number,
+  blockNumber: BigInt,
   blockTimestamp: BigInt,
   newBalanceP2P: BigInt,
   newBalanceOnPool: BigInt
@@ -27,7 +27,7 @@ export const updateSupplyBalance = (
   const unclaimedRewards = accrueMorphoTokens(newSupplyIndex, balance.userSupplyIndex, previousBalance);
 
   balance.timestamp = blockTimestamp;
-  balance.blockNumber = blockNumber;
+  balance.blockNumber = blockNumber.toI32();
   balance.underlyingSupplyBalance = newUnderlyingSupplyBalance;
   balance.userSupplyIndex = newSupplyIndex;
   balance.unclaimedMorpho = balance.unclaimedMorpho.plus(unclaimedRewards);
@@ -45,7 +45,7 @@ export const updateSupplyBalance = (
 export const updateBorrowBalance = (
   marketAddress: Address,
   userAddress: Address,
-  blockNumber: number,
+  blockNumber: BigInt,
   blockTimestamp: BigInt,
   newBalanceP2P: BigInt,
   newBalanceOnPool: BigInt
@@ -63,7 +63,7 @@ export const updateBorrowBalance = (
   const unclaimedRewards = accrueMorphoTokens(newBorrowIndex, balance.userBorrowIndex, previousBalance);
 
   balance.timestamp = blockTimestamp;
-  balance.blockNumber = blockNumber;
+  balance.blockNumber = blockNumber.toI32();
   balance.underlyingBorrowBalance = newUnderlyingBorrowBalance;
   balance.userBorrowIndex = newBorrowIndex;
   balance.unclaimedMorpho = balance.unclaimedMorpho.plus(unclaimedRewards);

@@ -24,7 +24,7 @@ export function handleBorrowed(event: Borrowed): void {
   const balance = updateBorrowBalance(
     marketAddress,
     userAddress,
-    event.block.number.toI32(),
+    event.block.number,
     event.block.timestamp,
     event.params._balanceInP2P,
     event.params._balanceOnPool
@@ -50,7 +50,7 @@ export function handleRepaid(event: Repaid): void {
   const balance = updateBorrowBalance(
     marketAddress,
     userAddress,
-    event.block.number.toI32(),
+    event.block.number,
     event.block.timestamp,
     event.params._balanceInP2P,
     event.params._balanceOnPool
@@ -76,7 +76,7 @@ export function handleSupplied(event: Supplied): void {
   const balance = updateSupplyBalance(
     marketAddress,
     userAddress,
-    event.block.number.toI32(),
+    event.block.number,
     event.block.timestamp,
     event.params._balanceInP2P,
     event.params._balanceOnPool
@@ -102,7 +102,7 @@ export function handleWithdrawn(event: Withdrawn): void {
   const balance = updateSupplyBalance(
     marketAddress,
     userAddress,
-    event.block.number.toI32(),
+    event.block.number,
     event.block.timestamp,
     event.params._balanceInP2P,
     event.params._balanceOnPool
