@@ -6,6 +6,7 @@ import { WAD } from "../../helpers/constants";
 import marketsEmission from "../../../ages/age1/epoch1/marketsEmission.json";
 import { GraphUserBalances, Market, UserBalance } from "../../subgraph/types";
 import { formatGraphBalances } from "../../subgraph/graphBalances.formater";
+import { maxBN } from "../../helpers/maths";
 
 // only for epoch one for now
 export const getUserUnclaimedTokensFromDistribution = async (address: string) => {
@@ -17,9 +18,9 @@ export const userBalancesToUnclaimedTokens = (balances: UserBalance[], endDate: 
   balances
     .map((b) => {
       let unclaimed = b.unclaimedMorpho;
-      const supplyIndex = computeSupplyIndex(b.market, endDate);
+      const supplyIndex = computeSupplyIndex(b.market, endDate, configuration.epochs.epoch1.initialTimestamp);
       unclaimed = unclaimed.add(getUserUnclaimedTokens(supplyIndex, b.userSupplyIndex, b.underlyingSupplyBalance));
-      const borrowIndex = computeBorrowIndex(b.market, endDate);
+      const borrowIndex = computeBorrowIndex(b.market, endDate, configuration.epochs.epoch1.initialTimestamp);
       unclaimed = unclaimed.add(getUserUnclaimedTokens(borrowIndex, b.userBorrowIndex, b.underlyingBorrowBalance));
       return unclaimed;
     })
@@ -29,8 +30,9 @@ const getUserUnclaimedTokens = (marketIndex: BigNumber, userIndex: BigNumber, us
   if (userIndex.gt(marketIndex)) return BigNumber.from(0);
   return marketIndex.sub(userIndex).mul(userBalance).div(WAD); // with 18 decimals
 };
-const computeSupplyIndex = (market: Market, currentTimestamp: BigNumber) => {
-  const deltaTimestamp = currentTimestamp.sub(market.supplyUpdateBlockTimestamp);
+const computeSupplyIndex = (market: Market, currentTimestamp: BigNumber, startEpochTimestamp: BigNumber) => {
+  const startTimestamp = maxBN(startEpochTimestamp, market.supplyUpdateBlockTimestamp);
+  const deltaTimestamp = currentTimestamp.sub(startTimestamp);
   if (deltaTimestamp.lte(0)) return market.supplyIndex;
 
   // @ts-ignore
@@ -39,8 +41,9 @@ const computeSupplyIndex = (market: Market, currentTimestamp: BigNumber) => {
   const ratio = morphoAccrued.mul(WAD).div(market.lastTotalSupply); // in 18*2 - decimals units;
   return market.supplyIndex.add(ratio);
 };
-const computeBorrowIndex = (market: Market, currentTimestamp: BigNumber) => {
-  const deltaTimestamp = currentTimestamp.sub(market.borrowUpdateBlockTimestamp);
+const computeBorrowIndex = (market: Market, currentTimestamp: BigNumber, startEpochTimestamp: BigNumber) => {
+  const startTimestamp = maxBN(startEpochTimestamp, market.borrowUpdateBlockTimestamp);
+  const deltaTimestamp = currentTimestamp.sub(startTimestamp);
   if (deltaTimestamp.lte(0)) return market.borrowIndex;
   // @ts-ignore
   const borrowSpeed = BigNumber.from(marketsEmission.markets[market.address].borrowRate);

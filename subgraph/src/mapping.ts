@@ -141,7 +141,7 @@ export function handleWithdrawn(event: Withdrawn): void {
   if (event.block.timestamp.gt(endEpochBlockTimestamp)) return;
   const marketAddress = event.params._poolTokenAddress;
   const userAddress = event.params._supplier;
-  const newSupplyIndex = updateSupplyIndex(marketAddress, event.block.timestamp); // we use the previous underlying balance
+  const newSupplyIndex = updateSupplyIndex(marketAddress, event.block.timestamp);
   const market = getOrInitMarket(marketAddress, event.block.timestamp);
   const underlyingSupplyBalance = event.params._balanceInP2P
     .times(market.lastP2PSupplyIndex)
@@ -155,7 +155,7 @@ export function handleWithdrawn(event: Withdrawn): void {
   balance.underlyingSupplyBalance = underlyingSupplyBalance;
   balance.blockNumber = event.block.number.toI32();
   balance.timestamp = event.block.timestamp;
-  const unclaimedRewards = accrueMorphoTokens(newSupplyIndex, balance.userSupplyIndex, prevBalance);
+  const unclaimedRewards = accrueMorphoTokens(newSupplyIndex, balance.userSupplyIndex, prevBalance); // we use the previous underlying balance
   balance.unclaimedMorpho = balance.unclaimedMorpho.plus(unclaimedRewards);
   balance.userSupplyIndex = newSupplyIndex;
   balance.save();
