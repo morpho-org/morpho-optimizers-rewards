@@ -1,19 +1,30 @@
+import { Address } from "@graphprotocol/graph-ts";
+
+import { CToken } from "../generated/Morpho/CToken";
+import { ERC20 } from "../generated/Morpho/ERC20";
 import {
   Borrowed,
-  BorrowerPositionUpdated, P2PIndexesUpdated,
+  BorrowerPositionUpdated,
+  P2PIndexesUpdated,
   Repaid,
   Supplied,
   SupplierPositionUpdated,
   Withdrawn,
 } from "../generated/Morpho/Morpho";
-import { getOrIniBalance, getOrInitMarket } from "./initializer";
 import { PositionUpdate, Transaction } from "../generated/schema";
-import { getUnderlyingBorrowBalance, getUnderlyingSupplyBalance } from "./balances";
-import { accrueMorphoTokens, updateBorrowIndex, updateSupplyIndex } from "./indexes";
+
+import {
+  getUnderlyingBorrowBalance,
+  getUnderlyingSupplyBalance,
+} from "./balances";
 import { endEpochBlockTimestamp } from "./config";
-import { ERC20 } from "../generated/Morpho/ERC20";
-import { Address } from "@graphprotocol/graph-ts";
-import { CToken } from "../generated/Morpho/CToken";
+import {
+  accrueMorphoTokens,
+  updateBorrowIndex,
+  updateSupplyIndex,
+} from "./indexes";
+import { getOrInitBalance, getOrInitMarket } from "./initializer";
+
 const getDecimals = (poolToken: Address): number => {
   const cToken = CToken.bind(poolToken);
   const underlying = cToken.try_underlying();
@@ -22,8 +33,13 @@ const getDecimals = (poolToken: Address): number => {
   const erc20 = ERC20.bind(underlying.value);
   return erc20.decimals();
 };
+
 export function handleP2PIndexesUpdated(event: P2PIndexesUpdated): void {
-  const market = getOrInitMarket(event.params._poolTokenAddress, event.block.timestamp, 0);
+  const market = getOrInitMarket(
+    event.params._poolTokenAddress,
+    event.block.timestamp,
+    0
+  );
   market.lastP2PBorrowIndex = event.params._p2pBorrowIndex;
   market.lastP2PSupplyIndex = event.params._p2pSupplyIndex;
   market.lastPoolBorrowIndex = event.params._poolBorrowIndex;
@@ -36,14 +52,23 @@ export function handleBorrowed(event: Borrowed): void {
   const decimals = getDecimals(event.params._poolTokenAddress);
   const marketAddress = event.params._poolTokenAddress;
   const userAddress = event.params._borrower;
-  const newBorrowIndex = updateBorrowIndex(marketAddress, event.block.timestamp, decimals);
+  const newBorrowIndex = updateBorrowIndex(
+    marketAddress,
+    event.block.timestamp,
+    decimals
+  );
   const underlyingBorrowBalance = getUnderlyingBorrowBalance(
     event.address,
     marketAddress,
     event.params._balanceOnPool,
-    event.params._balanceInP2P,
+    event.params._balanceInP2P
   );
-  const balance = getOrIniBalance(userAddress, marketAddress, event.block.timestamp, decimals);
+  const balance = getOrInitBalance(
+    userAddress,
+    marketAddress,
+    event.block.timestamp,
+    decimals
+  );
   const prevBalance = balance.underlyingBorrowBalance;
   const prevScaledBalanceOnPool = balance.borrowOnPool;
   const prevScaledBalanceP2P = balance.borrowP2P;
@@ -53,7 +78,11 @@ export function handleBorrowed(event: Borrowed): void {
   balance.underlyingBorrowBalance = underlyingBorrowBalance;
   balance.blockNumber = event.block.number.toI32();
   balance.timestamp = event.block.timestamp;
-  const unclaimedRewards = accrueMorphoTokens(newBorrowIndex, balance.userBorrowIndex, prevBalance);
+  const unclaimedRewards = accrueMorphoTokens(
+    newBorrowIndex,
+    balance.userBorrowIndex,
+    prevBalance
+  );
   balance.borrowP2P = event.params._balanceInP2P;
   balance.borrowOnPool = event.params._balanceOnPool;
   balance.unclaimedMorpho = balance.unclaimedMorpho.plus(unclaimedRewards);
@@ -70,9 +99,17 @@ export function handleBorrowed(event: Borrowed): void {
   tx.underlyingSupplyBalance = balance.underlyingSupplyBalance;
   tx.save();
 
-  const market = getOrInitMarket(marketAddress, event.block.timestamp, decimals);
-  market.totalBorrowP2P = market.totalBorrowP2P.plus(event.params._balanceInP2P).minus(prevScaledBalanceP2P);
-  market.totalBorrowOnPool = market.totalBorrowOnPool.plus(event.params._balanceOnPool).minus(prevScaledBalanceOnPool);
+  const market = getOrInitMarket(
+    marketAddress,
+    event.block.timestamp,
+    decimals
+  );
+  market.totalBorrowP2P = market.totalBorrowP2P
+    .plus(event.params._balanceInP2P)
+    .minus(prevScaledBalanceP2P);
+  market.totalBorrowOnPool = market.totalBorrowOnPool
+    .plus(event.params._balanceOnPool)
+    .minus(prevScaledBalanceOnPool);
   market.save();
 }
 
@@ -81,14 +118,23 @@ export function handleRepaid(event: Repaid): void {
   const decimals = getDecimals(event.params._poolTokenAddress);
   const marketAddress = event.params._poolTokenAddress;
   const userAddress = event.params._onBehalf;
-  const newBorrowIndex = updateBorrowIndex(marketAddress, event.block.timestamp, decimals);
+  const newBorrowIndex = updateBorrowIndex(
+    marketAddress,
+    event.block.timestamp,
+    decimals
+  );
   const underlyingBorrowBalance = getUnderlyingBorrowBalance(
     event.address,
     marketAddress,
     event.params._balanceOnPool,
-    event.params._balanceInP2P,
+    event.params._balanceInP2P
   );
-  const balance = getOrIniBalance(userAddress, marketAddress, event.block.timestamp, decimals);
+  const balance = getOrInitBalance(
+    userAddress,
+    marketAddress,
+    event.block.timestamp,
+    decimals
+  );
   const prevBalance = balance.underlyingBorrowBalance;
   const prevScaledBalanceOnPool = balance.borrowOnPool;
   const prevScaledBalanceP2P = balance.borrowP2P;
@@ -99,7 +145,11 @@ export function handleRepaid(event: Repaid): void {
   balance.blockNumber = event.block.number.toI32();
   balance.timestamp = event.block.timestamp;
 
-  const unclaimedRewards = accrueMorphoTokens(newBorrowIndex, balance.userBorrowIndex, prevBalance);
+  const unclaimedRewards = accrueMorphoTokens(
+    newBorrowIndex,
+    balance.userBorrowIndex,
+    prevBalance
+  );
   balance.borrowP2P = event.params._balanceInP2P;
   balance.borrowOnPool = event.params._balanceOnPool;
   balance.unclaimedMorpho = balance.unclaimedMorpho.plus(unclaimedRewards);
@@ -118,9 +168,17 @@ export function handleRepaid(event: Repaid): void {
   tx.save();
 
   // Update the balance to track total morpho balance in real time
-  const market = getOrInitMarket(marketAddress, event.block.timestamp, decimals);
-  market.totalBorrowP2P = market.totalBorrowP2P.plus(event.params._balanceInP2P).minus(prevScaledBalanceP2P);
-  market.totalBorrowOnPool = market.totalBorrowOnPool.plus(event.params._balanceOnPool).minus(prevScaledBalanceOnPool);
+  const market = getOrInitMarket(
+    marketAddress,
+    event.block.timestamp,
+    decimals
+  );
+  market.totalBorrowP2P = market.totalBorrowP2P
+    .plus(event.params._balanceInP2P)
+    .minus(prevScaledBalanceP2P);
+  market.totalBorrowOnPool = market.totalBorrowOnPool
+    .plus(event.params._balanceOnPool)
+    .minus(prevScaledBalanceOnPool);
   market.save();
 }
 
@@ -129,14 +187,23 @@ export function handleSupplied(event: Supplied): void {
   const decimals = getDecimals(event.params._poolTokenAddress);
   const marketAddress = event.params._poolTokenAddress;
   const userAddress = event.params._onBehalf;
-  const newSupplyIndex = updateSupplyIndex(marketAddress, event.block.timestamp, decimals);
+  const newSupplyIndex = updateSupplyIndex(
+    marketAddress,
+    event.block.timestamp,
+    decimals
+  );
   const underlyingSupplyBalance = getUnderlyingSupplyBalance(
     event.address,
     marketAddress,
     event.params._balanceOnPool,
-    event.params._balanceInP2P,
+    event.params._balanceInP2P
   );
-  const balance = getOrIniBalance(userAddress, marketAddress, event.block.timestamp, decimals);
+  const balance = getOrInitBalance(
+    userAddress,
+    marketAddress,
+    event.block.timestamp,
+    decimals
+  );
   const prevBalance = balance.underlyingSupplyBalance;
   const prevScaledBalanceOnPool = balance.supplyOnPool;
   const prevScaledBalanceP2P = balance.supplyP2P;
@@ -146,7 +213,11 @@ export function handleSupplied(event: Supplied): void {
   balance.underlyingSupplyBalance = underlyingSupplyBalance;
   balance.blockNumber = event.block.number.toI32();
   balance.timestamp = event.block.timestamp;
-  const unclaimedRewards = accrueMorphoTokens(newSupplyIndex, balance.userSupplyIndex, prevBalance);
+  const unclaimedRewards = accrueMorphoTokens(
+    newSupplyIndex,
+    balance.userSupplyIndex,
+    prevBalance
+  );
   balance.unclaimedMorpho = balance.unclaimedMorpho.plus(unclaimedRewards);
   balance.userSupplyIndex = newSupplyIndex;
   balance.supplyP2P = event.params._balanceInP2P;
@@ -164,9 +235,17 @@ export function handleSupplied(event: Supplied): void {
   tx.save();
 
   // Update the balance to track total morpho balance in real time
-  const market = getOrInitMarket(marketAddress, event.block.timestamp, decimals);
-  market.totalSupplyP2P = market.totalSupplyP2P.plus(event.params._balanceInP2P).minus(prevScaledBalanceP2P);
-  market.totalSupplyOnPool = market.totalSupplyOnPool.plus(event.params._balanceOnPool).minus(prevScaledBalanceOnPool);
+  const market = getOrInitMarket(
+    marketAddress,
+    event.block.timestamp,
+    decimals
+  );
+  market.totalSupplyP2P = market.totalSupplyP2P
+    .plus(event.params._balanceInP2P)
+    .minus(prevScaledBalanceP2P);
+  market.totalSupplyOnPool = market.totalSupplyOnPool
+    .plus(event.params._balanceOnPool)
+    .minus(prevScaledBalanceOnPool);
   market.save();
 }
 
@@ -175,14 +254,23 @@ export function handleWithdrawn(event: Withdrawn): void {
   const decimals = getDecimals(event.params._poolTokenAddress);
   const marketAddress = event.params._poolTokenAddress;
   const userAddress = event.params._supplier;
-  const newSupplyIndex = updateSupplyIndex(marketAddress, event.block.timestamp, decimals); // we use the previous underlying balance
+  const newSupplyIndex = updateSupplyIndex(
+    marketAddress,
+    event.block.timestamp,
+    decimals
+  ); // we use the previous underlying balance
   const underlyingSupplyBalance = getUnderlyingSupplyBalance(
     event.address,
     marketAddress,
     event.params._balanceOnPool,
-    event.params._balanceInP2P,
+    event.params._balanceInP2P
   );
-  const balance = getOrIniBalance(userAddress, marketAddress, event.block.timestamp, decimals);
+  const balance = getOrInitBalance(
+    userAddress,
+    marketAddress,
+    event.block.timestamp,
+    decimals
+  );
   const prevBalance = balance.underlyingSupplyBalance;
   const prevScaledBalanceOnPool = balance.supplyOnPool;
   const prevScaledBalanceP2P = balance.supplyP2P;
@@ -194,7 +282,11 @@ export function handleWithdrawn(event: Withdrawn): void {
   balance.timestamp = event.block.timestamp;
   balance.supplyP2P = event.params._balanceInP2P;
   balance.supplyOnPool = event.params._balanceOnPool;
-  const unclaimedRewards = accrueMorphoTokens(newSupplyIndex, balance.userSupplyIndex, prevBalance);
+  const unclaimedRewards = accrueMorphoTokens(
+    newSupplyIndex,
+    balance.userSupplyIndex,
+    prevBalance
+  );
   balance.unclaimedMorpho = balance.unclaimedMorpho.plus(unclaimedRewards);
   balance.userSupplyIndex = newSupplyIndex;
   balance.save();
@@ -210,19 +302,38 @@ export function handleWithdrawn(event: Withdrawn): void {
   tx.save();
 
   // Update the balance to track total morpho balance in real time
-  const market = getOrInitMarket(marketAddress, event.block.timestamp, decimals);
-  market.totalSupplyP2P = market.totalSupplyP2P.plus(event.params._balanceInP2P).minus(prevScaledBalanceP2P);
-  market.totalSupplyOnPool = market.totalSupplyOnPool.plus(event.params._balanceOnPool).minus(prevScaledBalanceOnPool);
+  const market = getOrInitMarket(
+    marketAddress,
+    event.block.timestamp,
+    decimals
+  );
+  market.totalSupplyP2P = market.totalSupplyP2P
+    .plus(event.params._balanceInP2P)
+    .minus(prevScaledBalanceP2P);
+  market.totalSupplyOnPool = market.totalSupplyOnPool
+    .plus(event.params._balanceOnPool)
+    .minus(prevScaledBalanceOnPool);
   market.save();
 }
 
-export function handleBorrowerPositionUpdated(event: BorrowerPositionUpdated): void {
+export function handleBorrowerPositionUpdated(
+  event: BorrowerPositionUpdated
+): void {
   if (event.block.timestamp.gt(endEpochBlockTimestamp)) return;
   const decimals = getDecimals(event.params._poolTokenAddress);
-  updateBorrowIndex(event.params._poolTokenAddress, event.block.timestamp, decimals);
+  updateBorrowIndex(
+    event.params._poolTokenAddress,
+    event.block.timestamp,
+    decimals
+  );
 
   const marketAddress = event.params._poolTokenAddress;
-  const balance = getOrIniBalance(event.params._user, marketAddress, event.block.timestamp, decimals);
+  const balance = getOrInitBalance(
+    event.params._user,
+    marketAddress,
+    event.block.timestamp,
+    decimals
+  );
   const previousP2PBalance = balance.borrowP2P;
   const previousBalanceOnPool = balance.borrowOnPool;
 
@@ -232,14 +343,22 @@ export function handleBorrowerPositionUpdated(event: BorrowerPositionUpdated): v
   balance.save();
 
   // Update the balance to track total morpho balance in real time
-  const market = getOrInitMarket(marketAddress, event.block.timestamp, decimals);
-  market.totalBorrowOnPool = market.totalBorrowOnPool.plus(event.params._balanceOnPool).minus(previousBalanceOnPool);
-  market.totalBorrowP2P = market.totalBorrowP2P.plus(event.params._balanceInP2P).minus(previousP2PBalance);
+  const market = getOrInitMarket(
+    marketAddress,
+    event.block.timestamp,
+    decimals
+  );
+  market.totalBorrowOnPool = market.totalBorrowOnPool
+    .plus(event.params._balanceOnPool)
+    .minus(previousBalanceOnPool);
+  market.totalBorrowP2P = market.totalBorrowP2P
+    .plus(event.params._balanceInP2P)
+    .minus(previousP2PBalance);
   market.save();
   const positionUpdate = new PositionUpdate(
     `${event.transaction.hash.toHex()}-${event.params._user.toHex()}-${event.params._poolTokenAddress.toHex()}-${event.logIndex
       .toI32()
-      .toString()}-Borrow`,
+      .toString()}-Borrow`
   );
   positionUpdate.market = marketAddress.toHex();
   positionUpdate.type = "Borrow";
@@ -250,12 +369,23 @@ export function handleBorrowerPositionUpdated(event: BorrowerPositionUpdated): v
   positionUpdate.save();
 }
 
-export function handleSupplierPositionUpdated(event: SupplierPositionUpdated): void {
+export function handleSupplierPositionUpdated(
+  event: SupplierPositionUpdated
+): void {
   if (event.block.timestamp.gt(endEpochBlockTimestamp)) return;
   const decimals = getDecimals(event.params._poolTokenAddress);
-  updateSupplyIndex(event.params._poolTokenAddress, event.block.timestamp, decimals);
+  updateSupplyIndex(
+    event.params._poolTokenAddress,
+    event.block.timestamp,
+    decimals
+  );
   const marketAddress = event.params._poolTokenAddress;
-  const balance = getOrIniBalance(event.params._user, marketAddress, event.block.timestamp, decimals);
+  const balance = getOrInitBalance(
+    event.params._user,
+    marketAddress,
+    event.block.timestamp,
+    decimals
+  );
   const previousP2PBalance = balance.supplyP2P;
   const previousBalanceOnPool = balance.supplyOnPool;
 
@@ -264,14 +394,22 @@ export function handleSupplierPositionUpdated(event: SupplierPositionUpdated): v
 
   balance.save();
 
-  const market = getOrInitMarket(marketAddress, event.block.timestamp, decimals);
-  market.totalSupplyOnPool = market.totalSupplyOnPool.plus(event.params._balanceOnPool).minus(previousBalanceOnPool);
-  market.totalSupplyP2P = market.totalSupplyP2P.plus(event.params._balanceInP2P).minus(previousP2PBalance);
+  const market = getOrInitMarket(
+    marketAddress,
+    event.block.timestamp,
+    decimals
+  );
+  market.totalSupplyOnPool = market.totalSupplyOnPool
+    .plus(event.params._balanceOnPool)
+    .minus(previousBalanceOnPool);
+  market.totalSupplyP2P = market.totalSupplyP2P
+    .plus(event.params._balanceInP2P)
+    .minus(previousP2PBalance);
   market.save();
   const positionUpdate = new PositionUpdate(
     `${event.transaction.hash.toHex()}-${event.params._user.toHex()}-${event.params._poolTokenAddress.toHex()}-${event.logIndex
       .toI32()
-      .toString()}-Supply`,
+      .toString()}-Supply`
   );
   positionUpdate.market = marketAddress.toHex();
   positionUpdate.type = "Supply";
