@@ -1,4 +1,4 @@
-name: Subgraph tests
+name: Integration tests
 
 on:
   push:
@@ -6,16 +6,17 @@ on:
       - main
   pull_request:
     paths:
-      - "subgraph/**"
-      - ".github/workflows/ci-subgraph.yml"
-
-defaults:
-  run:
-    working-directory: ./subgraph
+      - "src/**"
+      - "test/**"
+      - "jest.config.js"
+      - "yarn.lock"
+      - "tsconfig.json"
+      - "package.json"
+      - ".github/workflows/ci-jest.yml"
 
 jobs:
-  compilation:
-    name: Codegen & Compile
+  build:
+    name: Lint, Build & Run
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -27,14 +28,17 @@ jobs:
       - name: Node dependencies cache
         uses: actions/cache@v3
         with:
-          path: "subgraph/node_modules"
-          key: yarn-${{ hashFiles('subgraph/yarn.lock') }}
+          path: "node_modules"
+          key: yarn-${{ hashFiles('yarn.lock') }}
 
       - name: Install dependencies
         run: yarn install --frozen-lockfile
 
-      - name: Run codegen
-        run: yarn codegen
+      - name: Lint
+        run: yarn lint
 
-      - name: Compile subgraph
+      - name: Build
         run: yarn build
+
+      - name: Test
+        run: yarn test
