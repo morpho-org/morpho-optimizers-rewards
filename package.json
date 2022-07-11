@@ -7,10 +7,9 @@
   "author": "Julien <julien@morpho.xyz>",
   "license": "MIT",
   "scripts": {
-    "build": "yarn build-ts && yarn tslint",
+    "build": "tsc",
     "test": "jest --forceExit --coverage --verbose",
-    "watch-test": "yarn test -- --watchAll",
-    "build-ts": "tsc",
+    "watch-test": "yarn test --watchAll",
     "watch-ts": "tsc -w",
     "lint": "eslint . --ext .ts",
     "start": "ts-node ./src/${SCRIPT:-index}",

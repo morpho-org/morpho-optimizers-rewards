@@ -17,17 +17,19 @@ const computeUpdatedMorphoIndex = (
   if (blockTimestamp.le(startEpochBlockTimestamp)) return initialIndex;
 
   let speed = BigInt.zero();
-  if (emissions.has(marketAddress.toHexString())) {
-    speed = emissions.get(marketAddress.toHexString());
-  } else {
-    log.critical("No speed emission found for market {}", [marketAddress.toHexString()]);
+  if (emissions.has(marketAddress.toHexString())) speed = emissions.get(marketAddress.toHexString());
+  else {
+    log.critical("No emission speed found for market {}", [marketAddress.toHexString()]);
+
+    return lastMorphoIndex;
   }
+
   log.debug("$MORPHO {} speed for market {}: {}", [marketSide, marketAddress.toHexString(), speed.toHexString()]);
+
   const startTimestamp = maxBN(startEpochBlockTimestamp, lastUpdateBlockTimestamp);
   const morphoAccrued = blockTimestamp.minus(startTimestamp).times(speed); // WAD
-  if (morphoAccrued.lt(BigInt.zero())) {
-    log.critical("negative token emission {}", [morphoAccrued.toString()]);
-  }
+  if (morphoAccrued.lt(BigInt.zero())) log.critical("negative token emission {}", [morphoAccrued.toString()]);
+
   const accrualIndex = morphoAccrued.times(WAD).div(lastTotalUnderlying); // 18 * 2 - decimals
   return lastMorphoIndex.plus(accrualIndex);
 };
