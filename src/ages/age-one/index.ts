@@ -78,7 +78,7 @@ const main = async (ageName: string, epoch: keyof typeof configuration.epochs) =
   }));
 
   const totalEmitted = usersUnclaimedRewards.reduce((a, b) => a.add(b.unclaimedRewards), BigNumber.from(0));
-  console.log("Total tokens emitted:", formatUnits(totalEmitted, 18), "over", epochConfig.totalEmission.toString());
+  console.log("Total tokens emitted:", formatUnits(totalEmitted), "over", epochConfig.totalEmission.toString());
   const jsonUnclaimed = JSON.stringify(
     {
       date: endDate.toString(),

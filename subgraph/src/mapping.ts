@@ -49,6 +49,8 @@ export function handleBorrowed(event: Borrowed): void {
 
   // APR
   market.lastTotalBorrow = market.lastTotalBorrow.minus(prevBalance).plus(underlyingBorrowBalance);
+  market.borrowIndex = newBorrowIndex;
+  market.borrowUpdateBlockTimestamp = event.block.timestamp;
   market.save();
 }
 
@@ -89,6 +91,8 @@ export function handleRepaid(event: Repaid): void {
 
   // APR
   market.lastTotalBorrow = market.lastTotalBorrow.minus(prevBalance).plus(underlyingBorrowBalance);
+  market.borrowIndex = newBorrowIndex;
+  market.borrowUpdateBlockTimestamp = event.block.timestamp;
   market.save();
 }
 
@@ -127,6 +131,8 @@ export function handleSupplied(event: Supplied): void {
 
   // APR
   market.lastTotalSupply = market.lastTotalSupply.minus(prevBalance).plus(underlyingSupplyBalance);
+  market.supplyIndex = newSupplyIndex;
+  market.supplyUpdateBlockTimestamp = event.block.timestamp;
   market.save();
 }
 
@@ -165,5 +171,7 @@ export function handleWithdrawn(event: Withdrawn): void {
 
   // APR
   market.lastTotalSupply = market.lastTotalSupply.minus(prevBalance).plus(underlyingSupplyBalance);
+  market.supplyIndex = newSupplyIndex;
+  market.supplyUpdateBlockTimestamp = event.block.timestamp;
   market.save();
 }

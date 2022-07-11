@@ -27,7 +27,7 @@ export const userBalancesToUnclaimedTokens = (balances: UserBalance[], endDate: 
 
 const getUserUnclaimedTokens = (marketIndex: BigNumber, userIndex: BigNumber, userBalance: BigNumber) => {
   if (userIndex.gt(marketIndex)) return BigNumber.from(0);
-  return marketIndex.sub(userIndex).mul(userBalance).div(WAD); // in 18 * 2 decimals
+  return marketIndex.sub(userIndex).mul(userBalance).div(WAD); // with 18 decimals
 };
 const computeSupplyIndex = (market: Market, currentTimestamp: BigNumber) => {
   const deltaTimestamp = currentTimestamp.sub(market.supplyUpdateBlockTimestamp);
