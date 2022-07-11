@@ -1,7 +1,7 @@
 import { Borrowed, P2PIndexesUpdated, Repaid, Supplied, Withdrawn } from "../generated/Morpho/Morpho";
 import { Transaction } from "../generated/schema";
 
-import { updateBorrowBalance, updateSupplyBalance } from "./balances";
+import { updateBorrowBalanceAndMarket, updateSupplyBalanceAndMarket } from "./balances";
 import { endEpochBlockTimestamp } from "./config";
 import { getOrInitMarket } from "./initializer";
 
@@ -21,7 +21,7 @@ export function handleBorrowed(event: Borrowed): void {
   const marketAddress = event.params._poolTokenAddress;
   const userAddress = event.params._borrower;
 
-  const balance = updateBorrowBalance(
+  const balance = updateBorrowBalanceAndMarket(
     marketAddress,
     userAddress,
     event.block.number,
@@ -47,7 +47,7 @@ export function handleRepaid(event: Repaid): void {
   const marketAddress = event.params._poolTokenAddress;
   const userAddress = event.params._onBehalf;
 
-  const balance = updateBorrowBalance(
+  const balance = updateBorrowBalanceAndMarket(
     marketAddress,
     userAddress,
     event.block.number,
@@ -73,7 +73,7 @@ export function handleSupplied(event: Supplied): void {
   const marketAddress = event.params._poolTokenAddress;
   const userAddress = event.params._onBehalf;
 
-  const balance = updateSupplyBalance(
+  const balance = updateSupplyBalanceAndMarket(
     marketAddress,
     userAddress,
     event.block.number,
@@ -99,7 +99,7 @@ export function handleWithdrawn(event: Withdrawn): void {
   const marketAddress = event.params._poolTokenAddress;
   const userAddress = event.params._supplier;
 
-  const balance = updateSupplyBalance(
+  const balance = updateSupplyBalanceAndMarket(
     marketAddress,
     userAddress,
     event.block.number,
