@@ -45,8 +45,8 @@ type Transaction @entity {
 }
 
 enum TransactionType {
-  Supply,
-  Borrow,
-  Withdraw,
+  Supply
+  Borrow
+  Withdraw
   Repay
 }

@@ -1,9 +1,10 @@
 import { Borrowed, P2PIndexesUpdated, Repaid, Supplied, Withdrawn } from "../generated/Morpho/Morpho";
-import { getOrIniBalance, getOrInitMarket } from "./initializer";
 import { Transaction } from "../generated/schema";
-import { accrueMorphoTokens, updateBorrowIndex, updateSupplyIndex } from "./indexes";
+
 import { endEpochBlockTimestamp } from "./config";
 import { WAD } from "./constants";
+import { accrueMorphoTokens, updateBorrowIndex, updateSupplyIndex } from "./indexes";
+import { getOrInitBalance, getOrInitMarket } from "./initializer";
 
 export function handleP2PIndexesUpdated(event: P2PIndexesUpdated): void {
   const market = getOrInitMarket(event.params._poolTokenAddress, event.block.timestamp);
@@ -23,8 +24,8 @@ export function handleBorrowed(event: Borrowed): void {
   const underlyingBorrowBalance = event.params._balanceInP2P
     .times(market.lastP2PBorrowIndex)
     .plus(event.params._balanceOnPool.times(market.lastPoolBorrowIndex))
-    .div(WAD());
-  const balance = getOrIniBalance(userAddress, marketAddress, event.block.timestamp);
+    .div(WAD);
+  const balance = getOrInitBalance(userAddress, marketAddress, event.block.timestamp);
   const prevBalance = balance.underlyingBorrowBalance;
   balance.blockNumber = event.block.number.toI32();
   balance.timestamp = event.block.timestamp;
@@ -63,8 +64,8 @@ export function handleRepaid(event: Repaid): void {
   const underlyingBorrowBalance = event.params._balanceInP2P
     .times(market.lastP2PBorrowIndex)
     .plus(event.params._balanceOnPool.times(market.lastPoolBorrowIndex))
-    .div(WAD());
-  const balance = getOrIniBalance(userAddress, marketAddress, event.block.timestamp);
+    .div(WAD);
+  const balance = getOrInitBalance(userAddress, marketAddress, event.block.timestamp);
   const prevBalance = balance.underlyingBorrowBalance;
   balance.blockNumber = event.block.number.toI32();
   balance.timestamp = event.block.timestamp;
@@ -105,8 +106,8 @@ export function handleSupplied(event: Supplied): void {
   const underlyingSupplyBalance = event.params._balanceInP2P
     .times(market.lastP2PSupplyIndex)
     .plus(event.params._balanceOnPool.times(market.lastPoolSupplyIndex))
-    .div(WAD());
-  const balance = getOrIniBalance(userAddress, marketAddress, event.block.timestamp);
+    .div(WAD);
+  const balance = getOrInitBalance(userAddress, marketAddress, event.block.timestamp);
   const prevBalance = balance.underlyingSupplyBalance;
   balance.blockNumber = event.block.number.toI32();
   balance.timestamp = event.block.timestamp;
@@ -145,8 +146,8 @@ export function handleWithdrawn(event: Withdrawn): void {
   const underlyingSupplyBalance = event.params._balanceInP2P
     .times(market.lastP2PSupplyIndex)
     .plus(event.params._balanceOnPool.times(market.lastPoolSupplyIndex))
-    .div(WAD());
-  const balance = getOrIniBalance(userAddress, marketAddress, event.block.timestamp);
+    .div(WAD);
+  const balance = getOrInitBalance(userAddress, marketAddress, event.block.timestamp);
   const prevBalance = balance.underlyingSupplyBalance;
   balance.blockNumber = event.block.number.toI32();
   balance.timestamp = event.block.timestamp;
