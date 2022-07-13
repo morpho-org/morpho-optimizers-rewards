@@ -75,10 +75,13 @@ const main = async (ageName: string, _epoch: string) => {
   const endDate = configuration.epochs.epoch1.finalTimestamp;
   const usersBalances = await fetchUsers(epochConfig.subgraphUrl);
 
-  const usersUnclaimedRewards = usersBalances.map(({ address, balances }) => ({
-    address,
-    unclaimedRewards: userBalancesToUnclaimedTokens(balances, endDate).toString(), // with 18 * 2 decimals
-  }));
+  const usersUnclaimedRewards = usersBalances
+    .map(({ address, balances }) => ({
+      address,
+      unclaimedRewards: userBalancesToUnclaimedTokens(balances, endDate).toString(), // with 18 * 2 decimals
+    }))
+    // remove users with 0 MORPHO to claim
+    .filter((b) => b.unclaimedRewards !== "0");
 
   const totalEmitted = usersUnclaimedRewards.reduce((a, b) => a.add(b.unclaimedRewards), BigNumber.from(0));
   console.log("Total tokens emitted:", formatUnits(totalEmitted), "over", epochConfig.totalEmission.toString());
