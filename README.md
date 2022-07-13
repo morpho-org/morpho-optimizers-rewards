@@ -11,13 +11,7 @@ yarn
 ```bash
 yarn start:age1:epoch1
 ```
-
-## Epochs
-
-Morpho rewards are distributed through epochs (~3 weeks), with each epoch's per-market distribution ultimately being voted by Morpho protocol's governance, at the beginning of the epoch.
-For now and until governance is set up, each epoch's per-market distribution is computed based on a given total emission distributed over open markets, based on their underlying TVL.
-
-## Epoch #1
+## Age1
 
 You can read the code of the first epoch [here](./src/ages/age-one/index.ts).
 
@@ -29,8 +23,6 @@ Steps by step, the script will:
 - fetch all the transactions completed during the epoch
 - distribute rewards by following the per-user, per-market distribution rule (see below)
 - build the [Merkle Tree](https://en.wikipedia.org/wiki/Merkle_tree) of the rewards distribution
-
-The output is visible in the `ages` directory.
 
 
 ### Per-market distribution rule
@@ -44,12 +36,14 @@ $$totalEmission \times \frac{(marketSupply + marketBorrow) \times marketUSDPrice
 For a given market & a given side (supply/borrow), we distribute the rewards proportionally at
 `userBalance * period`, where userBalance is the balance of the user at a given time (at the beginning of the age, or when a transaction occurs)
 and `period` is the delay since another transaction occurs.
+The output is visible in the `ages/age1` directory.
+## Epochs
 
-#### Some specific scenarios
+Morpho rewards are distributed through epochs (~3 weeks), with each epoch's per-market distribution ultimately being voted by Morpho protocol's governance, at the beginning of the epoch.
+For now and until governance is set up, each epoch's per-market distribution is computed based on a given total emission distributed over open markets, based on their underlying TVL.
 
-- If the user only made one transaction for a specific market during the age, T is the time from the transaction to the end of the age.
-- If the user has made a transaction before the beginning of the age, we start the delta T from the beginning of the age
-- If the user made a new transaction, we recompute his balance and start a new period with a different balance
+## Epoch #1
+The first epoch started on 2022-06-08T17:00:06.000Z
 
 ## Compute merkle Tree
 At the end of the first epoch, all tokens will be distributed.

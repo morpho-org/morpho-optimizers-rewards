@@ -9,10 +9,11 @@ import { userBalancesToUnclaimedTokens } from "./getUserUnclaimedTokens";
 import { BigNumber } from "ethers";
 import { now } from "../../helpers/time";
 
-const main = async (ageName: string, epoch: keyof typeof configuration.epochs) => {
+const main = async (ageName: string, _epoch: string) => {
   console.log("Compute markets parameters");
+  if (!Object.keys(configuration.epochs).includes(_epoch)) throw Error("invalid epoch name");
+  const epoch = _epoch as keyof typeof configuration.epochs;
   const epochConfig = configuration.epochs[epoch];
-
   console.log("Markets Emissions");
   const { marketsEmissions, liquidity } = await getMarketsEmission(epoch);
   const formattedMarketsEmission: {
@@ -65,6 +66,8 @@ const main = async (ageName: string, epoch: keyof typeof configuration.epochs) =
     console.log(emissionJson);
   }
   console.log("duration", epochConfig.finalTimestamp.sub(epochConfig.initialTimestamp).toString());
+
+  if (epoch === "epoch2") return; // not yet distributed
   console.log("Get current distribution through all users");
 
   /// user related ///
@@ -111,7 +114,7 @@ const main = async (ageName: string, epoch: keyof typeof configuration.epochs) =
   await fs.promises.writeFile(ageOneProofsFilename, JSON.stringify({ root, proofs }, null, 2));
 };
 
-main("age1", "epoch1").catch((e) => {
+main("age1", process.argv[2]).catch((e) => {
   console.error(e);
   process.exit(1);
 });

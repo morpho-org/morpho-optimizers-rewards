@@ -13,7 +13,8 @@
     "watch-ts": "tsc -w",
     "lint": "eslint . --ext .ts",
     "start": "ts-node ./src/${SCRIPT:-index}",
-    "start:age1:epoch1": "ts-node ./src/ages/age-one/index.ts"
+    "start:age1:epoch1": "ts-node ./src/ages/age-one/index.ts epoch1",
+    "start:age1:epoch2": "ts-node ./src/ages/age-one/index.ts epoch2"
   },
   "devDependencies": {
     "@types/jest": "^28.1.1",
