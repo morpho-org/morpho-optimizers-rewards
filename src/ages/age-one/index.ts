@@ -41,7 +41,7 @@ const main = async (ageName: string, _epoch: string) => {
   const emissionJson = JSON.stringify(
     {
       age: ageName,
-      epoch: "epoch1",
+      epoch,
       totalEmission: epochConfig.totalEmission.toString(),
       parameters: {
         initialBlock: epochConfig.initialBlock.toString(),

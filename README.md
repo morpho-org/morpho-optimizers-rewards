@@ -43,7 +43,14 @@ Morpho rewards are distributed through epochs (~3 weeks), with each epoch's per-
 For now and until governance is set up, each epoch's per-market distribution is computed based on a given total emission distributed over open markets, based on their underlying TVL.
 
 ## Epoch #1
-The first epoch started on 2022-06-08T17:00:06.000Z
+The first epoch started on 2022-06-08T17:00:06.000Z until 2022-07-13T17:00:00.000Z with a distribution of 350k $MORPHO to users which have a position on Morpho-Compound.
+You can check the [final users distribution](./ages/age1/epoch1/usersDistribution.json) and simulate again the distribution by running
+```bash
+SAVE_FILE=true yarn run start:age1:epoch1
+```
+
+## Claim rewards 
+The Rewards distributor ([](https://etherscan.io/address/))
 
 ## Compute merkle Tree
 At the end of the first epoch, all tokens will be distributed.
