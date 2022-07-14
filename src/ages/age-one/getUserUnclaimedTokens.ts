@@ -3,7 +3,6 @@ import configuration from "./configuration";
 import { BigNumber } from "ethers";
 import axios from "axios";
 import { WAD } from "../../helpers/constants";
-import marketsEmission from "../../../ages/age1/epoch1/marketsEmission.json";
 import { GraphUserBalances, Market, UserBalance } from "../../subgraph/types";
 import { formatGraphBalances } from "../../subgraph/graphBalances.formater";
 import { maxBN } from "../../helpers/maths";
@@ -36,6 +35,7 @@ const computeSupplyIndex = (market: Market, currentTimestamp: BigNumber, startEp
   if (deltaTimestamp.lte(0)) return market.supplyIndex;
 
   // @ts-ignore
+  const marketsEmission = require("../../../ages/age1/epoch1/marketsEmission.json");
   const supplySpeed = BigNumber.from(marketsEmission.markets[market.address].supplyRate);
   const morphoAccrued = deltaTimestamp.mul(supplySpeed); // in WEI units;
   const ratio = morphoAccrued.mul(WAD).div(market.lastTotalSupply); // in 18*2 - decimals units;
@@ -45,7 +45,7 @@ const computeBorrowIndex = (market: Market, currentTimestamp: BigNumber, startEp
   const startTimestamp = maxBN(startEpochTimestamp, market.borrowUpdateBlockTimestamp);
   const deltaTimestamp = currentTimestamp.sub(startTimestamp);
   if (deltaTimestamp.lte(0)) return market.borrowIndex;
-  // @ts-ignore
+  const marketsEmission = require("../../../ages/age1/epoch1/marketsEmission.json");
   const borrowSpeed = BigNumber.from(marketsEmission.markets[market.address].borrowRate);
   const morphoAccrued = deltaTimestamp.mul(borrowSpeed); // in WEI units;
   const ratio = morphoAccrued.mul(WAD).div(market.lastTotalBorrow); // in 18*2 - decimals units;
