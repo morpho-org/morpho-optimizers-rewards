@@ -109,7 +109,7 @@ const main = async (ageName: string, _epoch: string) => {
   if (now() < epochConfig.finalTimestamp.toNumber())
     console.log("This is not the final Merkle tree, because the distribution is not finished yet");
   const { root, proofs } = computeMerkleTree(usersUnclaimedRewards);
-
+  console.log("Computed root: ", root);
   // save the age proofs into a file
   const ageOneProofsFilename = `./ages/${ageName}/${epochConfig.epochName}/proofs.json`;
   const ageProofsPath = path.dirname(ageOneProofsFilename);
