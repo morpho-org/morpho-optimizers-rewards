@@ -78,7 +78,7 @@ const main = async (ageName: string, _epoch: string) => {
   const usersUnclaimedRewards = usersBalances
     .map(({ address, balances }) => ({
       address,
-      unclaimedRewards: userBalancesToUnclaimedTokens(balances, endDate).toString(), // with 18 * 2 decimals
+      unclaimedRewards: userBalancesToUnclaimedTokens(balances, endDate, epoch).toString(), // with 18 * 2 decimals
     }))
     // remove users with 0 MORPHO to claim
     .filter((b) => b.unclaimedRewards !== "0");

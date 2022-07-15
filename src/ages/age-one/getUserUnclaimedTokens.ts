@@ -7,25 +7,36 @@ import { GraphUserBalances, Market, UserBalance } from "../../subgraph/types";
 import { formatGraphBalances } from "../../subgraph/graphBalances.formater";
 import { maxBN } from "../../helpers/maths";
 
-// only for epoch one for now
-export const getUserUnclaimedTokensFromDistribution = async (address: string, blockNumber?: number) => {
-  let endDate = BigNumber.from(Math.min(configuration.epochs.epoch1.finalTimestamp.toNumber(), now()));
+export const getUserUnclaimedTokensFromDistribution = async (
+  address: string,
+  epoch: keyof typeof configuration.epochs,
+  blockNumber?: number,
+) => {
+  let endDate = BigNumber.from(Math.min(configuration.epochs[epoch].finalTimestamp.toNumber(), now()));
   if (blockNumber) {
     const provider = new providers.InfuraProvider(1);
     const block = await provider.getBlock(blockNumber);
-    endDate = BigNumber.from(Math.min(configuration.epochs.epoch1.finalTimestamp.toNumber(), block.timestamp));
+    endDate = BigNumber.from(Math.min(configuration.epochs[epoch].finalTimestamp.toNumber(), block.timestamp));
   }
-  const userBalances = await getUserBalances(address.toLowerCase(), blockNumber);
+  const userBalances = await getUserBalances(
+    configuration.epochs[epoch].subgraphUrl,
+    address.toLowerCase(),
+    blockNumber,
+  );
 
-  return userBalancesToUnclaimedTokens(userBalances.balances, endDate);
+  return userBalancesToUnclaimedTokens(userBalances.balances, endDate, epoch);
 };
-export const userBalancesToUnclaimedTokens = (balances: UserBalance[], endDate: BigNumber) =>
+export const userBalancesToUnclaimedTokens = (
+  balances: UserBalance[],
+  endDate: BigNumber,
+  epoch: keyof typeof configuration.epochs,
+) =>
   balances
     .map((b) => {
       let unclaimed = b.unclaimedMorpho;
-      const supplyIndex = computeSupplyIndex(b.market, endDate, configuration.epochs.epoch1.initialTimestamp);
+      const supplyIndex = computeSupplyIndex(b.market, endDate, configuration.epochs[epoch].initialTimestamp);
       unclaimed = unclaimed.add(getUserUnclaimedTokens(supplyIndex, b.userSupplyIndex, b.underlyingSupplyBalance));
-      const borrowIndex = computeBorrowIndex(b.market, endDate, configuration.epochs.epoch1.initialTimestamp);
+      const borrowIndex = computeBorrowIndex(b.market, endDate, configuration.epochs[epoch].initialTimestamp);
       unclaimed = unclaimed.add(getUserUnclaimedTokens(borrowIndex, b.userBorrowIndex, b.underlyingBorrowBalance));
       return unclaimed;
     })
@@ -58,7 +69,7 @@ const computeBorrowIndex = (market: Market, currentTimestamp: BigNumber, startEp
   return market.borrowIndex.add(ratio);
 };
 
-export const getUserBalances = async (user: string, block?: number) =>
+export const getUserBalances = async (graphUrl: string, user: string, block?: number) =>
   axios
     .post<{ query: string; variables: { user: string } }, { data: { data: { user: GraphUserBalances } } }>(graphUrl, {
       query: block ? queryWithBlock : query,
@@ -66,7 +77,6 @@ export const getUserBalances = async (user: string, block?: number) =>
     })
     .then((r) => formatGraphBalances(r.data.data.user));
 
-const graphUrl = configuration.epochs.epoch1.subgraphUrl;
 const query = `query GetUserBalances($user: ID!){
   user(id: $user) {
     address
