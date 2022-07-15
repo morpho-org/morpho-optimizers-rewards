@@ -1,6 +1,6 @@
 {
   "name": "@morpholabs/morpho-rewards",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "description": "Morpho rewards distribution scripts",
   "main": "index.js",
   "repository": "git@github.com:morpho-labs/morpho-rewards.git",

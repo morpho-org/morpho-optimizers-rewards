@@ -58,7 +58,7 @@ const main = async (ageName: string, _epoch: string) => {
     2,
   );
   if (process.env.SAVE_FILE) {
-    const ageOneMarketsFilename = `./ages/${ageName}/${epochConfig.epochName}/marketsEmission.json`;
+    const ageOneMarketsFilename = `./distribution/${ageName}/${epochConfig.epochName}/marketsEmission.json`;
     const ageMarketsPath = path.dirname(ageOneMarketsFilename);
     await fs.promises.mkdir(ageMarketsPath, { recursive: true });
     await fs.promises.writeFile(ageOneMarketsFilename, emissionJson);
@@ -67,12 +67,11 @@ const main = async (ageName: string, _epoch: string) => {
   }
   console.log("duration", epochConfig.finalTimestamp.sub(epochConfig.initialTimestamp).toString());
 
-  if (epoch === "epoch2") return; // not yet distributed
   console.log("Get current distribution through all users");
 
   /// user related ///
   console.log("Fetch Morpho users of the age");
-  const endDate = configuration.epochs.epoch1.finalTimestamp;
+  const endDate = configuration.epochs[epoch].finalTimestamp;
   const usersBalances = await fetchUsers(epochConfig.subgraphUrl);
 
   const usersUnclaimedRewards = usersBalances
@@ -97,7 +96,7 @@ const main = async (ageName: string, _epoch: string) => {
 
   if (process.env.SAVE_FILE) {
     // save the age into a file
-    const ageOneFilename = `./ages/${ageName}/${epoch}/usersDistribution.json`;
+    const ageOneFilename = `./distribution/${ageName}/${epoch}/usersDistribution.json`;
     const agePath = path.dirname(ageOneFilename);
     await fs.promises.mkdir(agePath, { recursive: true });
     await fs.promises.writeFile(ageOneFilename, jsonUnclaimed);
@@ -111,7 +110,7 @@ const main = async (ageName: string, _epoch: string) => {
   const { root, proofs } = computeMerkleTree(usersUnclaimedRewards);
   console.log("Computed root: ", root);
   // save the age proofs into a file
-  const ageOneProofsFilename = `./ages/${ageName}/${epochConfig.epochName}/proofs.json`;
+  const ageOneProofsFilename = `./distribution/${ageName}/${epochConfig.epochName}/proofs.json`;
   const ageProofsPath = path.dirname(ageOneProofsFilename);
   await fs.promises.mkdir(ageProofsPath, { recursive: true });
   await fs.promises.writeFile(ageOneProofsFilename, JSON.stringify({ root, proofs }, null, 2));

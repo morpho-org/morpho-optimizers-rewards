@@ -81,11 +81,18 @@ const computeBorrowIndex = (
 
 export const getUserBalances = async (graphUrl: string, user: string, block?: number) =>
   axios
-    .post<{ query: string; variables: { user: string } }, { data: { data: { user: GraphUserBalances } } }>(graphUrl, {
+    .post<
+      { query: string; variables: { user: string } },
+      { data: { data?: { user?: GraphUserBalances }; errors?: any } }
+    >(graphUrl, {
       query: block ? queryWithBlock : query,
       variables: { user, block },
     })
-    .then((r) => formatGraphBalances(r.data.data.user));
+    .then((r) => {
+      if (!r.data?.data?.user) throw Error(JSON.stringify(r.data.errors));
+
+      return formatGraphBalances(r.data.data.user);
+    });
 
 const query = `query GetUserBalances($user: ID!){
   user(id: $user) {
