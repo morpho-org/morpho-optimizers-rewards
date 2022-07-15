@@ -24,7 +24,7 @@
     },
     "include": [
         "src/**/*",
-        "ages/**/*"
+        "distribution/**/*"
     ],
-    "exclude": ["subgraph"]
+    "exclude": ["./subgraph"]
 }

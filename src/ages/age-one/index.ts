@@ -1,5 +1,5 @@
 import { formatUnits } from "ethers/lib/utils";
-import { fetchUsers } from "../../subgraph/fetch";
+import { fetchUsers } from "../../graph/fetch";
 import * as fs from "fs";
 import path from "path";
 import { computeMerkleTree } from "../../computations/compute-merkle-tree";

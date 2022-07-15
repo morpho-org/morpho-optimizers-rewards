@@ -1,10 +1,10 @@
-import { fetchUsers } from "../../src/subgraph/fetch";
+import { fetchUsers } from "../../src/graph/fetch";
 import { userBalancesToUnclaimedTokens } from "../../src/ages/age-one/getUserUnclaimedTokens";
 import { BigNumber, BigNumberish } from "ethers";
 import configuration from "../../src/ages/age-one/configuration";
 import { formatUnits } from "ethers/lib/utils";
 import { WAD } from "../../src/helpers/constants";
-import { UserBalances } from "../../src/subgraph/types";
+import { UserBalances } from "../../src/graph/types";
 import { computeMerkleTree } from "../../src/computations/compute-merkle-tree";
 
 describe("Test the distribution for the first epoch", () => {

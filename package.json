@@ -1,6 +1,6 @@
 {
   "name": "@morpholabs/morpho-rewards",
-  "version": "0.1.4",
+  "version": "0.1.7",
   "description": "Morpho rewards distribution scripts",
   "main": "index.js",
   "repository": "git@github.com:morpho-labs/morpho-rewards.git",
@@ -16,7 +16,7 @@
     "start:age1:epoch1": "ts-node ./src/ages/age-one/index.ts epoch1",
     "start:age1:epoch2": "ts-node ./src/ages/age-one/index.ts epoch2",
     "start:age1:unclaimed": "ts-node ./src/ages/age-one/script/unclaimedTokens.ts",
-    "prepublishOnly": "rm -rf lib && yarn build && git stash && cp -r ./lib/* . && rm -rf ./lib ./src ./coverage ./test ./.github ./jest.config.js ./subgraph",
+    "prepublishOnly": "rm -rf lib && yarn build && git stash && rm -rf ./src ./coverage ./test ./.github ./jest.config.js ./subgraph",
     "postpublish": "git clean -fd && git checkout -- .",
     "preversion": "yarn build",
     "postversion": "git push && git push --tags"
