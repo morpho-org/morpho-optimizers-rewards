@@ -17,7 +17,7 @@ describe("Test the distribution for the first epoch", () => {
   it("Should distribute the correct number of tokens over Morpho users", async () => {
     const usersUnclaimedRewards = usersBalances.map(({ address, balances }) => ({
       address,
-      unclaimedRewards: userBalancesToUnclaimedTokens(balances, epochConfig.finalTimestamp).toString(), // with 18 * 2 decimals
+      unclaimedRewards: userBalancesToUnclaimedTokens(balances, epochConfig.finalTimestamp, "epoch1").toString(), // with 18 * 2 decimals
     }));
 
     const totalEmitted = usersUnclaimedRewards.reduce((a, b) => a.add(b.unclaimedRewards), BigNumber.from(0));
@@ -28,7 +28,7 @@ describe("Test the distribution for the first epoch", () => {
     const usersUnclaimedRewards = usersBalances
       .map(({ address, balances }) => ({
         address,
-        unclaimedRewards: userBalancesToUnclaimedTokens(balances, epochConfig.finalTimestamp).toString(), // with 18 * 2 decimals
+        unclaimedRewards: userBalancesToUnclaimedTokens(balances, epochConfig.finalTimestamp, "epoch1").toString(), // with 18 * 2 decimals
       }))
       // remove users with 0 MORPHO to claim
       .filter((b) => b.unclaimedRewards !== "0");
