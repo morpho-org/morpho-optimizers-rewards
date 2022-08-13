@@ -6,7 +6,7 @@ import { WAD } from "../../helpers/constants";
 import { GraphUserBalances, Market, UserBalance } from "../../graph/types";
 import { formatGraphBalances } from "../../graph/graphBalances.formater";
 import { maxBN } from "../../helpers/maths";
-
+import epochOneResult from "../../../distribution/age1/epoch1/usersDistribution.json";
 export const getUserUnclaimedTokensFromDistribution = async (
   address: string,
   epoch: keyof typeof configuration.epochs,
@@ -24,23 +24,38 @@ export const getUserUnclaimedTokensFromDistribution = async (
     blockNumber,
   );
 
-  return userBalancesToUnclaimedTokens(userBalances.balances, endDate, epoch);
+  return userBalancesToUnclaimedTokens(address, userBalances.balances, endDate, epoch);
 };
 export const userBalancesToUnclaimedTokens = (
+  userAddress: string,
   balances: UserBalance[],
   endDate: BigNumber,
   epoch: keyof typeof configuration.epochs,
-) =>
-  balances
+) => {
+  let prevEpochRewards = BigNumber.from(0);
+
+  // add the previous epoch rewards to sum rewards for root computation
+  if (epoch === "epoch2") {
+    const strRewards = epochOneResult.distribution.find(
+      (d) => d.address.toLowerCase() === userAddress.toLowerCase(),
+    )?.unclaimedRewards;
+    if (strRewards) {
+      prevEpochRewards = BigNumber.from(strRewards);
+    }
+  }
+  return balances
     .map((b) => {
       let unclaimed = b.unclaimedMorpho;
+
       const supplyIndex = computeSupplyIndex(b.market, endDate, configuration.epochs[epoch].initialTimestamp, epoch);
       unclaimed = unclaimed.add(getUserUnclaimedTokens(supplyIndex, b.userSupplyIndex, b.underlyingSupplyBalance));
       const borrowIndex = computeBorrowIndex(b.market, endDate, configuration.epochs[epoch].initialTimestamp, epoch);
       unclaimed = unclaimed.add(getUserUnclaimedTokens(borrowIndex, b.userBorrowIndex, b.underlyingBorrowBalance));
       return unclaimed;
     })
-    .reduce((a, b) => a.add(b), BigNumber.from(0));
+    .reduce((a, b) => a.add(b), BigNumber.from(0))
+    .add(prevEpochRewards);
+};
 
 const getUserUnclaimedTokens = (marketIndex: BigNumber, userIndex: BigNumber, userBalance: BigNumber) => {
   if (userIndex.gt(marketIndex)) return BigNumber.from(0);

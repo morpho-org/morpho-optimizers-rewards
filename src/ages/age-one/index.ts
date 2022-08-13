@@ -8,7 +8,7 @@ import { getMarketsEmission } from "./getMarketsEmission";
 import { userBalancesToUnclaimedTokens } from "./getUserUnclaimedTokens";
 import { BigNumber } from "ethers";
 import { now } from "../../helpers/time";
-
+import epoch1UserDistribution from "../../../distribution/age1/epoch1/usersDistribution.json";
 const main = async (ageName: string, _epoch: string) => {
   console.log("Compute markets parameters");
   if (!Object.keys(configuration.epochs).includes(_epoch)) throw Error("invalid epoch name");
@@ -65,8 +65,12 @@ const main = async (ageName: string, _epoch: string) => {
   } else {
     console.log(emissionJson);
   }
-  console.log("duration", epochConfig.finalTimestamp.sub(epochConfig.initialTimestamp).toString());
 
+  console.log("duration", epochConfig.finalTimestamp.sub(epochConfig.initialTimestamp).toString());
+  if (epoch === "epoch3") {
+    console.log("No distribution yet for epoch 3");
+    return;
+  }
   console.log("Get current distribution through all users");
 
   /// user related ///
@@ -74,16 +78,41 @@ const main = async (ageName: string, _epoch: string) => {
   const endDate = configuration.epochs[epoch].finalTimestamp;
   const usersBalances = await fetchUsers(epochConfig.subgraphUrl);
 
-  const usersUnclaimedRewards = usersBalances
+  let usersUnclaimedRewards = usersBalances
     .map(({ address, balances }) => ({
       address,
-      unclaimedRewards: userBalancesToUnclaimedTokens(balances, endDate, epoch).toString(), // with 18 * 2 decimals
+      unclaimedRewards: userBalancesToUnclaimedTokens(address, balances, endDate, epoch).toString(), // with 18 * 2 decimals
     }))
     // remove users with 0 MORPHO to claim
-    .filter((b) => b.unclaimedRewards !== "0");
 
+    .filter((b) => b.unclaimedRewards !== "0");
   const totalEmitted = usersUnclaimedRewards.reduce((a, b) => a.add(b.unclaimedRewards), BigNumber.from(0));
-  console.log("Total tokens emitted:", formatUnits(totalEmitted), "over", epochConfig.totalEmission.toString());
+  console.log(
+    "Total tokens emitted:",
+    formatUnits(totalEmitted),
+    "over",
+    epochConfig.totalEmission.toString(),
+    "for the current epoch",
+  );
+  if (epoch !== "epoch1") {
+    usersUnclaimedRewards = usersUnclaimedRewards.map((u) => ({
+      ...u,
+      unclaimedRewards: BigNumber.from(u.unclaimedRewards)
+        .add(
+          epoch1UserDistribution.distribution.find((userFromEpoch1) => userFromEpoch1.address === u.address)
+            ?.unclaimedRewards ?? BigNumber.from(0),
+        )
+        .toString(), // TODO: refacto with epoch3
+    }));
+
+    const totalEmittedMultiEpoch = usersUnclaimedRewards.reduce((a, b) => a.add(b.unclaimedRewards), BigNumber.from(0));
+    console.log(
+      "Total tokens emitted:",
+      formatUnits(totalEmittedMultiEpoch),
+      "over",
+      epochConfig.totalEmission.add(configuration.epochs["epoch1"].totalEmission).toString(),
+    ); // TODO: refacto with epoch3
+  }
   const jsonUnclaimed = JSON.stringify(
     {
       date: endDate.toString(),
