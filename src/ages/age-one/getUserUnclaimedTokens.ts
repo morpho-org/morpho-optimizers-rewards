@@ -6,7 +6,7 @@ import { WAD } from "../../helpers/constants";
 import { GraphUserBalances, Market, UserBalance } from "../../graph/types";
 import { formatGraphBalances } from "../../graph/graphBalances.formater";
 import { maxBN } from "../../helpers/maths";
-import epochOneResult from "../../../distribution/age1/epoch1/usersDistribution.json";
+const epochOneResult = require("../../../distribution/age1/epoch1/marketsEmission.json");
 export const getUserUnclaimedTokensFromDistribution = async (
   address: string,
   epoch: keyof typeof configuration.epochs,
@@ -37,7 +37,7 @@ export const userBalancesToUnclaimedTokens = (
   // add the previous epoch rewards to sum rewards for root computation
   if (epoch === "epoch2") {
     const strRewards = epochOneResult.distribution.find(
-      (d) => d.address.toLowerCase() === userAddress.toLowerCase(),
+      (d: { accumulatedRewards: string; address: string }) => d.address.toLowerCase() === userAddress.toLowerCase(),
     )?.accumulatedRewards;
     if (strRewards) {
       prevEpochRewards = BigNumber.from(strRewards);
