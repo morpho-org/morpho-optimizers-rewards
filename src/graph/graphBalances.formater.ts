@@ -18,7 +18,7 @@ export const formatGraphBalances = (graphBalance: GraphUserBalances): UserBalanc
       lastTotalSupply: BigNumber.from(market.lastTotalSupply),
     },
     timestamp: BigNumber.from(balance.timestamp),
-    unclaimedMorpho: BigNumber.from(balance.unclaimedMorpho),
+    accumulatedMorpho: BigNumber.from(balance.unclaimedMorpho),
     underlyingBorrowBalance: BigNumber.from(balance.underlyingBorrowBalance),
     underlyingSupplyBalance: BigNumber.from(balance.underlyingSupplyBalance),
     userBorrowIndex: BigNumber.from(balance.userBorrowIndex),

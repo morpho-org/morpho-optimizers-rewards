@@ -8,7 +8,6 @@ import { getMarketsEmission } from "./getMarketsEmission";
 import { userBalancesToUnclaimedTokens } from "./getUserUnclaimedTokens";
 import { BigNumber } from "ethers";
 import { now } from "../../helpers/time";
-
 const main = async (ageName: string, _epoch: string) => {
   console.log("Compute markets parameters");
   if (!Object.keys(configuration.epochs).includes(_epoch)) throw Error("invalid epoch name");
@@ -65,8 +64,12 @@ const main = async (ageName: string, _epoch: string) => {
   } else {
     console.log(emissionJson);
   }
-  console.log("duration", epochConfig.finalTimestamp.sub(epochConfig.initialTimestamp).toString());
 
+  console.log("duration", epochConfig.finalTimestamp.sub(epochConfig.initialTimestamp).toString());
+  if (epoch === "epoch3") {
+    console.log("No distribution yet for epoch 3");
+    return;
+  }
   console.log("Get current distribution through all users");
 
   /// user related ///
@@ -74,21 +77,30 @@ const main = async (ageName: string, _epoch: string) => {
   const endDate = configuration.epochs[epoch].finalTimestamp;
   const usersBalances = await fetchUsers(epochConfig.subgraphUrl);
 
-  const usersUnclaimedRewards = usersBalances
+  const usersAccumulatedRewards = usersBalances
     .map(({ address, balances }) => ({
       address,
-      unclaimedRewards: userBalancesToUnclaimedTokens(balances, endDate, epoch).toString(), // with 18 * 2 decimals
+      accumulatedRewards: userBalancesToUnclaimedTokens(address, balances, endDate, epoch).toString(), // with 18 * 2 decimals
     }))
     // remove users with 0 MORPHO to claim
-    .filter((b) => b.unclaimedRewards !== "0");
 
-  const totalEmitted = usersUnclaimedRewards.reduce((a, b) => a.add(b.unclaimedRewards), BigNumber.from(0));
-  console.log("Total tokens emitted:", formatUnits(totalEmitted), "over", epochConfig.totalEmission.toString());
+    .filter((b) => b.accumulatedRewards !== "0");
+  let totalEmission = configuration.epochs.epoch1.totalEmission;
+  if (epoch === "epoch2") totalEmission = totalEmission.add(epochConfig.totalEmission);
+  const totalEmitted = usersAccumulatedRewards.reduce((a, b) => a.add(b.accumulatedRewards), BigNumber.from(0));
+  console.log(
+    "Total tokens emitted:",
+    formatUnits(totalEmitted),
+    "over",
+    totalEmission.toString(),
+    "for the current epoch",
+  );
+
   const jsonUnclaimed = JSON.stringify(
     {
       date: endDate.toString(),
       epoch,
-      distribution: usersUnclaimedRewards,
+      distribution: usersAccumulatedRewards,
     },
     null,
     2,
@@ -107,7 +119,7 @@ const main = async (ageName: string, _epoch: string) => {
   console.log("Compute the current merkle Tree");
   if (now() < epochConfig.finalTimestamp.toNumber())
     console.log("This is not the final Merkle tree, because the distribution is not finished yet");
-  const { root, proofs } = computeMerkleTree(usersUnclaimedRewards);
+  const { root, proofs } = computeMerkleTree(usersAccumulatedRewards);
   console.log("Computed root: ", root);
   // save the age proofs into a file
   const ageOneProofsFilename = `./distribution/${ageName}/${epochConfig.epochName}/proofs.json`;

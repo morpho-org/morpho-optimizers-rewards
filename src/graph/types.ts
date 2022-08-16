@@ -34,7 +34,7 @@ export interface UserBalance {
   underlyingBorrowBalance: BigNumber;
   userSupplyIndex: BigNumber;
   userBorrowIndex: BigNumber;
-  unclaimedMorpho: BigNumber;
+  accumulatedMorpho: BigNumber;
   market: Market;
 }
 export interface Market {
