@@ -30,7 +30,7 @@ export const updateSupplyBalanceAndMarket = (
   balance.blockNumber = blockNumber.toI32();
   balance.underlyingSupplyBalance = newUnderlyingSupplyBalance;
   balance.userSupplyIndex = newSupplyIndex;
-  balance.accumulatedMorpho = balance.accumulatedMorpho.plus(accumulatedRewards);
+  balance.unclaimedMorpho = balance.unclaimedMorpho.plus(accumulatedRewards);
   balance.save();
 
   // APR
@@ -66,7 +66,7 @@ export const updateBorrowBalanceAndMarket = (
   balance.blockNumber = blockNumber.toI32();
   balance.underlyingBorrowBalance = newUnderlyingBorrowBalance;
   balance.userBorrowIndex = newBorrowIndex;
-  balance.accumulatedMorpho = balance.accumulatedMorpho.plus(accumulatedRewards);
+  balance.unclaimedMorpho = balance.unclaimedMorpho.plus(accumulatedRewards);
   balance.save();
 
   // APR

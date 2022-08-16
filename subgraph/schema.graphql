@@ -44,7 +44,7 @@ type Balance @entity {
   underlyingBorrowBalance: BigInt!
   userSupplyIndex: BigInt!
   userBorrowIndex: BigInt!
-  accumulatedMorpho: BigInt!
+  unclaimedMorpho: BigInt!
 }
 
 type Transaction @entity {

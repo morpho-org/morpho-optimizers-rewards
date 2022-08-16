@@ -24,7 +24,7 @@ export const getUserUnclaimedTokensFromDistribution = async (
     blockNumber,
   );
 
-  return userBalancesToUnclaimedTokens(address, userBalances.balances, endDate, epoch);
+  return userBalancesToUnclaimedTokens(address, userBalances?.balances || [], endDate, epoch);
 };
 export const userBalancesToUnclaimedTokens = (
   userAddress: string,
@@ -104,8 +104,8 @@ export const getUserBalances = async (graphUrl: string, user: string, block?: nu
       variables: { user, block },
     })
     .then((r) => {
-      if (!r.data?.data?.user) throw Error(JSON.stringify(r.data.errors));
-
+      if (!r.data?.data) throw Error(JSON.stringify(r.data.errors));
+      if (!r.data.data.user) return undefined;
       return formatGraphBalances(r.data.data.user);
     });
 
@@ -118,7 +118,7 @@ const query = `query GetUserBalances($user: ID!){
       underlyingBorrowBalance
       userSupplyIndex
       userBorrowIndex
-      accumulatedMorpho
+      unclaimedMorpho
       market {
         address
         supplyIndex

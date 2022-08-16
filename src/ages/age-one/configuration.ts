@@ -24,7 +24,7 @@ export default {
       initialTimestamp: BigNumber.from(new Date("2022-08-16T17:00:06.000Z").getTime() / 1000),
       finalTimestamp: BigNumber.from(new Date("2022-09-20T15:00:00.000Z").getTime() / 1000), // 17h CET
       totalEmission: BigNumber.from(2_950_000),
-      subgraphUrl: "https://api.thegraph.com/subgraphs/name/julien-devatom/morphoages3",
+      subgraphUrl: "https://api.thegraph.com/subgraphs/name/morpho-dev/morphorewardsage1epoch3",
       epochName: "epoch3",
     },
   },

@@ -11,7 +11,7 @@ import { expectBNApproxEquals } from "./epochOne.test";
 describe("Test the distribution for the second epoch", () => {
   const epochConfig = configuration.epochs.epoch2;
   let usersBalances: UserBalances[];
-  const epochOneRoot = ""; // TODO: compute it when epoch is done
+  const epochOneRoot = "0x1a23db78755a76f8213b5790c3e8bef2ad322bc53d40d9e7e9c1b047638a9166";
   beforeAll(async () => {
     usersBalances = await fetchUsers(epochConfig.subgraphUrl);
   });
@@ -37,8 +37,7 @@ describe("Test the distribution for the second epoch", () => {
       1e10,
     ); // 10 over 18 decimals
   });
-  // TODO: enable when epoch 2 is done
-  it.skip("Should should compute the correct root", async () => {
+  it("Should should compute the correct root", async () => {
     const usersAccumulatedRewards = usersBalances
       .map(({ address, balances }) => ({
         address,
