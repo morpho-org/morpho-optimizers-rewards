@@ -15,6 +15,7 @@
     "start": "ts-node ./src/${SCRIPT:-index}",
     "start:age1:epoch1": "ts-node ./src/ages/age-one/index.ts epoch1",
     "start:age1:epoch2": "ts-node ./src/ages/age-one/index.ts epoch2",
+    "start:age1:epoch3": "ts-node ./src/ages/age-one/index.ts epoch3",
     "start:age1:unclaimed": "ts-node ./src/ages/age-one/script/unclaimedTokens.ts",
     "prepublishOnly": "rm -rf lib && yarn build && git stash && rm -rf ./src ./coverage ./test ./.github ./jest.config.js ./subgraph",
     "postpublish": "git clean -fd && git checkout -- .",
