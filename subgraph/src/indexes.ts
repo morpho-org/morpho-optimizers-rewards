@@ -1,7 +1,7 @@
 import { Address, BigInt, log } from "@graphprotocol/graph-ts";
 
 import { startEpochBlockTimestamp } from "./config";
-import { borrowEmissionsEpoch1, initialIndex, supplyEmissionsEpoch1, WAD } from "./constants";
+import { borrowEmissionsCurrentEpoch, initialIndex, supplyEmissionsCurrentEpoch, WAD } from "./constants";
 import { getOrInitMarket } from "./initializer";
 import { maxBN } from "./helpers";
 
@@ -41,7 +41,7 @@ export function updateSupplyIndex(marketAddress: Address, blockTimestamp: BigInt
   return computeUpdatedMorphoIndex(
     marketAddress,
     blockTimestamp,
-    supplyEmissionsEpoch1,
+    supplyEmissionsCurrentEpoch,
     market.supplyIndex,
     market.supplyUpdateBlockTimestamp,
     market.lastTotalSupply,
@@ -56,7 +56,7 @@ export function updateBorrowIndex(marketAddress: Address, blockTimestamp: BigInt
   return computeUpdatedMorphoIndex(
     marketAddress,
     blockTimestamp,
-    borrowEmissionsEpoch1,
+    borrowEmissionsCurrentEpoch,
     market.borrowIndex,
     market.borrowUpdateBlockTimestamp,
     market.lastTotalBorrow,

@@ -38,14 +38,14 @@ export const userBalancesToUnclaimedTokens = (
   if (epoch === "epoch2") {
     const strRewards = epochOneResult.distribution.find(
       (d) => d.address.toLowerCase() === userAddress.toLowerCase(),
-    )?.unclaimedRewards;
+    )?.accumulatedRewards;
     if (strRewards) {
       prevEpochRewards = BigNumber.from(strRewards);
     }
   }
   return balances
     .map((b) => {
-      let unclaimed = b.unclaimedMorpho;
+      let unclaimed = b.accumulatedMorpho;
 
       const supplyIndex = computeSupplyIndex(b.market, endDate, configuration.epochs[epoch].initialTimestamp, epoch);
       unclaimed = unclaimed.add(getUserUnclaimedTokens(supplyIndex, b.userSupplyIndex, b.underlyingSupplyBalance));
@@ -118,7 +118,7 @@ const query = `query GetUserBalances($user: ID!){
       underlyingBorrowBalance
       userSupplyIndex
       userBorrowIndex
-      unclaimedMorpho
+      accumulatedMorpho
       market {
         address
         supplyIndex
@@ -145,7 +145,7 @@ const queryWithBlock = `query GetUserBalances($user: ID! $block: Int!){
       underlyingBorrowBalance
       userSupplyIndex
       userBorrowIndex
-      unclaimedMorpho
+      accumulatedMorpho
       market {
         address
         supplyIndex

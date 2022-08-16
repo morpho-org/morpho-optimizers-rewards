@@ -16,9 +16,9 @@ describe("Test the distribution for the second epoch", () => {
     usersBalances = await fetchUsers(epochConfig.subgraphUrl);
   });
   it("Should distribute the correct number of tokens over Morpho users", async () => {
-    const usersUnclaimedRewards = usersBalances.map(({ address, balances }) => ({
+    const usersAccumulatedRewards = usersBalances.map(({ address, balances }) => ({
       address,
-      unclaimedRewards: userBalancesToUnclaimedTokens(
+      accumulatedRewards: userBalancesToUnclaimedTokens(
         address,
         balances,
         epochConfig.finalTimestamp,
@@ -26,7 +26,7 @@ describe("Test the distribution for the second epoch", () => {
       ).toString(), // with 18 * 2 decimals
     }));
 
-    const totalEmitted = usersUnclaimedRewards.reduce((a, b) => a.add(b.unclaimedRewards), BigNumber.from(0));
+    const totalEmitted = usersAccumulatedRewards.reduce((a, b) => a.add(b.accumulatedRewards), BigNumber.from(0));
     const totalEmission = epochConfig.totalEmission.add(configuration.epochs.epoch1.totalEmission); // we sum the emissions
     console.log("Total tokens emitted:", formatUnits(totalEmitted, 18), "over", totalEmission.toString());
     expectBNApproxEquals(
@@ -39,10 +39,10 @@ describe("Test the distribution for the second epoch", () => {
   });
   // TODO: enable when epoch 2 is done
   it.skip("Should should compute the correct root", async () => {
-    const usersUnclaimedRewards = usersBalances
+    const usersAccumulatedRewards = usersBalances
       .map(({ address, balances }) => ({
         address,
-        unclaimedRewards: userBalancesToUnclaimedTokens(
+        accumulatedRewards: userBalancesToUnclaimedTokens(
           address,
           balances,
           epochConfig.finalTimestamp,
@@ -50,8 +50,8 @@ describe("Test the distribution for the second epoch", () => {
         ).toString(), // with 18 * 2 decimals
       }))
       // remove users with 0 MORPHO to claim
-      .filter((b) => b.unclaimedRewards !== "0");
-    const { root } = computeMerkleTree(usersUnclaimedRewards);
+      .filter((b) => b.accumulatedRewards !== "0");
+    const { root } = computeMerkleTree(usersAccumulatedRewards);
     expect(root).toEqual(epochOneRoot);
   });
 });

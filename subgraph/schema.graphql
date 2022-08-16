@@ -1,11 +1,25 @@
 type User @entity {
+  "<userAddress>"
   id: ID!
   address: Bytes!
   balances: [Balance!] @derivedFrom(field: "user")
   transactions: [Transaction!] @derivedFrom(field: "user")
 }
 
+type Epoch @entity {
+  "<ageName>-<epochName>"
+  id: ID!
+  startTimestamp: BigInt!
+  endTimestamp: BigInt!
+  totalEmission: BigInt!
+  supplyIndex: BigInt!
+  borrowIndex: BigInt!
+  initialSupplyIndex: BigInt!
+  initialBorrowIndex: BigInt!
+}
+
 type Market @entity {
+  "<marketAddress>"
   id: ID!
   address: Bytes!
   supplyIndex: BigInt!
@@ -30,10 +44,11 @@ type Balance @entity {
   underlyingBorrowBalance: BigInt!
   userSupplyIndex: BigInt!
   userBorrowIndex: BigInt!
-  unclaimedMorpho: BigInt!
+  accumulatedMorpho: BigInt!
 }
 
 type Transaction @entity {
+  "<txHash>"
   id: ID!
   timestamp: BigInt!
   blockNumber: Int!

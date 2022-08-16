@@ -15,9 +15,9 @@ describe("Test the distribution for the first epoch", () => {
     usersBalances = await fetchUsers(epochConfig.subgraphUrl);
   });
   it("Should distribute the correct number of tokens over Morpho users", async () => {
-    const usersUnclaimedRewards = usersBalances.map(({ address, balances }) => ({
+    const usersAccumulatedRewards = usersBalances.map(({ address, balances }) => ({
       address,
-      unclaimedRewards: userBalancesToUnclaimedTokens(
+      accumulatedRewards: userBalancesToUnclaimedTokens(
         address,
         balances,
         epochConfig.finalTimestamp,
@@ -25,15 +25,15 @@ describe("Test the distribution for the first epoch", () => {
       ).toString(), // with 18 * 2 decimals
     }));
 
-    const totalEmitted = usersUnclaimedRewards.reduce((a, b) => a.add(b.unclaimedRewards), BigNumber.from(0));
+    const totalEmitted = usersAccumulatedRewards.reduce((a, b) => a.add(b.accumulatedRewards), BigNumber.from(0));
     console.log("Total tokens emitted:", formatUnits(totalEmitted, 18), "over", epochConfig.totalEmission.toString());
     expectBNApproxEquals(totalEmitted, epochConfig.totalEmission.mul(WAD), 1e9); // 8 over 18 decimals
   });
   it("Should should compute the correct root", async () => {
-    const usersUnclaimedRewards = usersBalances
+    const usersAccumulatedRewards = usersBalances
       .map(({ address, balances }) => ({
         address,
-        unclaimedRewards: userBalancesToUnclaimedTokens(
+        accumulatedRewards: userBalancesToUnclaimedTokens(
           address,
           balances,
           epochConfig.finalTimestamp,
@@ -41,8 +41,8 @@ describe("Test the distribution for the first epoch", () => {
         ).toString(), // with 18 * 2 decimals
       }))
       // remove users with 0 MORPHO to claim
-      .filter((b) => b.unclaimedRewards !== "0");
-    const { root } = computeMerkleTree(usersUnclaimedRewards);
+      .filter((b) => b.accumulatedRewards !== "0");
+    const { root } = computeMerkleTree(usersAccumulatedRewards);
     expect(root).toEqual(epochOneRoot);
   });
 });

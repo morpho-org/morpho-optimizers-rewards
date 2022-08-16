@@ -24,13 +24,13 @@ export const updateSupplyBalanceAndMarket = (
     .div(WAD);
 
   const previousBalance = balance.underlyingSupplyBalance;
-  const unclaimedRewards = accrueMorphoTokens(newSupplyIndex, balance.userSupplyIndex, previousBalance);
+  const accumulatedRewards = accrueMorphoTokens(newSupplyIndex, balance.userSupplyIndex, previousBalance);
 
   balance.timestamp = blockTimestamp;
   balance.blockNumber = blockNumber.toI32();
   balance.underlyingSupplyBalance = newUnderlyingSupplyBalance;
   balance.userSupplyIndex = newSupplyIndex;
-  balance.unclaimedMorpho = balance.unclaimedMorpho.plus(unclaimedRewards);
+  balance.accumulatedMorpho = balance.accumulatedMorpho.plus(accumulatedRewards);
   balance.save();
 
   // APR
@@ -60,13 +60,13 @@ export const updateBorrowBalanceAndMarket = (
     .div(WAD);
 
   const previousBalance = balance.underlyingBorrowBalance;
-  const unclaimedRewards = accrueMorphoTokens(newBorrowIndex, balance.userBorrowIndex, previousBalance);
+  const accumulatedRewards = accrueMorphoTokens(newBorrowIndex, balance.userBorrowIndex, previousBalance);
 
   balance.timestamp = blockTimestamp;
   balance.blockNumber = blockNumber.toI32();
   balance.underlyingBorrowBalance = newUnderlyingBorrowBalance;
   balance.userBorrowIndex = newBorrowIndex;
-  balance.unclaimedMorpho = balance.unclaimedMorpho.plus(unclaimedRewards);
+  balance.accumulatedMorpho = balance.accumulatedMorpho.plus(accumulatedRewards);
   balance.save();
 
   // APR

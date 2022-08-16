@@ -78,15 +78,15 @@ const main = async (ageName: string, _epoch: string) => {
   const endDate = configuration.epochs[epoch].finalTimestamp;
   const usersBalances = await fetchUsers(epochConfig.subgraphUrl);
 
-  let usersUnclaimedRewards = usersBalances
+  let usersAccumulatedRewards = usersBalances
     .map(({ address, balances }) => ({
       address,
-      unclaimedRewards: userBalancesToUnclaimedTokens(address, balances, endDate, epoch).toString(), // with 18 * 2 decimals
+      accumulatedRewards: userBalancesToUnclaimedTokens(address, balances, endDate, epoch).toString(), // with 18 * 2 decimals
     }))
     // remove users with 0 MORPHO to claim
 
-    .filter((b) => b.unclaimedRewards !== "0");
-  const totalEmitted = usersUnclaimedRewards.reduce((a, b) => a.add(b.unclaimedRewards), BigNumber.from(0));
+    .filter((b) => b.accumulatedRewards !== "0");
+  const totalEmitted = usersAccumulatedRewards.reduce((a, b) => a.add(b.accumulatedRewards), BigNumber.from(0));
   console.log(
     "Total tokens emitted:",
     formatUnits(totalEmitted),
@@ -95,17 +95,20 @@ const main = async (ageName: string, _epoch: string) => {
     "for the current epoch",
   );
   if (epoch !== "epoch1") {
-    usersUnclaimedRewards = usersUnclaimedRewards.map((u) => ({
+    usersAccumulatedRewards = usersAccumulatedRewards.map((u) => ({
       ...u,
-      unclaimedRewards: BigNumber.from(u.unclaimedRewards)
+      accumulatedRewards: BigNumber.from(u.accumulatedRewards)
         .add(
           epoch1UserDistribution.distribution.find((userFromEpoch1) => userFromEpoch1.address === u.address)
-            ?.unclaimedRewards ?? BigNumber.from(0),
+            ?.accumulatedRewards ?? BigNumber.from(0),
         )
         .toString(), // TODO: refacto with epoch3
     }));
 
-    const totalEmittedMultiEpoch = usersUnclaimedRewards.reduce((a, b) => a.add(b.unclaimedRewards), BigNumber.from(0));
+    const totalEmittedMultiEpoch = usersAccumulatedRewards.reduce(
+      (a, b) => a.add(b.accumulatedRewards),
+      BigNumber.from(0),
+    );
     console.log(
       "Total tokens emitted:",
       formatUnits(totalEmittedMultiEpoch),
@@ -117,7 +120,7 @@ const main = async (ageName: string, _epoch: string) => {
     {
       date: endDate.toString(),
       epoch,
-      distribution: usersUnclaimedRewards,
+      distribution: usersAccumulatedRewards,
     },
     null,
     2,
@@ -136,7 +139,7 @@ const main = async (ageName: string, _epoch: string) => {
   console.log("Compute the current merkle Tree");
   if (now() < epochConfig.finalTimestamp.toNumber())
     console.log("This is not the final Merkle tree, because the distribution is not finished yet");
-  const { root, proofs } = computeMerkleTree(usersUnclaimedRewards);
+  const { root, proofs } = computeMerkleTree(usersAccumulatedRewards);
   console.log("Computed root: ", root);
   // save the age proofs into a file
   const ageOneProofsFilename = `./distribution/${ageName}/${epochConfig.epochName}/proofs.json`;
