@@ -2,7 +2,7 @@ import { Address, BigInt, log } from "@graphprotocol/graph-ts";
 
 import { startEpochBlockTimestamp } from "./config";
 import { emissions, initialIndex, WAD } from "./constants";
-import { getOrInitMarket } from "./initializer";
+import { getOrInitMarket, getOrInitMarketEpoch } from "./initializer";
 import { getAgeAndEpoch } from "./constants/getAgeAndEpoch";
 import { endTimestamps } from "./constants/endTimestamps";
 import { startTimestamps } from "./constants/startTimestamps";
@@ -63,6 +63,7 @@ const computeUpdatedMorphoIndex = (
   }
   if (prevEpochId && prevEpochId !== currentEpochId) {
     // need to takle multiple speeds
+
     if (!endTimestamps.has(prevEpochId)) log.critical("No end timestamp for epoch {}", [prevEpochId]);
     const endTimestamp = endTimestamps.get(prevEpochId);
     lastMorphoIndex = lastMorphoIndex.plus(
@@ -74,6 +75,11 @@ const computeUpdatedMorphoIndex = (
         emissionId
       )
     );
+    const snapshot = getOrInitMarketEpoch(marketAddress, prevEpochId, marketSide, endTimestamp);
+    snapshot.index = lastMorphoIndex;
+    snapshot.timestamp = endTimestamp;
+    snapshot.isFinished = true;
+    snapshot.save();
     if (!startTimestamps.has(currentEpochId as string)) {
       log.critical("No start timestamp for epoch {}", [currentEpochId as string]);
     }
@@ -89,7 +95,14 @@ const computeUpdatedMorphoIndex = (
     lastTotalUnderlying,
     emissionId
   );
-  return lastMorphoIndex.plus(accrualIndex);
+  const newIndex = lastMorphoIndex.plus(accrualIndex);
+
+  const snapshot = getOrInitMarketEpoch(marketAddress, currentEpochId as string, marketSide, blockTimestamp);
+  snapshot.index = newIndex;
+  snapshot.timestamp = blockTimestamp;
+  snapshot.save();
+
+  return newIndex;
 };
 
 export function updateSupplyIndex(marketAddress: Address, blockTimestamp: BigInt): BigInt {
