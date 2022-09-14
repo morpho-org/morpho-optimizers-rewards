@@ -1,7 +1,6 @@
 import { Address, BigInt, log } from "@graphprotocol/graph-ts";
 
-import { startEpochBlockTimestamp } from "./config";
-import { emissions, initialIndex, WAD } from "./constants";
+import { emissions, WAD } from "./constants";
 import { getOrInitMarket, getOrInitMarketEpoch } from "./initializer";
 import { getAgeAndEpoch } from "./constants/getAgeAndEpoch";
 import { endTimestamps } from "./constants/endTimestamps";
@@ -42,13 +41,11 @@ const computeUpdatedMorphoIndex = (
   lastTotalUnderlying: BigInt,
   marketSide: string
 ): BigInt => {
-  if (blockTimestamp.le(startEpochBlockTimestamp)) return initialIndex;
-
   // sync eventual previous epoch
   const prevEpochId = getAgeAndEpoch(lastUpdateBlockTimestamp);
   const currentEpochId = getAgeAndEpoch(blockTimestamp);
-  const emissionId = currentEpochId + "-" + marketSide;
   if (!currentEpochId) return lastMorphoIndex;
+  const emissionId = currentEpochId + "-" + marketSide;
   if (!prevEpochId && currentEpochId) {
     // start of the first epoch
     if (!startTimestamps.has(currentEpochId)) log.critical("No start timestamp for epoch {}", [currentEpochId]);
