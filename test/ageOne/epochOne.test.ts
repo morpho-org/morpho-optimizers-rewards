@@ -1,18 +1,20 @@
-import { fetchUsers } from "../../src/graph/fetch";
-import { userBalancesToUnclaimedTokens } from "../../src/ages/age-one/getUserUnclaimedTokens";
+import { fetchUsers } from "../../src/utils/graph/getGraphBalances/fetch";
+import { userBalancesToUnclaimedTokens } from "../../src/utils/getUserUnclaimedTokens";
 import { BigNumber, BigNumberish } from "ethers";
 import configuration from "../../src/ages/age-one/configuration";
 import { formatUnits } from "ethers/lib/utils";
 import { WAD } from "../../src/helpers/constants";
-import { UserBalances } from "../../src/graph/types";
-import { computeMerkleTree } from "../../src/computations/compute-merkle-tree";
-
+import { UserBalances } from "../../src/utils/graph/getGraphBalances";
+import { computeMerkleTree } from "../../src/utils/merkleTree";
 describe("Test the distribution for the first epoch", () => {
   const epochConfig = configuration.epochs.epoch1;
   let usersBalances: UserBalances[];
   const epochOneRoot = "0xca64d60cf02765803feb6298e4c851689fbc896d0e73c00e0c2f678f353f0d19";
   beforeAll(async () => {
-    usersBalances = await fetchUsers(epochConfig.subgraphUrl);
+    usersBalances = await fetchUsers(
+      "https://api.thegraph.com/subgraphs/id/QmPQZpR6km7UZPygsELHfH7tPSUEAdt8r3YGuQyQgDTbje",
+      epochConfig.finalBlock,
+    );
   });
   it("Should distribute the correct number of tokens over Morpho users", async () => {
     const usersAccumulatedRewards = usersBalances.map(({ address, balances }) => ({
@@ -24,9 +26,19 @@ describe("Test the distribution for the first epoch", () => {
         "epoch1",
       ).toString(), // with 18 * 2 decimals
     }));
-
+    const totalFromGraph = usersBalances.reduce(
+      (a, b) => a.add(b.balances.reduce((acc, b) => acc.add(b.accumulatedMorpho), BigNumber.from(0))),
+      BigNumber.from(0),
+    );
     const totalEmitted = usersAccumulatedRewards.reduce((a, b) => a.add(b.accumulatedRewards), BigNumber.from(0));
+
     console.log("Total tokens emitted:", formatUnits(totalEmitted, 18), "over", epochConfig.totalEmission.toString());
+    console.log(
+      "Total tokens from graph:",
+      formatUnits(totalFromGraph, 18),
+      "over",
+      epochConfig.totalEmission.toString(),
+    );
     expectBNApproxEquals(totalEmitted, epochConfig.totalEmission.mul(WAD), 1e9); // 8 over 18 decimals
   });
   it("Should should compute the correct root", async () => {

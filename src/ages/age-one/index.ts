@@ -1,20 +1,20 @@
 import { formatUnits } from "ethers/lib/utils";
-import { fetchUsers } from "../../graph/fetch";
+import { fetchUsers } from "../../utils/graph/getGraphBalances/fetch";
 import * as fs from "fs";
 import path from "path";
-import { computeMerkleTree } from "../../computations/compute-merkle-tree";
 import configuration from "./configuration";
-import { getMarketsEmission } from "./getMarketsEmission";
-import { userBalancesToUnclaimedTokens } from "./getUserUnclaimedTokens";
+import { epochToMarketsDistribution } from "./distributions";
+import { userBalancesToUnclaimedTokens } from "../../utils/getUserUnclaimedTokens";
 import { BigNumber } from "ethers";
 import { now } from "../../helpers/time";
+import { computeMerkleTree } from "../../utils/merkleTree";
 const main = async (ageName: string, _epoch: string) => {
   console.log("Compute markets parameters");
   if (!Object.keys(configuration.epochs).includes(_epoch)) throw Error("invalid epoch name");
   const epoch = _epoch as keyof typeof configuration.epochs;
   const epochConfig = configuration.epochs[epoch];
   console.log("Markets Emissions");
-  const { marketsEmissions, liquidity } = await getMarketsEmission(epoch);
+  const { marketsEmissions, liquidity } = await epochToMarketsDistribution(epochConfig);
   const formattedMarketsEmission: {
     [market: string]: {
       supply: string;
@@ -72,7 +72,7 @@ const main = async (ageName: string, _epoch: string) => {
   /// user related ///
   console.log("Fetch Morpho users of the age");
   const endDate = configuration.epochs[epoch].finalTimestamp;
-  const usersBalances = await fetchUsers(epochConfig.subgraphUrl);
+  const usersBalances = await fetchUsers(configuration.subgraphUrl);
 
   const usersAccumulatedRewards = usersBalances
     .map(({ address, balances }) => ({

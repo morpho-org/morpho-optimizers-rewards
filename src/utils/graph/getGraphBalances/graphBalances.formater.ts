@@ -1,5 +1,5 @@
-import { GraphUserBalances, UserBalances } from "./types";
 import { BigNumber } from "ethers";
+import { GraphUserBalances, UserBalances } from "./balances.types";
 
 export const formatGraphBalances = (graphBalance: GraphUserBalances): UserBalances => ({
   address: graphBalance.address,

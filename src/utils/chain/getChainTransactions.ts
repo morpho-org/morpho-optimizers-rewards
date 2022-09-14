@@ -1,5 +1,5 @@
 import { BigNumber, BigNumberish, providers } from "ethers";
-import { Morpho } from "../../subgraph/generated/Morpho/Morpho";
+import { Morpho } from "../../../subgraph/generated/Morpho/Morpho";
 import { MorphoCompound__factory } from "@morpho-labs/morpho-ethers-contract";
 import addresses from "@morpho-labs/morpho-ethers-contract/lib/addresses";
 import { TransactionType } from "../graph/types";

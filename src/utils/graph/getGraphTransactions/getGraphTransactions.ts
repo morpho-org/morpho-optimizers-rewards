@@ -1,6 +1,7 @@
 import { BigNumber, BigNumberish } from "ethers";
-import { TransactionType } from "./types";
+import { TransactionType } from "../types";
 import axios from "axios";
+import { GraphTransactions } from "./graphTransactions.types";
 
 export const getGraphTransactions = async (
   graphUrl: string,
@@ -30,16 +31,6 @@ export const getGraphTransactions = async (
   }
   return txs;
 };
-
-export interface GraphTransactions {
-  id: string;
-  timestamp: string;
-  hash: string;
-  logIndex: string;
-  market: { address: string };
-  user: { address: string };
-  type: TransactionType;
-}
 
 const query = `query GetTransactions($timestampFrom: BigInt!, $timestampTo: BigInt!, $nextId: ID!){
   transactions(first: 1000, where: {

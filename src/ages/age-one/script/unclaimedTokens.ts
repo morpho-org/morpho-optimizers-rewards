@@ -1,4 +1,4 @@
-import { getUserUnclaimedTokensFromDistribution } from "../getUserUnclaimedTokens";
+import { getUserUnclaimedTokensFromDistribution } from "../../../utils/getUserUnclaimedTokens";
 import { formatUnits } from "ethers/lib/utils";
 import configuration from "../configuration";
 

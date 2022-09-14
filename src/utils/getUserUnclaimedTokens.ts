@@ -1,11 +1,12 @@
-import { now } from "../../helpers/time";
-import configuration from "./configuration";
+import { now } from "../helpers/time";
+import configuration from "../ages/age-one/configuration";
 import { BigNumber, providers } from "ethers";
 import axios from "axios";
-import { WAD } from "../../helpers/constants";
-import { GraphUserBalances, Market, UserBalance } from "../../graph/types";
-import { formatGraphBalances } from "../../graph/graphBalances.formater";
-import { maxBN } from "../../helpers/maths";
+import { WAD } from "../helpers/constants";
+import { formatGraphBalances } from "./graph/getGraphBalances/graphBalances.formater";
+import { maxBN } from "../helpers/maths";
+import { GraphUserBalances, UserBalance } from "./graph/getGraphBalances";
+import { Market } from "./graph/getGraphMarkets/markets.types";
 export const getUserUnclaimedTokensFromDistribution = async (
   address: string,
   epoch: keyof typeof configuration.epochs,
@@ -17,11 +18,7 @@ export const getUserUnclaimedTokensFromDistribution = async (
     const block = await provider.getBlock(blockNumber);
     endDate = BigNumber.from(Math.min(configuration.epochs[epoch].finalTimestamp.toNumber(), block.timestamp));
   }
-  const userBalances = await getUserBalances(
-    configuration.epochs[epoch].subgraphUrl,
-    address.toLowerCase(),
-    blockNumber,
-  );
+  const userBalances = await getUserBalances(configuration.subgraphUrl, address.toLowerCase(), blockNumber);
 
   return userBalancesToUnclaimedTokens(address, userBalances?.balances || [], endDate, epoch);
 };

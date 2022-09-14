@@ -1,8 +1,8 @@
 import axios from "axios";
-import { GraphUserBalances, UserBalances } from "./types";
 import balancesQuery from "./balances.query";
 import { formatGraphBalances } from "./graphBalances.formater";
 import { providers } from "ethers";
+import { GraphUserBalances, UserBalances } from "./balances.types";
 
 export const fetchUsers = async (graphUrl: string, block?: providers.BlockTag) => {
   let hasMore = true;

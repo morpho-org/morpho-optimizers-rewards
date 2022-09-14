@@ -1,5 +1,6 @@
 import { BigNumber } from "ethers";
-export type TransactionType = "Supply" | "Borrow" | "Withdraw" | "Repay";
+import { Market } from "../types";
+
 export interface GraphUserBalances {
   address: string;
   balances: {
@@ -36,17 +37,4 @@ export interface UserBalance {
   userBorrowIndex: BigNumber;
   accumulatedMorpho: BigNumber;
   market: Market;
-}
-export interface Market {
-  address: string;
-  supplyIndex: BigNumber;
-  borrowIndex: BigNumber;
-  supplyUpdateBlockTimestamp: BigNumber;
-  borrowUpdateBlockTimestamp: BigNumber;
-  lastP2PBorrowIndex: BigNumber;
-  lastPoolBorrowIndex: BigNumber;
-  lastP2PSupplyIndex: BigNumber;
-  lastPoolSupplyIndex: BigNumber;
-  lastTotalBorrow: BigNumber;
-  lastTotalSupply: BigNumber;
 }
