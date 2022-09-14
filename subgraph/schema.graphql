@@ -50,11 +50,13 @@ type Balance @entity {
 type Transaction @entity {
   "<txHash>"
   id: ID!
+  hash: Bytes!
   timestamp: BigInt!
   blockNumber: Int!
   market: Market!
   user: User!
   type: TransactionType!
+  logIndex: BigInt!
   underlyingSupplyBalance: BigInt!
   underlyingBorrowBalance: BigInt!
 }

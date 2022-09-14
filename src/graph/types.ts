@@ -1,5 +1,5 @@
 import { BigNumber } from "ethers";
-
+export type TransactionType = "Supply" | "Borrow" | "Withdraw" | "Repay";
 export interface GraphUserBalances {
   address: string;
   balances: {

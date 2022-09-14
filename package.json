@@ -11,7 +11,7 @@
     "test": "jest --forceExit --coverage --verbose",
     "watch-test": "yarn test --watchAll",
     "watch-ts": "tsc -w",
-    "lint": "eslint . --ext .ts",
+    "lint": "eslint . --fix --ext .ts",
     "start": "ts-node ./src/${SCRIPT:-index}",
     "start:age1:epoch1": "ts-node ./src/ages/age-one/index.ts epoch1",
     "start:age1:epoch2": "ts-node ./src/ages/age-one/index.ts epoch2",
@@ -37,7 +37,9 @@
     "typescript": "^4.7.3"
   },
   "dependencies": {
+    "@morpho-labs/morpho-ethers-contract": "^1.1.1",
     "axios": "^0.27.2",
+    "dotenv": "^16.0.2",
     "ethers": "^5.6.8",
     "merkletreejs": "^0.2.31"
   }

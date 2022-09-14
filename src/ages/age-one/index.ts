@@ -43,7 +43,7 @@ const main = async (ageName: string, _epoch: string) => {
       epoch,
       totalEmission: epochConfig.totalEmission.toString(),
       parameters: {
-        initialBlock: epochConfig.initialBlock.toString(),
+        snapshotBlock: epochConfig.snapshotBlock.toString(),
         initialTimestamp: epochConfig.initialTimestamp.toString(),
         totalSupply: formatUnits(liquidity.totalSupply),
         totalBorrow: formatUnits(liquidity.totalBorrow),
@@ -66,10 +66,7 @@ const main = async (ageName: string, _epoch: string) => {
   }
 
   console.log("duration", epochConfig.finalTimestamp.sub(epochConfig.initialTimestamp).toString());
-  if (epoch === "epoch3") {
-    console.log("No distribution yet for epoch 3");
-    return;
-  }
+
   console.log("Get current distribution through all users");
 
   /// user related ///

@@ -30,12 +30,14 @@ export function handleBorrowed(event: Borrowed): void {
     event.params._balanceOnPool
   );
 
-  const tx = new Transaction(event.transaction.hash.toHexString());
+  const tx = new Transaction(event.transaction.hash.toHexString() + "-" + event.logIndex.toHexString());
+  tx.hash = event.transaction.hash;
   tx.timestamp = event.block.timestamp;
   tx.blockNumber = event.block.number.toI32();
   tx.market = marketAddress.toHexString();
   tx.user = userAddress.toHexString();
   tx.type = "Borrow";
+  tx.logIndex = event.transactionLogIndex;
   tx.underlyingBorrowBalance = balance.underlyingBorrowBalance;
   tx.underlyingSupplyBalance = balance.underlyingSupplyBalance;
   tx.save();
@@ -56,12 +58,14 @@ export function handleRepaid(event: Repaid): void {
     event.params._balanceOnPool
   );
 
-  const tx = new Transaction(event.transaction.hash.toHexString());
+  const tx = new Transaction(event.transaction.hash.toHexString() + "-" + event.logIndex.toHexString());
+  tx.hash = event.transaction.hash;
   tx.timestamp = event.block.timestamp;
   tx.blockNumber = event.block.number.toI32();
   tx.market = marketAddress.toHexString();
   tx.user = userAddress.toHexString();
   tx.type = "Repay";
+  tx.logIndex = event.transactionLogIndex;
   tx.underlyingBorrowBalance = balance.underlyingBorrowBalance;
   tx.underlyingSupplyBalance = balance.underlyingSupplyBalance;
   tx.save();
@@ -82,12 +86,14 @@ export function handleSupplied(event: Supplied): void {
     event.params._balanceOnPool
   );
 
-  const tx = new Transaction(event.transaction.hash.toHexString());
+  const tx = new Transaction(event.transaction.hash.toHexString() + "-" + event.logIndex.toHexString());
+  tx.hash = event.transaction.hash;
   tx.timestamp = event.block.timestamp;
   tx.blockNumber = event.block.number.toI32();
   tx.market = marketAddress.toHexString();
   tx.user = userAddress.toHexString();
   tx.type = "Supply";
+  tx.logIndex = event.transactionLogIndex;
   tx.underlyingBorrowBalance = balance.underlyingBorrowBalance;
   tx.underlyingSupplyBalance = balance.underlyingSupplyBalance;
   tx.save();
@@ -108,12 +114,14 @@ export function handleWithdrawn(event: Withdrawn): void {
     event.params._balanceOnPool
   );
 
-  const tx = new Transaction(event.transaction.hash.toHexString());
+  const tx = new Transaction(event.transaction.hash.toHexString() + "-" + event.logIndex.toHexString());
+  tx.hash = event.transaction.hash;
   tx.timestamp = event.block.timestamp;
   tx.blockNumber = event.block.number.toI32();
   tx.market = marketAddress.toHexString();
   tx.user = userAddress.toHexString();
   tx.type = "Withdraw";
+  tx.logIndex = event.transactionLogIndex;
   tx.underlyingBorrowBalance = balance.underlyingBorrowBalance;
   tx.underlyingSupplyBalance = balance.underlyingSupplyBalance;
   tx.save();
