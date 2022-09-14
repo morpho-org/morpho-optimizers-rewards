@@ -1,5 +1,4 @@
-export default `query GetUsersBalances($lastUser: ID! $size: Int!){
-  users(first: $size where: {id_gt: $lastUser}) {
+const query = `  {
     address
     balances {
       timestamp
@@ -22,7 +21,19 @@ export default `query GetUsersBalances($lastUser: ID! $size: Int!){
         lastTotalSupply
       }
     }
-  }
-}
+  }`;
 
-`;
+const balancesQuery = `query GetUsersBalances($lastUser: ID! $size: Int!){
+users(first: $size where: {id_gt: $lastUser})
+ ${query}
+}`;
+
+const balancesQueryWithBlock = `query GetUsersBalancesWithBlock($lastUser: ID! $size: Int!, $block: Int!){
+users(first: $size where: {id_gt: $lastUser} block: {number: $block})
+ ${query}
+}`;
+
+export default {
+  balancesQueryWithBlock,
+  balancesQuery,
+};

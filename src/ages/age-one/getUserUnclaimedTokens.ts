@@ -6,7 +6,6 @@ import { WAD } from "../../helpers/constants";
 import { GraphUserBalances, Market, UserBalance } from "../../graph/types";
 import { formatGraphBalances } from "../../graph/graphBalances.formater";
 import { maxBN } from "../../helpers/maths";
-const epochOneResult = require("../../../distribution/age1/epoch1/marketsEmission.json");
 export const getUserUnclaimedTokensFromDistribution = async (
   address: string,
   epoch: keyof typeof configuration.epochs,
@@ -32,29 +31,16 @@ export const userBalancesToUnclaimedTokens = (
   endDate: BigNumber,
   epoch: keyof typeof configuration.epochs,
 ) => {
-  let prevEpochRewards = BigNumber.from(0);
-
-  // add the previous epoch rewards to sum rewards for root computation
-  if (epoch === "epoch2") {
-    const strRewards = epochOneResult.distribution.find(
-      (d: { accumulatedRewards: string; address: string }) => d.address.toLowerCase() === userAddress.toLowerCase(),
-    )?.accumulatedRewards;
-    if (strRewards) {
-      prevEpochRewards = BigNumber.from(strRewards);
-    }
-  }
   return balances
     .map((b) => {
       let unclaimed = b.accumulatedMorpho;
-
       const supplyIndex = computeSupplyIndex(b.market, endDate, configuration.epochs[epoch].initialTimestamp, epoch);
       unclaimed = unclaimed.add(getUserUnclaimedTokens(supplyIndex, b.userSupplyIndex, b.underlyingSupplyBalance));
       const borrowIndex = computeBorrowIndex(b.market, endDate, configuration.epochs[epoch].initialTimestamp, epoch);
       unclaimed = unclaimed.add(getUserUnclaimedTokens(borrowIndex, b.userBorrowIndex, b.underlyingBorrowBalance));
       return unclaimed;
     })
-    .reduce((a, b) => a.add(b), BigNumber.from(0))
-    .add(prevEpochRewards);
+    .reduce((a, b) => a.add(b), BigNumber.from(0));
 };
 
 const getUserUnclaimedTokens = (marketIndex: BigNumber, userIndex: BigNumber, userBalance: BigNumber) => {

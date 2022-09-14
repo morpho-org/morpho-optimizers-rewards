@@ -2,8 +2,9 @@ import axios from "axios";
 import { GraphUserBalances, UserBalances } from "./types";
 import balancesQuery from "./balances.query";
 import { formatGraphBalances } from "./graphBalances.formater";
+import { providers } from "ethers";
 
-export const fetchUsers = async (graphUrl: string) => {
+export const fetchUsers = async (graphUrl: string, block?: providers.BlockTag) => {
   let hasMore = true;
   const batchSize = 1000;
   let usersBalances: UserBalances[] = [];
@@ -13,8 +14,8 @@ export const fetchUsers = async (graphUrl: string) => {
   while (hasMore) {
     const newBalances = await axios
       .post<any, GraphResult<{ users: GraphUserBalances[] }>>(graphUrl, {
-        query: balancesQuery,
-        variables: { size: batchSize, lastUser: offset },
+        query: block ? balancesQuery.balancesQueryWithBlock : balancesQuery.balancesQuery,
+        variables: { size: batchSize, lastUser: offset, block },
       })
       .then((r) => {
         return r.data.data.users.map(formatGraphBalances);
