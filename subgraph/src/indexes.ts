@@ -17,6 +17,21 @@ const computeOneEpochDistribuedRewards = (
   totalSupply: BigInt,
   emissionId: string
 ): BigInt => {
+  const firstEpoch = getAgeAndEpoch(timestampFrom);
+  const secondEopch = getAgeAndEpoch(timestampTo);
+  if (secondEopch && firstEpoch && firstEpoch !== secondEopch)
+    log.critical(
+      "Distribution computed through two different epochs {} and {} for the market {} on the emission of {}. timestamp from: {}, timestamp to: {}",
+      [
+        firstEpoch,
+        secondEopch,
+        marketAddress.toHexString(),
+        emissionId,
+        timestampFrom.toString(),
+        timestampTo.toString(),
+      ]
+    );
+
   if (!emissions.has(emissionId)) log.critical("No emission defined for id {}", [emissionId]);
   const speeds = emissions.get(emissionId);
   if (!speeds.has(marketAddress.toHexString())) {
@@ -69,7 +84,7 @@ const computeUpdatedMorphoIndex = (
         lastUpdateBlockTimestamp,
         endTimestamp,
         lastTotalUnderlying,
-        emissionId
+        prevEpochId + "-" + marketSide
       )
     );
     const snapshot = getOrInitMarketEpoch(marketAddress, prevEpochId, marketSide, endTimestamp);
