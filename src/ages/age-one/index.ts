@@ -4,7 +4,7 @@ import * as fs from "fs";
 import path from "path";
 import configuration from "./configuration";
 import { epochToMarketsDistribution } from "./distributions";
-import { userBalancesToUnclaimedTokens } from "../../utils/getUserUnclaimedTokens";
+import { userBalancesToUnclaimedTokens } from "../../utils/getUserRewards";
 import { BigNumber } from "ethers";
 import { now } from "../../helpers/time";
 import { computeMerkleTree } from "../../utils/merkleTree";
