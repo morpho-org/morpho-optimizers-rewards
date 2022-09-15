@@ -1,10 +1,11 @@
-import { fetchUsers } from "../../src/utils/graph/getGraphBalances/fetch";
+/* eslint-disable no-console */
+
 import { userBalancesToUnclaimedTokens } from "../../src/utils/getUserRewards";
 import { BigNumber } from "ethers";
 import { formatUnits } from "ethers/lib/utils";
 import { WAD } from "../../src/helpers/constants";
 import { expectBNApproxEquals } from "./epochOne.test";
-import { UserBalances } from "../../src/utils/graph/getGraphBalances";
+import { UserBalances, fetchUsers } from "../../src/utils/graph/getGraphBalances";
 import { computeMerkleTree } from "../../src/utils/merkleTree";
 import { ages } from "../../src/ages";
 

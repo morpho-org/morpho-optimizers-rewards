@@ -1,8 +1,7 @@
-import { BigNumber, BigNumberish, providers } from "ethers";
-import { Morpho } from "../../../subgraph/generated/Morpho/Morpho";
+import { providers } from "ethers";
 import { MorphoCompound__factory } from "@morpho-labs/morpho-ethers-contract";
 import addresses from "@morpho-labs/morpho-ethers-contract/lib/addresses";
-import { TransactionType } from "../graph/types";
+import { TransactionType } from "../graph/getGraphTransactions";
 
 const blockTimestamps: { [blockNumber: number]: number | undefined } = {};
 const getBlockTimestamp = async <T extends { getBlock: () => Promise<{ timestamp: number }>; blockNumber: number }>(

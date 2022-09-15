@@ -1,5 +1,5 @@
 import { BigNumber } from "ethers";
-import { Market } from "../types";
+import { Market } from "../getGraphMarkets/markets.types";
 
 export interface GraphUserBalances {
   address: string;

@@ -1,9 +1,10 @@
-import { fetchUsers } from "../../src/utils/graph/getGraphBalances/fetch";
+/* eslint-disable no-console */
+
 import { userBalancesToUnclaimedTokens } from "../../src/utils/getUserRewards";
 import { BigNumber, BigNumberish } from "ethers";
 import { formatUnits } from "ethers/lib/utils";
 import { WAD } from "../../src/helpers/constants";
-import { UserBalances } from "../../src/utils/graph/getGraphBalances";
+import { UserBalances, fetchUsers } from "../../src/utils/graph/getGraphBalances";
 import { computeMerkleTree } from "../../src/utils/merkleTree";
 import { ages } from "../../src/ages";
 describe("Test the distribution for the first epoch", () => {
@@ -11,10 +12,7 @@ describe("Test the distribution for the first epoch", () => {
   let usersBalances: UserBalances[];
   const epochOneRoot = "0xca64d60cf02765803feb6298e4c851689fbc896d0e73c00e0c2f678f353f0d19";
   beforeAll(async () => {
-    usersBalances = await fetchUsers(
-      "https://api.thegraph.com/subgraphs/id/QmPQZpR6km7UZPygsELHfH7tPSUEAdt8r3YGuQyQgDTbje",
-      epochConfig.finalBlock,
-    );
+    usersBalances = await fetchUsers(ages["age1"].subgraphUrl, epochConfig.finalBlock);
   });
   it("Should distribute the correct number of tokens over Morpho users", async () => {
     const usersAccumulatedRewards = usersBalances.map(({ address, balances }) => ({

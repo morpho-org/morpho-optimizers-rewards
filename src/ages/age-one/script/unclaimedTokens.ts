@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { getUserRewards } from "../../../utils/getUserRewards";
 import { formatUnits } from "ethers/lib/utils";
 

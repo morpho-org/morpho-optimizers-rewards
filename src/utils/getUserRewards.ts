@@ -1,5 +1,5 @@
 import { now } from "../helpers/time";
-import { BigNumber, BigNumberish, providers, utils } from "ethers";
+import { BigNumber, BigNumberish, providers } from "ethers";
 import axios from "axios";
 import { WAD } from "../helpers/constants";
 import { maxBN, minBN } from "../helpers/maths";
@@ -17,7 +17,7 @@ export const getUserRewards = async (
   let timestampEnd = now();
   if (blockNumber) {
     const block = await provider.getBlock(blockNumber);
-    const timestampEnd = block.timestamp;
+    timestampEnd = block.timestamp;
   }
   const userBalances = await getUserBalances(
     ages["age1"].subgraphUrl, // TODO: export the subgraphUrl

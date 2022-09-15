@@ -17,7 +17,6 @@ export const getGraphMarkets = async (blockTag: number) => {
     })
     .then((result) => {
       if (!result.data?.data) {
-        console.error(result.data);
         throw Error(result.data!.toString());
       }
       result.data.data.markets.forEach((graphMarket) => {

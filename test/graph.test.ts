@@ -1,12 +1,14 @@
-import { getGraphTransactions } from "../src/utils/graph/getGraphTransactions/getGraphTransactions";
-import configuration from "../src/ages/age-one/configuration";
+/* eslint-disable no-console */
+
+import { getGraphTransactions } from "../src/utils/graph/getGraphTransactions";
 import { providers } from "ethers";
 import * as dotenv from "dotenv";
 import { getChainTransactions } from "../src/utils/chain/getChainTransactions";
+import { ages } from "../src/ages";
 dotenv.config();
 jest.setTimeout(300_000);
 describe("Test the current state of the subgraph for age one", () => {
-  const ageOneConfig = configuration;
+  const ageOneConfig = ages["age1"];
   const provider = new providers.JsonRpcProvider(process.env.RPC_URL);
   const graphUrl = "https://api.thegraph.com/subgraphs/name/morpho-dev/morpho-rewards-staging";
   it("Should have handled all the transactions of the epoch one", async () => {
@@ -18,8 +20,8 @@ describe("Test the current state of the subgraph for age one", () => {
 
     const epochOneChainTransactions = await getChainTransactions(
       provider,
-      ageOneConfig.epochs.epoch1.initialBlock,
-      ageOneConfig.epochs.epoch1.finalBlock,
+      ageOneConfig.epochs.epoch1.initialBlock!,
+      ageOneConfig.epochs.epoch1.finalBlock!,
     );
     let hasError = false;
     epochOneChainTransactions.forEach((chainTx) => {
@@ -43,8 +45,8 @@ describe("Test the current state of the subgraph for age one", () => {
 
     const chainTransactions = await getChainTransactions(
       provider,
-      ageOneConfig.epochs.epoch2.initialBlock,
-      ageOneConfig.epochs.epoch2.finalBlock,
+      ageOneConfig.epochs.epoch2.initialBlock!,
+      ageOneConfig.epochs.epoch2.finalBlock!,
     );
     let hasError = false;
     chainTransactions.forEach((chainTx) => {
@@ -69,7 +71,7 @@ describe("Test the current state of the subgraph for age one", () => {
     const currentBlock = await provider.getBlock("latest");
     const chainTransactions = await getChainTransactions(
       provider,
-      ageOneConfig.epochs.epoch3.initialBlock,
+      ageOneConfig.epochs.epoch3.initialBlock!,
       currentBlock.timestamp,
     );
     let hasError = false;

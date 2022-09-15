@@ -1,5 +1,4 @@
 import { BigNumber, BigNumberish } from "ethers";
-import { TransactionType } from "../types";
 import axios from "axios";
 import { GraphTransactions } from "./graphTransactions.types";
 

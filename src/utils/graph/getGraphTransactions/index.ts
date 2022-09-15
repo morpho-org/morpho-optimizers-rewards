@@ -1,2 +1,2 @@
-export type { GraphTransactions } from "./graphTransactions.types";
+export type { GraphTransactions, TransactionType } from "./graphTransactions.types";
 export { getGraphTransactions } from "./getGraphTransactions";

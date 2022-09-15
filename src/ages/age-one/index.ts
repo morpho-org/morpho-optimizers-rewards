@@ -1,14 +1,18 @@
+/* eslint-disable no-console */
+
 import { formatUnits } from "ethers/lib/utils";
-import { fetchUsers } from "../../utils/graph/getGraphBalances/fetch";
+import { fetchUsers } from "../../utils/graph/getGraphBalances";
 import * as fs from "fs";
 import path from "path";
-import configuration from "./configuration";
 import { epochToMarketsDistribution } from "./distributions";
 import { userBalancesToUnclaimedTokens } from "../../utils/getUserRewards";
 import { BigNumber } from "ethers";
 import { now } from "../../helpers/time";
 import { computeMerkleTree } from "../../utils/merkleTree";
+import { ages } from "../../ages";
+
 const main = async (ageName: string, _epoch: string) => {
+  const configuration = ages["age1"];
   console.log("Compute markets parameters");
   if (!Object.keys(configuration.epochs).includes(_epoch)) throw Error("invalid epoch name");
   const epoch = _epoch as keyof typeof configuration.epochs;
@@ -77,7 +81,7 @@ const main = async (ageName: string, _epoch: string) => {
   const usersAccumulatedRewards = usersBalances
     .map(({ address, balances }) => ({
       address,
-      accumulatedRewards: userBalancesToUnclaimedTokens(address, balances, endDate, epoch).toString(), // with 18 * 2 decimals
+      accumulatedRewards: userBalancesToUnclaimedTokens(address, balances, endDate).toString(), // with 18 * 2 decimals
     }))
     // remove users with 0 MORPHO to claim
 

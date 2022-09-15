@@ -1,4 +1,3 @@
-import { formatUnits } from "ethers/lib/utils";
 import { BigNumber } from "ethers";
 import { MarketEmission } from "./markets.types";
 import { WAD } from "../../helpers/constants";
@@ -45,7 +44,6 @@ export const computeMarketsEmissions = (
       marketEmission,
     };
   });
-  console.log("total Emitted:", formatUnits(marketEmissionTotal));
   const liquidity = {
     totalSupply: totalSupplyUSD.div(WAD),
     totalBorrow: totalBorrowUSD.div(WAD),
