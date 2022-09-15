@@ -23,7 +23,7 @@ export const getUserRewards = async (
     blockNumber,
   );
   const currentRewards = userBalancesToUnclaimedTokens(address, userBalances?.balances || [], timestampEnd);
-  const claimableRaw = require("../distribution/merkleTree/currentDistribution.json").proofs[address.toLowerCase()];
+  const claimableRaw = require("../../distribution/merkleTree/currentDistribution.json").proofs[address.toLowerCase()];
   const claimable = claimableRaw ? BigNumber.from(claimableRaw.amount) : BigNumber.from(0);
   const currentEpochRewards = currentRewards.sub(claimable);
 
@@ -60,6 +60,7 @@ export const getUserRewards = async (
     currentEpochRewards,
     currentEpochProjectedRewards,
     totalRewardsEarned: currentRewards,
+    claimable,
     claimedRewards: claimed,
     claimData,
   };
@@ -125,7 +126,7 @@ const computeIndex = (
     const initialTimestamp = maxBN(epoch.epoch.initialTimestamp, BigNumber.from(lastUpdateTimestamp));
     const finalTimestamp = minBN(epoch.epoch.finalTimestamp, BigNumber.from(currentTimestamp));
     const deltaTimestamp = finalTimestamp.sub(initialTimestamp);
-    const marketsEmission = require(`../distribution/${epoch.age}/${epoch.epoch.epochName}/marketsEmission.json`);
+    const marketsEmission = require(`../../distribution/${epoch.age}/${epoch.epoch.epochName}/marketsEmission.json`);
     const speed = BigNumber.from(marketsEmission.markets[marketAddress]?.[rateType] ?? 0);
     const morphoAccrued = deltaTimestamp.mul(speed); // in WEI units;
     const ratio = morphoAccrued.mul(WAD).div(totalUnderlying); // in 18*2 - decimals units;
