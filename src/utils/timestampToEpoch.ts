@@ -1,5 +1,5 @@
 import { BigNumberish } from "ethers";
-import { ages, EpochConfig } from "../ages";
+import { ages, EpochConfig } from "../ages/ages";
 
 export const timestampToEpoch = (timestamp: BigNumberish) => {
   const age = timestampToAge(timestamp);

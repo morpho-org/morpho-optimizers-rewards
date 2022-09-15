@@ -1,0 +1,1 @@
+export { getChainTransactions } from "./getChainTransactions";

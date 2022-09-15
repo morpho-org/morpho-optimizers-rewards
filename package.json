@@ -1,23 +1,31 @@
 {
-  "name": "@morpholabs/morpho-rewards",
-  "version": "0.2.2",
-  "description": "Morpho rewards distribution scripts",
-  "main": "index.js",
-  "repository": "git@github.com:morpho-labs/morpho-rewards.git",
+  "name": "@morpho-labs/morpho-rewards",
+  "version": "1.0.0",
+  "description": "Morpho Rewards distribution using a Rewards distributor and a merkle tree",
+  "main": "lib/index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/morpho-labs/morpho-rewards.git"
+  },
+  "bugs": {
+    "url": "https://github.com/morpho-labs/morpho-rewards/issues"
+  },
+  "homepage": "https://github.com/morpho-labs/morpho-rewards#readme",
   "author": "Julien <julien@morpho.xyz>",
   "license": "MIT",
   "scripts": {
-    "build": "tsc",
+    "build": "tsc --build ./tsconfig.build.json",
+    "clean": "rm -rf ./lib/",
     "test": "jest --forceExit --coverage --verbose",
     "watch-test": "yarn test --watchAll",
     "watch-ts": "tsc -w",
-    "lint": "eslint . --fix --ext .ts",
+    "lint": "eslint src --fix --ext .ts",
     "start": "ts-node ./src/${SCRIPT:-index}",
     "start:age1:epoch1": "ts-node ./src/ages/age-one/index.ts epoch1",
     "start:age1:epoch2": "ts-node ./src/ages/age-one/index.ts epoch2",
     "start:age1:epoch3": "ts-node ./src/ages/age-one/index.ts epoch3",
     "start:age1:unclaimed": "ts-node ./src/ages/age-one/script/unclaimedTokens.ts",
-    "prepublishOnly": "rm -rf lib && yarn build && git stash && rm -rf ./src ./coverage ./test ./.github ./jest.config.js ./subgraph",
+    "prepublishOnly": "yarn build && yarn lint",
     "postpublish": "git clean -fd && git checkout -- .",
     "preversion": "yarn build",
     "postversion": "git push && git push --tags"
@@ -42,5 +50,13 @@
     "dotenv": "^16.0.2",
     "ethers": "^5.6.8",
     "merkletreejs": "^0.2.31"
+  },
+  "peerDependencies": {
+    "@morpho-labs/morpho-ethers-contract": "^1.1.1",
+    "axios": "^0.27.2",
+    "ethers": "^5.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

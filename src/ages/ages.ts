@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
-import { ageOneDistribution } from "./ages/age-one/distributions";
+import { ageOneDistribution } from "./age-one/distributions";
 import { BigNumber } from "ethers";
-import { MarketEmission } from "./utils/markets";
+import { MarketEmission } from "../utils";
 
 export interface EpochConfig {
   snapshotBlock: number;

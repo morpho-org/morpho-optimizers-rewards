@@ -1,16 +1,17 @@
 /* eslint-disable no-console */
 
-import { getGraphTransactions } from "../src/utils/graph/getGraphTransactions";
+import { getGraphTransactions, getChainTransactions } from "../src/utils";
 import { providers } from "ethers";
 import * as dotenv from "dotenv";
-import { getChainTransactions } from "../src/utils/chain/getChainTransactions";
-import { ages } from "../src/ages";
+import { ages } from "../src";
 dotenv.config();
 jest.setTimeout(300_000);
-describe("Test the current state of the subgraph for age one", () => {
+
+const rpcUrl = process.env.RPC_URL;
+describe.skip("Test the current state of the subgraph for age one", () => {
   const ageOneConfig = ages["age1"];
-  const provider = new providers.JsonRpcProvider(process.env.RPC_URL);
   const graphUrl = "https://api.thegraph.com/subgraphs/name/morpho-dev/morpho-rewards-staging";
+  const provider = new providers.JsonRpcProvider(rpcUrl);
   it("Should have handled all the transactions of the epoch one", async () => {
     const epochOneGraphTransactions = await getGraphTransactions(
       graphUrl,
@@ -19,7 +20,7 @@ describe("Test the current state of the subgraph for age one", () => {
     );
 
     const epochOneChainTransactions = await getChainTransactions(
-      provider,
+      provider!,
       ageOneConfig.epochs.epoch1.initialBlock!,
       ageOneConfig.epochs.epoch1.finalBlock!,
     );

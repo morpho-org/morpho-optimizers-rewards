@@ -1,7 +1,6 @@
 import { BigNumber } from "ethers";
-import { getGraphMarkets } from "../../utils/graph/getGraphMarkets";
-import { computeMarketsEmissions } from "../../utils/markets";
-import { EpochConfig } from "../../ages";
+import { computeMarketsEmissions, getGraphMarkets } from "../../utils";
+import { EpochConfig } from "../ages";
 
 export const ageOneDistribution = async (snapshotBlock: number, totalEmission: BigNumber, duration: BigNumber) => {
   const ageOneMarketsParameters = await getGraphMarkets(snapshotBlock);

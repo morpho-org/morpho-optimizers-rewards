@@ -1,15 +1,13 @@
 /* eslint-disable no-console */
 
 import { formatUnits } from "ethers/lib/utils";
-import { fetchUsers } from "../../utils/graph/getGraphBalances";
+import { fetchUsers, userBalancesToUnclaimedTokens, computeMerkleTree } from "../../utils";
 import * as fs from "fs";
 import path from "path";
 import { epochToMarketsDistribution } from "./distributions";
-import { userBalancesToUnclaimedTokens } from "../../utils/getUserRewards";
 import { BigNumber } from "ethers";
-import { now } from "../../helpers/time";
-import { computeMerkleTree } from "../../utils/merkleTree";
-import { ages } from "../../ages";
+import { now } from "../../helpers";
+import { ages } from "../ages";
 
 const main = async (ageName: string, _epoch: string) => {
   const configuration = ages["age1"];

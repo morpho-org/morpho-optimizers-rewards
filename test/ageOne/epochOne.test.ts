@@ -1,12 +1,10 @@
 /* eslint-disable no-console */
 
-import { userBalancesToUnclaimedTokens } from "../../src/utils/getUserRewards";
+import { userBalancesToUnclaimedTokens, UserBalances, fetchUsers, computeMerkleTree } from "../../src/utils";
 import { BigNumber, BigNumberish } from "ethers";
 import { formatUnits } from "ethers/lib/utils";
-import { WAD } from "../../src/helpers/constants";
-import { UserBalances, fetchUsers } from "../../src/utils/graph/getGraphBalances";
-import { computeMerkleTree } from "../../src/utils/merkleTree";
-import { ages } from "../../src/ages";
+import { WAD } from "../../src/helpers";
+import { ages } from "../../src";
 describe("Test the distribution for the first epoch", () => {
   const epochConfig = ages["age1"].epochs.epoch1;
   let usersBalances: UserBalances[];

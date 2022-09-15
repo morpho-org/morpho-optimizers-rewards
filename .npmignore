@@ -1,0 +1,22 @@
+subgraph
+.github
+test
+src
+
+# NPM
+node_modules
+
+# IDE
+.idea
+.vscode
+
+# build
+dist
+lib
+
+# environement
+.env
+
+generated
+build
+coverage
