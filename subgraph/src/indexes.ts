@@ -59,7 +59,7 @@ const computeUpdatedMorphoIndex = (
     return lastMorphoIndex.plus(accrualIndex);
   }
   if (prevEpochId && prevEpochId !== currentEpochId) {
-    // need to takle multiple speeds
+    // need to tackle multiple speeds
 
     if (!endTimestamps.has(prevEpochId)) log.critical("No end timestamp for epoch {}", [prevEpochId]);
     const endTimestamp = endTimestamps.get(prevEpochId);

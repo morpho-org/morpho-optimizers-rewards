@@ -1,7 +1,7 @@
-import configuration from "./configuration";
 import { BigNumber } from "ethers";
 import { getGraphMarkets } from "../../utils/graph/getGraphMarkets";
 import { computeMarketsEmissions } from "../../utils/markets";
+import { EpochConfig } from "../../ages";
 
 export const ageOneDistribution = async (snapshotBlock: number, totalEmission: BigNumber, duration: BigNumber) => {
   const ageOneMarketsParameters = await getGraphMarkets(snapshotBlock);
@@ -10,8 +10,6 @@ export const ageOneDistribution = async (snapshotBlock: number, totalEmission: B
   return { marketsEmissions, marketsParameters: ageOneMarketsParameters, liquidity };
 };
 
-export const epochToMarketsDistribution = async (
-  epoch: typeof configuration.epochs[keyof typeof configuration.epochs],
-) => {
+export const epochToMarketsDistribution = async (epoch: EpochConfig) => {
   return ageOneDistribution(epoch.snapshotBlock, epoch.totalEmission, epoch.finalTimestamp.sub(epoch.initialTimestamp));
 };

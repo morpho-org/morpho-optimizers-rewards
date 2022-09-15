@@ -1,15 +1,14 @@
 import { now } from "../helpers/time";
-import configuration from "../ages/age-one/configuration";
 import { BigNumber, BigNumberish, providers, utils } from "ethers";
 import axios from "axios";
 import { WAD } from "../helpers/constants";
-import { formatGraphBalances } from "./graph/getGraphBalances/graphBalances.formater";
 import { maxBN, minBN } from "../helpers/maths";
-import { GraphUserBalances, UserBalance } from "./graph/getGraphBalances";
+import { GraphUserBalances, UserBalance, formatGraphBalances } from "./graph/getGraphBalances";
 import { Market } from "./graph/getGraphMarkets/markets.types";
 import { getEpochsBetweenTimestamps, timestampToEpoch } from "./timestampToEpoch";
 import { RewardsDistributor__factory } from "@morpho-labs/morpho-ethers-contract";
 import addresses from "@morpho-labs/morpho-ethers-contract/lib/addresses";
+import { ages } from "../ages";
 export const getUserRewards = async (
   address: string,
   blockNumber?: number,
@@ -20,7 +19,11 @@ export const getUserRewards = async (
     const block = await provider.getBlock(blockNumber);
     const timestampEnd = block.timestamp;
   }
-  const userBalances = await getUserBalances(configuration.subgraphUrl, address.toLowerCase(), blockNumber);
+  const userBalances = await getUserBalances(
+    ages["age1"].subgraphUrl, // TODO: export the subgraphUrl
+    address.toLowerCase(),
+    blockNumber,
+  );
   const currentRewards = userBalancesToUnclaimedTokens(address, userBalances?.balances || [], timestampEnd);
   const claimableRaw = require("../../distribution/merkleTree/currentDistribution.json").proofs[address.toLowerCase()];
   const claimable = claimableRaw ? BigNumber.from(claimableRaw.amount) : BigNumber.from(0);
@@ -123,21 +126,6 @@ const computeIndex = (
   for (const epoch of epochs) {
     const initialTimestamp = maxBN(epoch.epoch.initialTimestamp, BigNumber.from(lastUpdateTimestamp));
     const finalTimestamp = minBN(epoch.epoch.finalTimestamp, BigNumber.from(currentTimestamp));
-
-    if (epochs.length > 1) {
-      console.log(
-        "initial",
-        initialTimestamp.toString(),
-        epoch.epoch.initialTimestamp.toString(),
-        BigNumber.from(lastUpdateTimestamp).toString(),
-      );
-      console.log(
-        "finalTimestamp",
-        finalTimestamp.toString(),
-        epoch.epoch.finalTimestamp.toString(),
-        BigNumber.from(currentTimestamp).toString(),
-      );
-    }
     const deltaTimestamp = finalTimestamp.sub(initialTimestamp);
     const marketsEmission = require(`../../distribution/${epoch.age}/${epoch.epoch.epochName}/marketsEmission.json`);
     const speed = BigNumber.from(marketsEmission.markets[marketAddress]?.[rateType] ?? 0);
