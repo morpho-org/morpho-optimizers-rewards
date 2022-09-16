@@ -2,10 +2,11 @@ import { providers } from "ethers";
 import { MorphoCompound__factory } from "@morpho-labs/morpho-ethers-contract";
 import addresses from "@morpho-labs/morpho-ethers-contract/lib/addresses";
 import { TransactionType } from "../graph";
+import { Optional } from "../../helpers/types";
 
-const blockTimestamps: { [blockNumber: number]: number | undefined } = {};
+const blockTimestamps: { [blockNumber: number]: Optional<number> } = {};
 const getBlockTimestamp = async <T extends { getBlock: () => Promise<{ timestamp: number }>; blockNumber: number }>(
-  event: T,
+  event: T
 ) => {
   let timestamp = blockTimestamps[event.blockNumber];
   if (!timestamp) {
@@ -29,8 +30,8 @@ export const getChainTransactions = async (provider: providers.Provider, blockFr
         timestamp: await getBlockTimestamp(event),
         market: event.args._poolTokenAddress,
         type: "Supply" as TransactionType,
-      })),
-    ),
+      }))
+    )
   );
   const borrowedFilter = morphoCompound.filters.Borrowed();
   const borrowedEvents = await morphoCompound.queryFilter(borrowedFilter, blockFrom, blockTo).then((r) =>
@@ -43,8 +44,8 @@ export const getChainTransactions = async (provider: providers.Provider, blockFr
         timestamp: await getBlockTimestamp(event),
         market: event.args._poolTokenAddress,
         type: "Supply" as TransactionType,
-      })),
-    ),
+      }))
+    )
   );
   const withdrawnFilter = morphoCompound.filters.Withdrawn();
   const withdrawnEvents = await morphoCompound.queryFilter(withdrawnFilter, blockFrom, blockTo).then((r) =>
@@ -57,8 +58,8 @@ export const getChainTransactions = async (provider: providers.Provider, blockFr
         timestamp: await getBlockTimestamp(event),
         market: event.args._poolTokenAddress,
         type: "Supply" as TransactionType,
-      })),
-    ),
+      }))
+    )
   );
   const repaidFilter = morphoCompound.filters.Repaid();
   const repaidEvents = await morphoCompound.queryFilter(repaidFilter, blockFrom, blockTo).then((r) =>
@@ -71,8 +72,8 @@ export const getChainTransactions = async (provider: providers.Provider, blockFr
         timestamp: await getBlockTimestamp(event),
         market: event.args._poolTokenAddress,
         type: "Supply" as TransactionType,
-      })),
-    ),
+      }))
+    )
   );
   return [...suppliedEvents, ...borrowedEvents, ...withdrawnEvents, ...repaidEvents];
 };

@@ -1,11 +1,12 @@
 import { BigNumberish } from "ethers";
 import { ages, EpochConfig } from "../ages/ages";
+import { Optional } from "../helpers/types";
 
 export const timestampToEpoch = (timestamp: BigNumberish) => {
   const age = timestampToAge(timestamp);
   if (!age) return;
   const epoch = Object.values(ages[age].epochs).find(
-    (epoch) => epoch.initialTimestamp.lte(timestamp) && epoch.finalTimestamp.gt(timestamp),
+    (epoch) => epoch.initialTimestamp.lte(timestamp) && epoch.finalTimestamp.gt(timestamp)
   );
   if (!epoch) return;
   return {
@@ -20,7 +21,10 @@ export const getEpochsBetweenTimestamps = (t1: BigNumberish, t2: BigNumberish) =
   const epoch2 = timestampToEpoch(t2);
   const epochs = [epoch1];
 
-  let newEpoch: typeof epoch1 | undefined = epoch1;
+  let newEpoch: Optional<{
+    age: string;
+    epoch: EpochConfig;
+  }> = epoch1;
   while (
     newEpoch?.epoch?.epochName &&
     `${newEpoch?.age}${newEpoch?.epoch?.epochName}` !== `${epoch2?.age}${epoch2?.epoch?.epochName}`
@@ -54,7 +58,7 @@ export const getNextEpoch = (age: string, epoch: string) => {
 
 export const timestampToAge = (timestamp: BigNumberish) => {
   const ageEntry = Object.values(ages).find(
-    (ageConfig) => ageConfig.startTimestamp.lte(timestamp) && ageConfig.endTimestamp.gt(timestamp),
+    (ageConfig) => ageConfig.startTimestamp.lte(timestamp) && ageConfig.endTimestamp.gt(timestamp)
   );
   return ageEntry?.ageName;
 };

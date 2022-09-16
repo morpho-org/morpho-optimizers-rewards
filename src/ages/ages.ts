@@ -2,6 +2,7 @@
 import { ageOneDistribution } from "./age-one/distributions";
 import { BigNumber } from "ethers";
 import { MarketEmission } from "../utils";
+import { Optional } from "../helpers/types";
 
 export interface EpochConfig {
   snapshotBlock: number;
@@ -16,8 +17,8 @@ export interface EpochConfig {
 export type DistributionFunction = (
   snapshotBlock: number,
   totalEmission: BigNumber,
-  duration: BigNumber,
-) => Promise<{ marketsEmissions: { [p: string]: MarketEmission | undefined } }>;
+  duration: BigNumber
+) => Promise<{ marketsEmissions: { [p: string]: Optional<MarketEmission> } }>;
 
 export interface AgeConfig {
   ageName: string;

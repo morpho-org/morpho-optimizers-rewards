@@ -2,6 +2,7 @@ import { BigNumber } from "ethers";
 import { MarketEmission } from "./markets.types";
 import { BASE_UNITS, WAD } from "../../helpers";
 import { MarketMinimal } from "../graph/getGraphMarkets/markets.types";
+import { Optional } from "../../helpers/types";
 
 export const computeMarketsEmissions = (
   ageOneMarketsParameters: {
@@ -21,7 +22,7 @@ export const computeMarketsEmissions = (
   const total = totalBorrowUSD.add(totalSupplyUSD).div(WAD);
 
   const marketsEmissions: {
-    [market: string]: MarketEmission | undefined;
+    [market: string]: Optional<MarketEmission>;
   } = {};
   let marketEmissionTotal = BigNumber.from(0);
   Object.keys(ageOneMarketsParameters).forEach((marketAddress) => {
