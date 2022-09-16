@@ -1,9 +1,11 @@
 import { BigInt } from "@graphprotocol/graph-ts";
+import { startTimestamps } from "./startTimestamps";
+import { endTimestamps } from "./endTimestamps";
 
 export const getAgeAndEpoch = (timestamp: BigInt): string | null => {
-  if (timestamp.le(BigInt.fromI32(1654707606))) return null; // no age before 2022-06-08T17:00:06.000Z
-  if (timestamp.le(BigInt.fromI32(1657731600))) return "ageOne-epochOne";
-  if (timestamp.le(BigInt.fromI32(1660669200))) return "ageOne-epochTwo";
-  if (timestamp.le(BigInt.fromI32(1663686000))) return "ageOne-epochThree";
+  if (timestamp.le(startTimestamps.get("age1-epoch1"))) return null; // no age before 2022-06-08T17:00:06.000Z
+  if (timestamp.le(endTimestamps.get("age1-epoch1"))) return "age1-epoch1";
+  if (timestamp.le(endTimestamps.get("age1-epoch2"))) return "age1-epoch2";
+  if (timestamp.le(endTimestamps.get("age1-epoch3"))) return "age1-epoch3";
   return null;
 };

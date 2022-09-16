@@ -5,7 +5,7 @@ export const blockFromTimestamp = async (timestamp: BigNumberish, closest: "befo
   axios
     .get(
       `https://api.etherscan.io/api?module=block&action=getblocknobytime&timestamp=${BigNumber.from(
-        timestamp,
-      ).toString()}&closest=${closest}&apikey=${apiKey}`,
+        timestamp
+      ).toString()}&closest=${closest}&apikey=${apiKey}`
     )
     .then((r) => r.data.result as string);

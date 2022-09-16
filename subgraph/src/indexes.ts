@@ -1,10 +1,11 @@
 import { Address, BigInt, log } from "@graphprotocol/graph-ts";
 
-import { emissions, WAD } from "./constants";
+import { emissions } from "./distributions";
 import { getOrInitMarket, getOrInitMarketEpoch } from "./initializer";
 import { getAgeAndEpoch } from "./constants/getAgeAndEpoch";
 import { endTimestamps } from "./constants/endTimestamps";
 import { startTimestamps } from "./constants/startTimestamps";
+import { WAD } from "./constants";
 
 /**
  * The emission between timestamp from and timestamp to is linear, and the two timestamps has

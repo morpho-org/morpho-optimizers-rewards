@@ -2,7 +2,8 @@ import { Address, BigInt, log } from "@graphprotocol/graph-ts";
 
 import { Balance, Market, MarketEpochDistribution, User } from "../generated/schema";
 
-import { emissions, initialIndex, WAD } from "./constants";
+import { emissions } from "./distributions";
+import { WAD, initialIndex } from "./constants";
 
 export function getOrInitUser(userAddress: Address): User {
   let user = User.load(userAddress.toHexString());

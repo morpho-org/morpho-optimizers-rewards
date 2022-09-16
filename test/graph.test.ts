@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 
-import { getGraphTransactions, getChainTransactions } from "../src/utils";
+import { getChainTransactions, getGraphTransactions } from "../src/utils";
 import { providers } from "ethers";
 import * as dotenv from "dotenv";
 import { ages } from "../src";

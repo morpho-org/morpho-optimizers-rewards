@@ -1,5 +1,10 @@
 {
+  "trailingComma": "es5",
+  "tabWidth": 2,
   "printWidth": 120,
-  "trailingComma": "all",
-  "singleQuote": false
+  "semi": true,
+  "bracketSpacing": true,
+  "singleQuote": false,
+  "importOrder": ["^(?![@\\.]).*", "^@\\w", "^(\\.\\.?/)*generated/", "^\\.\\.", "^\\."],
+  "importOrderSeparation": true
 }

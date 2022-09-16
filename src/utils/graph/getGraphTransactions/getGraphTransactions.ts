@@ -2,7 +2,11 @@ import { BigNumber, BigNumberish } from "ethers";
 import axios from "axios";
 import { GraphTransaction } from "./graphTransactions.types";
 
-export const getGraphTransaction = async (graphUrl: string, timestampFrom: BigNumberish, timestampTo: BigNumberish) => {
+export const getGraphTransactions = async (
+  graphUrl: string,
+  timestampFrom: BigNumberish,
+  timestampTo: BigNumberish,
+) => {
   const variables = {
     timestampFrom: BigNumber.from(timestampFrom).toString(),
     timestampTo: BigNumber.from(timestampTo).toString(),
