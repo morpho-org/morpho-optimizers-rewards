@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
-import { ageOneDistribution } from "./distributions";
-import { BigNumber } from "ethers";
+import { ageOneDistribution, ageTwoDistribution } from "./distributions";
+import { BigNumber, providers } from "ethers";
 import { MarketEmission } from "../utils";
 import { Optional } from "../helpers/types";
 
@@ -23,7 +23,10 @@ export interface AgeConfig<T> {
   ageName: string;
   startTimestamp: BigNumber;
   endTimestamp: BigNumber;
-  distribution: (epoch: T) => Promise<{ marketsEmissions: { [p: string]: Optional<MarketEmission> } }>;
+  distribution: (
+    epoch: T,
+    provider?: providers.Provider
+  ) => Promise<{ marketsEmissions: { [p: string]: Optional<MarketEmission> } }>;
   subgraphUrl: string;
   epochs: T[];
 }
@@ -72,7 +75,7 @@ export const ages: [AgeConfig<EpochConfig>, AgeConfig<Epoch2Config>] = [
     ageName: "age2",
     startTimestamp: BigNumber.from(new Date("2022-09-20T15:00:00.000Z").getTime() / 1000),
     endTimestamp: BigNumber.from(new Date("2022-12-29T15:00:00.000Z").getTime() / 1000),
-    distribution: ageOneDistribution,
+    distribution: ageTwoDistribution,
     subgraphUrl: "https://api.thegraph.com/subgraphs/name/morpho-dev/morpho-rewards-staging",
 
     epochs: [
