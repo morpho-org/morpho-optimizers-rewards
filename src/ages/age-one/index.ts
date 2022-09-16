@@ -1,22 +1,21 @@
 /* eslint-disable no-console */
 
 import { formatUnits } from "ethers/lib/utils";
-import { fetchUsers, userBalancesToUnclaimedTokens, computeMerkleTree } from "../../utils";
+import { fetchUsers, userBalancesToUnclaimedTokens, computeMerkleTree, getAccumulatedEmission } from "../../utils";
 import * as fs from "fs";
 import path from "path";
-import { epochToMarketsDistribution } from "./distributions";
+import { ageOneDistribution } from "../distributions";
 import { BigNumber } from "ethers";
 import { now } from "../../helpers";
 import { ages } from "../ages";
 
 const main = async (ageName: string, _epoch: string) => {
-  const configuration = ages["age1"];
+  const configuration = ages[0];
   console.log("Compute markets parameters");
-  if (!Object.keys(configuration.epochs).includes(_epoch)) throw Error("invalid epoch name");
-  const epoch = _epoch as keyof typeof configuration.epochs;
-  const epochConfig = configuration.epochs[epoch];
+  const epochConfig = configuration.epochs.find((e) => e.epochName === _epoch);
+  if (!epochConfig) throw Error(`Unknown epoch ${_epoch} for age 1`);
   console.log("Markets Emissions");
-  const { marketsEmissions, liquidity } = await epochToMarketsDistribution(epochConfig);
+  const { marketsEmissions, liquidity } = await ageOneDistribution(epochConfig);
   const formattedMarketsEmission: {
     [market: string]: {
       supply: string;
@@ -42,10 +41,10 @@ const main = async (ageName: string, _epoch: string) => {
   const emissionJson = JSON.stringify(
     {
       age: ageName,
-      epoch,
+      epoch: epochConfig.epochName,
       totalEmission: epochConfig.totalEmission.toString(),
       parameters: {
-        snapshotBlock: epochConfig.snapshotBlock.toString(),
+        snapshotBlock: epochConfig.snapshotBlock?.toString(),
         initialTimestamp: epochConfig.initialTimestamp.toString(),
         totalSupply: formatUnits(liquidity.totalSupply),
         totalBorrow: formatUnits(liquidity.totalBorrow),
@@ -56,7 +55,7 @@ const main = async (ageName: string, _epoch: string) => {
       markets: formattedMarketsEmission,
     },
     null,
-    2,
+    2
   );
   if (process.env.SAVE_FILE) {
     const ageOneMarketsFilename = `./distribution/${ageName}/${epochConfig.epochName}/marketsEmission.json`;
@@ -73,7 +72,7 @@ const main = async (ageName: string, _epoch: string) => {
 
   /// user related ///
   console.log("Fetch Morpho users of the age");
-  const endDate = configuration.epochs[epoch].finalTimestamp;
+  const endDate = epochConfig.finalTimestamp;
   const usersBalances = await fetchUsers(configuration.subgraphUrl);
 
   const usersAccumulatedRewards = usersBalances
@@ -84,30 +83,29 @@ const main = async (ageName: string, _epoch: string) => {
     // remove users with 0 MORPHO to claim
 
     .filter((b) => b.accumulatedRewards !== "0");
-  let totalEmission = configuration.epochs.epoch1.totalEmission;
-  if (epoch === "epoch2") totalEmission = totalEmission.add(epochConfig.totalEmission);
+  let totalEmission = getAccumulatedEmission(epochConfig.id);
   const totalEmitted = usersAccumulatedRewards.reduce((a, b) => a.add(b.accumulatedRewards), BigNumber.from(0));
   console.log(
     "Total tokens emitted:",
     formatUnits(totalEmitted),
     "over",
     totalEmission.toString(),
-    "for the current epoch",
+    "for the current epoch"
   );
 
   const jsonUnclaimed = JSON.stringify(
     {
       date: endDate.toString(),
-      epoch,
+      epoch: epochConfig.epochName,
       distribution: usersAccumulatedRewards,
     },
     null,
-    2,
+    2
   );
 
   if (process.env.SAVE_FILE) {
     // save the age into a file
-    const ageOneFilename = `./distribution/${ageName}/${epoch}/usersDistribution.json`;
+    const ageOneFilename = `./distribution/${ageName}/${epochConfig.epochName}/usersDistribution.json`;
     const agePath = path.dirname(ageOneFilename);
     await fs.promises.mkdir(agePath, { recursive: true });
     await fs.promises.writeFile(ageOneFilename, jsonUnclaimed);

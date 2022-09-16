@@ -1,35 +1,33 @@
 import { BigNumberish } from "ethers";
-import { ages, EpochConfig } from "../ages/ages";
+import { AgeConfig, ages, EpochConfig } from "../ages/ages";
 import { Optional } from "../helpers/types";
 
 export const timestampToEpoch = (timestamp: BigNumberish) => {
-  const age = timestampToAge(timestamp);
-  if (!age) return;
-  const epoch = Object.values(ages[age].epochs).find(
-    (epoch) => epoch.initialTimestamp.lte(timestamp) && epoch.finalTimestamp.gt(timestamp)
-  );
+  const epoch = allEpochs.find((epoch) => epoch.initialTimestamp.lte(timestamp) && epoch.finalTimestamp.gt(timestamp));
   if (!epoch) return;
+  const age = ages[epoch.ageId];
   return {
-    age,
-    epoch,
+    age: age as AgeConfig<EpochConfig>,
+    epoch: age.epochs[epoch.epochId] as EpochConfig,
   };
 };
+const allEpochs = ages
+  .map((age, ageId) => age.epochs.map((epoch, epochId) => ({ ...epoch, age: age.ageName, ageId, epochId })))
+  .flat();
 
 export const getEpochsBetweenTimestamps = (t1: BigNumberish, t2: BigNumberish) => {
   const epoch1 = timestampToEpoch(t1);
   if (!epoch1) return;
   const epoch2 = timestampToEpoch(t2);
   const epochs = [epoch1];
+  if (!epoch2) return epochs;
 
   let newEpoch: Optional<{
-    age: string;
+    age: AgeConfig<EpochConfig>;
     epoch: EpochConfig;
   }> = epoch1;
-  while (
-    newEpoch?.epoch?.epochName &&
-    `${newEpoch?.age}${newEpoch?.epoch?.epochName}` !== `${epoch2?.age}${epoch2?.epoch?.epochName}`
-  ) {
-    newEpoch = getNextEpoch(newEpoch.age, (newEpoch?.epoch?.epochName as string) ?? "");
+  while (newEpoch?.epoch?.epochName && newEpoch.epoch.id !== epoch2.epoch.id) {
+    newEpoch = getNextEpoch(newEpoch.age.ageName, newEpoch?.epoch?.epochName);
 
     if (newEpoch && newEpoch?.epoch?.initialTimestamp.lt(t2)) epochs.push(newEpoch);
     else break;
@@ -37,28 +35,15 @@ export const getEpochsBetweenTimestamps = (t1: BigNumberish, t2: BigNumberish) =
   return epochs;
 };
 
-export const getNextEpoch = (age: string, epoch: string) => {
-  const currentAgeEpochs = Object.keys(ages[age].epochs);
-  const isLastEpoch = currentAgeEpochs.indexOf(epoch as string) === currentAgeEpochs.length - 1;
-  if (isLastEpoch) {
-    // we change the age
-    const agesKeys = Object.keys(ages);
-    const currentKey = agesKeys.indexOf(age as string);
-    if (currentKey === agesKeys.length - 1) return; // no next age
-    return {
-      age: agesKeys[currentKey + 1],
-      epoch: ages[agesKeys[currentKey + 1]].epochs["epoch1"] as EpochConfig,
-    };
-  }
+export const getNextEpoch = (age?: string, epoch?: string) => {
+  if (!age || !epoch) return;
+  const currentEpoch = allEpochs.find((_epoch) => _epoch.id === `${age}-${epoch}`);
+  if (!currentEpoch) throw Error(`Unknown epoch: ${age}-${epoch}`);
+  const currentEpochId = allEpochs.indexOf(currentEpoch);
+  if (currentEpochId === allEpochs.length - 1) return;
+  const nextEpoch = allEpochs[currentEpochId + 1];
   return {
-    age,
-    epoch: ages[age].epochs[currentAgeEpochs.indexOf(epoch as string) + 1] as EpochConfig,
+    age: ages[nextEpoch.ageId] as AgeConfig<EpochConfig>,
+    epoch: ages[nextEpoch.ageId].epochs[nextEpoch.epochId] as EpochConfig,
   };
-};
-
-export const timestampToAge = (timestamp: BigNumberish) => {
-  const ageEntry = Object.values(ages).find(
-    (ageConfig) => ageConfig.startTimestamp.lte(timestamp) && ageConfig.endTimestamp.gt(timestamp)
-  );
-  return ageEntry?.ageName;
 };

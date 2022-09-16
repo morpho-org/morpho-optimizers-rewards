@@ -10,7 +10,7 @@ import { ages } from "../ages";
 export const getUserRewards = async (
   address: string,
   blockNumber?: number,
-  provider: providers.Provider = new providers.InfuraProvider(1),
+  provider: providers.Provider = new providers.InfuraProvider(1)
 ) => {
   let timestampEnd = now();
   if (blockNumber) {
@@ -18,9 +18,9 @@ export const getUserRewards = async (
     timestampEnd = block.timestamp;
   }
   const userBalances = await getUserBalances(
-    ages["age1"].subgraphUrl, // TODO: export the subgraphUrl
+    ages[0].subgraphUrl, // TODO: export the subgraphUrl
     address.toLowerCase(),
-    blockNumber,
+    blockNumber
   );
   const currentRewards = userBalancesToUnclaimedTokens(address, userBalances?.balances || [], timestampEnd);
   const claimableRaw = require("../../distribution/merkleTree/currentDistribution.json").proofs[address.toLowerCase()];
@@ -33,7 +33,7 @@ export const getUserRewards = async (
     currentEpochProjectedRewards = userBalancesToUnclaimedTokens(
       address,
       userBalances?.balances || [],
-      currentEpoch.epoch.finalTimestamp,
+      currentEpoch.epoch.finalTimestamp
     ).sub(claimable);
 
   let claimed = BigNumber.from(0);
@@ -68,18 +68,18 @@ export const getUserRewards = async (
 export const userBalancesToUnclaimedTokens = (
   userAddress: string,
   balances: UserBalance[],
-  currentTimestamp: BigNumberish,
+  currentTimestamp: BigNumberish
 ) => {
   return balances
     .map((b) => {
       let accumulated = b.accumulatedMorpho;
       const supplyIndex = computeSupplyIndex(b.market, currentTimestamp);
       accumulated = accumulated.add(
-        getUserAccumulatedRewards(supplyIndex, b.userSupplyIndex, b.underlyingSupplyBalance),
+        getUserAccumulatedRewards(supplyIndex, b.userSupplyIndex, b.underlyingSupplyBalance)
       );
       const borrowIndex = computeBorrowIndex(b.market, currentTimestamp);
       accumulated = accumulated.add(
-        getUserAccumulatedRewards(borrowIndex, b.userBorrowIndex, b.underlyingBorrowBalance),
+        getUserAccumulatedRewards(borrowIndex, b.userBorrowIndex, b.underlyingBorrowBalance)
       );
       return accumulated;
     })
@@ -97,7 +97,7 @@ const computeSupplyIndex = (market: Market, currentTimestamp: BigNumberish) =>
     market.supplyUpdateBlockTimestamp,
     currentTimestamp,
     "supplyRate",
-    market.lastTotalSupply,
+    market.lastTotalSupply
   );
 const computeBorrowIndex = (market: Market, currentTimestamp: BigNumberish) =>
   computeIndex(
@@ -106,7 +106,7 @@ const computeBorrowIndex = (market: Market, currentTimestamp: BigNumberish) =>
     market.borrowUpdateBlockTimestamp,
     currentTimestamp,
     "borrowRate",
-    market.lastTotalBorrow,
+    market.lastTotalBorrow
   );
 
 const computeIndex = (
@@ -115,7 +115,7 @@ const computeIndex = (
   lastUpdateTimestamp: BigNumberish,
   currentTimestamp: BigNumberish,
   rateType: "borrowRate" | "supplyRate",
-  totalUnderlying: BigNumber,
+  totalUnderlying: BigNumber
 ) => {
   const epochs = getEpochsBetweenTimestamps(lastUpdateTimestamp, currentTimestamp);
 
@@ -126,7 +126,7 @@ const computeIndex = (
     const initialTimestamp = maxBN(epoch.epoch.initialTimestamp, BigNumber.from(lastUpdateTimestamp));
     const finalTimestamp = minBN(epoch.epoch.finalTimestamp, BigNumber.from(currentTimestamp));
     const deltaTimestamp = finalTimestamp.sub(initialTimestamp);
-    const marketsEmission = require(`../../distribution/${epoch.age}/${epoch.epoch.epochName}/marketsEmission.json`);
+    const marketsEmission = require(`../../distribution/${epoch.age.ageName}/${epoch.epoch.epochName}/marketsEmission.json`);
     const speed = BigNumber.from(marketsEmission.markets[marketAddress]?.[rateType] ?? 0);
     const morphoAccrued = deltaTimestamp.mul(speed); // in WEI units;
     const ratio = morphoAccrued.mul(WAD).div(totalUnderlying); // in 18*2 - decimals units;
