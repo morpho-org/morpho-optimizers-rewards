@@ -1,5 +1,5 @@
 import axios from "axios";
-import { GraphMarketConfiguration, MarketLight } from "./markets.types";
+import { GraphMarketConfiguration, MarketMinimal } from "./markets.types";
 import { query, subgraphUrl } from "./markets.query";
 import { graphToMarketConfig } from "./markets.formatter";
 
@@ -8,7 +8,7 @@ import { graphToMarketConfig } from "./markets.formatter";
  * @param blockTag
  */
 export const getGraphMarkets = async (blockTag: number) => {
-  const marketsConfiguration: { [market: string]: MarketLight } = {};
+  const marketsConfiguration: { [market: string]: MarketMinimal } = {};
 
   await axios
     .post<{ blockTag: number }, { data?: { data: { markets: GraphMarketConfiguration[] } } }>(subgraphUrl, {

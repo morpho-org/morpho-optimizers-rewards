@@ -26,7 +26,7 @@ export interface Market {
   lastTotalBorrow: BigNumber;
   lastTotalSupply: BigNumber;
 }
-export interface MarketLight {
+export interface MarketMinimal {
   address: string;
   price: BigNumber;
   totalSupply: BigNumber;

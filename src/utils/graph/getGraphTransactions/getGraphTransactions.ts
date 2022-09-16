@@ -5,7 +5,7 @@ import { GraphTransaction } from "./graphTransactions.types";
 export const getGraphTransactions = async (
   graphUrl: string,
   timestampFrom: BigNumberish,
-  timestampTo: BigNumberish,
+  timestampTo: BigNumberish
 ) => {
   const variables = {
     timestampFrom: BigNumber.from(timestampFrom).toString(),
@@ -23,7 +23,11 @@ export const getGraphTransactions = async (
           nextId,
         },
       })
-      .then((r) => r.data.data.transactions as GraphTransaction[]);
+      .then((result) => {
+        if (result.data.errors) throw new Error(result.data.errors[0].message);
+
+        return result.data.data.transactions as GraphTransaction[];
+      });
     txs = [...txs, ...newTxs];
     hasMore = newTxs.length === 1000;
     nextId = newTxs.length > 0 ? newTxs[newTxs.length - 1].id : "";

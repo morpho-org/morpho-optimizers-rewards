@@ -1,15 +1,14 @@
 import { BigNumber } from "ethers";
 import { MarketEmission } from "./markets.types";
-import { WAD } from "../../helpers/constants";
-import { BASE_UNITS } from "../../helpers/maths";
-import { MarketLight } from "../graph/getGraphMarkets/markets.types";
+import { BASE_UNITS, WAD } from "../../helpers";
+import { MarketMinimal } from "../graph/getGraphMarkets/markets.types";
 
 export const computeMarketsEmissions = (
   ageOneMarketsParameters: {
-    [p: string]: MarketLight;
+    [p: string]: MarketMinimal;
   },
   totalEmission: BigNumber,
-  duration: BigNumber,
+  duration: BigNumber
 ) => {
   const totalSupplyUSD = Object.values(ageOneMarketsParameters)
     .map((market) => market.totalSupply.mul(market.price))
@@ -26,7 +25,7 @@ export const computeMarketsEmissions = (
   } = {};
   let marketEmissionTotal = BigNumber.from(0);
   Object.keys(ageOneMarketsParameters).forEach((marketAddress) => {
-    const market: MarketLight = ageOneMarketsParameters[marketAddress];
+    const market: MarketMinimal = ageOneMarketsParameters[marketAddress];
     // total market value at the beginning of the age
     const totalMarketUSD = market.totalBorrow.add(market.totalSupply).mul(market.price); // 18 * 2 units
     const marketEmission = totalMarketUSD.mul(totalEmission).div(total); // in WEI units
