@@ -1,4 +1,4 @@
-import { Epoch2Config } from "../ages";
+import { Epoch2Config } from "../ages.types";
 import { BigNumber, providers } from "ethers";
 import {
   AavePriceOracle__factory,

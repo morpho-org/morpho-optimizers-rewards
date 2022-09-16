@@ -1,5 +1,5 @@
 import { computeMarketsEmissions, getGraphMarkets } from "../../utils";
-import { EpochConfig } from "../ages";
+import { EpochConfig } from "../ages.types";
 
 export const ageOneDistribution = async ({
   snapshotBlock,
