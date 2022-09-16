@@ -1,4 +1,4 @@
-export interface GraphTransactions {
+export interface GraphTransaction {
   id: string;
   timestamp: string;
   hash: string;

@@ -1,17 +1,13 @@
 import { BigNumber, BigNumberish } from "ethers";
 import axios from "axios";
-import { GraphTransactions } from "./graphTransactions.types";
+import { GraphTransaction } from "./graphTransactions.types";
 
-export const getGraphTransactions = async (
-  graphUrl: string,
-  timestampFrom: BigNumberish,
-  timestampTo: BigNumberish,
-) => {
+export const getGraphTransaction = async (graphUrl: string, timestampFrom: BigNumberish, timestampTo: BigNumberish) => {
   const variables = {
     timestampFrom: BigNumber.from(timestampFrom).toString(),
     timestampTo: BigNumber.from(timestampTo).toString(),
   };
-  let txs: GraphTransactions[] = [];
+  let txs: GraphTransaction[] = [];
   let hasMore = true;
   let nextId = "";
   while (hasMore) {
@@ -23,7 +19,7 @@ export const getGraphTransactions = async (
           nextId,
         },
       })
-      .then((r) => r.data.data.transactions as GraphTransactions[]);
+      .then((r) => r.data.data.transactions as GraphTransaction[]);
     txs = [...txs, ...newTxs];
     hasMore = newTxs.length === 1000;
     nextId = newTxs.length > 0 ? newTxs[newTxs.length - 1].id : "";
