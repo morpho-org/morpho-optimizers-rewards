@@ -27,7 +27,7 @@ export const getEpochsBetweenTimestamps = (tFrom: BigNumberish, tTo: BigNumberis
   while (newEpoch?.epoch?.epochName && newEpoch.epoch.id !== epochTo.epoch.id) {
     newEpoch = getNextEpoch(newEpoch.age.ageName, newEpoch?.epoch?.epochName);
 
-    if (newEpoch && newEpoch?.epoch?.initialTimestamp.lt(tTo)) epochs.push(newEpoch);
+    if (newEpoch && newEpoch?.epoch?.initialTimestamp.gt(tTo)) epochs.push(newEpoch);
     else break;
   }
   return epochs;

@@ -8,7 +8,6 @@ import { MarketEmission } from "../../lib/utils";
 import { Optional } from "../../lib/helpers/types";
 import { expectBNApproxEquals } from "../ageOne/epochOne.test";
 import { WAD } from "../../lib/helpers";
-import { formatUnits } from "ethers/lib/utils";
 dotenv.config();
 describe("Test the distribution of the second age", () => {
   const age = ages[1];
@@ -18,39 +17,6 @@ describe("Test the distribution of the second age", () => {
   let marketsEmissions: { [p: string]: Optional<MarketEmission> } = {};
   beforeAll(async () => {
     ({ marketsEmissions } = await ageTwoDistribution(age.epochs[epochIndex], provider));
-    const readableMarketEmissions = Object.fromEntries(
-      Object.entries(marketsEmissions).map(([market, parameters]) => [
-        market,
-        parameters
-          ? {
-              supply: formatUnits(parameters.supply),
-              supplyRate: parameters.supplyRate.toString(),
-              borrow: formatUnits(parameters.borrow),
-              borrowRate: parameters.borrowRate.toString(),
-              marketEmission: formatUnits(parameters.marketEmission),
-              p2pIndexCursor: formatUnits(parameters.p2pIndexCursor, 4),
-            }
-          : {},
-      ])
-    );
-    console.log(
-      JSON.stringify(
-        {
-          age: age.ageName,
-          epoch: epoch.epochName,
-          totalEmission: epoch.totalEmission.toString(),
-          parameters: {
-            snapshotBlock: epoch.snapshotBlock,
-            initialTimestamp: epoch.initialTimestamp.toString(),
-            finalTimestamp: epoch.finalTimestamp.toString(),
-            duration: epoch.finalTimestamp.sub(epoch.initialTimestamp).toString(),
-          },
-          markets: readableMarketEmissions,
-        },
-        null,
-        2
-      )
-    );
   });
 
   it("Should not distribute tokens on Compound FEI", async () => {
