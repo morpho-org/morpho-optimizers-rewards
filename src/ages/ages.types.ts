@@ -11,20 +11,20 @@ export interface EpochConfig {
   finalBlock?: number;
   totalEmission: BigNumber;
   epochName: string;
-}
-export interface Epoch2Config extends EpochConfig {
-  compoundRepartition: BigNumber; // the percentage of tokens emitted on Compound in Base units
-  aaveRepartition: BigNumber; // the percentage of tokens emitted on Aave in Base units
+
+  protocolDistribution: {
+    [protocol: string]: BigNumber; // the percentage of tokens distributed to users of Morpho-protocol in bps
+  };
 }
 
-export interface AgeConfig<T> {
+export interface AgeConfig {
   ageName: string;
   startTimestamp: BigNumber;
   endTimestamp: BigNumber;
   distribution: (
-    epoch: T,
+    epoch: EpochConfig,
     provider?: providers.Provider
   ) => Promise<{ marketsEmissions: { [p: string]: Optional<MarketEmission> } }>;
   subgraphUrl: string;
-  epochs: T[];
+  epochs: EpochConfig[];
 }

@@ -19,13 +19,13 @@ const computeOneEpochDistribuedRewards = (
   emissionId: string
 ): BigInt => {
   const firstEpoch = getAgeAndEpoch(timestampFrom);
-  const secondEopch = getAgeAndEpoch(timestampTo);
-  if (secondEopch && firstEpoch && firstEpoch !== secondEopch)
+  const secondEpoch = getAgeAndEpoch(timestampTo);
+  if (secondEpoch && firstEpoch && firstEpoch !== secondEpoch)
     log.critical(
       "Distribution computed through two different epochs {} and {} for the market {} on the emission of {}. timestamp from: {}, timestamp to: {}",
       [
         firstEpoch,
-        secondEopch,
+        secondEpoch,
         marketAddress.toHexString(),
         emissionId,
         timestampFrom.toString(),

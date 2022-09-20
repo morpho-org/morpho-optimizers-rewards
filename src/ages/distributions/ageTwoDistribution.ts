@@ -1,4 +1,3 @@
-import { Epoch2Config } from "../ages.types";
 import { BigNumber, providers } from "ethers";
 import {
   AavePriceOracle__factory,
@@ -18,12 +17,13 @@ import { Optional } from "../../helpers/types";
 import { MarketMinimal } from "../../utils/graph/getGraphMarkets/markets.types";
 import { BASE_UNITS, pow10BN, WAD } from "../../helpers";
 import { MarketEmission } from "../../utils";
+import { EpochConfig } from "../ages.types";
 
-export const ageTwoDistribution = async (epochConfig: Epoch2Config, provider?: providers.Provider) => {
+export const ageTwoDistribution = async (epochConfig: EpochConfig, provider?: providers.Provider) => {
   if (!epochConfig.snapshotBlock) throw Error(`Cannot distribute tokens for epoch ${epochConfig.id}: no snapshotBlock`);
   provider ??= new providers.InfuraProvider("mainnet");
   const { aave, compound } = await getMarketsData(epochConfig.snapshotBlock, provider);
-  const aaveTokens = epochConfig.totalEmission.mul(epochConfig.aaveRepartition).div(BASE_UNITS);
+  const aaveTokens = epochConfig.totalEmission.mul(epochConfig.protocolDistribution.morphoAave).div(BASE_UNITS);
   const compoundTokens = epochConfig.totalEmission.sub(aaveTokens);
   const duration = epochConfig.finalTimestamp.sub(epochConfig.initialTimestamp);
   const aaveDistribution = distributeTokens(aave, aaveTokens, duration);
