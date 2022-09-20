@@ -23,18 +23,28 @@ export const getUserRewards = async (
     blockNumber
   );
   const currentRewards = userBalancesToUnclaimedTokens(address, userBalances?.balances || [], timestampEnd);
-  const claimableRaw = require("../../distribution/merkleTree/currentDistribution.json").proofs[address.toLowerCase()];
+  const currentDistribution = require("../../distribution/merkleTree/currentDistribution.json");
+  const claimableRaw = currentDistribution.proofs[address.toLowerCase()];
   const claimable = claimableRaw ? BigNumber.from(claimableRaw.amount) : BigNumber.from(0);
-  const currentEpochRewards = currentRewards.sub(claimable);
-
   const currentEpoch = timestampToEpoch(timestampEnd);
+  let claimableSoon = BigNumber.from(0);
+  if (currentEpoch && currentEpoch?.epoch.id !== currentDistribution.epoch)
+    claimableSoon = userBalancesToUnclaimedTokens(
+      address,
+      userBalances?.balances || [],
+      currentEpoch.epoch.initialTimestamp
+    ).sub(claimable);
+  const currentEpochRewards = currentRewards.sub(claimable).sub(claimableSoon);
+
   let currentEpochProjectedRewards = currentRewards;
   if (currentEpoch?.epoch.finalTimestamp)
     currentEpochProjectedRewards = userBalancesToUnclaimedTokens(
       address,
       userBalances?.balances || [],
       currentEpoch.epoch.finalTimestamp
-    ).sub(claimable);
+    )
+      .sub(claimable)
+      .sub(claimableSoon);
 
   let claimed = BigNumber.from(0);
   let claimData = {};
@@ -61,6 +71,7 @@ export const getUserRewards = async (
     currentEpochProjectedRewards,
     totalRewardsEarned: currentRewards,
     claimable,
+    claimableSoon,
     claimedRewards: claimed,
     claimData,
   };
@@ -118,7 +129,6 @@ const computeIndex = (
   totalUnderlying: BigNumber
 ) => {
   const epochs = getEpochsBetweenTimestamps(lastUpdateTimestamp, currentTimestamp) ?? [];
-
   return epochs.reduce((currentIndex, epoch) => {
     const initialTimestamp = maxBN(epoch.epoch.initialTimestamp, BigNumber.from(lastUpdateTimestamp));
     const finalTimestamp = minBN(epoch.epoch.finalTimestamp, BigNumber.from(currentTimestamp));
