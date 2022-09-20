@@ -41,4 +41,4 @@ dataSources:
           handler: handleSupplied
         - event: Withdrawn(indexed address,indexed address,indexed address,uint256,uint256,uint256)
           handler: handleWithdrawn
-      file: ./src/mapping.ts
+      file: ./src/mapping/morpho-compound.ts

@@ -18,14 +18,6 @@ const computeOneEpochDistribuedRewards = (
   totalSupply: BigInt,
   emissionId: string
 ): BigInt => {
-  const epochFrom = getAgeAndEpoch(timestampFrom);
-  const epochTo = getAgeAndEpoch(timestampTo);
-  if (epochTo && epochFrom && epochFrom !== epochTo)
-    log.critical(
-      "Distribution computed through two different epochs {} and {} for the market {} on the emission of {}. timestamp from: {}, timestamp to: {}",
-      [epochFrom, epochTo, marketAddress.toHexString(), emissionId, timestampFrom.toString(), timestampTo.toString()]
-    );
-
   if (!emissions.has(emissionId)) log.critical("No emission defined for id {}", [emissionId]);
   const speeds = emissions.get(emissionId);
   if (!speeds.has(marketAddress.toHexString())) {
