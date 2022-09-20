@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { ages } from "../../src";
 import { BigNumber, providers } from "ethers";
 import * as dotenv from "dotenv";
@@ -7,17 +8,49 @@ import { MarketEmission } from "../../lib/utils";
 import { Optional } from "../../lib/helpers/types";
 import { expectBNApproxEquals } from "../ageOne/epochOne.test";
 import { WAD } from "../../lib/helpers";
+import { formatUnits } from "ethers/lib/utils";
 dotenv.config();
 describe("Test the distribution of the second age", () => {
   const age = ages[1];
   const epochIndex = 0;
+  const epoch = age.epochs[epochIndex];
   const provider = new providers.JsonRpcProvider(process.env.RPC_URL, "mainnet");
   let marketsEmissions: { [p: string]: Optional<MarketEmission> } = {};
-  let snapshotBlock: number;
   beforeAll(async () => {
-    snapshotBlock = await provider.getBlock("latest").then((r) => r.number);
-    age.epochs[epochIndex].snapshotBlock = snapshotBlock;
     ({ marketsEmissions } = await ageTwoDistribution(age.epochs[epochIndex], provider));
+    const readableMarketEmissions = Object.fromEntries(
+      Object.entries(marketsEmissions).map(([market, parameters]) => [
+        market,
+        parameters
+          ? {
+              supply: formatUnits(parameters.supply),
+              supplyRate: parameters.supplyRate.toString(),
+              borrow: formatUnits(parameters.borrow),
+              borrowRate: parameters.borrowRate.toString(),
+              marketEmission: formatUnits(parameters.marketEmission),
+              p2pIndexCursor: formatUnits(parameters.p2pIndexCursor, 4),
+            }
+          : {},
+      ])
+    );
+    console.log(
+      JSON.stringify(
+        {
+          age: age.ageName,
+          epoch: epoch.epochName,
+          totalEmission: epoch.totalEmission.toString(),
+          parameters: {
+            snapshotBlock: epoch.snapshotBlock,
+            initialTimestamp: epoch.initialTimestamp.toString(),
+            finalTimestamp: epoch.finalTimestamp.toString(),
+            duration: epoch.finalTimestamp.sub(epoch.initialTimestamp).toString(),
+          },
+          markets: readableMarketEmissions,
+        },
+        null,
+        2
+      )
+    );
   });
 
   it("Should not distribute tokens on Compound FEI", async () => {
