@@ -1,5 +1,6 @@
 import { BigNumberish } from "ethers";
-import { AgeConfig, ages, EpochConfig } from "../ages";
+import { AgeConfig, allEpochs, EpochConfig } from "../ages";
+import { ages } from "../ages";
 import { Optional } from "../helpers/types";
 
 export const timestampToEpoch = (timestamp: BigNumberish) => {
@@ -11,9 +12,6 @@ export const timestampToEpoch = (timestamp: BigNumberish) => {
     epoch: age.epochs[epoch.epochId] as EpochConfig,
   };
 };
-const allEpochs = ages
-  .map((age, ageId) => age.epochs.map((epoch, epochId) => ({ ...epoch, age: age.ageName, ageId, epochId })))
-  .flat();
 
 export const getEpochsBetweenTimestamps = (tFrom: BigNumberish, tTo: BigNumberish) => {
   const epochFrom = timestampToEpoch(tFrom);

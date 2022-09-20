@@ -15,7 +15,7 @@ import {
 import addresses from "@morpho-labs/morpho-ethers-contract/lib/addresses";
 import { Optional } from "../../helpers/types";
 import { MarketMinimal } from "../../utils/graph/getGraphMarkets/markets.types";
-import { BASIS_POINTS, pow10BN, WAD } from "../../helpers";
+import { BASIS_POINTS, cFei, pow10BN, WAD } from "../../helpers";
 import { MarketEmission } from "../../utils";
 import { EpochConfig } from "../ages.types";
 
@@ -23,8 +23,11 @@ export const ageTwoDistribution = async (epochConfig: EpochConfig, provider?: pr
   if (!epochConfig.snapshotBlock) throw Error(`Cannot distribute tokens for epoch ${epochConfig.id}: no snapshotBlock`);
   provider ??= new providers.InfuraProvider("mainnet");
   const { aave, compound } = await getMarketsData(epochConfig.snapshotBlock, provider);
-  const aaveTokens = epochConfig.totalEmission.mul(epochConfig.protocolDistribution.morphoAave).div(BASIS_POINTS);
-  const compoundTokens = epochConfig.totalEmission.sub(aaveTokens);
+  const aaveTokens = epochConfig.totalEmission
+    .mul(WAD)
+    .mul(epochConfig.protocolDistribution.morphoAave)
+    .div(BASIS_POINTS);
+  const compoundTokens = epochConfig.totalEmission.mul(WAD).sub(aaveTokens);
   const duration = epochConfig.finalTimestamp.sub(epochConfig.initialTimestamp);
   const aaveDistribution = distributeTokens(aave, aaveTokens, duration);
   const compoundDistribution = distributeTokens(compound, compoundTokens, duration);
@@ -37,17 +40,17 @@ export const ageTwoDistribution = async (epochConfig: EpochConfig, provider?: pr
 const distributeTokens = (marketsData: MarketMinimal[], distribution: BigNumber, duration: BigNumber) => {
   const totalSupply = marketsData.reduce((acc, market) => acc.add(market.totalSupply), BigNumber.from(0));
   const totalBorrow = marketsData.reduce((acc, market) => acc.add(market.totalBorrow), BigNumber.from(0));
-
+  const total = totalBorrow.add(totalSupply);
   const marketsEmissions: {
     [market: string]: Optional<MarketEmission>;
   } = {};
   marketsData.forEach((marketData) => {
-    const supply = marketData.totalSupply.mul(distribution).div(totalSupply);
+    const supply = marketData.totalSupply.mul(distribution).div(total);
     const supplyRate = supply.div(duration);
-    const borrow = marketData.totalBorrow.mul(distribution).div(totalBorrow);
+    const borrow = marketData.totalBorrow.mul(distribution).div(total);
     const borrowRate = borrow.div(duration);
     const marketEmission = supply.add(borrow);
-    marketsEmissions[marketData.address] = {
+    marketsEmissions[marketData.address.toLowerCase()] = {
       supply,
       supplyRate,
       borrow,
@@ -110,7 +113,6 @@ const getAaveMarketsParameters = async (snapshotBlock: providers.BlockTag, provi
   );
 };
 const getCompoundMarketsParameters = async (snapshotBlock: providers.BlockTag, provider: providers.Provider) => {
-  const cFei = "";
   const morpho = MorphoCompound__factory.connect(addresses.morphoCompound.morpho, provider);
   const overrides = { blockTag: snapshotBlock };
   const allMarkets = await morpho
@@ -121,6 +123,7 @@ const getCompoundMarketsParameters = async (snapshotBlock: providers.BlockTag, p
 
   return await Promise.all(
     allMarkets.map(async (market) => {
+      market = market.toLowerCase();
       const cToken = CToken__factory.connect(market, provider);
       const [totalSupplyRaw, supplyIndex, totalBorrow, price, { p2pIndexCursor }] = await Promise.all([
         cToken.totalSupply(overrides),
