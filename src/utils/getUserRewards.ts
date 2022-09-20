@@ -111,18 +111,15 @@ const computeBorrowIndex = (market: Market, currentTimestamp: BigNumberish) =>
 
 const computeIndex = (
   marketAddress: string,
-  lastIndexIndex: BigNumber,
+  lastIndex: BigNumber,
   lastUpdateTimestamp: BigNumberish,
   currentTimestamp: BigNumberish,
   rateType: "borrowRate" | "supplyRate",
   totalUnderlying: BigNumber
 ) => {
-  const epochs = getEpochsBetweenTimestamps(lastUpdateTimestamp, currentTimestamp);
+  const epochs = getEpochsBetweenTimestamps(lastUpdateTimestamp, currentTimestamp) ?? [];
 
-  let index = lastIndexIndex;
-  if (!epochs) return index;
-
-  for (const epoch of epochs) {
+  return epochs.reduce((currentIndex, epoch) => {
     const initialTimestamp = maxBN(epoch.epoch.initialTimestamp, BigNumber.from(lastUpdateTimestamp));
     const finalTimestamp = minBN(epoch.epoch.finalTimestamp, BigNumber.from(currentTimestamp));
     const deltaTimestamp = finalTimestamp.sub(initialTimestamp);
@@ -130,9 +127,8 @@ const computeIndex = (
     const speed = BigNumber.from(marketsEmission.markets[marketAddress]?.[rateType] ?? 0);
     const morphoAccrued = deltaTimestamp.mul(speed); // in WEI units;
     const ratio = morphoAccrued.mul(WAD).div(totalUnderlying); // in 18*2 - decimals units;
-    index = index.add(ratio);
-  }
-  return index;
+    return currentIndex.add(ratio);
+  }, lastIndex);
 };
 
 export const getUserBalances = async (graphUrl: string, user: string, block?: number) =>
