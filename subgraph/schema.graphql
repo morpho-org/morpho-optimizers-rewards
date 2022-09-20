@@ -50,13 +50,26 @@ type Balance @entity {
 type Transaction @entity {
   "<txHash>"
   id: ID!
+  hash: Bytes!
   timestamp: BigInt!
   blockNumber: Int!
   market: Market!
   user: User!
   type: TransactionType!
+  logIndex: BigInt!
   underlyingSupplyBalance: BigInt!
   underlyingBorrowBalance: BigInt!
+}
+type MarketEpochDistribution @entity {
+  "<epochId>-<market>"
+  id: ID!
+  timestamp: BigInt!
+  market: Market!
+  epoch: String!
+  marketSide: String!
+  index: BigInt!
+  speed: BigInt!
+  isFinished: Boolean!
 }
 
 enum TransactionType {

@@ -1,0 +1,1 @@
+export { computeMerkleTree } from "./merkleTree";

@@ -2,9 +2,9 @@ import { Address, BigInt } from "@graphprotocol/graph-ts";
 
 import { Balance } from "../generated/schema";
 
-import { WAD } from "./constants";
 import { accrueMorphoTokens, updateBorrowIndex, updateSupplyIndex } from "./indexes";
 import { getOrInitBalance, getOrInitMarket } from "./initializer";
+import { WAD } from "./constants";
 
 export const updateSupplyBalanceAndMarket = (
   marketAddress: Address,

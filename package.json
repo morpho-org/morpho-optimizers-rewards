@@ -1,23 +1,44 @@
 {
-  "name": "@morpholabs/morpho-rewards",
-  "version": "0.2.0",
-  "description": "Morpho rewards distribution scripts",
-  "main": "index.js",
-  "repository": "git@github.com:morpho-labs/morpho-rewards.git",
-  "author": "Julien <julien@morpho.xyz>",
+  "name": "@morpho-labs/morpho-rewards",
+  "version": "1.0.0",
+  "description": "Morpho Rewards distribution using a Rewards distributor and a merkle tree",
+  "main": "lib/index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/morpho-labs/morpho-rewards.git"
+  },
+  "bugs": {
+    "url": "https://github.com/morpho-labs/morpho-rewards/issues"
+  },
+  "homepage": "https://github.com/morpho-labs/morpho-rewards#readme",
+  "contributors": [
+    {
+      "name" : "Julien",
+      "email" : "julien@morpho.xyz"
+    },
+    {
+      "name" : "Romain",
+      "email" : "romain@morpho.xyz"
+    },
+    {
+      "name" : "Oumar",
+      "email" : "oumar@morpho.xyz"
+    }
+  ],
   "license": "MIT",
   "scripts": {
-    "build": "tsc",
+    "build": "tsc --build ./tsconfig.build.json",
+    "clean": "rm -rf ./lib/",
     "test": "jest --forceExit --coverage --verbose",
     "watch-test": "yarn test --watchAll",
     "watch-ts": "tsc -w",
-    "lint": "eslint . --ext .ts",
+    "lint": "eslint src --fix --ext .ts",
     "start": "ts-node ./src/${SCRIPT:-index}",
     "start:age1:epoch1": "ts-node ./src/ages/age-one/index.ts epoch1",
     "start:age1:epoch2": "ts-node ./src/ages/age-one/index.ts epoch2",
     "start:age1:epoch3": "ts-node ./src/ages/age-one/index.ts epoch3",
     "start:age1:unclaimed": "ts-node ./src/ages/age-one/script/unclaimedTokens.ts",
-    "prepublishOnly": "rm -rf lib && yarn build && git stash && rm -rf ./src ./coverage ./test ./.github ./jest.config.js ./subgraph",
+    "prepublishOnly": "yarn build && yarn lint",
     "postpublish": "git clean -fd && git checkout -- .",
     "preversion": "yarn build",
     "postversion": "git push && git push --tags"
@@ -34,11 +55,75 @@
     "prettier": "^2.6.2",
     "ts-jest": "^28.0.4",
     "ts-node": "^10.8.1",
-    "typescript": "^4.7.3"
+    "typescript": "^4.7.3",
+    "commitizen": "^4.2.5",
+    "lint-staged": "^10.5.4",
+    "conventional-changelog-conventionalcommits": "^5.0.0",
+    "cz-conventional-changelog": "^3.3.0"
   },
   "dependencies": {
+    "@morpho-labs/morpho-ethers-contract": "^1.1.1",
     "axios": "^0.27.2",
+    "dotenv": "^16.0.2",
     "ethers": "^5.6.8",
     "merkletreejs": "^0.2.31"
+  },
+  "peerDependencies": {
+    "@morpho-labs/morpho-ethers-contract": "^1.1.1",
+    "axios": "^0.27.2",
+    "ethers": "^5.0.0"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "release": {
+    "branches": [
+      "main"
+    ],
+    "plugins": [
+      [
+        "@semantic-release/commit-analyzer",
+        {
+          "preset": "conventionalcommits",
+          "releaseRules": [
+            {
+              "type": "build",
+              "scope": "deps",
+              "release": "patch"
+            }
+          ]
+        }
+      ],
+      [
+        "@semantic-release/release-notes-generator",
+        {
+          "preset": "conventionalcommits",
+          "presetConfig": {
+            "types": [
+              {
+                "type": "feat",
+                "section": "Features"
+              },
+              {
+                "type": "fix",
+                "section": "Bug Fixes"
+              },
+              {
+                "type": "build",
+                "section": "Dependencies and Other Build Updates",
+                "hidden": false
+              }
+            ]
+          }
+        }
+      ],
+      "@semantic-release/npm",
+      "@semantic-release/github"
+    ]
   }
 }

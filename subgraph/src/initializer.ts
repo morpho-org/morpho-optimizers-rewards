@@ -1,8 +1,9 @@
-import { Address, BigInt } from "@graphprotocol/graph-ts";
+import { Address, BigInt, log } from "@graphprotocol/graph-ts";
 
-import { Balance, Market, User } from "../generated/schema";
+import { Balance, Market, MarketEpochDistribution, User } from "../generated/schema";
 
-import { initialIndex, WAD } from "./constants";
+import { emissions } from "./distributions";
+import { WAD, initialIndex } from "./constants";
 
 export function getOrInitUser(userAddress: Address): User {
   let user = User.load(userAddress.toHexString());
@@ -61,4 +62,34 @@ export function getOrInitMarket(poolTokenAddress: Address, currentTimestamp: Big
   }
 
   return market;
+}
+export function getOrInitMarketEpoch(
+  poolTokenAddress: Address,
+  epochId: string,
+  marketSide: string,
+  currentTimestamp: BigInt
+): MarketEpochDistribution {
+  const id = epochId + "-" + poolTokenAddress.toHexString();
+  let marketEpoch = MarketEpochDistribution.load(id);
+  if (!marketEpoch) {
+    const emissionId = epochId + "-" + marketSide;
+    if (!emissions.has(emissionId)) log.critical("Unknown epoch id: {}", [epochId]);
+    const marketEmission = emissions.get(emissionId);
+    let speed: BigInt;
+    if (marketEmission.has(poolTokenAddress.toHexString())) speed = marketEmission.get(poolTokenAddress.toHexString());
+    else speed = BigInt.zero();
+    marketEpoch = new MarketEpochDistribution(id);
+    const market = getOrInitMarket(poolTokenAddress, currentTimestamp);
+    market.save();
+    marketEpoch.market = market.id;
+    marketEpoch.epoch = epochId;
+    marketEpoch.marketSide = marketSide;
+    marketEpoch.index = marketSide === "Supply" ? market.supplyIndex : market.borrowIndex;
+    marketEpoch.isFinished = false;
+    marketEpoch.timestamp = currentTimestamp;
+    marketEpoch.speed = speed;
+    marketEpoch.save();
+  }
+
+  return marketEpoch;
 }
