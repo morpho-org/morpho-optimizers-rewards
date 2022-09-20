@@ -45,7 +45,7 @@ export const ages: AgeConfig[] = [
         initialTimestamp: BigNumber.from(new Date("2022-08-16T17:00:06.000Z").getTime() / 1000),
         initialBlock: 15_353_547,
         finalTimestamp: BigNumber.from(new Date("2022-09-20T15:00:00.000Z").getTime() / 1000), // 17h CET
-        finalBlock: undefined,
+        finalBlock: 15_575_441,
         totalEmission: BigNumber.from(2_950_000),
         protocolDistribution: {
           morphoCompound: BASIS_POINTS, // Rewards are distributed to morpho-compound on age 1

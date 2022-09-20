@@ -10,8 +10,9 @@ getUserRewards(process.argv[2], process.argv[3] ? +process.argv[3] : undefined)
       totalRewardsEarned: formatUnits(r.totalRewardsEarned),
       claimedRewards: formatUnits(r.claimedRewards),
       claimable: formatUnits(r.claimable),
+      claimableSoon: formatUnits(r.claimableSoon),
       claimData: r.claimData,
-    }),
+    })
   )
   .catch((e) => {
     console.error(e);
