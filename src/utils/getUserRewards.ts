@@ -53,6 +53,7 @@ export const getUserRewards = async (
     claimed = await rewardsDisributor.claimed(address);
     claimData = claimable.sub(claimed).gt(0)
       ? {
+          root: currentDistribution.root,
           rewardsDistributor: rewardsDisributor.address,
           functionSignature: "claim(address,uint256,bytes32[])",
           args: {
