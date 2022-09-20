@@ -15,7 +15,7 @@ dist
 lib
 
 # environement
-.env
+.env*
 
 generated
 build

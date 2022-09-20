@@ -1,6 +1,6 @@
 import { BigNumber } from "ethers";
 import { MarketEmission } from "./markets.types";
-import { BASE_UNITS, WAD } from "../../helpers";
+import { BASIS_POINTS, WAD } from "../../helpers";
 import { MarketMinimal } from "../graph/getGraphMarkets/markets.types";
 import { Optional } from "../../helpers/types";
 
@@ -30,7 +30,7 @@ export const computeMarketsEmissions = (
     // total market value at the beginning of the age
     const totalMarketUSD = market.totalBorrow.add(market.totalSupply).mul(market.price); // 18 * 2 units
     const marketEmission = totalMarketUSD.mul(totalEmission).div(total); // in WEI units
-    const supplyTokens = marketEmission.mul(market.p2pIndexCursor).div(BASE_UNITS);
+    const supplyTokens = marketEmission.mul(market.p2pIndexCursor).div(BASIS_POINTS);
     const supplyRate = supplyTokens.div(duration);
     const borrowTokens = marketEmission.sub(supplyTokens);
     const borrowRate = borrowTokens.div(duration);

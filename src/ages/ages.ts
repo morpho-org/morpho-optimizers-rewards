@@ -2,7 +2,7 @@
 import { ageOneDistribution, ageTwoDistribution } from "./distributions";
 import { BigNumber } from "ethers";
 import { AgeConfig } from "./ages.types";
-import { BASE_UNITS } from "../helpers";
+import { BASIS_POINTS } from "../helpers";
 
 export const ages: AgeConfig[] = [
   {
@@ -23,7 +23,7 @@ export const ages: AgeConfig[] = [
         finalBlock: 15_135_480,
         totalEmission: BigNumber.from(350_000),
         protocolDistribution: {
-          morphoCompound: BASE_UNITS, // Rewards are distributed to morpho-compound on age 1
+          morphoCompound: BASIS_POINTS, // Rewards are distributed to morpho-compound on age 1
         },
       },
       {
@@ -36,7 +36,7 @@ export const ages: AgeConfig[] = [
         finalBlock: 15_353_545,
         totalEmission: BigNumber.from(1_700_000),
         protocolDistribution: {
-          morphoCompound: BASE_UNITS, // Rewards are distributed to morpho-compound on age 1
+          morphoCompound: BASIS_POINTS, // Rewards are distributed to morpho-compound on age 1
         },
       },
       {
@@ -49,7 +49,7 @@ export const ages: AgeConfig[] = [
         finalBlock: undefined,
         totalEmission: BigNumber.from(2_950_000),
         protocolDistribution: {
-          morphoCompound: BASE_UNITS, // Rewards are distributed to morpho-compound on age 1
+          morphoCompound: BASIS_POINTS, // Rewards are distributed to morpho-compound on age 1
         },
       },
     ],

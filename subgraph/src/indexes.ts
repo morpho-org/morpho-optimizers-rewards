@@ -18,19 +18,12 @@ const computeOneEpochDistribuedRewards = (
   totalSupply: BigInt,
   emissionId: string
 ): BigInt => {
-  const firstEpoch = getAgeAndEpoch(timestampFrom);
-  const secondEpoch = getAgeAndEpoch(timestampTo);
-  if (secondEpoch && firstEpoch && firstEpoch !== secondEpoch)
+  const epochFrom = getAgeAndEpoch(timestampFrom);
+  const epochTo = getAgeAndEpoch(timestampTo);
+  if (epochTo && epochFrom && epochFrom !== epochTo)
     log.critical(
       "Distribution computed through two different epochs {} and {} for the market {} on the emission of {}. timestamp from: {}, timestamp to: {}",
-      [
-        firstEpoch,
-        secondEpoch,
-        marketAddress.toHexString(),
-        emissionId,
-        timestampFrom.toString(),
-        timestampTo.toString(),
-      ]
+      [epochFrom, epochTo, marketAddress.toHexString(), emissionId, timestampFrom.toString(), timestampTo.toString()]
     );
 
   if (!emissions.has(emissionId)) log.critical("No emission defined for id {}", [emissionId]);
