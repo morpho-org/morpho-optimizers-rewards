@@ -22,7 +22,7 @@ export const fetchUsers = async (graphUrl: string, block?: providers.BlockTag) =
       });
 
     hasMore = newBalances.length === batchSize;
-    offset = newBalances.length > 0 ? newBalances[newBalances.length - 1].address : "";
+    offset = newBalances.length > 0 ? newBalances[newBalances.length - 1].id : "";
     usersBalances = [...usersBalances, ...newBalances];
   }
 

@@ -3,6 +3,7 @@ import { GraphUserBalances, UserBalances } from "./balances.types";
 
 export const formatGraphBalances = (graphBalance: GraphUserBalances): UserBalances => ({
   address: graphBalance.address,
+  id: graphBalance.id,
   balances: graphBalance.balances.map(({ market, ...balance }) => ({
     market: {
       address: market.address,

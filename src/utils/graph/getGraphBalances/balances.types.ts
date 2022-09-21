@@ -2,6 +2,7 @@ import { BigNumber } from "ethers";
 import { Market } from "../getGraphMarkets/markets.types";
 
 export interface GraphUserBalances {
+  id: string;
   address: string;
   balances: {
     timestamp: string;
@@ -27,6 +28,7 @@ export interface GraphUserBalances {
 }
 export interface UserBalances {
   address: string;
+  id: string;
   balances: UserBalance[];
 }
 export interface UserBalance {

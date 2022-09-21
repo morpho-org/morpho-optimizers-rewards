@@ -1,5 +1,6 @@
 const query = `  {
     address
+    id
     balances {
       timestamp
       underlyingSupplyBalance

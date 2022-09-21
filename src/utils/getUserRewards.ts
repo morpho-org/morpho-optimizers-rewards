@@ -193,7 +193,7 @@ const queryWithBlock = `query GetUserBalances($user: ID! $block: Int!){
       underlyingBorrowBalance
       userSupplyIndex
       userBorrowIndex
-      accumulatedMorpho
+      unclaimedMorpho
       market {
         address
         supplyIndex
