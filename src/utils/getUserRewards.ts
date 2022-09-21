@@ -22,7 +22,7 @@ export const getUserRewards = async (
     address.toLowerCase(),
     blockNumber
   );
-  const currentRewards = userBalancesToUnclaimedTokens(address, userBalances?.balances || [], timestampEnd);
+  const currentRewards = userBalancesToUnclaimedTokens(userBalances?.balances || [], timestampEnd);
   const currentDistribution = require("../../distribution/merkleTree/currentDistribution.json");
   const claimableRaw = currentDistribution.proofs[address.toLowerCase()];
   const claimable = claimableRaw ? BigNumber.from(claimableRaw.amount) : BigNumber.from(0);
@@ -32,7 +32,6 @@ export const getUserRewards = async (
   // console.log(currentEpoch?.epoch.id, currentDistribution.epoch);
   // if (currentEpoch && currentEpoch?.epoch.id !== currentDistribution.epoch)
   //   claimableSoon = userBalancesToUnclaimedTokens(
-  //     address,
   //     userBalances?.balances || [],
   //     currentEpoch.epoch.initialTimestamp
   //   ).sub(claimable);
@@ -41,7 +40,6 @@ export const getUserRewards = async (
   let currentEpochProjectedRewards = currentRewards;
   if (currentEpoch?.epoch.finalTimestamp)
     currentEpochProjectedRewards = userBalancesToUnclaimedTokens(
-      address,
       userBalances?.balances || [],
       currentEpoch.epoch.finalTimestamp
     )
@@ -80,7 +78,6 @@ export const getUserRewards = async (
   };
 };
 export const userBalancesToUnclaimedTokens = (
-  userAddress: string,
   balances: UserBalance[],
   currentTimestamp: BigNumberish
 ) => {

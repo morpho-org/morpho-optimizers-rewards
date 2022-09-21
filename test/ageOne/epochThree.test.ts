@@ -23,7 +23,7 @@ describe("Test the distribution for the third epoch", () => {
     usersBalances = await fetchUsers(ages[0].subgraphUrl, epochConfig.finalBlock);
     usersAccumulatedRewards = usersBalances.map(({ address, balances }) => ({
       address,
-      accumulatedRewards: userBalancesToUnclaimedTokens(address, balances, epochConfig.finalTimestamp).toString(), // with 18 decimals
+      accumulatedRewards: userBalancesToUnclaimedTokens(balances, epochConfig.finalTimestamp).toString(), // with 18 decimals
     }));
   });
 
