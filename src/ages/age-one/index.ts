@@ -1,7 +1,13 @@
 /* eslint-disable no-console */
 
 import { formatUnits } from "ethers/lib/utils";
-import { fetchUsers, userBalancesToUnclaimedTokens, computeMerkleTree, getAccumulatedEmission } from "../../utils";
+import {
+  fetchUsers,
+  userBalancesToUnclaimedTokens,
+  computeMerkleTree,
+  getAccumulatedEmission,
+  UserBalance,
+} from "../../utils";
 import * as fs from "fs";
 import path from "path";
 import { ageOneDistribution } from "../distributions";
@@ -76,13 +82,13 @@ const main = async (ageName: string, _epoch: string) => {
   const usersBalances = await fetchUsers(configuration.subgraphUrl);
 
   const usersAccumulatedRewards = usersBalances
-    .map(({ address, balances }) => ({
+    .map(({ address, balances }: { address: string; balances: UserBalance[] }) => ({
       address,
       accumulatedRewards: userBalancesToUnclaimedTokens(balances, endDate).toString(), // with 18 * 2 decimals
     }))
     // remove users with 0 MORPHO to claim
-
     .filter((b) => b.accumulatedRewards !== "0");
+
   const totalEmission: BigNumber = getAccumulatedEmission(epochConfig.id);
   const totalEmitted = usersAccumulatedRewards.reduce((a, b) => a.add(b.accumulatedRewards), BigNumber.from(0));
   console.log(
