@@ -8,6 +8,8 @@ dotenv.config();
 jest.setTimeout(300_000);
 
 const rpcUrl = process.env.RPC_URL;
+
+// run only locally to be sure of the sync of the graph without slow down the CI
 describe.skip("Test the current state of the subgraph for age one", () => {
   const ageOneConfig = ages[0];
   const graphUrl = "https://api.thegraph.com/subgraphs/name/morpho-dev/morpho-rewards-staging";
@@ -15,14 +17,14 @@ describe.skip("Test the current state of the subgraph for age one", () => {
   it("Should have handled all the transactions of the epoch one", async () => {
     const epochOneGraphTransactions = await getGraphTransactions(
       graphUrl,
-      ageOneConfig.epochs[1].initialTimestamp,
-      ageOneConfig.epochs[1].finalTimestamp
+      ageOneConfig.epochs[0].initialTimestamp,
+      ageOneConfig.epochs[0].finalTimestamp
     );
 
     const epochOneChainTransactions = await getChainTransactions(
       provider!,
-      ageOneConfig.epochs[1].initialBlock!,
-      ageOneConfig.epochs[1].finalBlock!
+      ageOneConfig.epochs[0].initialBlock!,
+      ageOneConfig.epochs[0].finalBlock!
     );
     let hasError = false;
     epochOneChainTransactions.forEach((chainTx) => {
@@ -30,7 +32,7 @@ describe.skip("Test the current state of the subgraph for age one", () => {
         (t) => t.hash.toLowerCase() === chainTx.hash.toLowerCase() && t.logIndex === chainTx.logIndex.toString()
       );
       if (!graphTx?.id) {
-        console.log(graphTx);
+        console.log(graphTx, chainTx);
         hasError = true;
       }
     });
@@ -40,14 +42,14 @@ describe.skip("Test the current state of the subgraph for age one", () => {
   it("Should have handled all the transactions of the epoch two", async () => {
     const graphTransactions = await getGraphTransactions(
       graphUrl,
-      ageOneConfig.epochs[2].initialTimestamp,
-      ageOneConfig.epochs[2].finalTimestamp
+      ageOneConfig.epochs[1].initialTimestamp,
+      ageOneConfig.epochs[1].finalTimestamp
     );
 
     const chainTransactions = await getChainTransactions(
       provider,
-      ageOneConfig.epochs[2].initialBlock!,
-      ageOneConfig.epochs[2].finalBlock!
+      ageOneConfig.epochs[1].initialBlock!,
+      ageOneConfig.epochs[1].finalBlock!
     );
     let hasError = false;
     chainTransactions.forEach((chainTx) => {
@@ -65,24 +67,24 @@ describe.skip("Test the current state of the subgraph for age one", () => {
   it("Should have handled all the transactions of the epoch three", async () => {
     const graphTransactions = await getGraphTransactions(
       graphUrl,
-      ageOneConfig.epochs[3].initialTimestamp,
-      ageOneConfig.epochs[3].finalTimestamp
+      ageOneConfig.epochs[2].initialTimestamp,
+      ageOneConfig.epochs[2].finalTimestamp
     );
     console.log("fetched graph", graphTransactions.length);
-    const currentBlock = await provider.getBlock("latest");
     const chainTransactions = await getChainTransactions(
       provider,
-      ageOneConfig.epochs[3].initialBlock!,
-      currentBlock.timestamp
+      ageOneConfig.epochs[2].initialBlock!,
+      ageOneConfig.epochs[2].finalBlock!
     );
-    let hasError = false;
+    let hasError = 0;
+    console.log("fetched chain", chainTransactions.length);
     chainTransactions.forEach((chainTx) => {
       const graphTx = graphTransactions.find(
         (t) => t.hash.toLowerCase() === chainTx.hash.toLowerCase() && t.logIndex === chainTx.logIndex.toString()
       );
       if (!graphTx?.id) {
-        console.log(graphTx);
-        hasError = true;
+        console.log(graphTx, chainTx);
+        hasError++;
       }
     });
     expect(hasError).toBeFalsy();

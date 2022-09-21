@@ -12,19 +12,18 @@ import { formatUnits } from "ethers/lib/utils";
 import { WAD } from "../../src/helpers";
 import { expectBNApproxEquals } from "./epochOne.test";
 import { ages } from "../../src";
-
+jest.setTimeout(100000);
 describe("Test the distribution for the third epoch", () => {
   const epochConfig = ages[0].epochs[2];
   let usersBalances: UserBalances[];
   let usersAccumulatedRewards: { address: string; accumulatedRewards: string }[];
-  const epochOneRoot = ""; // TODO: add root when it is computable
+  const epochOneRoot = "0xa033808b8ad6b65291bc542b033f869ed82412707ca7127f4d3564d0b6d8abb3";
 
   beforeAll(async () => {
-    console.log("Final block", epochConfig.finalBlock);
     usersBalances = await fetchUsers(ages[0].subgraphUrl, epochConfig.finalBlock);
     usersAccumulatedRewards = usersBalances.map(({ address, balances }) => ({
       address,
-      accumulatedRewards: userBalancesToUnclaimedTokens(address, balances, epochConfig.finalTimestamp).toString(), // with 18 * 2 decimals
+      accumulatedRewards: userBalancesToUnclaimedTokens(address, balances, epochConfig.finalTimestamp).toString(), // with 18 decimals
     }));
   });
 
@@ -45,9 +44,8 @@ describe("Test the distribution for the third epoch", () => {
     expect(epochConfig.finalBlock).not.toBeUndefined();
   });
 
-  it.skip("should emit the correct number of tokens", () => {
+  it("should emit the correct number of tokens", async () => {
     const totalEmitted = usersAccumulatedRewards.reduce((a, b) => a.add(b.accumulatedRewards), BigNumber.from(0));
-    console.log(epochConfig.id);
     const fromGraph = usersBalances
       .map((b) => b.balances.map((b2) => b2.accumulatedMorpho))
       .flat()
@@ -59,16 +57,23 @@ describe("Test the distribution for the third epoch", () => {
   });
 
   it("Should should compute the correct root", async () => {
-    const usersAccumulatedRewards = usersBalances
-      .map(({ address, balances }) => ({
-        address,
-        accumulatedRewards: userBalancesToUnclaimedTokens(address, balances, epochConfig.finalTimestamp).toString(), // with 18 * 2 decimals
-      }))
-      // remove users with 0 MORPHO to claim
-      .filter((b) => b.accumulatedRewards !== "0");
-    const proofs = computeMerkleTree(usersAccumulatedRewards);
-    // console.log(JSON.stringify(proofs, null, 2)); // object used to dump into distribution/{age}/{epoch}/proofs.json
-    //TODO: uncomment when root is computed
-    // expect(proofs.root).toEqual(epochOneRoot);
+    // remove users with 0 MORPHO to claim
+    usersAccumulatedRewards = usersAccumulatedRewards.filter((b) => b.accumulatedRewards !== "0");
+    const { root } = computeMerkleTree(usersAccumulatedRewards);
+    expect(root).toEqual(epochOneRoot);
+  });
+  it("Should sum proofs to the total token emmited", async () => {
+    // remove users with 0 MORPHO to claim
+    usersAccumulatedRewards = usersAccumulatedRewards.filter((b) => b.accumulatedRewards !== "0");
+    const { proofs } = computeMerkleTree(usersAccumulatedRewards);
+    const totalEmitted = Object.values(proofs)
+      .map((proof) => BigNumber.from(proof.amount))
+      .reduce((acc, b) => acc.add(b), BigNumber.from(0));
+    const totalEmittedTheorical = ages[0].epochs.reduce(
+      (acc, epoch) => acc.add(epoch.totalEmission.mul(WAD)),
+      BigNumber.from(0)
+    );
+    console.log(formatUnits(totalEmitted), "over", formatUnits(totalEmittedTheorical));
+    expectBNApproxEquals(totalEmitted, totalEmittedTheorical, 1e10);
   });
 });

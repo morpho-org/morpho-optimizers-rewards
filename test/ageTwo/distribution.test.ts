@@ -4,10 +4,10 @@ import { BigNumber, providers } from "ethers";
 import * as dotenv from "dotenv";
 import { ageTwoDistribution } from "../../src/ages/distributions";
 import { aStEth, cFei } from "../../src/helpers";
-import { MarketEmission } from "../../lib/utils";
-import { Optional } from "../../lib/helpers/types";
+import { MarketEmission } from "../../src/utils";
+import { Optional } from "../../src/helpers/types";
 import { expectBNApproxEquals } from "../ageOne/epochOne.test";
-import { WAD } from "../../lib/helpers";
+import { WAD } from "../../src/helpers";
 dotenv.config();
 describe("Test the distribution of the second age", () => {
   const age = ages[1];
@@ -16,7 +16,7 @@ describe("Test the distribution of the second age", () => {
   const provider = new providers.JsonRpcProvider(process.env.RPC_URL, "mainnet");
   let marketsEmissions: { [p: string]: Optional<MarketEmission> } = {};
   beforeAll(async () => {
-    ({ marketsEmissions } = await ageTwoDistribution(age.epochs[epochIndex], provider));
+    ({ marketsEmissions } = await ageTwoDistribution(epoch, provider));
   });
 
   it("Should not distribute tokens on Compound FEI", async () => {
@@ -28,8 +28,8 @@ describe("Test the distribution of the second age", () => {
     expect(marketsEmissions[aStEth]?.borrow.isZero()).toEqual(true); // no borrowers of steth on aave
   });
   it("Should distribute the correct number of MORPHO tokens", async () => {
-    const totalRewards = age.epochs[epochIndex].totalEmission;
-    const duration = age.epochs[epochIndex].finalTimestamp.sub(age.epochs[epochIndex].initialTimestamp);
+    const totalRewards = epoch.totalEmission;
+    const duration = epoch.finalTimestamp.sub(epoch.initialTimestamp);
     const totalEmitted = Object.values(marketsEmissions).reduce(
       (acc, emission) => acc.add(emission!.borrowRate.add(emission!.supplyRate).mul(duration)),
       BigNumber.from(0)
