@@ -8,7 +8,9 @@ dotenv.config();
 jest.setTimeout(300_000);
 
 const rpcUrl = process.env.RPC_URL;
-describe("Test the current state of the subgraph for age one", () => {
+
+// run only locally to be sure of the sync of the graph without slow down the CI
+describe.skip("Test the current state of the subgraph for age one", () => {
   const ageOneConfig = ages[0];
   const graphUrl = "https://api.thegraph.com/subgraphs/name/morpho-dev/morpho-rewards-staging";
   const provider = new providers.JsonRpcProvider(rpcUrl);
@@ -62,7 +64,7 @@ describe("Test the current state of the subgraph for age one", () => {
     expect(hasError).toBeFalsy();
     expect(graphTransactions.length).toEqual(chainTransactions.length);
   });
-  it.skip("Should have handled all the transactions of the epoch three", async () => {
+  it("Should have handled all the transactions of the epoch three", async () => {
     const graphTransactions = await getGraphTransactions(
       graphUrl,
       ageOneConfig.epochs[2].initialTimestamp,
