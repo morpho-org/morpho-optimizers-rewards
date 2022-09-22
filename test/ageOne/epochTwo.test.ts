@@ -23,7 +23,7 @@ describe("Test the distribution for the second epoch", () => {
   it("Should distribute the correct number of tokens over Morpho users", async () => {
     const usersAccumulatedRewards = usersBalances.map(({ address, balances }) => ({
       address,
-      accumulatedRewards: userBalancesToUnclaimedTokens(address, balances, epochConfig.finalTimestamp).toString(), // with 18 * 2 decimals
+      accumulatedRewards: userBalancesToUnclaimedTokens( balances, epochConfig.finalTimestamp).toString(), // with 18 * 2 decimals
     }));
     const totalFromGraph = usersBalances
       .map((u) => u.balances.map((b) => b.accumulatedMorpho))
@@ -45,7 +45,7 @@ describe("Test the distribution for the second epoch", () => {
     const usersAccumulatedRewards = usersBalances
       .map(({ address, balances }) => ({
         address,
-        accumulatedRewards: userBalancesToUnclaimedTokens(address, balances, epochConfig.finalTimestamp).toString(), // with 18 * 2 decimals
+        accumulatedRewards: userBalancesToUnclaimedTokens(balances, epochConfig.finalTimestamp).toString(), // with 18 * 2 decimals
       }))
       // remove users with 0 MORPHO to claim
       .filter((b) => b.accumulatedRewards !== "0");
