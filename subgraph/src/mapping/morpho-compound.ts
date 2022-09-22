@@ -1,4 +1,10 @@
-import { Borrowed, P2PIndexesUpdated, Repaid, Supplied, Withdrawn } from "../../generated/Morpho/Morpho";
+import {
+  Borrowed,
+  P2PIndexesUpdated,
+  Repaid,
+  Supplied,
+  Withdrawn,
+} from "../../generated/MorphoCompound/MorphoCompound";
 import {
   handleBorrowedInternal,
   handleRepaidInternal,

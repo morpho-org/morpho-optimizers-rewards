@@ -7,6 +7,7 @@
     "build": "graph build",
     "deploy": "graph deploy --product hosted-service morpho-labs/morphoages",
     "deploy:staging": "graph deploy --product hosted-service morpho-dev/morpho-rewards-staging",
+    "deploy:prod": "graph deploy --product hosted-service morpho-labs/morpho-rewards",
     "create-local": "graph create --node http://localhost:8020/ morpho-labs/ages-graph",
     "remove-local": "graph remove --node http://localhost:8020/ morpho-labs/ages-graph",
     "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 morpho-labs/ages-graph"

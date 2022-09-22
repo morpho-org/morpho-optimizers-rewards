@@ -18,6 +18,7 @@ export const fetchUsers = async (graphUrl: string, block?: providers.BlockTag) =
         variables: { size: batchSize, lastUser: offset, block },
       })
       .then((r) => {
+        if (!r.data.data) throw Error(JSON.stringify(r.data));
         return r.data.data.users.map(formatGraphBalances);
       });
 

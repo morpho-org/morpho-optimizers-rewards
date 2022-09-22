@@ -27,13 +27,15 @@ export const getUserRewards = async (
   const claimableRaw = currentDistribution.proofs[address.toLowerCase()];
   const claimable = claimableRaw ? BigNumber.from(claimableRaw.amount) : BigNumber.from(0);
   const currentEpoch = timestampToEpoch(timestampEnd);
-  let claimableSoon = BigNumber.from(0);
-  if (currentEpoch && currentEpoch?.epoch.id !== currentDistribution.epoch)
-    claimableSoon = userBalancesToUnclaimedTokens(
-      address,
-      userBalances?.balances || [],
-      currentEpoch.epoch.initialTimestamp
-    ).sub(claimable);
+  const claimableSoon = BigNumber.from(0);
+  // TODO: use previous epoch to compute claimable soon
+  // console.log(currentEpoch?.epoch.id, currentDistribution.epoch);
+  // if (currentEpoch && currentEpoch?.epoch.id !== currentDistribution.epoch)
+  //   claimableSoon = userBalancesToUnclaimedTokens(
+  //     address,
+  //     userBalances?.balances || [],
+  //     currentEpoch.epoch.initialTimestamp
+  //   ).sub(claimable);
   const currentEpochRewards = currentRewards.sub(claimable).sub(claimableSoon);
 
   let currentEpochProjectedRewards = currentRewards;
@@ -137,7 +139,7 @@ const computeIndex = (
     const marketsEmission = require(`../../distribution/${epoch.age.ageName}/${epoch.epoch.epochName}/marketsEmission.json`);
     const speed = BigNumber.from(marketsEmission.markets[marketAddress]?.[rateType] ?? 0);
     const morphoAccrued = deltaTimestamp.mul(speed); // in WEI units;
-    const ratio = morphoAccrued.mul(WAD).div(totalUnderlying); // in 18*2 - decimals units;
+    const ratio = totalUnderlying.eq(0) ? BigNumber.from(0) : morphoAccrued.mul(WAD).div(totalUnderlying); // in 18*2 - decimals units;
     return currentIndex.add(ratio);
   }, lastIndex);
 };
