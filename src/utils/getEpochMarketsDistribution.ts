@@ -13,7 +13,6 @@ export const getMarketsDistribution = async (
   if (!epochConfig) throw Error(`No epoch found at timestamp ${block.timestamp}`);
   return getEpochMarketsDistribution(epochConfig.epoch.id, provider);
 };
-
 export const getEpochMarketsDistribution = async (epochId: string, provider: providers.Provider) => {
   const [age, epoch] = epochId.split("-");
   let distribution;
@@ -22,13 +21,16 @@ export const getEpochMarketsDistribution = async (epochId: string, provider: pro
     distribution = require(`../../distribution/${age}-${epoch}/marketsEmission.json`) as MarketsEmission;
     return distribution;
   } catch (e) {
-    // need to compute distribution by hand
-    console.log("No distribution for epoch", epochId);
+    // need to compute distribution from chain
     return computeEpochMarketsDistribution(age, epoch, provider);
   }
 };
 
+const distributionCache: { [epoch: string]: MarketsEmission } = {};
+
 export const computeEpochMarketsDistribution = async (age: string, epoch: string, provider: providers.Provider) => {
+  const fromCache = distributionCache[`${age}-${epoch}`];
+  if (fromCache) return fromCache;
   const ageConfig = ages.find((a) => a.ageName === age);
   if (!ageConfig) throw Error(`Unknown age: ${age}`);
   const epochConfig = ageConfig.epochs.find((e) => e.epochName === epoch);
@@ -46,7 +48,7 @@ export const computeEpochMarketsDistribution = async (age: string, epoch: string
       },
     ])
   );
-  return {
+  const result: MarketsEmission = {
     age,
     epoch,
     totalEmission: epochConfig.totalEmission.toString(),
@@ -57,5 +59,7 @@ export const computeEpochMarketsDistribution = async (age: string, epoch: string
       duration: epochConfig.finalTimestamp.sub(epochConfig.initialTimestamp).toString(),
     },
     markets: formattedMarketsEmissions,
-  } as MarketsEmission;
+  };
+  distributionCache[`${age}-${epoch}`] = result;
+  return result;
 };
