@@ -11,11 +11,18 @@ import {
 import * as fs from "fs";
 import path from "path";
 import { ageOneDistribution } from "../distributions";
-import { BigNumber } from "ethers";
+import { BigNumber, providers } from "ethers";
 import { now } from "../../helpers";
 import { ages } from "../ages";
 
-const main = async (ageName: string, _epoch: string) => {
+/**
+ * DEPRECATED: will me removed soon to be more general
+ */
+const main = async (
+  ageName: string,
+  _epoch: string,
+  provider: providers.Provider = new providers.InfuraProvider(1)
+) => {
   const configuration = ages[0];
   console.log("Compute markets parameters");
   const epochConfig = configuration.epochs.find((e) => e.epochName === _epoch);
@@ -84,7 +91,7 @@ const main = async (ageName: string, _epoch: string) => {
   const usersAccumulatedRewards = usersBalances
     .map(({ address, balances }: { address: string; balances: UserBalance[] }) => ({
       address,
-      accumulatedRewards: userBalancesToUnclaimedTokens(balances, endDate).toString(), // with 18 * 2 decimals
+      accumulatedRewards: userBalancesToUnclaimedTokens(balances, endDate, provider).toString(), // with 18 * 2 decimals
     }))
     // remove users with 0 MORPHO to claim
     .filter((b) => b.accumulatedRewards !== "0");
