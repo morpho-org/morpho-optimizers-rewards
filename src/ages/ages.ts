@@ -13,6 +13,7 @@ export const ages: AgeConfig[] = [
     epochs: [
       {
         id: "age1-epoch1",
+        number: 1,
         epochName: "epoch1",
         snapshotBlock: 14_927_832, // https://etherscan.io/block/14927832
         initialTimestamp: BigNumber.from(new Date("2022-06-08T17:00:06.000Z").getTime() / 1000),
@@ -26,6 +27,7 @@ export const ages: AgeConfig[] = [
       },
       {
         id: "age1-epoch2",
+        number: 2,
         epochName: "epoch2",
         snapshotBlock: 15_134_933, // https://etherscan.io/block/15134933
         initialTimestamp: BigNumber.from(new Date("2022-07-13T17:00:06.000Z").getTime() / 1000),
@@ -39,6 +41,7 @@ export const ages: AgeConfig[] = [
       },
       {
         id: "age1-epoch3",
+        number: 3,
         epochName: "epoch3",
         snapshotBlock: 15_353_032, // https://etherscan.io/block/15353032
         initialTimestamp: BigNumber.from(new Date("2022-08-16T17:00:06.000Z").getTime() / 1000),
@@ -62,6 +65,7 @@ export const ages: AgeConfig[] = [
     epochs: [
       {
         id: "age2-epoch1",
+        number: 4,
         epochName: "epoch1",
         snapshotBlock: 15_575_331, // https://etherscan.io/block/15575331
         initialTimestamp: BigNumber.from(new Date("2022-09-20T15:00:00.000Z").getTime() / 1000),
@@ -74,6 +78,7 @@ export const ages: AgeConfig[] = [
       },
       {
         id: "age2-epoch2",
+        number: 5,
         epochName: "epoch2",
         snapshotBlock: undefined, // will be known at the beginning of the epoch
         initialTimestamp: BigNumber.from(new Date("2022-10-24T15:00:00.000Z").getTime() / 1000),
@@ -86,6 +91,7 @@ export const ages: AgeConfig[] = [
       },
       {
         id: "age2-epoch3",
+        number: 6,
         epochName: "epoch3",
         snapshotBlock: undefined, // will be known at the beginning of the epoch
         initialTimestamp: BigNumber.from(new Date("2022-11-27T15:00:00.000Z").getTime() / 1000),
