@@ -3,7 +3,7 @@
   "epoch": "epoch3",
   "totalEmission": "2950000",
   "parameters": {
-    "initialBlock": "15353032",
+    "snapshotBlock": "15353032",
     "initialTimestamp": "1660669206",
     "totalSupply": "3772641784.107853639975387091",
     "totalBorrow": "975884628.915529620443429992",
