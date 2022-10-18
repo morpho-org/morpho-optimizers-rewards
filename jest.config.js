@@ -3,7 +3,7 @@ module.exports = {
   transform: {
     "^.+\\.tsx?$": "ts-jest",
   },
-  testTimeout: 15_000,
+  testTimeout: 50_000,
   testMatch: ["**/test/**/*.test.(ts|js)"],
   testEnvironment: "node",
 };
