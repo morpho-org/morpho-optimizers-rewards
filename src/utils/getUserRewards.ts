@@ -7,6 +7,7 @@ import { getEpochsBetweenTimestamps, timestampToEpoch } from "./timestampToEpoch
 import { RewardsDistributor__factory } from "@morpho-labs/morpho-ethers-contract";
 import addresses from "@morpho-labs/morpho-ethers-contract/lib/addresses";
 import { ages } from "../ages";
+import { getCurrentDistribution } from "../scripts/getCurrentDistribution";
 
 export const getUserRewards = async (
   address: string,
@@ -24,7 +25,7 @@ export const getUserRewards = async (
     blockNumber
   );
   const currentRewards = userBalancesToUnclaimedTokens(userBalances?.balances || [], timestampEnd);
-  const currentDistribution = require("../../distribution/merkleTree/currentDistribution.json");
+  const currentDistribution = await getCurrentDistribution(provider);
   const claimableRaw = currentDistribution.proofs[address.toLowerCase()];
   const claimable = claimableRaw ? BigNumber.from(claimableRaw.amount) : BigNumber.from(0);
   const currentEpoch = timestampToEpoch(timestampEnd);
@@ -59,11 +60,11 @@ export const getUserRewards = async (
           functionSignature: "claim(address,uint256,bytes32[])",
           args: {
             address,
-            amount: claimableRaw.amount,
-            proof: claimableRaw.proof,
+            amount: claimableRaw!.amount,
+            proof: claimableRaw!.proof,
           },
           encodedData: await rewardsDisributor.populateTransaction
-            .claim(address, claimableRaw.amount, claimableRaw.proof)
+            .claim(address, claimableRaw!.amount, claimableRaw!.proof)
             .then((r) => r.data),
         }
       : {};
@@ -78,10 +79,7 @@ export const getUserRewards = async (
     claimData,
   };
 };
-export const userBalancesToUnclaimedTokens = (
-  balances: UserBalance[],
-  currentTimestamp: BigNumberish
-) => {
+export const userBalancesToUnclaimedTokens = (balances: UserBalance[], currentTimestamp: BigNumberish) => {
   return balances
     .map((b) => {
       let accumulated = b.accumulatedMorpho;

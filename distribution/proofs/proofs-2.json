@@ -1,4 +1,5 @@
 {
+  "epoch": "age1-epoch2",
   "root": "0x1a23db78755a76f8213b5790c3e8bef2ad322bc53d40d9e7e9c1b047638a9166",
   "proofs": {
     "0x000000005ebfb5a950f8fdf3248e99614a7ff220": {
