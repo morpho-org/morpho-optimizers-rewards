@@ -2,29 +2,31 @@ import { providers } from "ethers";
 import { RewardsDistributor__factory } from "@morpho-labs/morpho-ethers-contract";
 import addresses from "@morpho-labs/morpho-ethers-contract/lib/addresses";
 import { getNumberOfEpochs } from "../utils/epochs";
-export const getCurrentDistribution = async (provider: providers.Provider, blockTag: providers.BlockTag = "latest") => {
+export const getCurrentOnChainDistribution = async (
+  provider: providers.Provider,
+  blockTag: providers.BlockTag = "latest"
+) => {
   const rewardsDisributor = RewardsDistributor__factory.connect(addresses.morphoDao.rewardsDistributor, provider);
   const root = await rewardsDisributor.currRoot({ blockTag });
   return rootToProof(root);
 };
+export interface Proofs {
+  epoch: string;
+  root: string;
+  proofs: {
+    [address: string]:
+      | {
+          amount: string;
+          proof: string[];
+        }
+      | undefined;
+  };
+}
 
 export const rootToProof = (root: string) => {
   let index = getNumberOfEpochs();
   let retrieved = false;
-  let proof:
-    | {
-        epoch: string;
-        root: string;
-        proofs: {
-          [address: string]:
-            | {
-                amount: string;
-                proof: string[];
-              }
-            | undefined;
-        };
-      }
-    | undefined;
+  let proof: Proofs | undefined;
   while (!retrieved && index > 0) {
     const filename = `proofs-${index}.json`;
     let lastProofRaw: any;

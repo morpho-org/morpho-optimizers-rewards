@@ -3,11 +3,11 @@ import axios from "axios";
 import { maxBN, minBN, now, WAD } from "../helpers";
 import { GraphUserBalances, UserBalance, formatGraphBalances } from "./graph";
 import { Market } from "./graph/getGraphMarkets/markets.types";
-import { getEpochsBetweenTimestamps, timestampToEpoch } from "./timestampToEpoch";
+import { getEpochsBetweenTimestamps, getPrevEpoch, timestampToEpoch } from "./timestampToEpoch";
 import { RewardsDistributor__factory } from "@morpho-labs/morpho-ethers-contract";
 import addresses from "@morpho-labs/morpho-ethers-contract/lib/addresses";
 import { ages } from "../ages";
-import { getCurrentDistribution } from "../scripts/getCurrentDistribution";
+import { getCurrentOnChainDistribution } from "../scripts/getCurrentOnChainDistribution";
 
 export const getUserRewards = async (
   address: string,
@@ -25,18 +25,23 @@ export const getUserRewards = async (
     blockNumber
   );
   const currentRewards = userBalancesToUnclaimedTokens(userBalances?.balances || [], timestampEnd);
-  const currentDistribution = await getCurrentDistribution(provider);
-  const claimableRaw = currentDistribution.proofs[address.toLowerCase()];
+  const onChainDistribution = await getCurrentOnChainDistribution(provider, blockNumber);
+  const claimableRaw = onChainDistribution.proofs[address.toLowerCase()];
   const claimable = claimableRaw ? BigNumber.from(claimableRaw.amount) : BigNumber.from(0);
   const currentEpoch = timestampToEpoch(timestampEnd);
-  const claimableSoon = BigNumber.from(0);
-  // TODO: use previous epoch to compute claimable soon
-  // console.log(currentEpoch?.epoch.id, currentDistribution.epoch);
-  // if (currentEpoch && currentEpoch?.epoch.id !== currentDistribution.epoch)
-  //   claimableSoon = userBalancesToUnclaimedTokens(
-  //     userBalances?.balances || [],
-  //     currentEpoch.epoch.initialTimestamp
-  //   ).sub(claimable);
+  const prevEpoch = getPrevEpoch(currentEpoch?.epoch.id);
+  let claimableSoon = BigNumber.from(0);
+  if (prevEpoch && prevEpoch.epoch.id !== onChainDistribution.epoch) {
+    // The previous epoch is done, but the root is not yet modified on chain
+    // So The difference between the amùount of the previous epoch and the amount claimable on chain will be claimable soon,
+    // When the root will be updated by DAO
+    const prevId = prevEpoch.epoch.number;
+    const prevDistribution = require(`../../distribution/proofs/proofs-${prevId}.json`);
+    const claimableSoonRaw = prevDistribution.proofs[address.toLowerCase()];
+    if (claimableSoonRaw) {
+      claimableSoon = BigNumber.from(claimableSoonRaw.amount).sub(claimable);
+    }
+  }
   const currentEpochRewards = currentRewards.sub(claimable).sub(claimableSoon);
 
   let currentEpochProjectedRewards = currentRewards;
@@ -55,7 +60,7 @@ export const getUserRewards = async (
     claimed = await rewardsDisributor.claimed(address);
     claimData = claimable.sub(claimed).gt(0)
       ? {
-          root: currentDistribution.root,
+          root: onChainDistribution.root,
           rewardsDistributor: rewardsDisributor.address,
           functionSignature: "claim(address,uint256,bytes32[])",
           args: {
