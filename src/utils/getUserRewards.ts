@@ -7,7 +7,7 @@ import { getEpochsBetweenTimestamps, getPrevEpoch, timestampToEpoch } from "./ti
 import { RewardsDistributor__factory } from "@morpho-labs/morpho-ethers-contract";
 import addresses from "@morpho-labs/morpho-ethers-contract/lib/addresses";
 import { ages } from "../ages";
-import { getCurrentOnChainDistribution } from "../scripts/getCurrentOnChainDistribution";
+import { getCurrentOnChainDistribution } from "./getCurrentOnChainDistribution";
 
 export const getUserRewards = async (
   address: string,

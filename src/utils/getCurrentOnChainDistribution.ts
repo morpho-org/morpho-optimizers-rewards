@@ -1,7 +1,7 @@
 import { providers } from "ethers";
 import { RewardsDistributor__factory } from "@morpho-labs/morpho-ethers-contract";
 import addresses from "@morpho-labs/morpho-ethers-contract/lib/addresses";
-import { getNumberOfEpochs } from "../utils/epochs";
+import { getNumberOfEpochs } from "./epochs";
 export const getCurrentOnChainDistribution = async (
   provider: providers.Provider,
   blockTag: providers.BlockTag = "latest"
