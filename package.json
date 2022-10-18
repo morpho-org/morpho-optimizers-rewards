@@ -39,6 +39,7 @@
     "start:age1:epoch3": "ts-node ./src/ages/age-one/index.ts epoch3",
     "getUserRewards": "ts-node src/scripts/getUserRewards.ts",
     "getMarketsDistribution": "ts-node src/scripts/getMarketsDistribution.ts",
+    "syncAgeConfig": "ts-node src/scripts/syncAgeConfig.ts",
     "prepublishOnly": "yarn build && yarn lint",
     "postpublish": "git clean -fd && git checkout -- .",
     "preversion": "yarn build",
