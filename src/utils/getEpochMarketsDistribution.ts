@@ -31,6 +31,9 @@ const distributionCache: { [epoch: string]: MarketsEmission } = {};
 export const computeEpochMarketsDistribution = async (age: string, epoch: string, provider: providers.Provider) => {
   const fromCache = distributionCache[`${age}-${epoch}`];
   if (fromCache) return fromCache;
+  // Warn in case of undesired scenario
+  /* eslint-disable-next-line  */
+  console.warn(`Commpute distribution for epoch ${age}-${epoch}`);
   const ageConfig = ages.find((a) => a.ageName === age);
   if (!ageConfig) throw Error(`Unknown age: ${age}`);
   const epochConfig = ageConfig.epochs.find((e) => e.epochName === epoch);
