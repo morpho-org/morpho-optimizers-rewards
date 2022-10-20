@@ -1,0 +1,560 @@
+{
+    "currentBlock": 14927832,
+    "markets": {
+        "0x7713dd9ca933848f6819f38b8352d9a15ea73f67": {
+            "address": "0x7713dd9ca933848f6819f38b8352d9a15ea73f67",
+            "supplyIndex": "0",
+            "borrowIndex": "0",
+            "supplyUpdateBlockTimestamp": "1654464119",
+            "borrowUpdateBlockTimestamp": "1654067310",
+            "lastP2PBorrowIndex": "200035829586393365709025622",
+            "lastPoolBorrowIndex": "1003283127535463585",
+            "lastP2PSupplyIndex": "200025250557886122035838924",
+            "lastPoolSupplyIndex": "200142569282778790454240569",
+            "lastTotalBorrow": "90298012241287519009",
+            "lastTotalSupply": "8569131858647089987951"
+        },
+        "0xf650c3d88d12db855b8bf7d11be6c55a4e07dcc9": {
+            "address": "0xf650c3d88d12db855b8bf7d11be6c55a4e07dcc9",
+            "supplyIndex": "0",
+            "borrowIndex": "0",
+            "supplyUpdateBlockTimestamp": "1654701292",
+            "borrowUpdateBlockTimestamp": "1654114697",
+            "lastP2PBorrowIndex": "200145847262516",
+            "lastPoolBorrowIndex": "1151101041309340514",
+            "lastP2PSupplyIndex": "200145847262516",
+            "lastPoolSupplyIndex": "218618752556931",
+            "lastTotalBorrow": "397472757786",
+            "lastTotalSupply": "502727560256"
+        },
+        "0x39aa39c021dfbae8fac545936693ac917d5e7563": {
+            "address": "0x39aa39c021dfbae8fac545936693ac917d5e7563",
+            "supplyIndex": "0",
+            "borrowIndex": "0",
+            "supplyUpdateBlockTimestamp": "1654698168",
+            "borrowUpdateBlockTimestamp": "1654682334",
+            "lastP2PBorrowIndex": "200066332003186",
+            "lastPoolBorrowIndex": "1239583717992085261",
+            "lastP2PSupplyIndex": "200066332003186",
+            "lastPoolSupplyIndex": "226126732494176",
+            "lastTotalBorrow": "226064468626",
+            "lastTotalSupply": "3221235058352"
+        },
+        "0x4ddc2d193948926d02f9b1fe9e1daa0718270ed5": {
+            "address": "0x4ddc2d193948926d02f9b1fe9e1daa0718270ed5",
+            "supplyIndex": "0",
+            "borrowIndex": "0",
+            "supplyUpdateBlockTimestamp": "1654703765",
+            "borrowUpdateBlockTimestamp": "1654534647",
+            "lastP2PBorrowIndex": "200026723124569061388664808",
+            "lastPoolBorrowIndex": "1087569416503891207",
+            "lastP2PSupplyIndex": "200026719975734145163406265",
+            "lastPoolSupplyIndex": "200642772562016583643690376",
+            "lastTotalBorrow": "102322625023411314216",
+            "lastTotalSupply": "231430705423350260805"
+        },
+        "0x5d3a536e4d6dbd6114cc1ead35777bab948e3643": {
+            "address": "0x5d3a536e4d6dbd6114cc1ead35777bab948e3643",
+            "supplyIndex": "0",
+            "borrowIndex": "0",
+            "supplyUpdateBlockTimestamp": "1654693845",
+            "borrowUpdateBlockTimestamp": "1654682080",
+            "lastP2PBorrowIndex": "200094740931261295354893989",
+            "lastPoolBorrowIndex": "1141603099814416329",
+            "lastP2PSupplyIndex": "200094740931261295354893989",
+            "lastPoolSupplyIndex": "220161879902830567353444252",
+            "lastTotalBorrow": "3502472881072483662558574",
+            "lastTotalSupply": "6718824620066381063235437"
+        },
+        "0x35a18000230da775cac24873d00ff85bccded550": {
+            "address": "0x35a18000230da775cac24873d00ff85bccded550",
+            "supplyIndex": "0",
+            "borrowIndex": "0",
+            "supplyUpdateBlockTimestamp": "1654682320",
+            "borrowUpdateBlockTimestamp": "1654468774",
+            "lastP2PBorrowIndex": "200122870328988994648222573",
+            "lastPoolBorrowIndex": "1111583296014626877",
+            "lastP2PSupplyIndex": "200122870328988994648222573",
+            "lastPoolSupplyIndex": "202642188932665281321991943",
+            "lastTotalBorrow": "391076271200144840300",
+            "lastTotalSupply": "10783675733007955985092"
+        },
+        "0x70e36f6bf80a52b3b46b3af8e106cc0ed743e8e4": {
+            "address": "0x70e36f6bf80a52b3b46b3af8e106cc0ed743e8e4",
+            "supplyIndex": "0",
+            "borrowIndex": "0",
+            "supplyUpdateBlockTimestamp": "1654698448",
+            "borrowUpdateBlockTimestamp": "1654698306",
+            "lastP2PBorrowIndex": "200063888135307451158462654",
+            "lastPoolBorrowIndex": "1116941573908642958",
+            "lastP2PSupplyIndex": "200063888135307451158462654",
+            "lastPoolSupplyIndex": "203940463080686754438499136",
+            "lastTotalBorrow": "186994791373163821733",
+            "lastTotalSupply": "47280500152202251859"
+        },
+        "0xccf4429db6322d5c611ee964527d42e5d685dd6a": {
+            "address": "0xccf4429db6322d5c611ee964527d42e5d685dd6a",
+            "supplyIndex": "0",
+            "borrowIndex": "0",
+            "supplyUpdateBlockTimestamp": "1654681929",
+            "borrowUpdateBlockTimestamp": "1654010331",
+            "lastP2PBorrowIndex": "20005313653330235",
+            "lastPoolBorrowIndex": "1051772400398547072",
+            "lastP2PSupplyIndex": "20005313653330235",
+            "lastPoolSupplyIndex": "20065964024460890",
+            "lastTotalBorrow": "394241",
+            "lastTotalSupply": "54362058"
+        }
+    },
+    "users": {
+        "0x6e632701fd42a9b856294a2172dd63f03eb957c5": {
+            "0x7713dd9ca933848f6819f38b8352d9a15ea73f67": {
+                "userSupplyIndex": "0",
+                "userBorrowIndex": "0",
+                "userSupplyBalance": "5070470840784182487655",
+                "userBorrowBalance": "80258144301682850124",
+                "accruedMorpho": "0"
+            },
+            "0x5d3a536e4d6dbd6114cc1ead35777bab948e3643": {
+                "userSupplyIndex": "0",
+                "userBorrowIndex": "0",
+                "userSupplyBalance": "4709477643629346861644",
+                "userBorrowBalance": "69768306125118539416",
+                "accruedMorpho": "0"
+            },
+            "0x35a18000230da775cac24873d00ff85bccded550": {
+                "userSupplyIndex": "0",
+                "userBorrowIndex": "0",
+                "userSupplyBalance": "202210239229742017264",
+                "userBorrowBalance": "225714507694016833766",
+                "accruedMorpho": "0"
+            },
+            "0x70e36f6bf80a52b3b46b3af8e106cc0ed743e8e4": {
+                "userSupplyIndex": "0",
+                "userBorrowIndex": "0",
+                "userSupplyBalance": "14308405435834665718",
+                "userBorrowBalance": "14607154984804939815",
+                "accruedMorpho": "0"
+            },
+            "0xccf4429db6322d5c611ee964527d42e5d685dd6a": {
+                "userSupplyIndex": "0",
+                "userBorrowIndex": "0",
+                "userSupplyBalance": "336692",
+                "userBorrowBalance": "394241",
+                "accruedMorpho": "0"
+            },
+            "0x4ddc2d193948926d02f9b1fe9e1daa0718270ed5": {
+                "userSupplyIndex": "0",
+                "userBorrowIndex": "0",
+                "userSupplyBalance": "137678633327562546",
+                "userBorrowBalance": "623628932802694333",
+                "accruedMorpho": "0"
+            },
+            "0xf650c3d88d12db855b8bf7d11be6c55a4e07dcc9": {
+                "userSupplyIndex": "0",
+                "userBorrowIndex": "0",
+                "userSupplyBalance": "190166742",
+                "userBorrowBalance": "221207377",
+                "accruedMorpho": "0"
+            },
+            "0x39aa39c021dfbae8fac545936693ac917d5e7563": {
+                "userSupplyIndex": "0",
+                "userBorrowIndex": "0",
+                "userSupplyBalance": "1814450283",
+                "userBorrowBalance": "1996201014",
+                "accruedMorpho": "0"
+            }
+        },
+        "0x84d3e4ee550dd5f99e76a548ac59a6be1c8dcf79": {
+            "0xf650c3d88d12db855b8bf7d11be6c55a4e07dcc9": {
+                "userSupplyIndex": "0",
+                "userBorrowIndex": "0",
+                "userSupplyBalance": "5000148760",
+                "userBorrowBalance": "0",
+                "accruedMorpho": "0"
+            },
+            "0x39aa39c021dfbae8fac545936693ac917d5e7563": {
+                "userSupplyIndex": "0",
+                "userBorrowIndex": "0",
+                "userSupplyBalance": "5000337834",
+                "userBorrowBalance": "0",
+                "accruedMorpho": "0"
+            },
+            "0x7713dd9ca933848f6819f38b8352d9a15ea73f67": {
+                "userSupplyIndex": "0",
+                "userBorrowIndex": "0",
+                "userSupplyBalance": "0",
+                "userBorrowBalance": "9999999999857027928",
+                "accruedMorpho": "0"
+            },
+            "0x35a18000230da775cac24873d00ff85bccded550": {
+                "userSupplyIndex": "0",
+                "userBorrowIndex": "0",
+                "userSupplyBalance": "165347464884909089067",
+                "userBorrowBalance": "165347464884954367158",
+                "accruedMorpho": "0"
+            },
+            "0x70e36f6bf80a52b3b46b3af8e106cc0ed743e8e4": {
+                "userSupplyIndex": "0",
+                "userBorrowIndex": "0",
+                "userSupplyBalance": "32972094716367586141",
+                "userBorrowBalance": "32972094716542278985",
+                "accruedMorpho": "0"
+            }
+        },
+        "0x9da59c875a145fefd7c6be87c002af29faec4d3a": {
+            "0x4ddc2d193948926d02f9b1fe9e1daa0718270ed5": {
+                "userSupplyIndex": "0",
+                "userBorrowIndex": "0",
+                "userSupplyBalance": "40394380270600882",
+                "userBorrowBalance": "0",
+                "accruedMorpho": "0"
+            }
+        },
+        "0x408e986a277da059a90c4be5051f67c6e3fd5cff": {
+            "0x4ddc2d193948926d02f9b1fe9e1daa0718270ed5": {
+                "userSupplyIndex": "0",
+                "userBorrowIndex": "0",
+                "userSupplyBalance": "200396645661713944",
+                "userBorrowBalance": "0",
+                "accruedMorpho": "0"
+            }
+        },
+        "0xc100c251bdd297a66795112f04356e6ba5f89d80": {
+            "0x5d3a536e4d6dbd6114cc1ead35777bab948e3643": {
+                "userSupplyIndex": "0",
+                "userBorrowIndex": "0",
+                "userSupplyBalance": "6091137845048055272928",
+                "userBorrowBalance": "1099999999999999999998",
+                "accruedMorpho": "0"
+            },
+            "0x4ddc2d193948926d02f9b1fe9e1daa0718270ed5": {
+                "userSupplyIndex": "0",
+                "userBorrowIndex": "0",
+                "userSupplyBalance": "999999999807155852",
+                "userBorrowBalance": "1383996031954603771",
+                "accruedMorpho": "0"
+            },
+            "0x7713dd9ca933848f6819f38b8352d9a15ea73f67": {
+                "userSupplyIndex": "0",
+                "userBorrowIndex": "0",
+                "userSupplyBalance": "499999999999990145453",
+                "userBorrowBalance": "39867939747640957",
+                "accruedMorpho": "0"
+            }
+        },
+        "0x264c86dbbd2e4165fbbf0c35b0ddf0e00aec6b31": {
+            "0x5d3a536e4d6dbd6114cc1ead35777bab948e3643": {
+                "userSupplyIndex": "0",
+                "userBorrowIndex": "0",
+                "userSupplyBalance": "7688603276374046108040",
+                "userBorrowBalance": "0",
+                "accruedMorpho": "0"
+            },
+            "0x39aa39c021dfbae8fac545936693ac917d5e7563": {
+                "userSupplyIndex": "0",
+                "userBorrowIndex": "0",
+                "userSupplyBalance": "7206574377",
+                "userBorrowBalance": "0",
+                "accruedMorpho": "0"
+            },
+            "0x7713dd9ca933848f6819f38b8352d9a15ea73f67": {
+                "userSupplyIndex": "0",
+                "userBorrowIndex": "0",
+                "userSupplyBalance": "2998661017862917354843",
+                "userBorrowBalance": "0",
+                "accruedMorpho": "0"
+            },
+            "0x35a18000230da775cac24873d00ff85bccded550": {
+                "userSupplyIndex": "0",
+                "userBorrowIndex": "0",
+                "userSupplyBalance": "0",
+                "userBorrowBalance": "14298621173639376",
+                "accruedMorpho": "0"
+            },
+            "0x70e36f6bf80a52b3b46b3af8e106cc0ed743e8e4": {
+                "userSupplyIndex": "0",
+                "userBorrowIndex": "0",
+                "userSupplyBalance": "0",
+                "userBorrowBalance": "139415541671816602933",
+                "accruedMorpho": "0"
+            }
+        },
+        "0x6abfd6139c7c3cc270ee2ce132e309f59caaf6a2": {
+            "0x5d3a536e4d6dbd6114cc1ead35777bab948e3643": {
+                "userSupplyIndex": "0",
+                "userBorrowIndex": "0",
+                "userSupplyBalance": "1499999999999999889609106",
+                "userBorrowBalance": "0",
+                "accruedMorpho": "0"
+            },
+            "0x39aa39c021dfbae8fac545936693ac917d5e7563": {
+                "userSupplyIndex": "0",
+                "userBorrowIndex": "0",
+                "userSupplyBalance": "249999999999",
+                "userBorrowBalance": "0",
+                "accruedMorpho": "0"
+            },
+            "0x4ddc2d193948926d02f9b1fe9e1daa0718270ed5": {
+                "userSupplyIndex": "0",
+                "userBorrowIndex": "0",
+                "userSupplyBalance": "229000039656299087264",
+                "userBorrowBalance": "99999999999910890507",
+                "accruedMorpho": "0"
+            },
+            "0xf650c3d88d12db855b8bf7d11be6c55a4e07dcc9": {
+                "userSupplyIndex": "0",
+                "userBorrowIndex": "0",
+                "userSupplyBalance": "397251550409",
+                "userBorrowBalance": "397251550409",
+                "accruedMorpho": "0"
+            }
+        },
+        "0xcb33844b365c53d3462271cee9b719b6fc8ba06a": {
+            "0x39aa39c021dfbae8fac545936693ac917d5e7563": {
+                "userSupplyIndex": "0",
+                "userBorrowIndex": "0",
+                "userSupplyBalance": "1000122913447",
+                "userBorrowBalance": "0",
+                "accruedMorpho": "0"
+            }
+        },
+        "0x4779c6a1cb190221fc152af4b6adb2ea5c5dbd88": {
+            "0xccf4429db6322d5c611ee964527d42e5d685dd6a": {
+                "userSupplyIndex": "0",
+                "userBorrowIndex": "0",
+                "userSupplyBalance": "54025366",
+                "userBorrowBalance": "0",
+                "accruedMorpho": "0"
+            },
+            "0x39aa39c021dfbae8fac545936693ac917d5e7563": {
+                "userSupplyIndex": "0",
+                "userBorrowIndex": "0",
+                "userSupplyBalance": "200020788896",
+                "userBorrowBalance": "0",
+                "accruedMorpho": "0"
+            }
+        },
+        "0x40326059f14c9c23e3b9e76c37282b8798138e0f": {
+            "0x5d3a536e4d6dbd6114cc1ead35777bab948e3643": {
+                "userSupplyIndex": "0",
+                "userBorrowIndex": "0",
+                "userSupplyBalance": "176821632293555710473854",
+                "userBorrowBalance": "0",
+                "accruedMorpho": "0"
+            },
+            "0x39aa39c021dfbae8fac545936693ac917d5e7563": {
+                "userSupplyIndex": "0",
+                "userBorrowIndex": "0",
+                "userSupplyBalance": "89344308906",
+                "userBorrowBalance": "0",
+                "accruedMorpho": "0"
+            }
+        },
+        "0x454e61c0d74024a26f94fae080f6a234db8b8b39": {
+            "0x39aa39c021dfbae8fac545936693ac917d5e7563": {
+                "userSupplyIndex": "0",
+                "userBorrowIndex": "0",
+                "userSupplyBalance": "83842240692",
+                "userBorrowBalance": "0",
+                "accruedMorpho": "0"
+            }
+        },
+        "0x1146f36cf74fbb2971dcda652d0a3f4289a39d53": {
+            "0x39aa39c021dfbae8fac545936693ac917d5e7563": {
+                "userSupplyIndex": "0",
+                "userBorrowIndex": "0",
+                "userSupplyBalance": "4702801801",
+                "userBorrowBalance": "0",
+                "accruedMorpho": "0"
+            }
+        },
+        "0xd3f0862e4acef9a0c2d7fc4eac9ab02c80d7b16c": {
+            "0x39aa39c021dfbae8fac545936693ac917d5e7563": {
+                "userSupplyIndex": "0",
+                "userBorrowIndex": "0",
+                "userSupplyBalance": "3379700",
+                "userBorrowBalance": "0",
+                "accruedMorpho": "0"
+            }
+        },
+        "0x381f45cb9814d824178448466a1eb2855ff0ecb1": {
+            "0x39aa39c021dfbae8fac545936693ac917d5e7563": {
+                "userSupplyIndex": "0",
+                "userBorrowIndex": "0",
+                "userSupplyBalance": "300033634891",
+                "userBorrowBalance": "215066676489",
+                "accruedMorpho": "0"
+            }
+        },
+        "0x44a1f574326b5e688567c31f70f01aa716d1ea81": {
+            "0x35a18000230da775cac24873d00ff85bccded550": {
+                "userSupplyIndex": "0",
+                "userBorrowIndex": "0",
+                "userSupplyBalance": "190888050283529792495",
+                "userBorrowBalance": "0",
+                "accruedMorpho": "0"
+            }
+        },
+        "0xcd262b16421ac23d13d345e4e08875374d5235bf": {
+            "0x39aa39c021dfbae8fac545936693ac917d5e7563": {
+                "userSupplyIndex": "0",
+                "userBorrowIndex": "0",
+                "userSupplyBalance": "250027794151",
+                "userBorrowBalance": "0",
+                "accruedMorpho": "0"
+            }
+        },
+        "0x9f7d3cecf8f857c10fa0b1beed96dcfe52625454": {
+            "0x5d3a536e4d6dbd6114cc1ead35777bab948e3643": {
+                "userSupplyIndex": "0",
+                "userBorrowIndex": "0",
+                "userSupplyBalance": "5023382005938953078822501",
+                "userBorrowBalance": "3501293085422721242662286",
+                "accruedMorpho": "0"
+            }
+        },
+        "0x4b9d53246ed18db31f26fc59b6e47a9efc3c1213": {
+            "0x39aa39c021dfbae8fac545936693ac917d5e7563": {
+                "userSupplyIndex": "0",
+                "userBorrowIndex": "0",
+                "userSupplyBalance": "2000886981",
+                "userBorrowBalance": "0",
+                "accruedMorpho": "0"
+            }
+        },
+        "0x3f436e96f7fbba9dbd764294c424b38e9ff3fff8": {
+            "0x35a18000230da775cac24873d00ff85bccded550": {
+                "userSupplyIndex": "0",
+                "userBorrowIndex": "0",
+                "userSupplyBalance": "4148772759304755732166",
+                "userBorrowBalance": "0",
+                "accruedMorpho": "0"
+            }
+        },
+        "0xea25220caf98e0097fb8401d8a44e2d4f2cef093": {
+            "0x35a18000230da775cac24873d00ff85bccded550": {
+                "userSupplyIndex": "0",
+                "userBorrowIndex": "0",
+                "userSupplyBalance": "5076268663930793312728",
+                "userBorrowBalance": "0",
+                "accruedMorpho": "0"
+            },
+            "0x39aa39c021dfbae8fac545936693ac917d5e7563": {
+                "userSupplyIndex": "0",
+                "userBorrowIndex": "0",
+                "userSupplyBalance": "0",
+                "userBorrowBalance": "9001591123",
+                "accruedMorpho": "0"
+            }
+        },
+        "0x10bf1dcb5ab7860bab1c3320163c6dddf8dcc0e4": {
+            "0x39aa39c021dfbae8fac545936693ac917d5e7563": {
+                "userSupplyIndex": "0",
+                "userBorrowIndex": "0",
+                "userSupplyBalance": "964830068096",
+                "userBorrowBalance": "0",
+                "accruedMorpho": "0"
+            }
+        },
+        "0x806346b423ddb4727c1f5dc718886430aa7ce9cf": {
+            "0x4ddc2d193948926d02f9b1fe9e1daa0718270ed5": {
+                "userSupplyIndex": "0",
+                "userBorrowIndex": "0",
+                "userSupplyBalance": "300395695039328832",
+                "userBorrowBalance": "149999999891695892",
+                "accruedMorpho": "0"
+            }
+        },
+        "0xef764bac8a438e7e498c2e5fccf0f174c3e3f8db": {
+            "0x5d3a536e4d6dbd6114cc1ead35777bab948e3643": {
+                "userSupplyIndex": "0",
+                "userBorrowIndex": "0",
+                "userSupplyBalance": "110800594392528262512",
+                "userBorrowBalance": "0",
+                "accruedMorpho": "0"
+            }
+        },
+        "0xbdc6b28dd4855a2d2e035852febc18419f752d1e": {
+            "0xf650c3d88d12db855b8bf7d11be6c55a4e07dcc9": {
+                "userSupplyIndex": "0",
+                "userBorrowIndex": "0",
+                "userSupplyBalance": "50143470050",
+                "userBorrowBalance": "0",
+                "accruedMorpho": "0"
+            }
+        },
+        "0xb8391f00da5acb3fe29d0d371cbe27771789330f": {
+            "0x5d3a536e4d6dbd6114cc1ead35777bab948e3643": {
+                "userSupplyIndex": "0",
+                "userBorrowIndex": "0",
+                "userSupplyBalance": "20962474428407824852",
+                "userBorrowBalance": "10027343637301356874",
+                "accruedMorpho": "0"
+            }
+        },
+        "0x166ed9f7a56053c7c4e77cb0c91a9e46bbc5e8b0": {
+            "0xf650c3d88d12db855b8bf7d11be6c55a4e07dcc9": {
+                "userSupplyIndex": "0",
+                "userBorrowIndex": "0",
+                "userSupplyBalance": "50133624296",
+                "userBorrowBalance": "0",
+                "accruedMorpho": "0"
+            }
+        },
+        "0xda8f0714a808bf0ccf9a8b474dba23f03015bd0f": {
+            "0x35a18000230da775cac24873d00ff85bccded550": {
+                "userSupplyIndex": "0",
+                "userBorrowIndex": "0",
+                "userSupplyBalance": "1000188555374226041372",
+                "userBorrowBalance": "0",
+                "accruedMorpho": "0"
+            }
+        },
+        "0xcf263cee139763114faafc5f52865135412f50ec": {
+            "0x39aa39c021dfbae8fac545936693ac917d5e7563": {
+                "userSupplyIndex": "0",
+                "userBorrowIndex": "0",
+                "userSupplyBalance": "62284878298",
+                "userBorrowBalance": "0",
+                "accruedMorpho": "0"
+            }
+        },
+        "0x2b5469940fa577bc4082c6940ee4d8e97fda1b42": {
+            "0x4ddc2d193948926d02f9b1fe9e1daa0718270ed5": {
+                "userSupplyIndex": "0",
+                "userBorrowIndex": "0",
+                "userSupplyBalance": "394300465046390177",
+                "userBorrowBalance": "165000058851429713",
+                "accruedMorpho": "0"
+            }
+        },
+        "0x69ec7450d70cf2a802f6fddb0e3dde5f3b4fd28c": {
+            "0x4ddc2d193948926d02f9b1fe9e1daa0718270ed5": {
+                "userSupplyIndex": "0",
+                "userBorrowIndex": "0",
+                "userSupplyBalance": "57499948003170092",
+                "userBorrowBalance": "0",
+                "accruedMorpho": "0"
+            }
+        },
+        "0x54fc1ce521284e8fc1479375cd223f973227dde0": {
+            "0xf650c3d88d12db855b8bf7d11be6c55a4e07dcc9": {
+                "userSupplyIndex": "0",
+                "userBorrowIndex": "0",
+                "userSupplyBalance": "8599999",
+                "userBorrowBalance": "0",
+                "accruedMorpho": "0"
+            }
+        },
+        "0x6fe6d6472ed0d3d80911b3cb913d0661f4f19810": {
+            "0x4ddc2d193948926d02f9b1fe9e1daa0718270ed5": {
+                "userSupplyIndex": "0",
+                "userBorrowIndex": "0",
+                "userSupplyBalance": "299999999895251216",
+                "userBorrowBalance": "0",
+                "accruedMorpho": "0"
+            }
+        }
+    }
+}
