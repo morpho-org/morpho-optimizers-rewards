@@ -62,10 +62,59 @@ export interface UserMarketConfig {
   accruedMorpho: BigNumber;
 }
 
-const MORPHO_COMPOUND_DEPLOYMENT_BLOCK = 14_860_866;
+export const MORPHO_COMPOUND_DEPLOYMENT_BLOCK = 14_860_866;
 export class MorphoCompoundDistributor {
   public BATCH_SIZE = 100_000; // number of blocks per batch
   public lastBlockSynced = MORPHO_COMPOUND_DEPLOYMENT_BLOCK;
+  static initFromDump(
+    provider: providers.Provider,
+    morphoCompound: MorphoCompound,
+    dump: {
+      markets: object;
+      users: { [userAddress: string]: object };
+      currentBlock: number;
+    }
+  ) {
+    const distributor = new MorphoCompoundDistributor(provider, morphoCompound);
+    distributor.lastBlockSynced = dump.currentBlock;
+    distributor.markets = Object.fromEntries(
+      Object.entries(dump.markets).map(([key, marketConfig]) => [
+        key,
+        {
+          address: marketConfig.address.toString(),
+          supplyIndex: BigNumber.from(marketConfig.supplyIndex),
+          borrowIndex: BigNumber.from(marketConfig.borrowIndex),
+          supplyUpdateBlockTimestamp: BigNumber.from(marketConfig.supplyUpdateBlockTimestamp),
+          borrowUpdateBlockTimestamp: BigNumber.from(marketConfig.borrowUpdateBlockTimestamp),
+          lastP2PBorrowIndex: BigNumber.from(marketConfig.lastP2PBorrowIndex),
+          lastPoolBorrowIndex: BigNumber.from(marketConfig.lastPoolBorrowIndex),
+          lastP2PSupplyIndex: BigNumber.from(marketConfig.lastP2PSupplyIndex),
+          lastPoolSupplyIndex: BigNumber.from(marketConfig.lastPoolSupplyIndex),
+          lastTotalBorrow: BigNumber.from(marketConfig.lastTotalBorrow),
+          lastTotalSupply: BigNumber.from(marketConfig.lastTotalSupply),
+        },
+      ])
+    );
+    distributor.users = Object.fromEntries(
+      Object.entries(dump.users).map(([key, user]) => [
+        key,
+        Object.fromEntries(
+          Object.entries(user).map(([market, userConfig]) => [
+            market,
+            {
+              userSupplyIndex: BigNumber.from(userConfig.userSupplyIndex),
+              userBorrowIndex: BigNumber.from(userConfig.userBorrowIndex),
+              userSupplyBalance: BigNumber.from(userConfig.userSupplyBalance),
+              userBorrowBalance: BigNumber.from(userConfig.userBorrowBalance),
+              accruedMorpho: BigNumber.from(userConfig.accruedMorpho),
+            },
+          ])
+        ),
+      ])
+    );
+    return distributor;
+  }
+
   static async init(provider: providers.Provider, morphoCompound: MorphoCompound) {
     const firstEpochBlock = allEpochs[0].initialBlock!;
 
@@ -77,8 +126,8 @@ export class MorphoCompoundDistributor {
 
   private blockFetcher: BlockFetcher;
 
-  private markets: { [marketAddress: string]: MarketConfig } = {};
-  private users: {
+  public markets: { [marketAddress: string]: MarketConfig } = {};
+  public users: {
     [address: string]: {
       [marketAddress: string]: UserMarketConfig;
     };
@@ -89,6 +138,10 @@ export class MorphoCompoundDistributor {
   async applyEpoch(epoch: EpochConfig) {
     if (!epoch.initialBlock) throw Error(`No initial block for epoch ${epoch.id}`);
     if (!epoch.finalBlock) throw Error(`No final block for epoch ${epoch.id}`);
+    if (this.lastBlockSynced >= epoch.finalBlock) {
+      // epoch already applied
+      return;
+    }
     return this.batchEvents(epoch.initialBlock, epoch.finalBlock, true);
   }
   async batchEvents(blockFrom: number, blockTo: number, updateRewards = true) {
@@ -100,7 +153,6 @@ export class MorphoCompoundDistributor {
       }
       return;
     }
-    console.log("Batch from", blockFrom, "to", blockTo);
     // process sequentially to prevent throughput issues
     const allEvents = await Promise.all([
       await this.morphoCompound.queryFilter(this.morphoCompound.filters.Repaid(), blockFrom, blockTo),
@@ -109,7 +161,6 @@ export class MorphoCompoundDistributor {
       this.morphoCompound.queryFilter(this.morphoCompound.filters.Withdrawn(), blockFrom, blockTo),
       this.morphoCompound.queryFilter(this.morphoCompound.filters.P2PIndexesUpdated(), blockFrom, blockTo),
     ]);
-    console.log(allEvents.flat().length, "events fetched");
 
     const allEventsSorted = allEvents.flat().sort((eventA, eventB) => {
       if (eventA.blockNumber !== eventB.blockNumber) return eventA.blockNumber > eventB.blockNumber ? 1 : -1;
@@ -121,7 +172,6 @@ export class MorphoCompoundDistributor {
     });
 
     for (const event of allEventsSorted) {
-      console.log("Process", event.eventSignature);
       switch (event.eventSignature) {
         case "Supplied(address,address,address,uint256,uint256,uint256)":
           await this.processSupply(event as SuppliedEvent, updateRewards);
@@ -136,7 +186,7 @@ export class MorphoCompoundDistributor {
           await this.processRepay(event as RepaidEvent, updateRewards);
           break;
         case "P2PIndexesUpdated(address,uint256,uint256,uint256,uint256)":
-          await this.processP2PIndexUpdate(event as P2PIndexesUpdatedEvent, updateRewards);
+          await this.processP2PIndexUpdate(event as P2PIndexesUpdatedEvent);
           break;
         default:
           throw Error("Unknown event");
@@ -174,8 +224,8 @@ export class MorphoCompoundDistributor {
     if (!this.markets[address]) {
       this.markets[address] = {
         address,
-        supplyIndex: constants.WeiPerEther,
-        borrowIndex: constants.WeiPerEther,
+        supplyIndex: constants.Zero,
+        borrowIndex: constants.Zero,
         supplyUpdateBlockTimestamp: constants.Zero,
         borrowUpdateBlockTimestamp: constants.Zero,
         lastP2PBorrowIndex: constants.Zero,
@@ -194,7 +244,8 @@ export class MorphoCompoundDistributor {
       .mul(market.lastP2PSupplyIndex)
       .add(event.args._balanceOnPool.mul(market.lastPoolSupplyIndex))
       .div(constants.WeiPerEther);
-    await this.handleSupplySide(event.args._onBehalf, market, supplyBalance, updateRewards);
+    const block = await this.blockFetcher.getBlock(event.blockNumber);
+    await this.handleSupplySide(event.args._onBehalf, market, supplyBalance, block, updateRewards);
   }
   private async processWithdraw(event: WithdrawnEvent, updateRewards = true) {
     const market = this.getOrInitMarket(event.args._poolTokenAddress);
@@ -202,17 +253,20 @@ export class MorphoCompoundDistributor {
       .mul(market.lastP2PSupplyIndex)
       .add(event.args._balanceOnPool.mul(market.lastPoolSupplyIndex))
       .div(constants.WeiPerEther);
-    await this.handleSupplySide(event.args._supplier, market, supplyBalance, updateRewards);
+    const block = await this.blockFetcher.getBlock(event.blockNumber);
+    await this.handleSupplySide(event.args._supplier, market, supplyBalance, block, updateRewards);
   }
 
   private async handleSupplySide(
     userAddress: string,
     market: MarketConfig,
     newUserBalance: BigNumber,
+    block: providers.Block,
     updateRewards = true
   ) {
     const userBalance = this.getOrInitUserBalance(userAddress, market.address);
     if (updateRewards) {
+      market.supplyIndex = await computeSupplyIndex(market, BigNumber.from(block.timestamp), this.provider);
       userBalance.accruedMorpho = userBalance.accruedMorpho.add(
         getUserAccumulatedRewards(market.supplyIndex, userBalance.userSupplyIndex, userBalance.userSupplyBalance)
       );
@@ -220,8 +274,8 @@ export class MorphoCompoundDistributor {
     }
 
     market.lastTotalSupply = market.lastTotalSupply.sub(userBalance.userSupplyBalance).add(newUserBalance);
+    market.supplyUpdateBlockTimestamp = BigNumber.from(block.timestamp);
     userBalance.userSupplyBalance = newUserBalance;
-    this.users[userAddress.toLowerCase()][market.address.toLowerCase()] = userBalance;
   }
   private async processBorrow(event: BorrowedEvent, updateRewards = true) {
     const market = this.getOrInitMarket(event.args._poolTokenAddress);
@@ -229,7 +283,8 @@ export class MorphoCompoundDistributor {
       .mul(market.lastP2PBorrowIndex)
       .add(event.args._balanceOnPool.mul(market.lastPoolBorrowIndex))
       .div(constants.WeiPerEther);
-    await this.handleBorrowSide(event.args._borrower, market, borrowBalance, updateRewards);
+    const block = await this.blockFetcher.getBlock(event.blockNumber);
+    await this.handleBorrowSide(event.args._borrower, market, borrowBalance, block, updateRewards);
   }
   private async processRepay(event: RepaidEvent, updateRewards = true) {
     const market = this.getOrInitMarket(event.args._poolTokenAddress);
@@ -237,50 +292,40 @@ export class MorphoCompoundDistributor {
       .mul(market.lastP2PBorrowIndex)
       .add(event.args._balanceOnPool.mul(market.lastPoolBorrowIndex))
       .div(constants.WeiPerEther);
-    await this.handleBorrowSide(event.args._onBehalf, market, borrowBalance, updateRewards);
+    const block = await this.blockFetcher.getBlock(event.blockNumber);
+    await this.handleBorrowSide(event.args._onBehalf, market, borrowBalance, block, updateRewards);
   }
 
   private async handleBorrowSide(
     userAddress: string,
     market: MarketConfig,
     newUserBalance: BigNumber,
+    block: providers.Block,
     updateRewards = true
   ) {
     const userBalance = this.getOrInitUserBalance(userAddress, market.address);
     if (updateRewards) {
+      market.borrowIndex = await computeBorrowIndex(market, BigNumber.from(block.timestamp), this.provider);
       const accruedRewards = getUserAccumulatedRewards(
         market.borrowIndex,
         userBalance.userBorrowIndex,
         userBalance.userBorrowBalance
       );
-      if (accruedRewards.gt(0)) {
-        console.log(accruedRewards.toString(), "Rewards accrued for user", userAddress);
-      }
       userBalance.accruedMorpho = userBalance.accruedMorpho.add(accruedRewards);
       userBalance.userBorrowIndex = market.borrowIndex;
     }
     market.lastTotalBorrow = market.lastTotalBorrow.sub(userBalance.userBorrowBalance).add(newUserBalance);
     userBalance.userBorrowBalance = newUserBalance;
-    this.users[userAddress.toLowerCase()][market.address.toLowerCase()] = userBalance;
+    market.borrowUpdateBlockTimestamp = BigNumber.from(block.timestamp);
   }
-  private async processP2PIndexUpdate(event: P2PIndexesUpdatedEvent, updateRewards = true) {
+  private async processP2PIndexUpdate(event: P2PIndexesUpdatedEvent) {
     // P2PIndexesUpdated is always emitted before a transaction event (Supplied, borrowed, Withdrawn, repaid)
     const market = this.getOrInitMarket(event.args._poolTokenAddress);
-    // block caching is useless here since there is only one p2pIndexUpdate per block
-    const block = await this.blockFetcher.getBlock(event.blockNumber);
-    if (market.supplyUpdateBlockTimestamp.eq(0)) {
-      market.supplyUpdateBlockTimestamp = BigNumber.from(block.timestamp);
-      market.borrowUpdateBlockTimestamp = BigNumber.from(block.timestamp);
-    }
 
     market.lastP2PBorrowIndex = event.args._p2pBorrowIndex;
     market.lastPoolBorrowIndex = event.args._poolBorrowIndex;
     market.lastP2PSupplyIndex = event.args._p2pSupplyIndex;
     market.lastPoolSupplyIndex = event.args._poolSupplyIndex;
-    if (updateRewards) {
-      market.supplyIndex = await computeSupplyIndex(market, BigNumber.from(block.timestamp), this.provider);
-      market.borrowIndex = await computeBorrowIndex(market, BigNumber.from(block.timestamp), this.provider);
-    }
   }
 
   get store() {
