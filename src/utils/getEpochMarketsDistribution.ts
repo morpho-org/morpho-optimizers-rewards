@@ -18,7 +18,7 @@ export const getEpochMarketsDistribution = async (epochId: string, provider: pro
   let distribution;
   try {
     // try to retrieve distribution from json file
-    distribution = require(`../../distribution/${age}-${epoch}/marketsEmission.json`) as MarketsEmission;
+    distribution = require(`../../distribution/${age}/${epoch}/marketsEmission.json`) as MarketsEmission;
     return distribution;
   } catch (e) {
     // need to compute distribution from chain
