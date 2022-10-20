@@ -1,7 +1,7 @@
 import { providers } from "ethers";
 import { RewardsDistributor__factory } from "@morpho-labs/morpho-ethers-contract";
 import addresses from "@morpho-labs/morpho-ethers-contract/lib/addresses";
-import { getNumberOfEpochs } from "./epochs";
+import { numberOfEpochs } from "../ages/ages";
 export const getCurrentOnChainDistribution = async (
   provider: providers.Provider,
   blockTag: providers.BlockTag = "latest"
@@ -24,7 +24,7 @@ export interface Proofs {
 }
 
 export const rootToProof = (root: string) => {
-  let index = getNumberOfEpochs();
+  let index = numberOfEpochs;
   let retrieved = false;
   let proof: Proofs | undefined;
   while (!retrieved && index > 0) {

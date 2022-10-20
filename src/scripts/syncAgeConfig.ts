@@ -20,23 +20,24 @@ const syncAgeConfig = async () => {
       ...age,
       epochs: await Promise.all(
         age.epochs.map(async (epoch) => {
-          if (!epoch.initialBlock && epoch.initialTimestamp.lt(currentTimestamp)) {
+          if (epoch.initialTimestamp.lt(currentTimestamp) && !(epoch.initialBlock && epoch.snapshotBlock)) {
             const block = await blockFromTimestamp(epoch.initialTimestamp, "after", process.env.ETHERSCAN_API_KEY!);
-            changes.push({
-              epoch: epoch.id,
-              variable: "initialBlock",
-              value: block,
-            });
-            console.log("Initial block of epoch", epoch.id, "is", block);
-          }
-          if (!epoch.snapshotBlock && epoch.initialTimestamp.lt(currentTimestamp)) {
-            const block = await blockFromTimestamp(epoch.initialTimestamp, "after", process.env.ETHERSCAN_API_KEY!);
-            changes.push({
-              epoch: epoch.id,
-              variable: "snapshotBlock",
-              value: block,
-            });
-            console.log("Snapshot block of epoch", epoch.id, "must be", block);
+            if (!epoch.initialBlock) {
+              changes.push({
+                epoch: epoch.id,
+                variable: "initialBlock",
+                value: block,
+              });
+              console.log("Initial block of epoch", epoch.id, "is", block);
+            }
+            if (!epoch.snapshotBlock) {
+              changes.push({
+                epoch: epoch.id,
+                variable: "snapshotBlock",
+                value: block,
+              });
+              console.log("Snapshot block of epoch", epoch.id, "must be", block);
+            }
           }
           if (!epoch.finalBlock && epoch.finalTimestamp.lt(currentTimestamp)) {
             const block = await blockFromTimestamp(epoch.finalTimestamp, "before", process.env.ETHERSCAN_API_KEY!);

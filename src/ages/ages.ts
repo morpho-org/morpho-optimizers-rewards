@@ -110,3 +110,5 @@ export const ages: AgeConfig[] = [
 export const allEpochs = ages
   .map((age, ageId) => age.epochs.map((epoch, epochId) => ({ ...epoch, age: age.ageName, ageId, epochId })))
   .flat();
+
+export const numberOfEpochs = allEpochs.length;
