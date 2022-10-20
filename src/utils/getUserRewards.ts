@@ -107,11 +107,15 @@ export const userBalancesToUnclaimedTokens = async (
   ).then((r) => r.reduce((a, b) => a.add(b), BigNumber.from(0)));
 };
 
-const getUserAccumulatedRewards = (marketIndex: BigNumber, userIndex: BigNumber, userBalance: BigNumber) => {
+export const getUserAccumulatedRewards = (marketIndex: BigNumber, userIndex: BigNumber, userBalance: BigNumber) => {
   if (userIndex.gt(marketIndex)) return BigNumber.from(0);
   return marketIndex.sub(userIndex).mul(userBalance).div(WAD); // with 18 decimals
 };
-const computeSupplyIndex = async (market: Market, currentTimestamp: BigNumberish, provider: providers.Provider) =>
+export const computeSupplyIndex = async (
+  market: Market,
+  currentTimestamp: BigNumberish,
+  provider: providers.Provider
+) =>
   computeIndex(
     market.address,
     market.supplyIndex,
@@ -121,7 +125,11 @@ const computeSupplyIndex = async (market: Market, currentTimestamp: BigNumberish
     market.lastTotalSupply,
     provider
   );
-const computeBorrowIndex = async (market: Market, currentTimestamp: BigNumberish, provider: providers.Provider) =>
+export const computeBorrowIndex = async (
+  market: Market,
+  currentTimestamp: BigNumberish,
+  provider: providers.Provider
+) =>
   computeIndex(
     market.address,
     market.borrowIndex,
