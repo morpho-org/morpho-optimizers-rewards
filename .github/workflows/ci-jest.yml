@@ -16,7 +16,30 @@ on:
 
 jobs:
   build:
-    name: Lint, Build & Run
+    name: Build package
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: "16"
+
+      - name: Node dependencies cache
+        uses: actions/cache@v3
+        with:
+          path: "node_modules"
+          key: yarn-${{ hashFiles('yarn.lock') }}
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Build
+        run: yarn build
+
+  lint:
+    name: Lint code
+    needs: build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -37,8 +60,25 @@ jobs:
       - name: Lint
         run: yarn lint
 
-      - name: Build
-        run: yarn build
+  test:
+    needs: build
+    name: Test code
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: "16"
+
+      - name: Node dependencies cache
+        uses: actions/cache@v3
+        with:
+          path: "node_modules"
+          key: yarn-${{ hashFiles('yarn.lock') }}
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
 
       - name: Test
         run: yarn test
