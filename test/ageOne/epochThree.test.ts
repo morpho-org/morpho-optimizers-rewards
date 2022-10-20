@@ -7,7 +7,7 @@ import {
   computeMerkleTree,
   getAccumulatedEmission,
 } from "../../src/utils";
-import { BigNumber } from "ethers";
+import { BigNumber, providers } from "ethers";
 import { formatUnits } from "ethers/lib/utils";
 import { WAD } from "../../src/helpers";
 import { expectBNApproxEquals } from "./epochOne.test";
@@ -18,13 +18,18 @@ describe("Test the distribution for the third epoch", () => {
   let usersBalances: UserBalances[];
   let usersAccumulatedRewards: { address: string; accumulatedRewards: string }[];
   const epochOneRoot = "0xa033808b8ad6b65291bc542b033f869ed82412707ca7127f4d3564d0b6d8abb3";
+  const provider = new providers.JsonRpcProvider(process.env.RPC_URL);
 
   beforeAll(async () => {
     usersBalances = await fetchUsers(ages[0].subgraphUrl, epochConfig.finalBlock);
-    usersAccumulatedRewards = usersBalances.map(({ address, balances }) => ({
-      address,
-      accumulatedRewards: userBalancesToUnclaimedTokens(balances, epochConfig.finalTimestamp).toString(), // with 18 decimals
-    }));
+    usersAccumulatedRewards = await Promise.all(
+      usersBalances.map(async ({ address, balances }) => ({
+        address,
+        accumulatedRewards: await userBalancesToUnclaimedTokens(balances, epochConfig.finalTimestamp, provider).then(
+          (r) => r.toString()
+        ), // with 18 * 2 decimals
+      }))
+    );
   });
 
   it("Should be finished and have final block", async () => {

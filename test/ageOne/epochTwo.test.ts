@@ -7,7 +7,7 @@ import {
   computeMerkleTree,
   getAccumulatedEmission,
 } from "../../src/utils";
-import { BigNumber } from "ethers";
+import { BigNumber, providers } from "ethers";
 import { formatUnits } from "ethers/lib/utils";
 import { WAD } from "../../src/helpers";
 import { expectBNApproxEquals } from "./epochOne.test";
@@ -17,14 +17,21 @@ describe("Test the distribution for the second epoch", () => {
   const epochConfig = ages[0].epochs[1];
   let usersBalances: UserBalances[];
   const epochOneRoot = "0x1a23db78755a76f8213b5790c3e8bef2ad322bc53d40d9e7e9c1b047638a9166";
+  let usersAccumulatedRewards: { address: string; accumulatedRewards: string }[];
+  const provider = new providers.JsonRpcProvider(process.env.RPC_URL);
+
   beforeAll(async () => {
     usersBalances = await fetchUsers(ages[0].subgraphUrl, epochConfig.finalBlock);
+    usersAccumulatedRewards = await Promise.all(
+      usersBalances.map(async ({ address, balances }) => ({
+        address,
+        accumulatedRewards: await userBalancesToUnclaimedTokens(balances, epochConfig.finalTimestamp, provider).then(
+          (r) => r.toString()
+        ), // with 18 * 2 decimals
+      }))
+    );
   });
   it("Should distribute the correct number of tokens over Morpho users", async () => {
-    const usersAccumulatedRewards = usersBalances.map(({ address, balances }) => ({
-      address,
-      accumulatedRewards: userBalancesToUnclaimedTokens( balances, epochConfig.finalTimestamp).toString(), // with 18 * 2 decimals
-    }));
     const totalFromGraph = usersBalances
       .map((u) => u.balances.map((b) => b.accumulatedMorpho))
       .flat()
@@ -42,14 +49,10 @@ describe("Test the distribution for the second epoch", () => {
     ); // 10 over 18 decimals
   });
   it.skip("Should should compute the correct root", async () => {
-    const usersAccumulatedRewards = usersBalances
-      .map(({ address, balances }) => ({
-        address,
-        accumulatedRewards: userBalancesToUnclaimedTokens(balances, epochConfig.finalTimestamp).toString(), // with 18 * 2 decimals
-      }))
+    const usersRewards = usersAccumulatedRewards
       // remove users with 0 MORPHO to claim
       .filter((b) => b.accumulatedRewards !== "0");
-    const { root } = computeMerkleTree(usersAccumulatedRewards);
+    const { root } = computeMerkleTree(usersRewards);
     expect(root).toEqual(epochOneRoot);
   });
 });

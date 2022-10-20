@@ -4,6 +4,7 @@ import { MarketEmission } from "../utils";
 
 export interface EpochConfig {
   id: string;
+  number: number;
   snapshotBlock?: number;
   initialTimestamp: BigNumber;
   finalTimestamp: BigNumber;
