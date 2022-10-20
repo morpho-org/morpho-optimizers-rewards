@@ -14,9 +14,15 @@ export const timestampToEpoch = (timestamp: BigNumberish) => {
 };
 
 export const getEpochsBetweenTimestamps = (tFrom: BigNumberish, tTo: BigNumberish) => {
-  const epochFrom = timestampToEpoch(tFrom);
-  if (!epochFrom) return;
+  let epochFrom = timestampToEpoch(tFrom);
   const epochTo = timestampToEpoch(tTo);
+  if (!epochTo) return [];
+  if (!epochFrom) {
+    // if there is only the first epoch
+    if (epochTo.epoch.id === "age1-epoch1") return [epochTo];
+    // else we start from the first epoch
+    epochFrom = { age: ages[0], epoch: allEpochs[0] };
+  }
   const epochs = [epochFrom];
   if (!epochTo) return epochs;
 
@@ -49,7 +55,7 @@ export const getNextEpoch = (age?: string, epoch?: string) => {
 export const getPrevEpoch = (epochId?: string) => {
   if (!epochId) return;
   const currentEpochIndex = allEpochs.findIndex((_epoch) => _epoch.id === epochId);
-  if (currentEpochIndex === -1 ) throw Error(`Unknown epoch: ${epochId}`);
+  if (currentEpochIndex === -1) throw Error(`Unknown epoch: ${epochId}`);
   if (currentEpochIndex === 0) return; // This is the first epoch;
   const prevEpoch = allEpochs[currentEpochIndex - 1];
   return {
