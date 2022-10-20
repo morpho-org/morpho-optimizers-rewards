@@ -48,10 +48,9 @@ export const getNextEpoch = (age?: string, epoch?: string) => {
 
 export const getPrevEpoch = (epochId?: string) => {
   if (!epochId) return;
-  const currentEpoch = allEpochs.find((_epoch) => _epoch.id === epochId);
-  if (!currentEpoch) throw Error(`Unknown epoch: ${epochId}`);
-  const currentEpochIndex = allEpochs.indexOf(currentEpoch);
-  if (currentEpochIndex === 0 || currentEpochIndex === -1) return; // This is the first epoch;
+  const currentEpochIndex = allEpochs.findIndex((_epoch) => _epoch.id === epochId);
+  if (currentEpochIndex === -1 ) throw Error(`Unknown epoch: ${epochId}`);
+  if (currentEpochIndex === 0) return; // This is the first epoch;
   const prevEpoch = allEpochs[currentEpochIndex - 1];
   return {
     age: ages[prevEpoch.ageId] as AgeConfig,
