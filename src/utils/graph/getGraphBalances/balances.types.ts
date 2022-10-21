@@ -32,7 +32,6 @@ export interface UserBalances {
   balances: UserBalance[];
 }
 export interface UserBalance {
-  timestamp: BigNumber;
   underlyingSupplyBalance: BigNumber;
   underlyingBorrowBalance: BigNumber;
   userSupplyIndex: BigNumber;
