@@ -3,14 +3,14 @@ import { ages } from "../ages";
 import { timestampToEpoch } from "./timestampToEpoch";
 import { MarketsEmission } from "../ages/distributions/MarketsEmission";
 import { formatUnits } from "ethers/lib/utils";
+import { now } from "../helpers";
 
 export const getMarketsDistribution = async (
-  blockNumber?: number,
+  timestamp?: number,
   provider: providers.Provider = new providers.InfuraProvider(1)
 ) => {
-  const block = await provider.getBlock(blockNumber ?? "latest");
-  const epochConfig = timestampToEpoch(block.timestamp);
-  if (!epochConfig) throw Error(`No epoch found at timestamp ${block.timestamp}`);
+  const epochConfig = timestampToEpoch(timestamp ?? now());
+  if (!epochConfig) throw Error(`No epoch found at timestamp ${timestamp}`);
   return getEpochMarketsDistribution(epochConfig.epoch.id, provider);
 };
 export const getEpochMarketsDistribution = async (epochId: string, provider: providers.Provider) => {

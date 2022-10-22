@@ -1,4 +1,7 @@
-module.exports = {
+import * as dotenv from "dotenv";
+dotenv.config();
+
+export default {
   moduleFileExtensions: ["ts", "js"],
   transform: {
     "^.+\\.tsx?$": "ts-jest",
