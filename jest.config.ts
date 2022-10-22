@@ -1,7 +1,7 @@
-const dotenv = require("dotenv");
+import * as dotenv from "dotenv";
 dotenv.config();
 
-module.exports = {
+export default {
   moduleFileExtensions: ["ts", "js"],
   transform: {
     "^.+\\.tsx?$": "ts-jest",
