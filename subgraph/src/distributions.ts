@@ -68,37 +68,37 @@ borrowEmissionsage1epoch3.set("0xf650c3d88d12db855b8bf7d11be6c55a4e07dcc9", BigI
 
 // age 2 epoch 1 supply
 const supplyEmissionsage2Epoch1 = new Map<string, BigInt>();
-supplyEmissionsage2Epoch1.set("0x028171bca77440897b824ca71d1c56cac55b68a3", BigInt.fromString("2158637494099986"));
-supplyEmissionsage2Epoch1.set("0x030ba81f1c18d280636f32af80b9aad02cf0854e", BigInt.fromString("8680267636160727"));
-supplyEmissionsage2Epoch1.set("0xbcca60bb61934080951369a648fb03df4f96263c", BigInt.fromString("11492819895539572"));
-supplyEmissionsage2Epoch1.set("0x3ed3b47dd13ec9a98b44e6204a523e766b225811", BigInt.fromString("3678990237878220"));
-supplyEmissionsage2Epoch1.set("0x9ff58f4ffb29fa2266ab25e75e2a8b3503311656", BigInt.fromString("4916751178164751"));
-supplyEmissionsage2Epoch1.set("0x1982b2f5814301d4e9a8b0201555376e62f82428", BigInt.fromString("9042089101643989"));
-supplyEmissionsage2Epoch1.set("0x8dae6cb04688c62d939ed9b68d32bc62e49970b1", BigInt.fromString("1245833953114720"));
-supplyEmissionsage2Epoch1.set("0x5d3a536e4d6dbd6114cc1ead35777bab948e3643", BigInt.fromString("77823253934977847"));
-supplyEmissionsage2Epoch1.set("0x70e36f6bf80a52b3b46b3af8e106cc0ed743e8e4", BigInt.fromString("7946676598632987"));
-supplyEmissionsage2Epoch1.set("0x4ddc2d193948926d02f9b1fe9e1daa0718270ed5", BigInt.fromString("68377179649146201"));
-supplyEmissionsage2Epoch1.set("0x35a18000230da775cac24873d00ff85bccded550", BigInt.fromString("3406615523039271"));
-supplyEmissionsage2Epoch1.set("0x39aa39c021dfbae8fac545936693ac917d5e7563", BigInt.fromString("126345734113981100"));
-supplyEmissionsage2Epoch1.set("0xf650c3d88d12db855b8bf7d11be6c55a4e07dcc9", BigInt.fromString("41000799159452442"));
-supplyEmissionsage2Epoch1.set("0xccf4429db6322d5c611ee964527d42e5d685dd6a", BigInt.fromString("46533722252803577"));
+supplyEmissionsage2Epoch1.set("0x028171bca77440897b824ca71d1c56cac55b68a3", BigInt.fromString("4126806974014680"));
+supplyEmissionsage2Epoch1.set("0x030ba81f1c18d280636f32af80b9aad02cf0854e", BigInt.fromString("16594629304424919"));
+supplyEmissionsage2Epoch1.set("0xbcca60bb61934080951369a648fb03df4f96263c", BigInt.fromString("21971567447355064"));
+supplyEmissionsage2Epoch1.set("0x3ed3b47dd13ec9a98b44e6204a523e766b225811", BigInt.fromString("7033363690061304"));
+supplyEmissionsage2Epoch1.set("0x9ff58f4ffb29fa2266ab25e75e2a8b3503311656", BigInt.fromString("9399671370020847"));
+supplyEmissionsage2Epoch1.set("0x1982b2f5814301d4e9a8b0201555376e62f82428", BigInt.fromString("17286346811966450"));
+supplyEmissionsage2Epoch1.set("0x8dae6cb04688c62d939ed9b68d32bc62e49970b1", BigInt.fromString("2381741380954613"));
+supplyEmissionsage2Epoch1.set("0x5d3a536e4d6dbd6114cc1ead35777bab948e3643", BigInt.fromString("148779750169810591"));
+supplyEmissionsage2Epoch1.set("0x70e36f6bf80a52b3b46b3af8e106cc0ed743e8e4", BigInt.fromString("15192175850327769"));
+supplyEmissionsage2Epoch1.set("0x4ddc2d193948926d02f9b1fe9e1daa0718270ed5", BigInt.fromString("130721078741014796"));
+supplyEmissionsage2Epoch1.set("0x35a18000230da775cac24873d00ff85bccded550", BigInt.fromString("6512647323457431"));
+supplyEmissionsage2Epoch1.set("0x39aa39c021dfbae8fac545936693ac917d5e7563", BigInt.fromString("241543315217905045"));
+supplyEmissionsage2Epoch1.set("0xf650c3d88d12db855b8bf7d11be6c55a4e07dcc9", BigInt.fromString("78383880746012022"));
+supplyEmissionsage2Epoch1.set("0xccf4429db6322d5c611ee964527d42e5d685dd6a", BigInt.fromString("88961527836242132"));
 
 // epoch3 borrow
 export const borrowEmissionsage2Epoch1 = new Map<string, BigInt>();
-borrowEmissionsage2Epoch1.set("0x028171bca77440897b824ca71d1c56cac55b68a3", BigInt.fromString("1134046367469127"));
-borrowEmissionsage2Epoch1.set("0x030ba81f1c18d280636f32af80b9aad02cf0854e", BigInt.fromString("4494786908263267"));
-borrowEmissionsage2Epoch1.set("0xbcca60bb61934080951369a648fb03df4f96263c", BigInt.fromString("3555964107998994"));
-borrowEmissionsage2Epoch1.set("0x3ed3b47dd13ec9a98b44e6204a523e766b225811", BigInt.fromString("1980856894054914"));
-borrowEmissionsage2Epoch1.set("0x9ff58f4ffb29fa2266ab25e75e2a8b3503311656", BigInt.fromString("486754805227231"));
+borrowEmissionsage2Epoch1.set("0x028171bca77440897b824ca71d1c56cac55b68a3", BigInt.fromString("2168029820161567"));
+borrowEmissionsage2Epoch1.set("0x030ba81f1c18d280636f32af80b9aad02cf0854e", BigInt.fromString("8592974971679777"));
+borrowEmissionsage2Epoch1.set("0xbcca60bb61934080951369a648fb03df4f96263c", BigInt.fromString("6798166677056901"));
+borrowEmissionsage2Epoch1.set("0x3ed3b47dd13ec9a98b44e6204a523e766b225811", BigInt.fromString("3786932297457924"));
+borrowEmissionsage2Epoch1.set("0x9ff58f4ffb29fa2266ab25e75e2a8b3503311656", BigInt.fromString("930560657052059"));
 borrowEmissionsage2Epoch1.set("0x1982b2f5814301d4e9a8b0201555376e62f82428", BigInt.fromString("0"));
-borrowEmissionsage2Epoch1.set("0x8dae6cb04688c62d939ed9b68d32bc62e49970b1", BigInt.fromString("551004839187915"));
-borrowEmissionsage2Epoch1.set("0x5d3a536e4d6dbd6114cc1ead35777bab948e3643", BigInt.fromString("33309161745472175"));
-borrowEmissionsage2Epoch1.set("0x70e36f6bf80a52b3b46b3af8e106cc0ed743e8e4", BigInt.fromString("687680801155002"));
-borrowEmissionsage2Epoch1.set("0x4ddc2d193948926d02f9b1fe9e1daa0718270ed5", BigInt.fromString("5610196469093829"));
-borrowEmissionsage2Epoch1.set("0x35a18000230da775cac24873d00ff85bccded550", BigInt.fromString("320526676061973"));
-borrowEmissionsage2Epoch1.set("0x39aa39c021dfbae8fac545936693ac917d5e7563", BigInt.fromString("43661307028518878"));
-borrowEmissionsage2Epoch1.set("0xf650c3d88d12db855b8bf7d11be6c55a4e07dcc9", BigInt.fromString("25536010515105040"));
-borrowEmissionsage2Epoch1.set("0xccf4429db6322d5c611ee964527d42e5d685dd6a", BigInt.fromString("210366301790441"));
+borrowEmissionsage2Epoch1.set("0x8dae6cb04688c62d939ed9b68d32bc62e49970b1", BigInt.fromString("1053391604329837"));
+borrowEmissionsage2Epoch1.set("0x5d3a536e4d6dbd6114cc1ead35777bab948e3643", BigInt.fromString("63679279807520334"));
+borrowEmissionsage2Epoch1.set("0x70e36f6bf80a52b3b46b3af8e106cc0ed743e8e4", BigInt.fromString("1314683884561034"));
+borrowEmissionsage2Epoch1.set("0x4ddc2d193948926d02f9b1fe9e1daa0718270ed5", BigInt.fromString("10725375602679379"));
+borrowEmissionsage2Epoch1.set("0x35a18000230da775cac24873d00ff85bccded550", BigInt.fromString("612771586589066"));
+borrowEmissionsage2Epoch1.set("0x39aa39c021dfbae8fac545936693ac917d5e7563", BigInt.fromString("83470145789815503"));
+borrowEmissionsage2Epoch1.set("0xf650c3d88d12db855b8bf7d11be6c55a4e07dcc9", BigInt.fromString("48818843631818459"));
+borrowEmissionsage2Epoch1.set("0xccf4429db6322d5c611ee964527d42e5d685dd6a", BigInt.fromString("402170871069961"));
 
 export const emissions = new Map<string, Map<string, BigInt>>();
 emissions.set("age1-epoch1-Supply", supplyEmissionsage1epoch1);
