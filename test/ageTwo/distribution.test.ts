@@ -8,6 +8,8 @@ import { MarketEmission } from "../../src/utils";
 import { Optional } from "../../src/helpers/types";
 import { expectBNApproxEquals } from "../ageOne/epochOne.test";
 import { WAD } from "../../src/helpers";
+import { formatUnits } from "ethers/lib/utils";
+import * as fs from "fs";
 dotenv.config();
 describe.each([0, 1])("Test the distribution of the second age", (epochIndex) => {
   const age = ages[1];

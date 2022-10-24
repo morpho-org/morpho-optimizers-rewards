@@ -71,6 +71,7 @@ export const ages: AgeConfig[] = [
         initialTimestamp: BigNumber.from(new Date("2022-09-20T15:00:00.000Z").getTime() / 1000),
         initialBlock: 15_575_442,
         finalTimestamp: BigNumber.from(new Date("2022-10-24T15:00:00.000Z").getTime() / 1000),
+        finalBlock: 15818711,
         totalEmission: BigNumber.from(3_000_000),
         protocolDistribution: {
           morphoCompound: BigNumber.from(9_000),
@@ -82,6 +83,7 @@ export const ages: AgeConfig[] = [
         number: 5,
         epochName: "epoch2",
         snapshotBlock: 15818122, // https://etherscan.io/block/15818122
+        initialBlock: 15818712,
         initialTimestamp: BigNumber.from(new Date("2022-10-24T15:00:00.000Z").getTime() / 1000),
         finalTimestamp: BigNumber.from(new Date("2022-11-27T15:00:00.000Z").getTime() / 1000),
         totalEmission: BigNumber.from(3_400_000),
