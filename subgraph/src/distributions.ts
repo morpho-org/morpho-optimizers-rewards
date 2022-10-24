@@ -100,6 +100,38 @@ borrowEmissionsage2Epoch1.set("0x39aa39c021dfbae8fac545936693ac917d5e7563", BigI
 borrowEmissionsage2Epoch1.set("0xf650c3d88d12db855b8bf7d11be6c55a4e07dcc9", BigInt.fromString("48818843631818459"));
 borrowEmissionsage2Epoch1.set("0xccf4429db6322d5c611ee964527d42e5d685dd6a", BigInt.fromString("402170871069961"));
 
+const supplyEmissionsage2Epoch2 = new Map<string, BigInt>();
+supplyEmissionsage2Epoch2.set("0x028171bca77440897b824ca71d1c56cac55b68a3", BigInt.fromString("10896564348373817"));
+supplyEmissionsage2Epoch2.set("0x030ba81f1c18d280636f32af80b9aad02cf0854e", BigInt.fromString("68678415600345969"));
+supplyEmissionsage2Epoch2.set("0xbcca60bb61934080951369a648fb03df4f96263c", BigInt.fromString("50383076817169390"));
+supplyEmissionsage2Epoch2.set("0x3ed3b47dd13ec9a98b44e6204a523e766b225811", BigInt.fromString("19575209089232864"));
+supplyEmissionsage2Epoch2.set("0x9ff58f4ffb29fa2266ab25e75e2a8b3503311656", BigInt.fromString("37306690153314021"));
+supplyEmissionsage2Epoch2.set("0x1982b2f5814301d4e9a8b0201555376e62f82428", BigInt.fromString("67356676849889628"));
+supplyEmissionsage2Epoch2.set("0x8dae6cb04688c62d939ed9b68d32bc62e49970b1", BigInt.fromString("8184746448229152"));
+supplyEmissionsage2Epoch2.set("0x5d3a536e4d6dbd6114cc1ead35777bab948e3643", BigInt.fromString("139567924675339251"));
+supplyEmissionsage2Epoch2.set("0x70e36f6bf80a52b3b46b3af8e106cc0ed743e8e4", BigInt.fromString("6257600527043530"));
+supplyEmissionsage2Epoch2.set("0x4ddc2d193948926d02f9b1fe9e1daa0718270ed5", BigInt.fromString("121557725197964977"));
+supplyEmissionsage2Epoch2.set("0x35a18000230da775cac24873d00ff85bccded550", BigInt.fromString("6604606550960258"));
+supplyEmissionsage2Epoch2.set("0x39aa39c021dfbae8fac545936693ac917d5e7563", BigInt.fromString("203526529594857145"));
+supplyEmissionsage2Epoch2.set("0xf650c3d88d12db855b8bf7d11be6c55a4e07dcc9", BigInt.fromString("77244936045751333"));
+supplyEmissionsage2Epoch2.set("0xccf4429db6322d5c611ee964527d42e5d685dd6a", BigInt.fromString("69266199926650291"));
+
+const borrowEmissionsage2Epoch2 = new Map<string, BigInt>();
+borrowEmissionsage2Epoch2.set("0x028171bca77440897b824ca71d1c56cac55b68a3", BigInt.fromString("4448239893343587"));
+borrowEmissionsage2Epoch2.set("0x030ba81f1c18d280636f32af80b9aad02cf0854e", BigInt.fromString("35763067999472874"));
+borrowEmissionsage2Epoch2.set("0xbcca60bb61934080951369a648fb03df4f96263c", BigInt.fromString("23978011959946362"));
+borrowEmissionsage2Epoch2.set("0x3ed3b47dd13ec9a98b44e6204a523e766b225811", BigInt.fromString("14043694746510289"));
+borrowEmissionsage2Epoch2.set("0x9ff58f4ffb29fa2266ab25e75e2a8b3503311656", BigInt.fromString("3147104901023036"));
+borrowEmissionsage2Epoch2.set("0x1982b2f5814301d4e9a8b0201555376e62f82428", BigInt.fromString("0"));
+borrowEmissionsage2Epoch2.set("0x8dae6cb04688c62d939ed9b68d32bc62e49970b1", BigInt.fromString("3460723415371227"));
+borrowEmissionsage2Epoch2.set("0x5d3a536e4d6dbd6114cc1ead35777bab948e3643", BigInt.fromString("62944134182083476"));
+borrowEmissionsage2Epoch2.set("0x70e36f6bf80a52b3b46b3af8e106cc0ed743e8e4", BigInt.fromString("861943807503331"));
+borrowEmissionsage2Epoch2.set("0x4ddc2d193948926d02f9b1fe9e1daa0718270ed5", BigInt.fromString("7588974382641854"));
+borrowEmissionsage2Epoch2.set("0x35a18000230da775cac24873d00ff85bccded550", BigInt.fromString("579691226016091"));
+borrowEmissionsage2Epoch2.set("0x39aa39c021dfbae8fac545936693ac917d5e7563", BigInt.fromString("72949740418003535"));
+borrowEmissionsage2Epoch2.set("0xf650c3d88d12db855b8bf7d11be6c55a4e07dcc9", BigInt.fromString("40862672303966427"));
+borrowEmissionsage2Epoch2.set("0xccf4429db6322d5c611ee964527d42e5d685dd6a", BigInt.fromString("372506346403680"));
+
 export const emissions = new Map<string, Map<string, BigInt>>();
 emissions.set("age1-epoch1-Supply", supplyEmissionsage1epoch1);
 emissions.set("age1-epoch1-Borrow", borrowEmissionsage1epoch1);
@@ -109,3 +141,5 @@ emissions.set("age1-epoch3-Supply", supplyEmissionsage1epoch3);
 emissions.set("age1-epoch3-Borrow", borrowEmissionsage1epoch3);
 emissions.set("age2-epoch1-Supply", supplyEmissionsage2Epoch1);
 emissions.set("age2-epoch1-Borrow", borrowEmissionsage2Epoch1);
+emissions.set("age2-epoch2-Supply", supplyEmissionsage2Epoch2);
+emissions.set("age2-epoch2-Borrow", borrowEmissionsage2Epoch2);
