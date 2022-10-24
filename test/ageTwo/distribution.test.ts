@@ -9,12 +9,11 @@ import { Optional } from "../../src/helpers/types";
 import { expectBNApproxEquals } from "../ageOne/epochOne.test";
 import { WAD } from "../../src/helpers";
 dotenv.config();
-describe("Test the distribution of the second age", () => {
+describe.each([0, 1])("Test the distribution of the second age", (epochIndex) => {
   const age = ages[1];
-  const epochIndex = 0;
   const epoch = age.epochs[epochIndex];
   const provider = new providers.JsonRpcProvider(process.env.RPC_URL, "mainnet");
-  let marketsEmissions: { [p: string]: Optional<MarketEmission> } = {};
+  let marketsEmissions: Record<string, Optional<MarketEmission>> = {};
   beforeAll(async () => {
     ({ marketsEmissions } = await ageTwoDistribution(epoch, provider));
   });
@@ -27,7 +26,7 @@ describe("Test the distribution of the second age", () => {
     expect(marketsEmissions[aStEth]?.borrowRate.isZero()).toEqual(true); // no borrowers of steth on aave
     expect(marketsEmissions[aStEth]?.borrow.isZero()).toEqual(true); // no borrowers of steth on aave
   });
-  it("Should distribute the correct number of MORPHO tokens", async () => {
+  it(`Should distribute the correct number of MORPHO tokens for epoch ${epoch.id}`, async () => {
     const totalRewards = epoch.totalEmission;
     const duration = epoch.finalTimestamp.sub(epoch.initialTimestamp);
     const totalEmitted = Object.values(marketsEmissions).reduce(
