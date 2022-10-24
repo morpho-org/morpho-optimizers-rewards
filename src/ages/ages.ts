@@ -81,7 +81,7 @@ export const ages: AgeConfig[] = [
         id: "age2-epoch2",
         number: 5,
         epochName: "epoch2",
-        snapshotBlock: undefined, // will be known at the beginning of the epoch
+        snapshotBlock: 15818122, // https://etherscan.io/block/15818122
         initialTimestamp: BigNumber.from(new Date("2022-10-24T15:00:00.000Z").getTime() / 1000),
         finalTimestamp: BigNumber.from(new Date("2022-11-27T15:00:00.000Z").getTime() / 1000),
         totalEmission: BigNumber.from(3_400_000),
