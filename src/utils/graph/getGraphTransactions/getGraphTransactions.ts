@@ -5,11 +5,13 @@ import { GraphTransaction } from "./graphTransactions.types";
 export const getGraphTransactions = async (
   graphUrl: string,
   timestampFrom: BigNumberish,
-  timestampTo: BigNumberish
+  timestampTo: BigNumberish,
+  target: string
 ) => {
   const variables = {
     timestampFrom: BigNumber.from(timestampFrom).toString(),
     timestampTo: BigNumber.from(timestampTo).toString(),
+    target,
   };
   let txs: GraphTransaction[] = [];
   let hasMore = true;
@@ -35,11 +37,12 @@ export const getGraphTransactions = async (
   return txs;
 };
 
-const query = `query GetTransactions($timestampFrom: BigInt!, $timestampTo: BigInt!, $nextId: ID!){
+const query = `query GetTransactions($timestampFrom: BigInt!, $timestampTo: BigInt!, $nextId: ID!, $target: Bytes!){
   transactions(first: 1000, where: {
     timestamp_gte: $timestampFrom
     timestamp_lt: $timestampTo
     id_gt: $nextId
+    target: $target
   }) {
     timestamp
     id
