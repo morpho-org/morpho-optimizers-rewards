@@ -27,7 +27,7 @@ export const getEpochsBetweenTimestamps = (tFrom: BigNumberish, tTo: BigNumberis
   while (newEpoch?.epoch?.epochName && newEpoch.epoch.id !== epochTo.epoch.id) {
     newEpoch = getNextEpoch(newEpoch.age.ageName, newEpoch?.epoch?.epochName);
 
-    if (newEpoch && newEpoch?.epoch?.initialTimestamp.gt(tTo)) epochs.push(newEpoch);
+    if (newEpoch && newEpoch?.epoch?.initialTimestamp.lt(tTo)) epochs.push(newEpoch);
     else break;
   }
   return epochs;
@@ -49,7 +49,7 @@ export const getNextEpoch = (age?: string, epoch?: string) => {
 export const getPrevEpoch = (epochId?: string) => {
   if (!epochId) return;
   const currentEpochIndex = allEpochs.findIndex((_epoch) => _epoch.id === epochId);
-  if (currentEpochIndex === -1 ) throw Error(`Unknown epoch: ${epochId}`);
+  if (currentEpochIndex === -1) throw Error(`Unknown epoch: ${epochId}`);
   if (currentEpochIndex === 0) return; // This is the first epoch;
   const prevEpoch = allEpochs[currentEpochIndex - 1];
   return {
