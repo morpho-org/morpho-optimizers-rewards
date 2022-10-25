@@ -10,10 +10,9 @@ import { BigNumber, providers } from "ethers";
 import { now, WAD } from "../../src/helpers";
 import { parseUnits } from "ethers/lib/utils";
 import { expectBNApproxEquals } from "../ageOne/epochOne.test";
-import * as fs from "fs";
 
-describe.each([0])("Age 2 users distribution", () => {
-  const epochConfig = ages[1].epochs[0];
+describe.each([0])("Age 2 users distribution", (epochId) => {
+  const epochConfig = ages[1].epochs[epochId];
   const ageConfig = ages[1];
   let usersBalances: UserBalances[];
   let usersAccumulatedRewards: { address: string; accumulatedRewards: string }[];
@@ -33,7 +32,7 @@ describe.each([0])("Age 2 users distribution", () => {
         address,
         accumulatedRewards: await userBalancesToUnclaimedTokens(balances, epochConfig.finalTimestamp, provider).then(
           (r) => r.toString()
-        ), // with 18 * 2 decimals
+        ), // with 18 decimals
       }))
     );
   });
@@ -61,17 +60,13 @@ describe.each([0])("Age 2 users distribution", () => {
       .flat()
       .reduce((a, b) => a.add(b), BigNumber.from(0));
     const totalEpochsTokens = getAccumulatedEmission(epochConfig.id).mul(WAD);
-    expectBNApproxEquals(totalEpochsTokens, totalEmitted, parseUnits("1"));
+    expectBNApproxEquals(totalEpochsTokens, totalEmitted, parseUnits("0.1"));
   });
 
   it(`Should should compute the correct root for epoch ${epochConfig.id}`, async () => {
     // remove users with 0 MORPHO to claim
     usersAccumulatedRewards = usersAccumulatedRewards.filter((b) => b.accumulatedRewards !== "0");
-    const { root, proofs } = computeMerkleTree(usersAccumulatedRewards);
-    await fs.promises.writeFile(
-      `./distribution/proofs/proofs-${epochConfig.number}.json`,
-      JSON.stringify({ epoch: epochConfig.id, root, proofs }, null, 4)
-    );
+    const { root } = computeMerkleTree(usersAccumulatedRewards);
     expect(root).toEqual(onchainRoot);
   });
   it(`Should sum proofs to the total token emmited for epoch ${epochConfig.id}`, async () => {
@@ -85,6 +80,6 @@ describe.each([0])("Age 2 users distribution", () => {
     const totalEmittedTheorical = allEpochs
       .filter((epoch) => epoch.finalTimestamp.lt(now()))
       .reduce((acc, epoch) => acc.add(epoch.totalEmission.mul(WAD)), BigNumber.from(0));
-    expectBNApproxEquals(totalEmitted, totalEmittedTheorical, parseUnits("1"));
+    expectBNApproxEquals(totalEmitted, totalEmittedTheorical, parseUnits("0.1"));
   });
 });
