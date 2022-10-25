@@ -3,6 +3,10 @@ import { BigNumber } from "ethers";
 import { AgeConfig } from "./ages.types";
 import { BASIS_POINTS } from "../helpers";
 
+/**
+ * Check the docs for repartition explanation
+ * https://docs.morpho.xyz/usdmorpho/ages-and-epochs
+ */
 export const ages: AgeConfig[] = [
   {
     ageName: "age1",
@@ -88,8 +92,8 @@ export const ages: AgeConfig[] = [
         finalTimestamp: BigNumber.from(new Date("2022-11-27T15:00:00.000Z").getTime() / 1000),
         totalEmission: BigNumber.from(3_400_000),
         protocolDistribution: {
-          morphoCompound: BigNumber.from(7_000),
-          morphoAave: BigNumber.from(3_000),
+          morphoCompound: BigNumber.from(6_500),
+          morphoAave: BigNumber.from(3_500),
         },
       },
       {
@@ -101,8 +105,8 @@ export const ages: AgeConfig[] = [
         finalTimestamp: BigNumber.from(new Date("2022-12-29T15:00:00.000Z").getTime() / 1000), // 17h CET
         totalEmission: BigNumber.from(3_600_000),
         protocolDistribution: {
-          morphoCompound: BigNumber.from(6_000),
-          morphoAave: BigNumber.from(4_000),
+          morphoCompound: BigNumber.from(5_000),
+          morphoAave: BigNumber.from(5_000),
         },
       },
     ],
