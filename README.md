@@ -9,6 +9,8 @@ To understand the $MORPHO rewards mechanisms, you can take a look at the [docume
 yarn
 ```
 
+- Create an `.env` file and refer to the `.env.example` for the required environment variables.
+
 - Run the script for the first epoch:
 
 ```
