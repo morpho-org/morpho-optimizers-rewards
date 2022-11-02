@@ -5,63 +5,66 @@ To understand the $MORPHO rewards mechanisms, you can take a look at the [docume
 
 - Install node dependencies using `yarn`:
 
-```
-yarn
+```bash
+yarn install --frozen-lockfile
 ```
 
 - Create an `.env` file and refer to the `.env.example` for the required environment variables.
 
-- Run the script for the first epoch:
+- Run the tests that are computing distribution and verifying the root on chain:
 
 ```
-yarn start:age1:epoch1
+yarn test
 ```
 
-## **Age 1**
+# Distribution
 
-You can read the code of the first epoch [here](https://github.com/morpho-labs/morpho-rewards/blob/main/src/ages/age-one/index.ts).
+You can check the documentation for a precise rule at each age:
+- [Age 1 (08/06/2022 -> 20/09/2022)](https://docs.morpho.xyz/usdmorpho/ages-and-epochs/age-1)
+- [Age 2 (20/09/2022 -> 29/12/2022)](https://docs.morpho.xyz/usdmorpho/ages-and-epochs/age-2)
+
+## **Per-user, per-market distribution rule**
+
+For a given market & a given side (supply/borrow), we distribute the rewards proportionally at the user balance. 
+For example, if Alice balance is representing 10% of the Morpho balance, she is accruing 10% of the MORPHO tokens while she is representing 10%.
+The speed of MORPHO distribution is static in first instance for a given set of epoch, market, side (supply/borrow), and computed from a rule voted 
+by the governance for each epoch.
+
 
 The subgraph used for automatic real-time indexation is available on the [hosted service of TheGraph](https://thegraph.com/hosted-service/subgraph/morpho-labs/morphoages?query=Get%20balances%20).
 
-Steps by step, the script will:
 
-- distribute the epoch's rewards by following the per-market distribution rule (see below)
-- make a snapshot of users' positions at the beginning of the epoch
-- fetch all the transactions completed during the epoch
-- distribute rewards by following the per-user, per-market distribution rule (see below)
-- build the [Merkle Tree](https://en.wikipedia.org/wiki/Merkle_tree) of the rewards distribution
+## **Per-market distribution process**
 
-### **Per-market distribution rule**
-
-For each epoch, we distribute a given amount of rewards (e.g. 350,000 MORPHO for Age 1 - Epoch 1) overall open markets, ponderated by the underlying market-specific USD TVL, computed at the first block of the epoch. This means that market ETH with `marketSupply` ETH supplied on the underlying pool, `marketBorrow` ETH borrowed from the underlying pool and a ETH at a price of `marketUSDPrice` at the first block of the epoch (according to Compound's protocol) will get the following amount of rewards distributed:totalEmission×(marketSupply+marketBorrow)×marketUSDPricetotalUSDTVL
-
-### **Per-user, per-market distribution rule**
-
-For a given market & a given side (supply/borrow), we distribute the rewards proportionally at `userBalance * period`, where userBalance is the balance of the user at a given time (at the beginning of the age or when a transaction occurs) and `period` is the delay since another transaction occurs. The output is visible in the `ages/age1` directory.
+For each epoch, we distribute a given amount of rewards (e.g. 350,000 MORPHO for Age 1 - Epoch 1) overall open markets, ponderated by the underlying market-specific USD TVL, computed at the `snapshotBlock` of the epoch. This means that market ETH with `marketSupply` ETH supplied on the underlying pool, `marketBorrow` ETH borrowed from the underlying pool and a ETH at a price of `marketUSDPrice` at the first block of the epoch (according to Compound's protocol) will get the following amount of rewards distributed:totalEmission×(marketSupply+marketBorrow)×marketUSDPricetotalUSDTVL
 
 ## **Epochs**
 
 Morpho rewards are distributed through epochs (~3 weeks), with each epoch's per-market distribution ultimately being voted by the Morpho protocol's governance at the beginning of the Epoch. For now and until governance is set up, each epoch's per-market distribution is computed based on a given total emission distributed over open markets, based on their underlying TVL.
 
-### **Epoch #1**
-
-The first epoch started on 2022-06-08T17:00:06.000Z until 2022-07-13T17:00:00.000Z with a distribution of 350,000 $MORPHO to users who have a position on Morpho-Compound. You can check the [final user's distribution](https://github.com/morpho-labs/morpho-rewards/blob/main/ages/age1/epoch1/usersDistribution.json) and simulate the distribution again by running.
-
-`SAVE_FILE=true yarn run start:age1:epoch1`
 ## **Claim Rewards**
 
 You can directly claim your rewards by using the Morpho dapp here: [gov.morpho.xyz](https://gov.morpho.xyz/)
 
 or by calling the `claim` function of the [Rewards Distributor](https://etherscan.io/address/0x3B14E5C73e0A56D607A8688098326fD4b4292135)
+with parameters coming from the last distribution in [proofs](./distribution/proofs) folder
 
 ## **Compute Merkle Tree**
 
-At the end of the first epoch, all tokens will be distributed.
+At the end of each epoch, all tokens will be distributed.
 
-To compute the Merkle tree, you can run
+To compute the Merkle tree, you can run the tests which are verifying the result with the ones of the [proofs](./distribution/proofs) folder
 
 ```bash
-SAVE_FILE=true yarn run start:age1:epoch1
+yarn test
 ```
 
-and browse the distribution over Morpho's users and the Merkle tree configuration in the folder `ages/age1/epoch1`
+### Terminate an epoch and updating the Merkle tree root on chain
+After each epoch, Morpho Labs is computing the Rewards distribution and submitting the new root to the Morpho governance. 
+The process can take some time after the end of the epoch, that can lead users to not be able to claim rewards from the last epoch for a short time.
+In the Morpho Labs dapp, you will be able to see your rewards with a field "Claimable soon" in the Claim Modal, which is representing the amount claimable after the 
+update of the root on chain (rewards of the previous epoch). You are still able to claim the rewards of the older epochs (n - 2) and still accruing rewards for the current epoch n
+
+
+## Rounding errors
+Due to rounding errors, the total amount distributed has a precision of more or less 10e-9 MORPHO distributed (over all markets) for age 1, and 10e-2 for the age 2.
