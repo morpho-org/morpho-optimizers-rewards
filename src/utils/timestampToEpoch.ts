@@ -57,3 +57,5 @@ export const getPrevEpoch = (epochId?: string) => {
     epoch: ages[prevEpoch.ageId].epochs[prevEpoch.epochId] as EpochConfig,
   };
 };
+
+export const getEpochFromId = (epochId: string) => allEpochs.find((e) => e.id === epochId);
