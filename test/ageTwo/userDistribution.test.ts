@@ -7,7 +7,7 @@ import {
   userBalancesToUnclaimedTokens,
 } from "../../src/utils";
 import { BigNumber, providers } from "ethers";
-import { now, WAD } from "../../src/helpers";
+import { WAD } from "../../src/helpers";
 import { parseUnits } from "ethers/lib/utils";
 import { expectBNApproxEquals } from "../ageOne/epochOne.test";
 
@@ -78,7 +78,7 @@ describe.each([0])("Age 2 users distribution", (epochId) => {
       .map((proof) => BigNumber.from(proof.amount))
       .reduce((acc, b) => acc.add(b), BigNumber.from(0));
     const totalEmittedTheorical = allEpochs
-      .filter((epoch) => epoch.finalTimestamp.lt(now()))
+      .filter((epoch) => epoch.finalTimestamp.lte(epochConfig.finalTimestamp))
       .reduce((acc, epoch) => acc.add(epoch.totalEmission.mul(WAD)), BigNumber.from(0));
     expectBNApproxEquals(totalEmitted, totalEmittedTheorical, parseUnits("0.1"));
   });
