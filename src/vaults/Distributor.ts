@@ -57,19 +57,22 @@ export default class Distributor {
 
     let morphoAccumulatedFromMainDistribution = constants.Zero;
     let lastEpochDistributed = constants.Zero;
+    const firstEpochId = epochsProofs[0]!.epoch;
     for (const epochProofs of epochsProofs) {
+      console.log(`Distributing MORPHO for epoch ${epochProofs.epoch}...`);
       const epochConfig = this.proofsFetcher.getEpochFromId(epochProofs.epoch);
-      const totalMorphoDistributed = BigNumber.from(epochProofs.proofs[this.vaultAddress]!.amount);
+      const totalMorphoDistributed = BigNumber.from(epochProofs.proofs[this.vaultAddress]!.amount).sub(
+        morphoAccumulatedFromMainDistribution
+      );
       morphoAccumulatedFromMainDistribution = morphoAccumulatedFromMainDistribution.add(totalMorphoDistributed);
 
-      console.time(epochConfig.id);
       const [allEvents, timeFrom] = await this.eventsFetcher.fetchSortedEventsForEpoch(epochConfig);
       console.debug(timeFrom.toString());
-      if (timeFrom.gt(this._lastTimestamp))
+      if (timeFrom.gt(this._lastTimestamp) && firstEpochId === epochConfig.id)
         // initiate the lastTimestamp to the first event timestamp
         this._lastTimestamp = timeFrom;
 
-      const duration = epochConfig.finalTimestamp.sub(timeFrom);
+      const duration = epochConfig.finalTimestamp.sub(this._lastTimestamp);
       console.log(`Duration: ${duration.toString()}`, timeFrom.toString(), epochConfig.initialTimestamp.toString());
       const rate = totalMorphoDistributed.mul(Distributor.SCALING_FACTOR).div(duration);
 

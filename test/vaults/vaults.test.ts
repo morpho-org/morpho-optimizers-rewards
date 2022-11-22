@@ -6,12 +6,12 @@ import { expectBNApproxEquals } from "../ageOne/epochOne.test";
 import { distributorFromEvents } from "./utils";
 import { VaultEventType } from "../../src/vaults/Distributor";
 
-describe("Vaults", () => {
+describe.each([1, 2])("Vaults", (epochNumber) => {
   it("Should distribute tokens to vaults users with only one user", async () => {
     const allProofs = getAllProofs();
     const proofsFetcher = new ProofsFetcher();
 
-    const firstProof = allProofs[allProofs.length - 1];
+    const firstProof = allProofs[allProofs.length - epochNumber];
     const epochConfig = proofsFetcher.getEpochFromId(firstProof.epoch);
     const distributor = distributorFromEvents("0x00e043300ebebd0f68e1373cc2167eebdb21516c", [
       {
@@ -33,6 +33,10 @@ describe("Vaults", () => {
     expect(merkleTree).toBeDefined();
     expect(merkleTree).toHaveProperty("proofs");
     expect(merkleTree).toHaveProperty("root");
+    console.log(
+      merkleTree.proofs[constants.AddressZero].amount,
+      firstProof.proofs["0x00e043300ebebd0f68e1373cc2167eebdb21516c"]!.amount
+    );
     expectBNApproxEquals(
       BigNumber.from(merkleTree.proofs[constants.AddressZero].amount),
       BigNumber.from(firstProof.proofs["0x00e043300ebebd0f68e1373cc2167eebdb21516c"]!.amount),
@@ -42,7 +46,7 @@ describe("Vaults", () => {
   it("Should distribute tokens to vaults users with two users", async () => {
     const proofsFetcher = new ProofsFetcher();
     const allProofs = getAllProofs();
-    const firstProof = allProofs[allProofs.length - 1];
+    const firstProof = allProofs[allProofs.length - epochNumber];
     const epochConfig = proofsFetcher.getEpochFromId(firstProof.epoch);
     const distributor = distributorFromEvents("0x00e043300ebebd0f68e1373cc2167eebdb21516c", [
       {
@@ -93,7 +97,7 @@ describe("Vaults", () => {
   it("Should distribute all tokens when vault has started being used during the epoch", async () => {
     const proofsFetcher = new ProofsFetcher();
     const allProofs = getAllProofs();
-    const firstProof = allProofs[allProofs.length - 1];
+    const firstProof = allProofs[allProofs.length - epochNumber];
     const epochConfig = proofsFetcher.getEpochFromId(firstProof.epoch);
     const distributor = distributorFromEvents("0x00e043300ebebd0f68e1373cc2167eebdb21516c", [
       {
@@ -145,7 +149,7 @@ describe("Vaults", () => {
   it("Should not distribute MORPHO to a user that has deposit/withdraw in the same transaction", async () => {
     const proofsFetcher = new ProofsFetcher();
     const allProofs = getAllProofs();
-    const firstProof = allProofs[allProofs.length - 1];
+    const firstProof = allProofs[allProofs.length - epochNumber];
     const epochConfig = proofsFetcher.getEpochFromId(firstProof.epoch);
     const distributor = distributorFromEvents("0x00e043300ebebd0f68e1373cc2167eebdb21516c", [
       {
@@ -209,7 +213,7 @@ describe("Vaults", () => {
   it("Should distribute a part of MORPHO when user withdraws", async () => {
     const proofsFetcher = new ProofsFetcher();
     const allProofs = getAllProofs();
-    const firstProof = allProofs[allProofs.length - 1];
+    const firstProof = allProofs[allProofs.length - epochNumber];
     const epochConfig = proofsFetcher.getEpochFromId(firstProof.epoch);
     const distributor = distributorFromEvents("0x00e043300ebebd0f68e1373cc2167eebdb21516c", [
       {
@@ -311,7 +315,7 @@ describe("Vaults", () => {
   it("Should distribute MORPHO when a transfer occurs for the receiver", async () => {
     const proofsFetcher = new ProofsFetcher();
     const allProofs = getAllProofs();
-    const firstProof = allProofs[allProofs.length - 1];
+    const firstProof = allProofs[allProofs.length - epochNumber];
     const epochConfig = proofsFetcher.getEpochFromId(firstProof.epoch);
     const distributor = distributorFromEvents("0x00e043300ebebd0f68e1373cc2167eebdb21516c", [
       {
