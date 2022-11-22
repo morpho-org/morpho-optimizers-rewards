@@ -70,6 +70,7 @@ export default class Distributor {
         this._lastTimestamp = timeFrom;
 
       const duration = epochConfig.finalTimestamp.sub(timeFrom);
+      console.log(`Duration: ${duration.toString()}`, timeFrom.toString(), epochConfig.initialTimestamp.toString());
       const rate = totalMorphoDistributed.mul(Distributor.SCALING_FACTOR).div(duration);
 
       for (const transaction of allEvents) {
@@ -172,10 +173,15 @@ export default class Distributor {
     }
 
     // process of the distribution and the merkle tree
-    const usersRewards = Object.entries(this._usersConfigs).map(([address, config]) => ({
-      address,
-      accumulatedRewards: config!.morphoAccrued.toString(),
-    }));
+    const usersRewards = Object.entries(this._usersConfigs)
+      .map(([address, config]) => {
+        if (config!.morphoAccrued.isZero()) return;
+        return {
+          address,
+          accumulatedRewards: config!.morphoAccrued.toString(),
+        };
+      })
+      .filter(Boolean) as { address: string; accumulatedRewards: string }[];
     return computeMerkleTree(usersRewards);
     //
     // const lastEpochId = epochsProofs[epochsProofs.length - 1].epoch;
