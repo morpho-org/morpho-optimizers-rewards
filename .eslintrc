@@ -5,7 +5,7 @@
   "rules": {
     "semi": ["error", "always"],
     "no-unused-vars": "warn",
-    "no-console": "error",
+    "no-console": "warn",
     "quotes": ["error", "double"]
   }
 }

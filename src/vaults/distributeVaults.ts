@@ -1,16 +1,14 @@
 /* eslint-disable no-console */
-import { BigNumber, constants, providers } from "ethers";
+import {BigNumber, constants, providers} from "ethers";
 import { getAllProofs } from "../utils/getCurrentOnChainDistribution";
 import { getEpochFromId } from "../utils/timestampToEpoch";
-import { minBN } from "@morpho-labs/ethers-utils/lib/utils";
-import _sortBy from "lodash/sortBy";
-import { DepositEvent, TransferEvent, WithdrawEvent } from "./contracts/ERC4626";
+import {DepositEvent, TransferEvent, WithdrawEvent} from "./contracts/ERC4626";
 import { WadRayMath } from "@morpho-labs/ethers-utils/lib/maths";
 import { formatUnits } from "ethers/lib/utils";
 import { computeMerkleTree } from "../utils";
 import * as fs from "fs";
-import { VaultDepositEvent, VaultTransferEvent, VaultWithdrawEvent, TransactionEvents, UserConfig } from "./types";
-import { ERC4626__factory } from "./contracts";
+import { UserConfig } from "./types";
+import VaultEventsFetcher from "./VaultEventsFetcher";
 
 export interface DistributeVaultsParams {
   deploymentBlock: providers.BlockTag;
@@ -42,6 +40,8 @@ const getUserConfig = (address: string) => {
   return userConfig;
 };
 
+
+
 const distributeVaults = async ({ deploymentBlock, provider, address }: DistributeVaultsParams) => {
   console.time("Distribution");
   address = address.toLowerCase();
@@ -49,84 +49,31 @@ const distributeVaults = async ({ deploymentBlock, provider, address }: Distribu
   const epochsProofs = getAllProofs().filter((proofs) => !!proofs.proofs[address]?.amount);
   if (!epochsProofs?.length) throw Error(`No MORPHO distributed for the vault ${address}`);
 
-  const blockFrom = await provider.getBlock(deploymentBlock);
-  const vault = ERC4626__factory.connect(address, provider);
 
   let morphoAccumulatedFromMainDistribution = constants.Zero;
   let lastEpochDistributed = constants.Zero;
-
+  const fetcher = new VaultEventsFetcher(address, provider, deploymentBlock);
   for (const epochProofs of epochsProofs) {
     const epochConfig = getEpochFromId(epochProofs.epoch)!;
-    console.time(epochConfig.id);
-    let timeFrom = epochConfig.initialTimestamp;
     const totalMorphoDistributed = BigNumber.from(epochProofs.proofs[address]!.amount);
     morphoAccumulatedFromMainDistribution = morphoAccumulatedFromMainDistribution.add(totalMorphoDistributed);
-    const blockFromCurrentEpoch = minBN(epochConfig.initialBlock!, blockFrom.number);
 
-    const depositEvents: VaultDepositEvent[] = (
-      await vault.queryFilter(
-        vault.filters.Deposit(),
-        blockFromCurrentEpoch.toString(),
-        epochConfig.finalTimestamp.toString()
-      )
-    ).map((event) => ({
-      type: VaultEventType.Deposit,
-      event,
-    }));
-    console.timeLog(epochConfig.id, depositEvents.length, "Deposit events");
-    const withdrawEvents: VaultWithdrawEvent[] = (
-      await vault.queryFilter(
-        vault.filters.Withdraw(),
-        blockFromCurrentEpoch.toString(),
-        epochConfig.finalTimestamp.toString()
-      )
-    ).map((event) => ({
-      type: VaultEventType.Withdraw,
-      event,
-    }));
-    console.timeLog(epochConfig.id, withdrawEvents.length, "Withdraw events");
-    const transferEvents: VaultTransferEvent[] = (
-      await vault.queryFilter(
-        vault.filters.Transfer(),
-        blockFromCurrentEpoch.toString(),
-        epochConfig.finalTimestamp.toString()
-      )
-    ).map((event) => ({
-      type: VaultEventType.Transfer,
-      event,
-    }));
-    console.timeLog(epochConfig.id, transferEvents.length, "Transfer events");
+    console.time(epochConfig.id);
+    const [allEvents, timeFrom] = await fetcher.fetchSortedEventsForEpoch(epochConfig);
 
-    // we assume that, after the first deposit event, the vault is never empty
-    if (!blockFromCurrentEpoch.eq(epochConfig.initialBlock!)) {
-      const [firstDeposit] = depositEvents.sort((event1, event2) =>
-        event1.event.blockNumber > event2.event.blockNumber ? 1 : -1
-      );
-      if (!firstDeposit)
-        throw Error(
-          `Inconsistent config: some MORPHO tokens are distributed where there is no deposit in epoch ${epochConfig.id}`
-        );
-      const firstDepositBlock = await provider.getBlock(firstDeposit.event.blockNumber);
-      timeFrom = BigNumber.from(firstDepositBlock.timestamp);
+    if(timeFrom.gt(lastTimestamp))
+      // initiate the lastTimestamp to the first event timestamp
       lastTimestamp = timeFrom;
-    }
+
 
     const duration = epochConfig.finalTimestamp.sub(timeFrom);
     const rate = WadRayMath.rayDiv(totalMorphoDistributed, duration);
-
-    // now we first order events
-
-    const allEvents: TransactionEvents[] = _sortBy([...depositEvents, ...withdrawEvents, ...transferEvents], (ev) => [
-      ev.event.blockNumber,
-      ev.event.transactionIndex,
-      ev.event.logIndex,
-    ]);
 
     for (const transaction of allEvents) {
       // process event
       // we first update the global vault distribution
       const block = await provider.getBlock(transaction.event.blockNumber);
-      const morphoAccrued = rate.mul(BigNumber.from(block.timestamp).sub(lastTimestamp)); // number of MORPH accrued for all users
+      const morphoAccrued = rate.mul(BigNumber.from(block.timestamp).sub(lastTimestamp)); // number of MORPHO accrued for all users
       marketIndex = marketIndex.add(WadRayMath.wadDiv(morphoAccrued, totalSupply)); // distribute over users
       lastTimestamp = BigNumber.from(block.timestamp);
 
@@ -178,7 +125,7 @@ const distributeVaults = async ({ deploymentBlock, provider, address }: Distribu
 
     // and process the end of the epoch
 
-    const morphoAccrued = rate.mul(BigNumber.from(epochConfig.finalTimestamp).sub(lastTimestamp)); // number of MORPH accrued for all users
+    const morphoAccrued = rate.mul(BigNumber.from(epochConfig.finalTimestamp).sub(lastTimestamp)); // number of MORPHO accrued for all users
     marketIndex = marketIndex.add(WadRayMath.wadDiv(morphoAccrued, totalSupply)); // distribute over users
     lastTimestamp = BigNumber.from(epochConfig.finalTimestamp);
 
@@ -230,5 +177,6 @@ const distributeVaults = async ({ deploymentBlock, provider, address }: Distribu
 
   console.timeEnd("Distribution");
 };
+
 
 export default distributeVaults;

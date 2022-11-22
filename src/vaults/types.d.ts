@@ -1,17 +1,38 @@
-import { DepositEvent, TransferEvent, WithdrawEvent } from "./contracts/ERC4626";
+import {
+  DepositEventObject,
+  TransferEventObject,
+  WithdrawEventObject
+} from "./contracts/ERC4626";
 import { BigNumber } from "ethers";
+import {VaultEventType} from "./distributeVaults";
 
 export interface VaultDepositEvent {
   type: VaultEventType.Deposit;
-  event: DepositEvent;
+  event: {
+    transactionIndex: number;
+    logIndex: number;
+    blockNumber: number;
+    args: DepositEventObject;
+  };
 }
 export interface VaultWithdrawEvent {
   type: VaultEventType.Withdraw;
-  event: WithdrawEvent;
+
+  event: {
+    transactionIndex: number;
+    logIndex: number;
+    blockNumber: number;
+    args: WithdrawEventObject;
+  };
 }
 export interface VaultTransferEvent {
   type: VaultEventType.Transfer;
-  event: TransferEvent;
+  event: {
+    transactionIndex: number;
+    logIndex: number;
+    blockNumber: number;
+    args: TransferEventObject;
+  };
 }
 export type TransactionEvents = VaultDepositEvent | VaultWithdrawEvent | VaultTransferEvent;
 
