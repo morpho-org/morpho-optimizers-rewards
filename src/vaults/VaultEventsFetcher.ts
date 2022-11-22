@@ -2,9 +2,9 @@ import { BigNumber, BigNumberish, providers } from "ethers";
 import { TransactionEvents, VaultDepositEvent, VaultTransferEvent, VaultWithdrawEvent } from "./types";
 import { minBN } from "@morpho-labs/ethers-utils/lib/utils";
 import _sortBy from "lodash/sortBy";
-import { VaultEventType } from "./distributeVaults";
 import { EpochConfig } from "../ages";
 import { ERC4626, ERC4626__factory } from "./contracts";
+import { VaultEventType } from "./Distributor";
 
 export interface EventsFetcherInterface {
   fetchSortedEventsForEpoch: (epochConfig: EpochConfig) => Promise<[TransactionEvents[], BigNumber]>;

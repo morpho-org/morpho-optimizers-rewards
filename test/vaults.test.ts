@@ -1,10 +1,10 @@
 import { BigNumber, constants } from "ethers";
 import ProofsFetcher from "../src/vaults/ProofsFetcher";
 import { getAllProofs } from "../src/utils/getCurrentOnChainDistribution";
-import { VaultEventType } from "../src/vaults/distributeVaults";
 import { parseUnits } from "ethers/lib/utils";
 import { expectBNApproxEquals } from "./ageOne/epochOne.test";
 import { distributorFromEvents } from "./vaults/utils";
+import { VaultEventType } from "../src/vaults/Distributor";
 
 describe("Vaults", () => {
   it("Should distribute tokens to vaults users with only one user", async () => {

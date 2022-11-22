@@ -1,10 +1,6 @@
-import {
-  DepositEventObject,
-  TransferEventObject,
-  WithdrawEventObject
-} from "./contracts/ERC4626";
+import { DepositEventObject, TransferEventObject, WithdrawEventObject } from "./contracts/ERC4626";
 import { BigNumber } from "ethers";
-import {VaultEventType} from "./distributeVaults";
+import { VaultEventType } from "./Distributor";
 
 export interface VaultDepositEvent {
   type: VaultEventType.Deposit;

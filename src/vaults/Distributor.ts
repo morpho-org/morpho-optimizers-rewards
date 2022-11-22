@@ -5,9 +5,14 @@ import { WadRayMath } from "@morpho-labs/ethers-utils/lib/maths";
 import { DepositEvent, TransferEvent, WithdrawEvent } from "./contracts/ERC4626";
 import { formatUnits } from "ethers/lib/utils";
 import { computeMerkleTree } from "../utils";
-import { VaultEventType } from "./distributeVaults";
 import { ProofsFetcherInterface } from "./ProofsFetcher";
 import { pow10 } from "@morpho-labs/ethers-utils/lib/utils";
+
+export enum VaultEventType {
+  Deposit = "DEPOSIT",
+  Withdraw = "WITHDRAW",
+  Transfer = "TRANSFER",
+}
 
 export default class Distributor {
   static SCALING_FACTOR = pow10(36);
