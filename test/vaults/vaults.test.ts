@@ -308,4 +308,67 @@ describe("Vaults", () => {
       +merkleTree.proofs["0x0000000000000000000000000000000000000001"]!.amount
     );
   });
+  it("Should distribute MORPHO when a transfer occurs for the receiver", async () => {
+    const proofsFetcher = new ProofsFetcher();
+    const allProofs = getAllProofs();
+    const firstProof = allProofs[allProofs.length - 1];
+    const epochConfig = proofsFetcher.getEpochFromId(firstProof.epoch);
+    const distributor = distributorFromEvents("0x00e043300ebebd0f68e1373cc2167eebdb21516c", [
+      {
+        type: VaultEventType.Deposit,
+        event: {
+          blockNumber: epochConfig.initialBlock! + 1000,
+          transactionIndex: 1,
+          logIndex: 1,
+          args: {
+            caller: constants.AddressZero,
+            owner: constants.AddressZero,
+            assets: parseUnits("1000"),
+            shares: parseUnits("1000"),
+          },
+        },
+      },
+      {
+        type: VaultEventType.Deposit,
+        event: {
+          blockNumber: epochConfig.initialBlock! + 2000,
+          transactionIndex: 1,
+          logIndex: 1,
+          args: {
+            caller: "0x0000000000000000000000000000000000000001",
+            owner: "0x0000000000000000000000000000000000000001",
+            assets: parseUnits("1000"),
+            shares: parseUnits("1000"),
+          },
+        },
+      },
+      {
+        type: VaultEventType.Transfer,
+        event: {
+          blockNumber: epochConfig.initialBlock! + 3000,
+          transactionIndex: 1,
+          logIndex: 1,
+          args: {
+            from: "0x0000000000000000000000000000000000000001",
+            to: "0x0000000000000000000000000000000000000002",
+            value: parseUnits("100"),
+          },
+        },
+      },
+    ]);
+    const merkleTree = await distributor.distributeMorpho(epochConfig.id);
+    expect(merkleTree).toBeDefined();
+    expect(merkleTree.proofs[constants.AddressZero].amount).toBeDefined();
+    expect(merkleTree.proofs["0x0000000000000000000000000000000000000001"].amount).toBeDefined();
+    expect(merkleTree.proofs["0x0000000000000000000000000000000000000002"].amount).toBeDefined();
+    const totalDistributed = Object.values(merkleTree.proofs).reduce(
+      (acc, proof) => acc.add(proof.amount),
+      BigNumber.from(0)
+    );
+    const totalVaultRewards = BigNumber.from(firstProof.proofs["0x00e043300ebebd0f68e1373cc2167eebdb21516c"]!.amount);
+
+    expect(totalDistributed.lte(totalVaultRewards)).toBeTruthy();
+    console.log(totalDistributed.toString(), totalVaultRewards.toString());
+    expectBNApproxEquals(totalDistributed, totalVaultRewards, 10);
+  });
 });
