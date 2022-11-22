@@ -1,57 +1,93 @@
-import {BigNumber, constants, providers} from "ethers";
+import { BigNumber, constants } from "ethers";
 import ProofsFetcher from "../src/vaults/ProofsFetcher";
-import Distributor from "../src/vaults/Distributor";
-import {EventsFetcherInterface} from "../src/vaults/VaultEventsFetcher";
-import {TransactionEvents, VaultDepositEvent} from "../src/vaults/types";
-import {getAllProofs} from "../src/utils/getCurrentOnChainDistribution";
-import {EpochConfig} from "../src";
-import {VaultEventType} from "../src/vaults/distributeVaults";
-import {parseUnits} from "ethers/lib/utils";
+import { getAllProofs } from "../src/utils/getCurrentOnChainDistribution";
+import { VaultEventType } from "../src/vaults/distributeVaults";
+import { parseUnits } from "ethers/lib/utils";
+import { expectBNApproxEquals } from "./ageOne/epochOne.test";
+import { distributorFromEvents } from "./vaults/utils";
 
-describe("Vaults", ()  => {
-    it("Should distribute tokens to vaults users with only deposits", async () => {
-        const proofsFetcher = new ProofsFetcher();
-        const allProofs = getAllProofs();
-        const firstProof = allProofs[allProofs.length - 1];
-        const epochConfig = proofsFetcher.getEpochFromId(firstProof.epoch);
-        class EventFetcherOneDepositor implements EventsFetcherInterface {
-            async fetchSortedEventsForEpoch(epochConfig: EpochConfig):Promise<[TransactionEvents[], BigNumber]>{
-                // create deposit Event mock
-                const event = {
-                    blockNumber: epochConfig.initialBlock!,
-                    transactionIndex: 1,
-                    logIndex: 1,
-                    args: {
-                        caller: constants.AddressZero,
-                        owner: constants.AddressZero,
-                        assets: parseUnits("1000"),
-                        shares: parseUnits("1000"),
-                    },
-                };
-                // create ethers typed event with mock values
-                const depositEvent: VaultDepositEvent = {
-                    type: VaultEventType.Deposit,
-                    event
-                };
-                return [[depositEvent], epochConfig.initialTimestamp];
-            }
-            async getBlock(blockNumber: number): Promise<providers.Block> {
-                const provider = new providers.JsonRpcProvider(process.env.RPC_URL);
-                return provider.getBlock(blockNumber);
-            }
+describe("Vaults", () => {
+  it("Should distribute tokens to vaults users with only one user", async () => {
+    const allProofs = getAllProofs();
+    const proofsFetcher = new ProofsFetcher();
 
-        }
-        const eventsFetcher = new EventFetcherOneDepositor();
+    const firstProof = allProofs[allProofs.length - 1];
+    const epochConfig = proofsFetcher.getEpochFromId(firstProof.epoch);
+    const distributor = distributorFromEvents("0x00e043300ebebd0f68e1373cc2167eebdb21516c", [
+      {
+        type: VaultEventType.Deposit,
+        event: {
+          blockNumber: epochConfig.initialBlock!,
+          transactionIndex: 1,
+          logIndex: 1,
+          args: {
+            caller: constants.AddressZero,
+            owner: constants.AddressZero,
+            assets: parseUnits("1000"),
+            shares: parseUnits("1000"),
+          },
+        },
+      },
+    ]);
+    const merkleTree = await distributor.distributeMorpho(epochConfig.id);
+    expect(merkleTree).toBeDefined();
+    expect(merkleTree).toHaveProperty("proofs");
+    expect(merkleTree).toHaveProperty("root");
+    expectBNApproxEquals(
+      BigNumber.from(merkleTree.proofs[constants.AddressZero].amount),
+      BigNumber.from(firstProof.proofs["0x00e043300ebebd0f68e1373cc2167eebdb21516c"]!.amount),
+      10
+    );
+  });
+  it("Should distribute tokens to vaults users with two users", async () => {
+    const proofsFetcher = new ProofsFetcher();
+    const allProofs = getAllProofs();
+    const firstProof = allProofs[allProofs.length - 1];
+    const epochConfig = proofsFetcher.getEpochFromId(firstProof.epoch);
+    const distributor = distributorFromEvents("0x00e043300ebebd0f68e1373cc2167eebdb21516c", [
+      {
+        type: VaultEventType.Deposit,
+        event: {
+          blockNumber: epochConfig.initialBlock!,
+          transactionIndex: 1,
+          logIndex: 1,
+          args: {
+            caller: constants.AddressZero,
+            owner: constants.AddressZero,
+            assets: parseUnits("1000"),
+            shares: parseUnits("1000"),
+          },
+        },
+      },
+      {
+        type: VaultEventType.Deposit,
+        event: {
+          blockNumber: epochConfig.initialBlock! + 1000,
+          transactionIndex: 1,
+          logIndex: 1,
+          args: {
+            caller: "0x0000000000000000000000000000000000000001",
+            owner: "0x0000000000000000000000000000000000000001",
+            assets: parseUnits("1000"),
+            shares: parseUnits("1000"),
+          },
+        },
+      },
+    ]);
+    const merkleTree = await distributor.distributeMorpho(epochConfig.id);
+    expect(merkleTree).toBeDefined();
+    expect(merkleTree).toHaveProperty("proofs");
+    expect(merkleTree).toHaveProperty("root");
+    expect(merkleTree.proofs[constants.AddressZero].amount).toBeDefined();
+    expect(merkleTree.proofs["0x0000000000000000000000000000000000000001"].amount).toBeDefined();
 
-        const distributor = new Distributor("0x00e043300ebebd0f68e1373cc2167eebdb21516c", eventsFetcher, proofsFetcher);
+    const totalDistributed = Object.values(merkleTree.proofs).reduce(
+      (acc, proof) => acc.add(proof.amount),
+      BigNumber.from(0)
+    );
+    const totalVaultRewards = BigNumber.from(firstProof.proofs["0x00e043300ebebd0f68e1373cc2167eebdb21516c"]!.amount);
 
-        const merkleTree = await distributor.distributeMorpho(epochConfig.id);
-        expect(merkleTree).toBeDefined();
-        expect(merkleTree).toHaveProperty("proofs");
-        expect(merkleTree).toHaveProperty("root");
-
-        expect(merkleTree.proofs[constants.AddressZero].amount).toEqual(firstProof.proofs["0x00e043300ebebd0f68e1373cc2167eebdb21516c"]!.amount);
-
-    });
-
+    expect(totalDistributed.lte(totalVaultRewards)).toBeTruthy();
+    expectBNApproxEquals(totalDistributed, totalVaultRewards, 10);
+  });
 });
