@@ -59,11 +59,12 @@ export default class Distributor {
     let lastEpochDistributed = constants.Zero;
     const firstEpochId = epochsProofs[0]!.epoch;
     for (const epochProofs of epochsProofs) {
-      console.log(`Distributing MORPHO for epoch ${epochProofs.epoch}...`);
+      console.log(`Distributing MORPHO for ${epochProofs.epoch}...`);
       const epochConfig = this.proofsFetcher.getEpochFromId(epochProofs.epoch);
       const totalMorphoDistributed = BigNumber.from(epochProofs.proofs[this.vaultAddress]!.amount).sub(
         morphoAccumulatedFromMainDistribution
       );
+      console.log(`Total MORPHO distributed: ${formatUnits(totalMorphoDistributed, 18)}`);
       morphoAccumulatedFromMainDistribution = morphoAccumulatedFromMainDistribution.add(totalMorphoDistributed);
 
       const [allEvents, timeFrom] = await this.eventsFetcher.fetchSortedEventsForEpoch(epochConfig);
@@ -73,9 +74,13 @@ export default class Distributor {
         this._lastTimestamp = timeFrom;
 
       const duration = epochConfig.finalTimestamp.sub(this._lastTimestamp);
+      if (duration.lte(constants.Zero)) {
+        //throw an error
+        throw Error(`The duration of the epoch ${epochConfig.id} is not positive`);
+      }
       console.log(`Duration: ${duration.toString()}`, timeFrom.toString(), epochConfig.initialTimestamp.toString());
       const rate = totalMorphoDistributed.mul(Distributor.SCALING_FACTOR).div(duration);
-
+      console.log(`${allEvents.length} events to process for ${epochConfig.id}...`);
       for (const transaction of allEvents) {
         // process event
         // we first update the global vault distribution
@@ -143,7 +148,8 @@ export default class Distributor {
       // and process the end of the epoch
 
       const morphoAccrued = rate.mul(BigNumber.from(epochConfig.finalTimestamp).sub(this._lastTimestamp)); // number of MORPHO accrued for all users
-      this._marketIndex = this._marketIndex.add(WadRayMath.wadDiv(morphoAccrued, this._totalSupply)); // distribute over users
+      if (this._totalSupply.gt(0))
+        this._marketIndex = this._marketIndex.add(WadRayMath.wadDiv(morphoAccrued, this._totalSupply)); // distribute over users
       this._lastTimestamp = BigNumber.from(epochConfig.finalTimestamp);
 
       Object.values(this._usersConfigs).forEach((userConfig) => {
