@@ -168,19 +168,14 @@ export default class Distributor {
         if (!user) return acc;
         return acc.add(user.morphoAccrued);
       }, constants.Zero);
-      console.log(
-        epochConfig.id,
-        "Total token emitted overall:",
-        formatUnits(totalTokenEmitted),
-        "over",
-        formatUnits(morphoAccumulatedFromMainDistribution)
-      );
 
       console.log(
-        epochConfig.id,
-        "Emitted during the current epoch: ",
-        formatUnits(totalTokenEmitted.sub(lastEpochDistributed))
+        `Total MORPHO emitted: ${formatUnits(totalTokenEmitted)} over ${formatUnits(
+          morphoAccumulatedFromMainDistribution
+        )} MORPHO available`
       );
+
+      console.log(`Total MORPHO distributed during ${epochConfig.id}: ${formatUnits(lastEpochDistributed)}`);
       lastEpochDistributed = totalTokenEmitted;
       // process of the distribution and the merkle tree
       const usersRewards = Object.entries(this._usersConfigs)
@@ -194,6 +189,7 @@ export default class Distributor {
         .filter(Boolean) as { address: string; accumulatedRewards: string }[];
       trees[epochConfig.id] = computeMerkleTree(usersRewards);
     }
+
     const lastEpochId = epochsProofs[epochsProofs.length - 1].epoch;
     return {
       lastMerkleTree: trees[lastEpochId],
