@@ -7,7 +7,7 @@ import Distributor from "../Distributor";
 import * as fs from "fs";
 import * as dotenv from "dotenv";
 dotenv.config();
-const distribute = async (vaults: VaultConfiguration[], epochTo?: string) => {
+const distribute = async (vaults: VaultConfiguration[], epochTo?: string, uploadHistory = true) => {
   const rpcUrl = process.env.RPC_URL;
   if (!rpcUrl) {
     console.error("Please set RPC_URL env variable");
@@ -25,8 +25,9 @@ const distribute = async (vaults: VaultConfiguration[], epochTo?: string) => {
     console.log(`Distributed ${Object.keys(history).length} epochs`);
     const proofsDir = `./distribution/vault/${address}-${symbol}`;
     await fs.promises.mkdir(proofsDir, { recursive: true });
+    const toUpload = uploadHistory ? history : { [Object.keys(history).pop()!]: history[Object.keys(history).pop()!] };
     await Promise.all(
-      Object.entries(history).map(async ([epochId, merkleTree]) => {
+      Object.entries(toUpload).map(async ([epochId, merkleTree]) => {
         const filename = `${proofsDir}/${epochId}.json`;
         console.log(`Saving proof for ${epochId} to ${filename}`);
         await fs.promises.writeFile(filename, JSON.stringify({ epochId: epochId, ...merkleTree }, null, 4));
@@ -36,7 +37,7 @@ const distribute = async (vaults: VaultConfiguration[], epochTo?: string) => {
   }
 };
 
-distribute(configuration.vaults, configuration.epochTo)
+distribute(configuration.vaults, configuration.epochTo, process.argv.includes("--upload-history"))
   .then(() => {
     console.log("Done");
     process.exit(0);

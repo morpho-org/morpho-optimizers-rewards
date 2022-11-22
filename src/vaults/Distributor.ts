@@ -193,22 +193,11 @@ export default class Distributor {
         })
         .filter(Boolean) as { address: string; accumulatedRewards: string }[];
       trees[epochConfig.id] = computeMerkleTree(usersRewards);
-      console.timeEnd(epochConfig.id);
     }
     const lastEpochId = epochsProofs[epochsProofs.length - 1].epoch;
     return {
       lastMerkleTree: trees[lastEpochId],
       history: trees,
     };
-    // // save merkle tree
-    // await fs.promises.mkdir(`distribution/vaults/${lastEpochId}`, { recursive: true });
-    // await fs.promises.writeFile(
-    //     `distribution/vaults/${lastEpochId}/${this.vaultAddress}.json`,
-    //     JSON.stringify({ epoch: lastEpochId, ...merkleTree }, null, 4)
-    // );
-    //
-    // console.log("Distribution", "Root:", merkleTree.root);
-    //
-    // console.timeEnd("Distribution");
   }
 }

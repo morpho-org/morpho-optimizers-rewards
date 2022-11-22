@@ -38,7 +38,7 @@
     "getMarketsDistribution": "ts-node src/scripts/getMarketsDistribution.ts",
     "distributeVaults": "ts-node src/scripts/distributeVaults.ts",
     "syncAgeConfig": "ts-node src/scripts/syncAgeConfig.ts",
-    "vault:distribute": "ts-node src/vaults/script/distribute.ts",
+    "vaults:distribute": "ts-node src/vaults/script/distribute.ts",
     "prepublishOnly": "yarn build && yarn lint",
     "postpublish": "git clean -fd && git checkout -- .",
     "preversion": "yarn build",
