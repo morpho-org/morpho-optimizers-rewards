@@ -23,9 +23,8 @@ export interface Proofs {
   };
 }
 export const getAllProofs = () => {
-  let index = numberOfEpochs;
   const proofs: Proofs[] = [];
-  while (index > 0) {
+  for (let index = numberOfEpochs; index > 0; index--) {
     const filename = `proofs-${index}.json`;
     let lastProofRaw: any;
     try {
@@ -35,7 +34,6 @@ export const getAllProofs = () => {
     }
 
     if (lastProofRaw) proofs.push(lastProofRaw);
-    index--;
   }
   return proofs;
 };
