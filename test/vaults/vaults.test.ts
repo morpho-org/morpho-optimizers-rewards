@@ -35,7 +35,7 @@ describe.each(allEpochs.filter((epoch) => epoch.finalTimestamp.lt(Math.floor(Dat
             },
           },
         ]);
-        const merkleTree = await distributor.distributeMorpho(currentEpochConfig.id);
+        const { lastMerkleTree: merkleTree } = await distributor.distributeMorpho(currentEpochConfig.id);
         expect(merkleTree).toBeDefined();
         expect(merkleTree).toHaveProperty("proofs");
         expect(merkleTree).toHaveProperty("root");
@@ -76,7 +76,7 @@ describe.each(allEpochs.filter((epoch) => epoch.finalTimestamp.lt(Math.floor(Dat
             },
           },
         ]);
-        const merkleTree = await distributor.distributeMorpho(currentEpochConfig.id);
+        const { lastMerkleTree: merkleTree } = await distributor.distributeMorpho(currentEpochConfig.id);
         expect(merkleTree).toBeDefined();
         expect(merkleTree).toHaveProperty("proofs");
         expect(merkleTree).toHaveProperty("root");
@@ -123,7 +123,7 @@ describe.each(allEpochs.filter((epoch) => epoch.finalTimestamp.lt(Math.floor(Dat
             },
           },
         ]);
-        const merkleTree = await distributor.distributeMorpho(currentEpochConfig.id);
+        const { lastMerkleTree: merkleTree } = await distributor.distributeMorpho(currentEpochConfig.id);
         expect(merkleTree).toBeDefined();
         expect(merkleTree).toHaveProperty("proofs");
         expect(merkleTree).toHaveProperty("root");
@@ -185,7 +185,7 @@ describe.each(allEpochs.filter((epoch) => epoch.finalTimestamp.lt(Math.floor(Dat
             },
           },
         ]);
-        const merkleTree = await distributor.distributeMorpho(currentEpochConfig.id);
+        const { lastMerkleTree: merkleTree } = await distributor.distributeMorpho(currentEpochConfig.id);
         expect(merkleTree).toBeDefined();
         expect(merkleTree.proofs["0x0000000000000000000000000000000000000001"]?.amount).toBeUndefined();
 
@@ -244,7 +244,7 @@ describe.each(allEpochs.filter((epoch) => epoch.finalTimestamp.lt(Math.floor(Dat
             },
           },
         ]);
-        const merkleTree = await distributor.distributeMorpho(currentEpochConfig.id);
+        const { lastMerkleTree: merkleTree } = await distributor.distributeMorpho(currentEpochConfig.id);
         expect(merkleTree).toBeDefined();
         expect(merkleTree.proofs[constants.AddressZero].amount).toBeDefined();
         expect(merkleTree.proofs["0x0000000000000000000000000000000000000001"].amount).toBeDefined();
@@ -287,7 +287,9 @@ describe.each(allEpochs.filter((epoch) => epoch.finalTimestamp.lt(Math.floor(Dat
             },
           },
         ]);
-        const merkleTreeWithoutWithdrawal = await distributorWithoutWithdrawal.distributeMorpho(currentEpochConfig.id);
+        const { lastMerkleTree: merkleTreeWithoutWithdrawal } = await distributorWithoutWithdrawal.distributeMorpho(
+          currentEpochConfig.id
+        );
         const withoutWithdrawalAmount =
           merkleTreeWithoutWithdrawal.proofs["0x0000000000000000000000000000000000000001"]!.amount;
         expect(withoutWithdrawalAmount).toBnBeGreaterThan(
@@ -339,7 +341,7 @@ describe.each(allEpochs.filter((epoch) => epoch.finalTimestamp.lt(Math.floor(Dat
             },
           },
         ]);
-        const merkleTree = await distributor.distributeMorpho(currentEpochConfig.id);
+        const { lastMerkleTree: merkleTree } = await distributor.distributeMorpho(currentEpochConfig.id);
         expect(merkleTree).toBeDefined();
         expect(merkleTree.proofs[constants.AddressZero].amount).toBeDefined();
         expect(merkleTree.proofs["0x0000000000000000000000000000000000000001"].amount).toBeDefined();
@@ -428,7 +430,7 @@ describe.each(allEpochs.filter((epoch) => epoch.finalTimestamp.lt(Math.floor(Dat
               },
             },
           ]);
-          const merkleTree = await distributor.distributeMorpho(currentEpochConfig.id);
+          const { lastMerkleTree: merkleTree } = await distributor.distributeMorpho(currentEpochConfig.id);
           expect(merkleTree).toBeDefined();
           expect(merkleTree.proofs[constants.AddressZero].amount).toBeDefined();
           expect(merkleTree.proofs["0x0000000000000000000000000000000000000001"].amount).toBeDefined();

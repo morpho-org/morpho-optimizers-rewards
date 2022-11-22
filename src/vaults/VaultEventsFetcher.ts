@@ -1,6 +1,6 @@
 import { BigNumber, BigNumberish, providers } from "ethers";
 import { TransactionEvents, VaultDepositEvent, VaultTransferEvent, VaultWithdrawEvent } from "./types";
-import { minBN } from "@morpho-labs/ethers-utils/lib/utils";
+import { maxBN } from "@morpho-labs/ethers-utils/lib/utils";
 import _sortBy from "lodash/sortBy";
 import { EpochConfig } from "../ages";
 import { ERC4626, ERC4626__factory } from "./contracts";
@@ -21,18 +21,15 @@ export default class VaultEventsFetcher implements EventsFetcherInterface {
     this.vault = ERC4626__factory.connect(vaultAddress, provider);
   }
   async fetchSortedEventsForEpoch(epochConfig: EpochConfig): Promise<[TransactionEvents[], BigNumber]> {
-    const blockFrom = await this.provider.getBlock(this.deploymentBlock);
-
     let timeFrom = epochConfig.initialTimestamp;
-    const blockFromCurrentEpoch = minBN(epochConfig.initialBlock!, blockFrom.number);
-
+    const blockFromCurrentEpoch = maxBN(epochConfig.initialBlock!, this.deploymentBlock);
     const depositEvents = await this._fetchDepositEvents(blockFromCurrentEpoch, epochConfig.finalBlock!);
 
-    console.timeLog(epochConfig.id, depositEvents.length, "Deposit events");
+    console.log(epochConfig.id, depositEvents.length, "Deposit events");
     const withdrawEvents = await this._fetchWithdrawEvents(blockFromCurrentEpoch, epochConfig.finalBlock!);
-    console.timeLog(epochConfig.id, withdrawEvents.length, "Withdraw events");
+    console.log(epochConfig.id, withdrawEvents.length, "Withdraw events");
     const transferEvents = await this._fetchTransferEvents(blockFromCurrentEpoch, epochConfig.finalBlock!);
-    console.timeLog(epochConfig.id, transferEvents.length, "Transfer events");
+    console.log(epochConfig.id, transferEvents.length, "Transfer events");
 
     // we assume that, after the first deposit event, the vault is never empty
     if (!blockFromCurrentEpoch.eq(epochConfig.initialBlock!)) {
@@ -66,8 +63,8 @@ export default class VaultEventsFetcher implements EventsFetcherInterface {
   ): Promise<VaultDepositEvent[]> {
     const events = await this.vault.queryFilter(
       this.vault.filters.Deposit(),
-      blockFromCurrentEpoch.toString(),
-      BigNumber.from(blockTo).toString()
+      +blockFromCurrentEpoch.toString(),
+      +BigNumber.from(blockTo).toString()
     );
     return events.map((event) => ({
       type: VaultEventType.Deposit,
@@ -80,8 +77,8 @@ export default class VaultEventsFetcher implements EventsFetcherInterface {
   ): Promise<VaultWithdrawEvent[]> {
     const events = await this.vault.queryFilter(
       this.vault.filters.Withdraw(),
-      blockFromCurrentEpoch.toString(),
-      BigNumber.from(blockTo).toString()
+      +blockFromCurrentEpoch.toString(),
+      +BigNumber.from(blockTo).toString()
     );
     return events.map((event) => ({
       type: VaultEventType.Withdraw,
@@ -95,8 +92,8 @@ export default class VaultEventsFetcher implements EventsFetcherInterface {
   ): Promise<VaultTransferEvent[]> {
     const events = await this.vault.queryFilter(
       this.vault.filters.Transfer(),
-      blockFromCurrentEpoch.toString(),
-      BigNumber.from(blockTo).toString()
+      +blockFromCurrentEpoch.toString(),
+      +BigNumber.from(blockTo).toString()
     );
     return events.map((event) => ({
       type: VaultEventType.Transfer,

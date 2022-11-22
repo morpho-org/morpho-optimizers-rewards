@@ -14,6 +14,8 @@ export enum VaultEventType {
   Transfer = "TRANSFER",
 }
 
+type MerkleTree = ReturnType<typeof computeMerkleTree>;
+
 export default class Distributor {
   static SCALING_FACTOR = pow10(36);
   private vaultAddress: string;
@@ -58,6 +60,9 @@ export default class Distributor {
     let morphoAccumulatedFromMainDistribution = constants.Zero;
     let lastEpochDistributed = constants.Zero;
     const firstEpochId = epochsProofs[0]!.epoch;
+
+    const trees: Record<string, MerkleTree> = {};
+
     for (const epochProofs of epochsProofs) {
       console.log(`Distributing MORPHO for ${epochProofs.epoch}...`);
       const epochConfig = this.proofsFetcher.getEpochFromId(epochProofs.epoch);
@@ -178,22 +183,24 @@ export default class Distributor {
         formatUnits(totalTokenEmitted.sub(lastEpochDistributed))
       );
       lastEpochDistributed = totalTokenEmitted;
+      // process of the distribution and the merkle tree
+      const usersRewards = Object.entries(this._usersConfigs)
+        .map(([address, config]) => {
+          if (config!.morphoAccrued.isZero()) return;
+          return {
+            address,
+            accumulatedRewards: config!.morphoAccrued.toString(),
+          };
+        })
+        .filter(Boolean) as { address: string; accumulatedRewards: string }[];
+      trees[epochConfig.id] = computeMerkleTree(usersRewards);
       console.timeEnd(epochConfig.id);
     }
-
-    // process of the distribution and the merkle tree
-    const usersRewards = Object.entries(this._usersConfigs)
-      .map(([address, config]) => {
-        if (config!.morphoAccrued.isZero()) return;
-        return {
-          address,
-          accumulatedRewards: config!.morphoAccrued.toString(),
-        };
-      })
-      .filter(Boolean) as { address: string; accumulatedRewards: string }[];
-    return computeMerkleTree(usersRewards);
-    //
-    // const lastEpochId = epochsProofs[epochsProofs.length - 1].epoch;
+    const lastEpochId = epochsProofs[epochsProofs.length - 1].epoch;
+    return {
+      lastMerkleTree: trees[lastEpochId],
+      history: trees,
+    };
     // // save merkle tree
     // await fs.promises.mkdir(`distribution/vaults/${lastEpochId}`, { recursive: true });
     // await fs.promises.writeFile(
