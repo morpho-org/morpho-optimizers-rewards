@@ -51,7 +51,7 @@ export default class Distributor {
 
             console.time(epochConfig.id);
             const [allEvents, timeFrom] = await this.eventsFetcher.fetchSortedEventsForEpoch(epochConfig);
-
+            console.debug(timeFrom.toString());
             if(timeFrom.gt(this._lastTimestamp))
                 // initiate the lastTimestamp to the first event timestamp
                 this._lastTimestamp = timeFrom;
@@ -65,7 +65,9 @@ export default class Distributor {
                 // we first update the global vault distribution
                 const block = await this.eventsFetcher.getBlock(transaction.event.blockNumber);
                 const morphoAccrued = rate.mul(BigNumber.from(block.timestamp).sub(this._lastTimestamp)); // number of MORPHO accrued for all users
-                this._marketIndex = this._marketIndex.add(WadRayMath.wadDiv(morphoAccrued, this._totalSupply)); // distribute over users
+                if(this._totalSupply.gt(0))
+                    this._marketIndex = this._marketIndex.add(WadRayMath.wadDiv(morphoAccrued, this._totalSupply)); // distribute over users
+
                 this._lastTimestamp = BigNumber.from(block.timestamp);
 
                 // and then distribute to the user(s) of the transaction

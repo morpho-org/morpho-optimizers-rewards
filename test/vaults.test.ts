@@ -13,11 +13,10 @@ describe("Vaults", ()  => {
         const proofsFetcher = new ProofsFetcher();
         const allProofs = getAllProofs();
         const firstProof = allProofs[allProofs.length - 1];
-        console.log(firstProof.epoch);
         const epochConfig = proofsFetcher.getEpochFromId(firstProof.epoch);
         class EventFetcherOneDepositor implements EventsFetcherInterface {
             async fetchSortedEventsForEpoch(epochConfig: EpochConfig):Promise<[TransactionEvents[], BigNumber]>{
-                // create ethers Event mock
+                // create deposit Event mock
                 const event = {
                     blockNumber: epochConfig.initialBlock!,
                     transactionIndex: 1,

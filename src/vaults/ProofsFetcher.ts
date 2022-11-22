@@ -9,13 +9,15 @@ export interface ProofsFetcherInterface {
 
 export default class ProofsFetcher implements ProofsFetcherInterface {
     async fetchProofs(address: string, epochToId?: string): Promise<Proofs[]> {
-        const proofs = getAllProofs().filter((proofs) => !!proofs.proofs[address.toLowerCase()]?.amount);
+        const proofs = getAllProofs().reverse().filter((proofs) => !!proofs.proofs[address.toLowerCase()]?.amount);
         if (epochToId) {
             const epochConfig = getEpochFromId(epochToId);
             if (!epochConfig) throw Error(`Invalid epoch id ${epochToId}`);
             const epochIndex = proofs.findIndex((proof) => proof.epoch === epochConfig.id);
             if (epochIndex === -1) throw Error(`No MORPHO distributed for the vault ${address} in epoch ${epochToId}`);
-            return proofs.slice(0, epochIndex);
+
+            return proofs.slice(0, epochIndex+1);
+
         }
         return proofs;
     }
