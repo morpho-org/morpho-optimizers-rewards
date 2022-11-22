@@ -83,7 +83,6 @@ export default class Distributor {
         //throw an error
         throw Error(`The duration of the epoch ${epochConfig.id} is not positive`);
       }
-      console.log(`Duration: ${duration.toString()}`, timeFrom.toString(), epochConfig.initialTimestamp.toString());
       const rate = totalMorphoDistributed.mul(Distributor.SCALING_FACTOR).div(duration);
       console.log(`${allEvents.length} events to process for ${epochConfig.id}...`);
       for (const transaction of allEvents) {
@@ -169,7 +168,7 @@ export default class Distributor {
         if (!user) return acc;
         return acc.add(user.morphoAccrued);
       }, constants.Zero);
-      console.timeLog(
+      console.log(
         epochConfig.id,
         "Total token emitted overall:",
         formatUnits(totalTokenEmitted),
@@ -177,7 +176,7 @@ export default class Distributor {
         formatUnits(morphoAccumulatedFromMainDistribution)
       );
 
-      console.timeLog(
+      console.log(
         epochConfig.id,
         "Emitted during the current epoch: ",
         formatUnits(totalTokenEmitted.sub(lastEpochDistributed))
@@ -208,7 +207,7 @@ export default class Distributor {
     //     JSON.stringify({ epoch: lastEpochId, ...merkleTree }, null, 4)
     // );
     //
-    // console.timeLog("Distribution", "Root:", merkleTree.root);
+    // console.log("Distribution", "Root:", merkleTree.root);
     //
     // console.timeEnd("Distribution");
   }

@@ -1,4 +1,4 @@
-import { BigNumber, BigNumberish, providers } from "ethers";
+import { BigNumber, BigNumberish, constants, providers } from "ethers";
 import { TransactionEvents, VaultDepositEvent, VaultTransferEvent, VaultWithdrawEvent } from "./types";
 import { maxBN } from "@morpho-labs/ethers-utils/lib/utils";
 import _sortBy from "lodash/sortBy";
@@ -95,9 +95,11 @@ export default class VaultEventsFetcher implements EventsFetcherInterface {
       +blockFromCurrentEpoch.toString(),
       +BigNumber.from(blockTo).toString()
     );
-    return events.map((event) => ({
-      type: VaultEventType.Transfer,
-      event,
-    }));
+    return events
+      .filter(({ args }) => args.from !== constants.AddressZero && args.to !== constants.AddressZero) // mint and burn are not considered
+      .map((event) => ({
+        type: VaultEventType.Transfer,
+        event,
+      }));
   }
 }

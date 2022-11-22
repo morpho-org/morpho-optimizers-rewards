@@ -22,14 +22,14 @@ const distribute = async (vaults: VaultConfiguration[], epochTo?: string) => {
     const proofsFetcher = new ProofsFetcher();
     const distributor = new Distributor(address, fetcher, proofsFetcher);
     const { history } = await distributor.distributeMorpho(epochTo);
-    console.log(`Distributed ${history.length} epochs`);
+    console.log(`Distributed ${Object.keys(history).length} epochs`);
     const proofsDir = `./distribution/vault/${address}-${symbol}`;
     await fs.promises.mkdir(proofsDir, { recursive: true });
     await Promise.all(
       Object.entries(history).map(async ([epochId, merkleTree]) => {
         const filename = `${proofsDir}/${epochId}.json`;
         console.log(`Saving proof for ${epochId} to ${filename}`);
-        await fs.promises.writeFile(filename, JSON.stringify(merkleTree, null, 4));
+        await fs.promises.writeFile(filename, JSON.stringify({ epochId: epochId, ...merkleTree }, null, 4));
       })
     );
     console.log(`Done distributing for vault ${address} (${symbol})`);
