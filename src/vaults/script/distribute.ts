@@ -10,6 +10,9 @@ import { Tree } from "../../utils/merkleTree/merkleTree";
 import { mergeMerkleTrees } from "../../utils/merkleTree/mergeMerkleTree";
 import { getAllProofs } from "../../utils/getCurrentOnChainDistribution";
 dotenv.config();
+
+const baseDir = "./distribution/vaults";
+
 const distribute = async (
   vaults: VaultConfiguration[],
   epochTo?: string,
@@ -33,7 +36,7 @@ const distribute = async (
     const distributor = new Distributor(address, fetcher, proofsFetcher);
     const { history, lastMerkleTree } = await distributor.distributeMorpho(epochTo);
     console.log(`Distributed ${Object.keys(history).length} epochs`);
-    const proofsDir = `./distribution/vault/${address}-${symbol}`;
+    const proofsDir = `${baseDir}/${address}-${symbol}`;
 
     await fs.promises.mkdir(proofsDir, { recursive: true });
     trees.push(lastMerkleTree);
@@ -52,7 +55,7 @@ const distribute = async (
   if (mergeTrees) {
     const mergedTree = mergeMerkleTrees(trees);
     const epoch = getAllProofs()[0].epoch;
-    const filename = `./distribution/vault/${epoch}-merged.json`;
+    const filename = `${baseDir}/${epoch}-merged.json`;
     console.log(`Saving proof for ${filename}`);
     await fs.promises.writeFile(
       filename,

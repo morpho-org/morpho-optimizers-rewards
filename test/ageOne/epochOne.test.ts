@@ -39,5 +39,5 @@ describe("Test the distribution for the first epoch", () => {
   });
 });
 export const expectBNApproxEquals = (bn1: BigNumber, bn2: BigNumber, precision: BigNumberish) => {
-  expect(bn1).toBnBeApproxEquals(bn2, precision);
+  expect(bn1).toBnApproxEq(bn2, precision);
 };

@@ -1,7 +1,7 @@
 import { BigNumber, BigNumberish } from "ethers";
 
 expect.extend({
-  toBnEquals: (b1: BigNumberish, b2: BigNumberish) => {
+  toBnEq: (b1: BigNumberish, b2: BigNumberish) => {
     b1 = BigNumber.from(b1);
     b2 = BigNumber.from(b2);
     const message = () => `Expect ${b1.toString()} to equals ${b2.toString()}`;
@@ -15,7 +15,7 @@ expect.extend({
       pass: false,
     };
   },
-  toBnBeGreaterThan: (b1: BigNumberish, b2: BigNumberish) => {
+  toBnGt: (b1: BigNumberish, b2: BigNumberish) => {
     b1 = BigNumber.from(b1);
     b2 = BigNumber.from(b2);
     const message = () => `Expect ${b1.toString()} to be greater than ${b2.toString()}`;
@@ -29,7 +29,7 @@ expect.extend({
       pass: false,
     };
   },
-  toBnBeGreaterThanOrEq: (b1: BigNumberish, b2: BigNumberish) => {
+  toBnGte: (b1: BigNumberish, b2: BigNumberish) => {
     b1 = BigNumber.from(b1);
     b2 = BigNumber.from(b2);
     const message = () => `Expect ${b1.toString()} to be greater or equal than ${b2.toString()}`;
@@ -43,7 +43,7 @@ expect.extend({
       pass: false,
     };
   },
-  toBnBeLessThan: (b1: BigNumberish, b2: BigNumberish) => {
+  toBnLt: (b1: BigNumberish, b2: BigNumberish) => {
     b1 = BigNumber.from(b1);
     b2 = BigNumber.from(b2);
     const message = () => `Expect ${b1.toString()} to be less than ${b2.toString()}`;
@@ -57,7 +57,7 @@ expect.extend({
       pass: false,
     };
   },
-  toBnBeLessThanOrEq: (b1: BigNumberish, b2: BigNumberish) => {
+  toBnLte: (b1: BigNumberish, b2: BigNumberish) => {
     b1 = BigNumber.from(b1);
     b2 = BigNumber.from(b2);
     const message = () => `Expect ${b1.toString()} to be less or equal of ${b2.toString()}`;
@@ -110,7 +110,7 @@ expect.extend({
       pass: false,
     };
   },
-  toBnBeApproxEquals: (b1: BigNumberish, b2: BigNumberish, precision: BigNumberish) => {
+  toBnApproxEq: (b1: BigNumberish, b2: BigNumberish, precision: BigNumberish) => {
     b1 = BigNumber.from(b1);
     b2 = BigNumber.from(b2);
     const diff = b1.gt(b2) ? b1.sub(b2) : b2.sub(b1);

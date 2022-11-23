@@ -71,7 +71,7 @@ Due to rounding errors, the total amount distributed has a precision of more or 
 
 
 # Vault distribution
-The ERC4626 is a standard for vaults, which is used on top of the Morpho protocol to aggregate users.
+The ERC4626 is a standard for vaults, which [is used on top of the Morpho protocol](https://github.com/morpho-labs/morpho-tokenized-vaults) to aggregate users.
 Each Vault Contract has MORPHO rewards distributed from main distribution, and must redistribute rewards to users who are depositing their tokens in the vaults.
 
 `morpho-rewards` is providing a standardized script to redistribute MORPHO rewards to vaults users through a dedicated merkle tree.

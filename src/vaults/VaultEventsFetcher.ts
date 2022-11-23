@@ -31,7 +31,7 @@ export default class VaultEventsFetcher implements EventsFetcherInterface {
     const transferEvents = await this._fetchTransferEvents(blockFromCurrentEpoch, epochConfig.finalBlock!);
     console.log(epochConfig.id, transferEvents.length, "Transfer events");
 
-    // we assume that, after the first deposit event, the vault is never empty
+    // we assume that, after the first deposit event, the vaults is never empty
     if (!blockFromCurrentEpoch.eq(epochConfig.initialBlock!)) {
       const [firstDeposit] = depositEvents.sort((event1, event2) =>
         event1.event.blockNumber > event2.event.blockNumber ? 1 : -1

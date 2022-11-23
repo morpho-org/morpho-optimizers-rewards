@@ -1,15 +1,15 @@
 import { BigNumberish } from "ethers";
 
 interface CustomMatchers<R = unknown> {
-  toBnEquals(b2: BigNumberish): R;
-  toBnBeGreaterThan(b2: BigNumberish): R;
-  toBnBeGreaterThanOrEq(b2: BigNumberish): R;
-  toBnBeLessThan(b2: BigNumberish): R;
-  toBnBeLessThanOrEq(b2: BigNumberish): R;
+  toBnEq(b2: BigNumberish): R;
+  toBnGt(b2: BigNumberish): R;
+  toBnGte(b2: BigNumberish): R;
+  toBnLt(b2: BigNumberish): R;
+  toBnLte(b2: BigNumberish): R;
   toBnBeZero(): R;
   toBnBeNegative(): R;
   toBnBePositive(): R;
-  toBnBeApproxEquals(b2: BigNumberish, precision: BigNumberish): R;
+  toBnApproxEq(b2: BigNumberish, precision: BigNumberish): R;
 }
 
 declare global {

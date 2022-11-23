@@ -40,7 +40,7 @@ describe.each(allEpochs.filter((epoch) => epoch.finalTimestamp.lt(Math.floor(Dat
         expect(merkleTree).toHaveProperty("proofs");
         expect(merkleTree).toHaveProperty("root");
 
-        expect(merkleTree.proofs[constants.AddressZero].amount).toBnBeApproxEquals(
+        expect(merkleTree.proofs[constants.AddressZero].amount).toBnApproxEq(
           currentProof.proofs[vaultAddress]!.amount,
           10
         );
@@ -89,10 +89,10 @@ describe.each(allEpochs.filter((epoch) => epoch.finalTimestamp.lt(Math.floor(Dat
         );
         const totalVaultRewards = currentProof.proofs[vaultAddress]!.amount;
 
-        expect(totalDistributed).toBnBeLessThanOrEq(totalVaultRewards);
-        expect(totalDistributed).toBnBeApproxEquals(totalVaultRewards, 10);
+        expect(totalDistributed).toBnLte(totalVaultRewards);
+        expect(totalDistributed).toBnApproxEq(totalVaultRewards, 10);
       });
-      it("Should distribute all tokens when vault has started being used during the epoch", async () => {
+      it("Should distribute all tokens when vaults has started being used during the epoch", async () => {
         const distributor = distributorFromEvents(vaultAddress, [
           {
             type: VaultEventType.Deposit,
@@ -136,8 +136,8 @@ describe.each(allEpochs.filter((epoch) => epoch.finalTimestamp.lt(Math.floor(Dat
         );
         const totalVaultRewards = BigNumber.from(currentProof.proofs[vaultAddress]!.amount);
 
-        expect(totalDistributed).toBnBeLessThanOrEq(totalVaultRewards);
-        expect(totalDistributed).toBnBeApproxEquals(totalVaultRewards, 10);
+        expect(totalDistributed).toBnLte(totalVaultRewards);
+        expect(totalDistributed).toBnApproxEq(totalVaultRewards, 10);
       });
       it("Should not distribute MORPHO to a user that has deposit/withdraw in the same transaction", async () => {
         const distributor = distributorFromEvents(vaultAddress, [
@@ -195,8 +195,8 @@ describe.each(allEpochs.filter((epoch) => epoch.finalTimestamp.lt(Math.floor(Dat
         );
         const totalVaultRewards = currentProof.proofs[vaultAddress]!.amount;
 
-        expect(totalDistributed).toBnBeLessThanOrEq(totalVaultRewards);
-        expect(totalDistributed).toBnBeApproxEquals(totalVaultRewards, 10);
+        expect(totalDistributed).toBnLte(totalVaultRewards);
+        expect(totalDistributed).toBnApproxEq(totalVaultRewards, 10);
       });
       it("Should distribute a part of MORPHO when user withdraws", async () => {
         const distributor = distributorFromEvents(vaultAddress, [
@@ -254,8 +254,8 @@ describe.each(allEpochs.filter((epoch) => epoch.finalTimestamp.lt(Math.floor(Dat
         );
         const totalVaultRewards = currentProof.proofs[vaultAddress]!.amount;
 
-        expect(totalDistributed).toBnBeLessThanOrEq(totalVaultRewards);
-        expect(totalDistributed).toBnBeApproxEquals(totalVaultRewards, 10);
+        expect(totalDistributed).toBnLte(totalVaultRewards);
+        expect(totalDistributed).toBnApproxEq(totalVaultRewards, 10);
 
         const distributorWithoutWithdrawal = distributorFromEvents(vaultAddress, [
           {
@@ -292,9 +292,7 @@ describe.each(allEpochs.filter((epoch) => epoch.finalTimestamp.lt(Math.floor(Dat
         );
         const withoutWithdrawalAmount =
           merkleTreeWithoutWithdrawal.proofs["0x0000000000000000000000000000000000000001"]!.amount;
-        expect(withoutWithdrawalAmount).toBnBeGreaterThan(
-          merkleTree.proofs["0x0000000000000000000000000000000000000001"]!.amount
-        );
+        expect(withoutWithdrawalAmount).toBnGt(merkleTree.proofs["0x0000000000000000000000000000000000000001"]!.amount);
       });
 
       it("Should distribute MORPHO when a transfer occurs for the receiver", async () => {
@@ -353,8 +351,8 @@ describe.each(allEpochs.filter((epoch) => epoch.finalTimestamp.lt(Math.floor(Dat
         const totalVaultRewards = BigNumber.from(currentProof.proofs[vaultAddress]!.amount);
 
         expect(totalDistributed.lte(totalVaultRewards)).toBeTruthy();
-        expect(totalDistributed).toBnBeLessThanOrEq(totalVaultRewards);
-        expect(totalDistributed).toBnBeApproxEquals(totalVaultRewards, 10);
+        expect(totalDistributed).toBnLte(totalVaultRewards);
+        expect(totalDistributed).toBnApproxEq(totalVaultRewards, 10);
       });
       if (currentEpochConfig.number > 1) {
         it("Should handle transaction on multiple epochs", async () => {
@@ -440,8 +438,8 @@ describe.each(allEpochs.filter((epoch) => epoch.finalTimestamp.lt(Math.floor(Dat
             BigNumber.from(0)
           );
           const totalVaultRewards = currentProof.proofs[vaultAddress]!.amount;
-          expect(totalDistributed).toBnBeLessThanOrEq(totalVaultRewards);
-          expect(totalDistributed).toBnBeApproxEquals(totalVaultRewards, 100);
+          expect(totalDistributed).toBnLte(totalVaultRewards);
+          expect(totalDistributed).toBnApproxEq(totalVaultRewards, 100);
         });
       }
     });

@@ -24,7 +24,7 @@ export default class Distributor {
   private _marketIndex = constants.Zero; // The index saving morpho accrued for Vault users
   private _lastTimestamp = constants.Zero; // The timestamp of the last marketIndex update
   private _totalSupply = constants.Zero; // The sum of the shares of all users
-  private _morphoAccumulatedFromMainDistribution = constants.Zero; // The accumulated MORPHO claimable by the vault
+  private _morphoAccumulatedFromMainDistribution = constants.Zero; // The accumulated MORPHO claimable by the vaults
 
   private _usersConfigs: Record<string, UserConfig | undefined> = {}; // Mapping containing the user related information
 
@@ -126,7 +126,7 @@ export default class Distributor {
 
   private async _handleTransaction(transaction: TransactionEvents, rate: BigNumber) {
     // process event
-    // we first update the global vault distribution
+    // we first update the global vaults distribution
     const block = await this.eventsFetcher.getBlock(transaction.event.blockNumber);
     this._updateMarketIndex(rate, BigNumber.from(block.timestamp));
 
@@ -151,45 +151,37 @@ export default class Distributor {
   }
 
   private _handleDeposit(event: DepositEvent) {
-    const userBalance = this._getUserConfig(event.args.owner);
-    userBalance.morphoAccrued = userBalance.morphoAccrued.add(
-      WadRayMath.wadMul(this._marketIndex.sub(userBalance.index), userBalance.balance).div(Distributor.SCALING_FACTOR)
-    );
-    userBalance.balance = userBalance.balance.add(event.args.shares);
-    userBalance.index = BigNumber.from(this._marketIndex);
-    this._totalSupply = this._totalSupply.add(event.args.shares);
+    this._increaseUserBalance(event.args.owner, event.args.shares);
   }
 
   private _handleWithdrawEvent(event: WithdrawEvent) {
-    const userBalance = this._getUserConfig(event.args.caller);
-    userBalance.morphoAccrued = userBalance.morphoAccrued.add(
-      WadRayMath.wadMul(this._marketIndex.sub(userBalance.index), userBalance.balance).div(Distributor.SCALING_FACTOR)
-    );
-    userBalance.balance = userBalance.balance.sub(event.args.shares);
-    userBalance.index = BigNumber.from(this._marketIndex);
-    this._totalSupply = this._totalSupply.sub(event.args.shares);
+    this._decreaseUserBalance(event.args.caller, event.args.shares);
   }
 
   private _handleTransferEvent(event: TransferEvent) {
     // accrue MORPHO for the 2 users
     if (event.args.from === constants.AddressZero || event.args.to === constants.AddressZero) return; // Mint or Burn
-    const userFromBalance = this._getUserConfig(event.args.from);
-    userFromBalance.morphoAccrued = userFromBalance.morphoAccrued.add(
-      WadRayMath.wadMul(this._marketIndex.sub(userFromBalance.index), userFromBalance.balance).div(
-        Distributor.SCALING_FACTOR
-      )
-    );
-    userFromBalance.balance = userFromBalance.balance.sub(event.args.value);
-    userFromBalance.index = BigNumber.from(this._marketIndex);
+    this._decreaseUserBalance(event.args.from, event.args.value);
+    this._increaseUserBalance(event.args.to, event.args.value);
+  }
 
-    const userToBalance = this._getUserConfig(event.args.to);
-    userToBalance.morphoAccrued = userToBalance.morphoAccrued.add(
-      WadRayMath.wadMul(this._marketIndex.sub(userToBalance.index), userToBalance.balance).div(
-        Distributor.SCALING_FACTOR
-      )
+  private _increaseUserBalance(address: string, amount: BigNumber) {
+    const userBalance = this._getUserConfig(address);
+    userBalance.morphoAccrued = userBalance.morphoAccrued.add(
+      WadRayMath.wadMul(this._marketIndex.sub(userBalance.index), userBalance.balance).div(Distributor.SCALING_FACTOR)
     );
-    userToBalance.balance = userToBalance.balance.add(event.args.value);
-    userToBalance.index = BigNumber.from(this._marketIndex);
+    userBalance.balance = userBalance.balance.add(amount);
+    userBalance.index = BigNumber.from(this._marketIndex); // clone BigNumber
+    this._totalSupply = this._totalSupply.add(amount);
+  }
+  private _decreaseUserBalance(address: string, amount: BigNumber) {
+    const userBalance = this._getUserConfig(address);
+    userBalance.morphoAccrued = userBalance.morphoAccrued.add(
+      WadRayMath.wadMul(this._marketIndex.sub(userBalance.index), userBalance.balance).div(Distributor.SCALING_FACTOR)
+    );
+    userBalance.balance = userBalance.balance.sub(amount);
+    userBalance.index = BigNumber.from(this._marketIndex);
+    this._totalSupply = this._totalSupply.sub(amount);
   }
 
   private _computeCurrentMerkleTree() {
