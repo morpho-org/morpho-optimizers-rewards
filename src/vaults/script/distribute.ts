@@ -43,7 +43,7 @@ const distribute = async (
         Object.entries(toUpload).map(async ([epochId, merkleTree]) => {
           const filename = `${proofsDir}/${epochId}.json`;
           console.log(`Saving proof for ${epochId} to ${filename}`);
-          await fs.promises.writeFile(filename, JSON.stringify({ epochId, ...merkleTree }, null, 4));
+          await fs.promises.writeFile(filename, JSON.stringify({ epochId, ...merkleTree }, null, 2));
         })
       );
     }
@@ -56,7 +56,7 @@ const distribute = async (
     console.log(`Saving proof for ${filename}`);
     await fs.promises.writeFile(
       filename,
-      JSON.stringify({ epoch, vaults: vaults.map((v) => v.address), ...mergedTree }, null, 4)
+      JSON.stringify({ epoch, vaults: vaults.map((v) => v.address), ...mergedTree }, null, 2)
     );
   }
 };

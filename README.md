@@ -85,7 +85,7 @@ yarn vaults:distribute
 ```
 
 The output will be in the `distribution/vaults` folder.
-By default, the script provide only the last epoch merkle tree, but if
+By default, the script provides only the last epoch merkle tree, but if
 you want to have per-epoch distribution, you can run the script with the flag `--save-history` to save the distribution of each epoch:
 
 

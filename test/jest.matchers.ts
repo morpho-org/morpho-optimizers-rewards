@@ -4,7 +4,7 @@ expect.extend({
   toBnEquals: (b1: BigNumberish, b2: BigNumberish) => {
     b1 = BigNumber.from(b1);
     b2 = BigNumber.from(b2);
-    const message = () => `Expect ${b1.toString()} to equals ${b2}`;
+    const message = () => `Expect ${b1.toString()} to equals ${b2.toString()}`;
     if (b1.eq(b2))
       return {
         message,
@@ -18,7 +18,7 @@ expect.extend({
   toBnBeGreaterThan: (b1: BigNumberish, b2: BigNumberish) => {
     b1 = BigNumber.from(b1);
     b2 = BigNumber.from(b2);
-    const message = () => `Expect ${b1.toString()} to be greater than ${b2}`;
+    const message = () => `Expect ${b1.toString()} to be greater than ${b2.toString()}`;
     if (b1.gt(b2))
       return {
         message,
@@ -32,7 +32,7 @@ expect.extend({
   toBnBeGreaterThanOrEq: (b1: BigNumberish, b2: BigNumberish) => {
     b1 = BigNumber.from(b1);
     b2 = BigNumber.from(b2);
-    const message = () => `Expect ${b1.toString()} to be greater or equal than ${b2}`;
+    const message = () => `Expect ${b1.toString()} to be greater or equal than ${b2.toString()}`;
     if (b1.gte(b2))
       return {
         message,
@@ -46,7 +46,7 @@ expect.extend({
   toBnBeLessThan: (b1: BigNumberish, b2: BigNumberish) => {
     b1 = BigNumber.from(b1);
     b2 = BigNumber.from(b2);
-    const message = () => `Expect ${b1.toString()} to be less than ${b2}`;
+    const message = () => `Expect ${b1.toString()} to be less than ${b2.toString()}`;
     if (b1.lt(b2))
       return {
         message,
@@ -60,7 +60,7 @@ expect.extend({
   toBnBeLessThanOrEq: (b1: BigNumberish, b2: BigNumberish) => {
     b1 = BigNumber.from(b1);
     b2 = BigNumber.from(b2);
-    const message = () => `Expect ${b1.toString()} to be less or equal of ${b2}`;
+    const message = () => `Expect ${b1.toString()} to be less or equal of ${b2.toString()}`;
     if (b1.lte(b2))
       return {
         message,
@@ -116,7 +116,7 @@ expect.extend({
     const diff = b1.gt(b2) ? b1.sub(b2) : b2.sub(b1);
 
     const message = () =>
-      `Expect ${b1.toString()} to be approx equals to ${b2.toString()} with a precision of ${precision}. diff: ${diff.toString()}`;
+      `Expect ${b1.toString()} to be approx equals to ${b2.toString()} with a precision of ${precision.toString()}. diff: ${diff.toString()}`;
     if (diff.lte(precision))
       return {
         message,

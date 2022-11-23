@@ -43,7 +43,7 @@ export default class Distributor {
       throw Error(`No MORPHO distributed for the vault ${this.vaultAddress} in epoch ${epochToId}`);
 
     let lastEpochDistributed = constants.Zero;
-    const firstEpochId = epochsProofs[0]!.epoch;
+    const firstEpochId = epochsProofs[0].epoch;
 
     const trees: Record<string, MerkleTree> = {};
 
