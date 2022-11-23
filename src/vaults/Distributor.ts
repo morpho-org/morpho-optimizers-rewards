@@ -3,7 +3,7 @@ import { EventsFetcherInterface } from "./VaultEventsFetcher";
 import { BigNumber, constants } from "ethers";
 import { WadRayMath } from "@morpho-labs/ethers-utils/lib/maths";
 import { DepositEvent, TransferEvent, WithdrawEvent } from "./contracts/ERC4626";
-import { formatUnits } from "ethers/lib/utils";
+import { formatUnits, parseUnits } from "ethers/lib/utils";
 import { computeMerkleTree } from "../utils";
 import { ProofsFetcherInterface } from "./ProofsFetcher";
 import { pow10 } from "@morpho-labs/ethers-utils/lib/utils";
@@ -19,6 +19,7 @@ type MerkleTree = ReturnType<typeof computeMerkleTree>;
 
 export default class Distributor {
   static readonly SCALING_FACTOR = pow10(36);
+  static readonly MORPHO_DUST = parseUnits("0.0001"); // The maximum amount of token that will remain in the vault after the distribution due to dust
   public readonly vaultAddress: string;
 
   private _marketIndex = constants.Zero; // The index saving morpho accrued for Vault users
@@ -42,7 +43,6 @@ export default class Distributor {
     if (!epochsProofs?.length)
       throw Error(`No MORPHO distributed for the vault ${this.vaultAddress} in epoch ${epochToId}`);
 
-    let lastEpochDistributed = constants.Zero;
     const firstEpochId = epochsProofs[0].epoch;
 
     const trees: Record<string, MerkleTree> = {};
@@ -58,7 +58,6 @@ export default class Distributor {
         this._morphoAccumulatedFromMainDistribution.add(totalMorphoDistributed);
       // timeFrom is the timestamp of the first block with a transaction during the current epoch.
       const [allEvents, timeFrom] = await this.eventsFetcher.fetchSortedEventsForEpoch(epochConfig);
-      console.debug(timeFrom.toString());
       if (timeFrom.gt(this._lastTimestamp) && firstEpochId === epochConfig.id)
         // initiate the lastTimestamp to the first event timestamp
         this._lastTimestamp = timeFrom;
@@ -77,24 +76,21 @@ export default class Distributor {
       // each user with a positive supply balance.
       this._processEndOfEpoch(rate, epochConfig);
 
-      // logging only
-
-      const totalTokenEmitted = Object.values(this._usersConfigs).reduce((acc, user) => {
-        if (!user) return acc;
-        return acc.add(user.morphoAccrued);
-      }, constants.Zero);
-
-      console.log(
-        `Total MORPHO emitted: ${formatUnits(totalTokenEmitted)} over ${formatUnits(
-          this._morphoAccumulatedFromMainDistribution
-        )} MORPHO available`
-      );
-
-      console.log(`Total MORPHO distributed during ${epochConfig.id}: ${formatUnits(lastEpochDistributed)}`);
-      lastEpochDistributed = totalTokenEmitted;
       // process of the distribution and the merkle tree
       trees[epochConfig.id] = this._computeCurrentMerkleTree();
     }
+    const totalTokenEmitted = Object.values(this._usersConfigs).reduce((acc, user) => {
+      if (!user) return acc;
+      return acc.add(user.morphoAccrued);
+    }, constants.Zero);
+    const morphoRemaining = this._morphoAccumulatedFromMainDistribution.sub(totalTokenEmitted);
+    console.log(`Total MORPHO remaining: ${formatUnits(morphoRemaining)}`);
+    if (morphoRemaining.gt(Distributor.MORPHO_DUST))
+      throw Error(
+        `Number of MORPHO remaining in the vault exceeds the threshold of ${formatUnits(
+          Distributor.MORPHO_DUST
+        )} for the Vault ${this.vaultAddress} in ${epochToId}`
+      );
 
     const lastEpochId = epochsProofs[epochsProofs.length - 1].epoch;
     return {
@@ -155,7 +151,7 @@ export default class Distributor {
   }
 
   private _handleWithdrawEvent(event: WithdrawEvent) {
-    this._decreaseUserBalance(event.args.caller, event.args.shares);
+    this._decreaseUserBalance(event.args.owner, event.args.shares);
   }
 
   private _handleTransferEvent(event: TransferEvent) {
@@ -180,6 +176,9 @@ export default class Distributor {
       WadRayMath.wadMul(this._marketIndex.sub(userBalance.index), userBalance.balance).div(Distributor.SCALING_FACTOR)
     );
     userBalance.balance = userBalance.balance.sub(amount);
+    if (userBalance.balance.lt(0)) {
+      throw Error(`User ${address} has a negative balance of ${userBalance.balance.toString()}`);
+    }
     userBalance.index = BigNumber.from(this._marketIndex);
     this._totalSupply = this._totalSupply.sub(amount);
   }

@@ -7,7 +7,7 @@ import ProofsFetcher from "../../src/vaults/ProofsFetcher";
 import { maxBN } from "@morpho-labs/ethers-utils/lib/utils";
 
 export const distributorFromEvents = (vaultAddress: string, events: TransactionEvents[]): Distributor => {
-  class EventFetcherOneDepositor implements EventsFetcherInterface {
+  class LocalEventFetcher implements EventsFetcherInterface {
     private _events = events;
     async fetchSortedEventsForEpoch(epochConfig: EpochConfig): Promise<[TransactionEvents[], BigNumber]> {
       const epochEvents = this._events.filter(
@@ -26,7 +26,7 @@ export const distributorFromEvents = (vaultAddress: string, events: TransactionE
       return provider.getBlock(blockNumber);
     }
   }
-  const eventsFetcher = new EventFetcherOneDepositor();
+  const eventsFetcher = new LocalEventFetcher();
   const proofsFetcher = new ProofsFetcher();
 
   return new Distributor(vaultAddress, eventsFetcher, proofsFetcher);
