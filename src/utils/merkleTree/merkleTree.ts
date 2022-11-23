@@ -1,4 +1,4 @@
-import { ethers } from "ethers";
+import { constants, ethers } from "ethers";
 import { MerkleTree } from "merkletreejs";
 export type Tree = ReturnType<typeof computeMerkleTree>;
 export const computeMerkleTree = (distribution: { address: string; accumulatedRewards: string }[]) => {
@@ -11,7 +11,9 @@ export const computeMerkleTree = (distribution: { address: string; accumulatedRe
   });
 
   const proofs: { [user: string]: { amount: string; proof: string[] } } = {};
+  let total = constants.Zero;
   distribution.forEach(({ address, accumulatedRewards }) => {
+    total = total.add(accumulatedRewards);
     proofs[address] = {
       amount: accumulatedRewards,
       proof: merkleTree.getHexProof(
@@ -25,5 +27,6 @@ export const computeMerkleTree = (distribution: { address: string; accumulatedRe
     root,
     proofs,
     leaves,
+    total: total.toString(),
   };
 };

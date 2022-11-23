@@ -72,9 +72,9 @@ Due to rounding errors, the total amount distributed has a precision of more or 
 
 # Vault distribution
 The ERC4626 is a standard for vaults, which is used on top of the Morpho protocol to aggregate users.
-Each Vault user has MORPHO rewards distributed from main distribution, and must redistribute rewards to users who are depositing their tokens in the vaults.
+Each Vault Contract has MORPHO rewards distributed from main distribution, and must redistribute rewards to users who are depositing their tokens in the vaults.
 
-morpho-rewards is providing a standartized script to redistribute the MORPHO rewards to vaults users through a dedicated merkle tree.
+`morpho-rewards` is providing a standardized script to redistribute MORPHO rewards to vaults users through a dedicated merkle tree.
 
 To use it, you can change the configuration here: [src/vaults/script/configuration.ts](.src/vaults/script/configuration.ts) with your own Vaults parameters.
 
@@ -94,7 +94,9 @@ yarn vaults:distribute --save-history
 ```
 
 You can also merge all your vaults distributions to only one Merkle tree by using the flag `--merge-trees`:
+It is useful when you have multiple vaults, and you want to merge all the distributions to only one Merkle tree.
 
 ```bash
 yarn vaults:distribute --merge-trees
 ```
+
