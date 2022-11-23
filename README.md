@@ -93,3 +93,8 @@ you want to have per-epoch distribution, you can run the script with the flag `-
 yarn vaults:distribute --save-history
 ```
 
+You can also merge all your vaults distributions to only one Merkle tree by using the flag `--merge-trees`:
+
+```bash
+yarn vaults:distribute --merge-trees
+```

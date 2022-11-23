@@ -6,14 +6,24 @@ import ProofsFetcher from "../ProofsFetcher";
 import Distributor from "../Distributor";
 import * as fs from "fs";
 import * as dotenv from "dotenv";
+import { Tree } from "../../utils/merkleTree/merkleTree";
+import { mergeMerkleTrees } from "../../utils/merkleTree/mergeMerkleTree";
+import { getAllProofs } from "../../utils/getCurrentOnChainDistribution";
 dotenv.config();
-const distribute = async (vaults: VaultConfiguration[], epochTo?: string, uploadHistory = true) => {
+const distribute = async (
+  vaults: VaultConfiguration[],
+  epochTo?: string,
+  uploadHistory = false,
+  mergeTrees = false
+) => {
   const rpcUrl = process.env.RPC_URL;
   if (!rpcUrl) {
     console.error("Please set RPC_URL env variable");
     process.exit(1);
   }
+
   const provider = new providers.JsonRpcProvider(rpcUrl);
+  const trees: Tree[] = [];
   for (const { address, deploymentBlock } of vaults) {
     const vault = ERC4626__factory.connect(address, provider);
     const symbol = await vault.symbol();
@@ -21,23 +31,42 @@ const distribute = async (vaults: VaultConfiguration[], epochTo?: string, upload
     const fetcher = new VaultEventsFetcher(address, provider, deploymentBlock);
     const proofsFetcher = new ProofsFetcher();
     const distributor = new Distributor(address, fetcher, proofsFetcher);
-    const { history } = await distributor.distributeMorpho(epochTo);
+    const { history, lastMerkleTree } = await distributor.distributeMorpho(epochTo);
     console.log(`Distributed ${Object.keys(history).length} epochs`);
     const proofsDir = `./distribution/vault/${address}-${symbol}`;
+
     await fs.promises.mkdir(proofsDir, { recursive: true });
-    const toUpload = uploadHistory ? history : { [Object.keys(history).pop()!]: history[Object.keys(history).pop()!] };
-    await Promise.all(
-      Object.entries(toUpload).map(async ([epochId, merkleTree]) => {
-        const filename = `${proofsDir}/${epochId}.json`;
-        console.log(`Saving proof for ${epochId} to ${filename}`);
-        await fs.promises.writeFile(filename, JSON.stringify({ epochId: epochId, ...merkleTree }, null, 4));
-      })
-    );
+    trees.push(lastMerkleTree);
+    if (!mergeTrees || uploadHistory) {
+      const toUpload = uploadHistory ? history : { [Object.keys(history).pop()!]: Object.values(history).pop()! };
+      await Promise.all(
+        Object.entries(toUpload).map(async ([epochId, merkleTree]) => {
+          const filename = `${proofsDir}/${epochId}.json`;
+          console.log(`Saving proof for ${epochId} to ${filename}`);
+          await fs.promises.writeFile(filename, JSON.stringify({ epochId, ...merkleTree }, null, 4));
+        })
+      );
+    }
     console.log(`Done distributing for vault ${address} (${symbol})`);
+  }
+  if (mergeTrees) {
+    const mergedTree = mergeMerkleTrees(trees);
+    const epoch = getAllProofs()[0].epoch;
+    const filename = `./distribution/vault/${epoch}-merged.json`;
+    console.log(`Saving proof for ${filename}`);
+    await fs.promises.writeFile(
+      filename,
+      JSON.stringify({ epoch, vaults: vaults.map((v) => v.address), ...mergedTree }, null, 4)
+    );
   }
 };
 
-distribute(configuration.vaults, configuration.epochTo, process.argv.includes("--upload-history"))
+distribute(
+  configuration.vaults,
+  configuration.epochTo,
+  process.argv.includes("--save-history"),
+  process.argv.includes("--merge-trees")
+)
   .then(() => {
     console.log("Done");
     process.exit(0);
