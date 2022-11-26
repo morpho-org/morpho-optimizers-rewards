@@ -13,6 +13,7 @@ export interface EventsFetcherInterface {
 
 export default class VaultEventsFetcher implements EventsFetcherInterface {
   private vault: ERC4626;
+
   constructor(
     private vaultAddress: string,
     private provider: providers.Provider,
@@ -20,6 +21,7 @@ export default class VaultEventsFetcher implements EventsFetcherInterface {
   ) {
     this.vault = ERC4626__factory.connect(vaultAddress, provider);
   }
+
   async fetchSortedEventsForEpoch(epochConfig: EpochConfig): Promise<[TransactionEvents[], BigNumber]> {
     let timeFrom = epochConfig.initialTimestamp;
     const blockFromCurrentEpoch = maxBN(epochConfig.initialBlock!, this.deploymentBlock);
@@ -32,6 +34,7 @@ export default class VaultEventsFetcher implements EventsFetcherInterface {
     console.log(epochConfig.id, transferEvents.length, "Transfer events");
 
     // we assume that, after the first deposit event, the vaults is never empty
+    // TODO: handle the case if there is an empty vault after starting distribution
     if (!blockFromCurrentEpoch.eq(epochConfig.initialBlock!)) {
       const [firstDeposit] = depositEvents.sort((event1, event2) =>
         event1.event.blockNumber > event2.event.blockNumber ? 1 : -1
@@ -45,7 +48,6 @@ export default class VaultEventsFetcher implements EventsFetcherInterface {
     }
 
     // now we first order events
-
     const allEvents: TransactionEvents[] = _sortBy(
       [...depositEvents, ...withdrawEvents, ...transferEvents],
       (ev: TransactionEvents) => [ev.event.blockNumber, ev.event.transactionIndex, ev.event.logIndex]
@@ -66,11 +68,13 @@ export default class VaultEventsFetcher implements EventsFetcherInterface {
       +blockFromCurrentEpoch.toString(),
       +BigNumber.from(blockTo).toString()
     );
+
     return events.map((event) => ({
       type: VaultEventType.Deposit,
       event,
     }));
   }
+
   private async _fetchWithdrawEvents(
     blockFromCurrentEpoch: BigNumber,
     blockTo: BigNumberish
@@ -80,6 +84,7 @@ export default class VaultEventsFetcher implements EventsFetcherInterface {
       +blockFromCurrentEpoch.toString(),
       +BigNumber.from(blockTo).toString()
     );
+
     return events.map((event) => ({
       type: VaultEventType.Withdraw,
       event,
@@ -95,6 +100,7 @@ export default class VaultEventsFetcher implements EventsFetcherInterface {
       +blockFromCurrentEpoch.toString(),
       +BigNumber.from(blockTo).toString()
     );
+
     return events
       .filter(({ args }) => args.from !== constants.AddressZero && args.to !== constants.AddressZero) // mint and burn are not considered
       .map((event) => ({
