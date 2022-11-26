@@ -1,4 +1,4 @@
-import { BigNumber, constants } from "ethers";
+import { BigNumber } from "ethers";
 import ProofsFetcher from "../../src/vaults/ProofsFetcher";
 import { getAllProofs } from "../../src/utils/getCurrentOnChainDistribution";
 import { parseUnits } from "ethers/lib/utils";
@@ -11,6 +11,11 @@ describe("Vaults Distributor", () => {
   const proofsFetcher = new ProofsFetcher();
   const epochConfig = proofsFetcher.getEpochFromId("age1-epoch1");
   const allProofs = getAllProofs();
+  const user0 = "0x0000000000000000000000000000000000000000";
+  const user1 = "0x0000000000000000000000000000000000000001";
+  const user2 = "0x0000000000000000000000000000000000000002";
+  const user3 = "0x0000000000000000000000000000000000000003";
+  const user4 = "0x0000000000000000000000000000000000000004";
 
   it("Should distribute to the Deposit owner", async () => {
     const distributor = distributorFromEvents(vaultAddress, [
@@ -21,8 +26,8 @@ describe("Vaults Distributor", () => {
           transactionIndex: 1,
           logIndex: 1,
           args: {
-            caller: constants.AddressZero,
-            owner: "0x0000000000000000000000000000000000000001",
+            caller: user0,
+            owner: user1,
             assets: parseUnits("1000"),
             shares: parseUnits("1000"),
           },
@@ -30,8 +35,8 @@ describe("Vaults Distributor", () => {
       },
     ]);
     const { lastMerkleTree: merkleTree } = await distributor.distributeMorpho(epochConfig.id);
-    expect(merkleTree.proofs["0x0000000000000000000000000000000000000001"]?.amount).toBeDefined();
-    expect(merkleTree.proofs["0x0000000000000000000000000000000000000000"]?.amount).toBeUndefined();
+    expect(merkleTree.proofs[user1]?.amount).toBeDefined();
+    expect(merkleTree.proofs[user0]?.amount).toBeUndefined();
   });
   it("Should distribute to the Withdrawer owner", async () => {
     const distributor = distributorFromEvents(vaultAddress, [
@@ -42,8 +47,8 @@ describe("Vaults Distributor", () => {
           transactionIndex: 1,
           logIndex: 1,
           args: {
-            caller: constants.AddressZero,
-            owner: "0x0000000000000000000000000000000000000001",
+            caller: user0,
+            owner: user1,
             assets: parseUnits("1000"),
             shares: parseUnits("1000"),
           },
@@ -56,8 +61,8 @@ describe("Vaults Distributor", () => {
           transactionIndex: 1,
           logIndex: 1,
           args: {
-            caller: constants.AddressZero,
-            owner: "0x0000000000000000000000000000000000000010",
+            caller: user0,
+            owner: user4,
             assets: parseUnits("1000"),
             shares: parseUnits("1000"),
           },
@@ -70,9 +75,9 @@ describe("Vaults Distributor", () => {
           transactionIndex: 1,
           logIndex: 1,
           args: {
-            owner: "0x0000000000000000000000000000000000000001",
+            owner: user1,
             receiver: "0x0000000000000000000000000000000000000002",
-            caller: "0x0000000000000000000000000000000000000003",
+            caller: user3,
             assets: parseUnits("1000"),
             shares: parseUnits("1000"),
           },
@@ -80,11 +85,11 @@ describe("Vaults Distributor", () => {
       },
     ]);
     const { lastMerkleTree: merkleTree } = await distributor.distributeMorpho(epochConfig.id);
-    expect(merkleTree.proofs["0x0000000000000000000000000000000000000001"]?.amount).toBeDefined();
-    expect(merkleTree.proofs["0x0000000000000000000000000000000000000010"]?.amount).toBeDefined();
-    expect(merkleTree.proofs["0x0000000000000000000000000000000000000000"]?.amount).toBeUndefined();
-    expect(merkleTree.proofs["0x0000000000000000000000000000000000000002"]?.amount).toBeUndefined();
-    expect(merkleTree.proofs["0x0000000000000000000000000000000000000003"]?.amount).toBeUndefined();
+    expect(merkleTree.proofs[user1]?.amount).toBeDefined();
+    expect(merkleTree.proofs[user4]?.amount).toBeDefined();
+    expect(merkleTree.proofs[user0]?.amount).toBeUndefined();
+    expect(merkleTree.proofs[user2]?.amount).toBeUndefined();
+    expect(merkleTree.proofs[user3]?.amount).toBeUndefined();
   });
   it("Should distribute to the Transfer receiver", async () => {
     const distributor = distributorFromEvents(vaultAddress, [
@@ -95,8 +100,8 @@ describe("Vaults Distributor", () => {
           transactionIndex: 1,
           logIndex: 1,
           args: {
-            caller: "0x0000000000000000000000000000000000000001",
-            owner: "0x0000000000000000000000000000000000000001",
+            caller: user1,
+            owner: user1,
             assets: parseUnits("1000"),
             shares: parseUnits("1000"),
           },
@@ -109,19 +114,19 @@ describe("Vaults Distributor", () => {
           transactionIndex: 1,
           logIndex: 2,
           args: {
-            from: "0x0000000000000000000000000000000000000001",
-            to: "0x0000000000000000000000000000000000000002",
+            from: user1,
+            to: user2,
             value: parseUnits("1000"),
           },
         },
       },
     ]);
     const { lastMerkleTree: merkleTree } = await distributor.distributeMorpho(epochConfig.id);
-    expect(merkleTree.proofs["0x0000000000000000000000000000000000000001"]?.amount).toBeUndefined();
-    expect(merkleTree.proofs["0x0000000000000000000000000000000000000002"]?.amount).toBeDefined();
+    expect(merkleTree.proofs[user1]?.amount).toBeUndefined();
+    expect(merkleTree.proofs[user2]?.amount).toBeDefined();
   });
   it("Should throw an error if there is no MORPHO to distribute", async () => {
-    const distributor = distributorFromEvents(constants.AddressZero, [
+    const distributor = distributorFromEvents(user0, [
       {
         type: VaultEventType.Deposit,
         event: {
@@ -129,8 +134,8 @@ describe("Vaults Distributor", () => {
           transactionIndex: 1,
           logIndex: 1,
           args: {
-            caller: "0x0000000000000000000000000000000000000001",
-            owner: "0x0000000000000000000000000000000000000001",
+            caller: user1,
+            owner: user1,
             assets: parseUnits("1000"),
             shares: parseUnits("1000"),
           },
@@ -163,8 +168,8 @@ describe("Vaults Distributor", () => {
                 transactionIndex: 1,
                 logIndex: 1,
                 args: {
-                  caller: constants.AddressZero,
-                  owner: constants.AddressZero,
+                  caller: user0,
+                  owner: user0,
                   assets: parseUnits("1000"),
                   shares: parseUnits("1000"),
                 },
@@ -176,10 +181,7 @@ describe("Vaults Distributor", () => {
           expect(merkleTree).toHaveProperty("proofs");
           expect(merkleTree).toHaveProperty("root");
 
-          expect(merkleTree.proofs[constants.AddressZero].amount).toBnApproxEq(
-            currentProof.proofs[vaultAddress]!.amount,
-            10
-          );
+          expect(merkleTree.proofs[user0].amount).toBnApproxEq(currentProof.proofs[vaultAddress]!.amount, 10);
         });
         it("Should distribute tokens to vaults users with two users", async () => {
           const distributor = distributorFromEvents(vaultAddress, [
@@ -190,8 +192,8 @@ describe("Vaults Distributor", () => {
                 transactionIndex: 1,
                 logIndex: 1,
                 args: {
-                  caller: constants.AddressZero,
-                  owner: constants.AddressZero,
+                  caller: user0,
+                  owner: user0,
                   assets: parseUnits("1000"),
                   shares: parseUnits("1000"),
                 },
@@ -204,8 +206,8 @@ describe("Vaults Distributor", () => {
                 transactionIndex: 1,
                 logIndex: 1,
                 args: {
-                  caller: "0x0000000000000000000000000000000000000001",
-                  owner: "0x0000000000000000000000000000000000000001",
+                  caller: user1,
+                  owner: user1,
                   assets: parseUnits("1000"),
                   shares: parseUnits("1000"),
                 },
@@ -216,8 +218,8 @@ describe("Vaults Distributor", () => {
           expect(merkleTree).toBeDefined();
           expect(merkleTree).toHaveProperty("proofs");
           expect(merkleTree).toHaveProperty("root");
-          expect(merkleTree.proofs[constants.AddressZero].amount).toBeDefined();
-          expect(merkleTree.proofs["0x0000000000000000000000000000000000000001"].amount).toBeDefined();
+          expect(merkleTree.proofs[user0].amount).toBeDefined();
+          expect(merkleTree.proofs[user1].amount).toBeDefined();
 
           const totalDistributed = Object.values(merkleTree.proofs).reduce(
             (acc, proof) => acc.add(proof.amount),
@@ -237,8 +239,8 @@ describe("Vaults Distributor", () => {
                 transactionIndex: 1,
                 logIndex: 1,
                 args: {
-                  caller: constants.AddressZero,
-                  owner: constants.AddressZero,
+                  caller: user0,
+                  owner: user0,
                   assets: parseUnits("1000"),
                   shares: parseUnits("1000"),
                 },
@@ -251,8 +253,8 @@ describe("Vaults Distributor", () => {
                 transactionIndex: 1,
                 logIndex: 1,
                 args: {
-                  caller: "0x0000000000000000000000000000000000000001",
-                  owner: "0x0000000000000000000000000000000000000001",
+                  caller: user1,
+                  owner: user1,
                   assets: parseUnits("1000"),
                   shares: parseUnits("1000"),
                 },
@@ -263,8 +265,8 @@ describe("Vaults Distributor", () => {
           expect(merkleTree).toBeDefined();
           expect(merkleTree).toHaveProperty("proofs");
           expect(merkleTree).toHaveProperty("root");
-          expect(merkleTree.proofs[constants.AddressZero].amount).toBeDefined();
-          expect(merkleTree.proofs["0x0000000000000000000000000000000000000001"].amount).toBeDefined();
+          expect(merkleTree.proofs[user0].amount).toBeDefined();
+          expect(merkleTree.proofs[user1].amount).toBeDefined();
 
           const totalDistributed = Object.values(merkleTree.proofs).reduce(
             (acc, proof) => acc.add(proof.amount),
@@ -284,8 +286,8 @@ describe("Vaults Distributor", () => {
                 transactionIndex: 1,
                 logIndex: 1,
                 args: {
-                  caller: constants.AddressZero,
-                  owner: constants.AddressZero,
+                  caller: user0,
+                  owner: user0,
                   assets: parseUnits("1000"),
                   shares: parseUnits("1000"),
                 },
@@ -298,8 +300,8 @@ describe("Vaults Distributor", () => {
                 transactionIndex: 1,
                 logIndex: 1,
                 args: {
-                  caller: "0x0000000000000000000000000000000000000001",
-                  owner: "0x0000000000000000000000000000000000000001",
+                  caller: user1,
+                  owner: user1,
                   assets: parseUnits("1000"),
                   shares: parseUnits("1000"),
                 },
@@ -312,9 +314,9 @@ describe("Vaults Distributor", () => {
                 transactionIndex: 1,
                 logIndex: 2,
                 args: {
-                  caller: "0x0000000000000000000000000000000000000001",
-                  receiver: "0x0000000000000000000000000000000000000001",
-                  owner: "0x0000000000000000000000000000000000000001",
+                  caller: user1,
+                  receiver: user1,
+                  owner: user1,
                   assets: parseUnits("1000"),
                   shares: parseUnits("1000"),
                 },
@@ -323,7 +325,7 @@ describe("Vaults Distributor", () => {
           ]);
           const { lastMerkleTree: merkleTree } = await distributor.distributeMorpho(currentEpochConfig.id);
           expect(merkleTree).toBeDefined();
-          expect(merkleTree.proofs["0x0000000000000000000000000000000000000001"]?.amount).toBeUndefined();
+          expect(merkleTree.proofs[user1]?.amount).toBeUndefined();
 
           const totalDistributed = Object.values(merkleTree.proofs).reduce(
             (acc, proof) => acc.add(proof.amount),
@@ -343,8 +345,8 @@ describe("Vaults Distributor", () => {
                 transactionIndex: 1,
                 logIndex: 1,
                 args: {
-                  caller: constants.AddressZero,
-                  owner: constants.AddressZero,
+                  caller: user0,
+                  owner: user0,
                   assets: parseUnits("1000"),
                   shares: parseUnits("1000"),
                 },
@@ -357,8 +359,8 @@ describe("Vaults Distributor", () => {
                 transactionIndex: 1,
                 logIndex: 1,
                 args: {
-                  caller: "0x0000000000000000000000000000000000000001",
-                  owner: "0x0000000000000000000000000000000000000001",
+                  caller: user1,
+                  owner: user1,
                   assets: parseUnits("1000"),
                   shares: parseUnits("1000"),
                 },
@@ -371,9 +373,9 @@ describe("Vaults Distributor", () => {
                 transactionIndex: 1,
                 logIndex: 2,
                 args: {
-                  caller: "0x0000000000000000000000000000000000000001",
-                  receiver: "0x0000000000000000000000000000000000000001",
-                  owner: "0x0000000000000000000000000000000000000001",
+                  caller: user1,
+                  receiver: user1,
+                  owner: user1,
                   assets: parseUnits("1200"),
                   shares: parseUnits("1000"),
                 },
@@ -382,8 +384,8 @@ describe("Vaults Distributor", () => {
           ]);
           const { lastMerkleTree: merkleTree } = await distributor.distributeMorpho(currentEpochConfig.id);
           expect(merkleTree).toBeDefined();
-          expect(merkleTree.proofs[constants.AddressZero].amount).toBeDefined();
-          expect(merkleTree.proofs["0x0000000000000000000000000000000000000001"].amount).toBeDefined();
+          expect(merkleTree.proofs[user0].amount).toBeDefined();
+          expect(merkleTree.proofs[user1].amount).toBeDefined();
           const totalDistributed = Object.values(merkleTree.proofs).reduce(
             (acc, proof) => acc.add(proof.amount),
             BigNumber.from(0)
@@ -401,8 +403,8 @@ describe("Vaults Distributor", () => {
                 transactionIndex: 1,
                 logIndex: 1,
                 args: {
-                  caller: constants.AddressZero,
-                  owner: constants.AddressZero,
+                  caller: user0,
+                  owner: user0,
                   assets: parseUnits("1000"),
                   shares: parseUnits("1000"),
                 },
@@ -415,8 +417,8 @@ describe("Vaults Distributor", () => {
                 transactionIndex: 1,
                 logIndex: 1,
                 args: {
-                  caller: "0x0000000000000000000000000000000000000001",
-                  owner: "0x0000000000000000000000000000000000000001",
+                  caller: user1,
+                  owner: user1,
                   assets: parseUnits("1000"),
                   shares: parseUnits("1000"),
                 },
@@ -426,11 +428,8 @@ describe("Vaults Distributor", () => {
           const { lastMerkleTree: merkleTreeWithoutWithdrawal } = await distributorWithoutWithdrawal.distributeMorpho(
             currentEpochConfig.id
           );
-          const withoutWithdrawalAmount =
-            merkleTreeWithoutWithdrawal.proofs["0x0000000000000000000000000000000000000001"]!.amount;
-          expect(withoutWithdrawalAmount).toBnGt(
-            merkleTree.proofs["0x0000000000000000000000000000000000000001"]!.amount
-          );
+          const withoutWithdrawalAmount = merkleTreeWithoutWithdrawal.proofs[user1]!.amount;
+          expect(withoutWithdrawalAmount).toBnGt(merkleTree.proofs[user1]!.amount);
         });
 
         it("Should distribute MORPHO when a transfer occurs for the receiver", async () => {
@@ -442,8 +441,8 @@ describe("Vaults Distributor", () => {
                 transactionIndex: 1,
                 logIndex: 1,
                 args: {
-                  caller: constants.AddressZero,
-                  owner: constants.AddressZero,
+                  caller: user0,
+                  owner: user0,
                   assets: parseUnits("1000"),
                   shares: parseUnits("1000"),
                 },
@@ -456,8 +455,8 @@ describe("Vaults Distributor", () => {
                 transactionIndex: 1,
                 logIndex: 1,
                 args: {
-                  caller: "0x0000000000000000000000000000000000000001",
-                  owner: "0x0000000000000000000000000000000000000001",
+                  caller: user1,
+                  owner: user1,
                   assets: parseUnits("1000"),
                   shares: parseUnits("1000"),
                 },
@@ -470,8 +469,8 @@ describe("Vaults Distributor", () => {
                 transactionIndex: 1,
                 logIndex: 1,
                 args: {
-                  from: "0x0000000000000000000000000000000000000001",
-                  to: "0x0000000000000000000000000000000000000002",
+                  from: user1,
+                  to: user2,
                   value: parseUnits("100"),
                 },
               },
@@ -479,9 +478,9 @@ describe("Vaults Distributor", () => {
           ]);
           const { lastMerkleTree: merkleTree } = await distributor.distributeMorpho(currentEpochConfig.id);
           expect(merkleTree).toBeDefined();
-          expect(merkleTree.proofs[constants.AddressZero].amount).toBeDefined();
-          expect(merkleTree.proofs["0x0000000000000000000000000000000000000001"].amount).toBeDefined();
-          expect(merkleTree.proofs["0x0000000000000000000000000000000000000002"].amount).toBeDefined();
+          expect(merkleTree.proofs[user0].amount).toBeDefined();
+          expect(merkleTree.proofs[user1].amount).toBeDefined();
+          expect(merkleTree.proofs[user2].amount).toBeDefined();
           const totalDistributed = Object.values(merkleTree.proofs).reduce(
             (acc, proof) => acc.add(proof.amount),
             BigNumber.from(0)
@@ -502,8 +501,8 @@ describe("Vaults Distributor", () => {
                   transactionIndex: 1,
                   logIndex: 1,
                   args: {
-                    caller: constants.AddressZero,
-                    owner: constants.AddressZero,
+                    caller: user0,
+                    owner: user0,
                     assets: parseUnits("1000"),
                     shares: parseUnits("1000"),
                   },
@@ -516,8 +515,8 @@ describe("Vaults Distributor", () => {
                   transactionIndex: 1,
                   logIndex: 1,
                   args: {
-                    caller: constants.AddressZero,
-                    owner: constants.AddressZero,
+                    caller: user0,
+                    owner: user0,
                     assets: parseUnits("1000"),
                     shares: parseUnits("1000"),
                   },
@@ -530,8 +529,8 @@ describe("Vaults Distributor", () => {
                   transactionIndex: 1,
                   logIndex: 1,
                   args: {
-                    caller: "0x0000000000000000000000000000000000000001",
-                    owner: "0x0000000000000000000000000000000000000001",
+                    caller: user1,
+                    owner: user1,
                     assets: parseUnits("1000"),
                     shares: parseUnits("1000"),
                   },
@@ -544,8 +543,8 @@ describe("Vaults Distributor", () => {
                   transactionIndex: 1,
                   logIndex: 1,
                   args: {
-                    caller: "0x0000000000000000000000000000000000000001",
-                    owner: "0x0000000000000000000000000000000000000001",
+                    caller: user1,
+                    owner: user1,
                     assets: parseUnits("1000"),
                     shares: parseUnits("1000"),
                   },
@@ -558,8 +557,8 @@ describe("Vaults Distributor", () => {
                   transactionIndex: 1,
                   logIndex: 1,
                   args: {
-                    caller: "0x0000000000000000000000000000000000000002",
-                    owner: "0x0000000000000000000000000000000000000002",
+                    caller: user2,
+                    owner: user2,
                     assets: parseUnits("1000"),
                     shares: parseUnits("1000"),
                   },
@@ -568,9 +567,9 @@ describe("Vaults Distributor", () => {
             ]);
             const { lastMerkleTree: merkleTree } = await distributor.distributeMorpho(currentEpochConfig.id);
             expect(merkleTree).toBeDefined();
-            expect(merkleTree.proofs[constants.AddressZero].amount).toBeDefined();
-            expect(merkleTree.proofs["0x0000000000000000000000000000000000000001"].amount).toBeDefined();
-            expect(merkleTree.proofs["0x0000000000000000000000000000000000000002"].amount).toBeDefined();
+            expect(merkleTree.proofs[user0].amount).toBeDefined();
+            expect(merkleTree.proofs[user1].amount).toBeDefined();
+            expect(merkleTree.proofs[user2].amount).toBeDefined();
             const totalDistributed = Object.values(merkleTree.proofs).reduce(
               (acc, proof) => acc.add(proof.amount),
               BigNumber.from(0)
