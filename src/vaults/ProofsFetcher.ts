@@ -16,10 +16,8 @@ export default class ProofsFetcher implements ProofsFetcherInterface {
       const epochConfig = getEpochFromId(epochToId);
       if (!epochConfig) throw Error(`Invalid epoch id ${epochToId}`);
       const epochIndex = proofs.findIndex((proof) => proof.epoch === epochConfig.id);
-      if (epochIndex === -1) throw Error(`No MORPHO distributed for the vault ${address} in epoch ${epochToId}`);
-      return proofs.slice(0, epochIndex + 1);
+      return proofs.slice(0, epochIndex + 1); // empty array if epochIndex === -1
     }
-    if (!proofs.length) throw Error(`No MORPHO distributed for the vault ${address}`);
     return proofs;
   }
 

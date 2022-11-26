@@ -40,7 +40,7 @@ export default class Distributor {
   async distributeMorpho(epochToId?: string) {
     this._clean();
     const epochsProofs = await this.proofsFetcher.fetchProofs(this.vaultAddress, epochToId);
-    if (!epochsProofs?.length)
+    if (!epochsProofs.length)
       throw Error(`No MORPHO distributed for the vault ${this.vaultAddress} in epoch ${epochToId}`);
 
     const firstEpochId = epochsProofs[0].epoch;
