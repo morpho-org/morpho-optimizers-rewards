@@ -512,7 +512,7 @@ describe("Vaults Distributor", () => {
               {
                 type: VaultEventType.Deposit,
                 event: {
-                  blockNumber: currentEpochConfig.initialBlock! - 10000,
+                  blockNumber: currentEpochConfig.initialBlock! - 10_000,
                   transactionIndex: 1,
                   logIndex: 1,
                   args: {

@@ -13,7 +13,6 @@ export interface VaultDepositEvent {
 }
 export interface VaultWithdrawEvent {
   type: VaultEventType.Withdraw;
-
   event: {
     transactionIndex: number;
     logIndex: number;

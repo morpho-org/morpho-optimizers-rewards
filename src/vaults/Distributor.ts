@@ -64,7 +64,7 @@ export default class Distributor {
 
       const duration = epochConfig.finalTimestamp.sub(this._lastTimestamp);
       if (duration.lte(constants.Zero)) {
-        //throw an error
+        // throw an error
         throw Error(`The duration of the epoch ${epochConfig.id} is not positive`);
       }
       const rate = totalMorphoDistributed.mul(Distributor.SCALING_FACTOR).div(duration);

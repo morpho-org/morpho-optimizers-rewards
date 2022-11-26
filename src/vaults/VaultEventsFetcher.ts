@@ -38,7 +38,7 @@ export default class VaultEventsFetcher implements EventsFetcherInterface {
       );
       if (!firstDeposit)
         throw Error(
-          `Inconsistent config: some MORPHO tokens are distributed where there is no deposit in epoch ${epochConfig.id}`
+          `Inconsistent config: some MORPHO tokens are distributed while there is no deposit in epoch ${epochConfig.id}`
         );
       const firstDepositBlock = await this.provider.getBlock(firstDeposit.event.blockNumber);
       timeFrom = BigNumber.from(firstDepositBlock.timestamp);
