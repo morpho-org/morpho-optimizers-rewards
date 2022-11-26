@@ -161,25 +161,26 @@ export default class Distributor {
     this._increaseUserBalance(event.args.to, event.args.value);
   }
 
-  private _increaseUserBalance(address: string, amount: BigNumber) {
+  private _beforeBalanceUpdate(address: string) {
     const userBalance = this._getUserConfig(address);
     userBalance.morphoAccrued = userBalance.morphoAccrued.add(
       WadRayMath.wadMul(this._marketIndex.sub(userBalance.index), userBalance.balance).div(Distributor.SCALING_FACTOR)
     );
-    userBalance.balance = userBalance.balance.add(amount);
     userBalance.index = BigNumber.from(this._marketIndex); // clone BigNumber
+    return userBalance;
+  }
+  private _increaseUserBalance(address: string, amount: BigNumber) {
+    const userBalance = this._beforeBalanceUpdate(address);
+    userBalance.balance = userBalance.balance.add(amount);
     this._totalSupply = this._totalSupply.add(amount);
   }
   private _decreaseUserBalance(address: string, amount: BigNumber) {
-    const userBalance = this._getUserConfig(address);
-    userBalance.morphoAccrued = userBalance.morphoAccrued.add(
-      WadRayMath.wadMul(this._marketIndex.sub(userBalance.index), userBalance.balance).div(Distributor.SCALING_FACTOR)
-    );
+    const userBalance = this._beforeBalanceUpdate(address);
+
     userBalance.balance = userBalance.balance.sub(amount);
     if (userBalance.balance.lt(0)) {
       throw Error(`User ${address} has a negative balance of ${userBalance.balance.toString()}`);
     }
-    userBalance.index = BigNumber.from(this._marketIndex);
     this._totalSupply = this._totalSupply.sub(amount);
   }
 
