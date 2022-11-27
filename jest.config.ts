@@ -9,4 +9,5 @@ export default {
   testTimeout: 50_000,
   testMatch: ["**/test/**/*.test.(ts|js)"],
   testEnvironment: "node",
+  setupFilesAfterEnv: ["./test/jest.matchers.ts", "./test/setup.ts"],
 };

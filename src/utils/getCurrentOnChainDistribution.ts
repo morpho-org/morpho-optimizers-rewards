@@ -22,6 +22,21 @@ export interface Proofs {
       | undefined;
   };
 }
+export const getAllProofs = () => {
+  const proofs: Proofs[] = [];
+  for (let index = numberOfEpochs; index > 0; index--) {
+    const filename = `proofs-${index}.json`;
+    let lastProofRaw: any;
+    try {
+      lastProofRaw = require(`../../distribution/proofs/${filename}`);
+    } catch (e: any) {
+      if (e.code !== "MODULE_NOT_FOUND") throw Error(e);
+    }
+
+    if (lastProofRaw) proofs.push(lastProofRaw);
+  }
+  return proofs;
+};
 
 export const rootToProof = (root: string) => {
   let index = numberOfEpochs;

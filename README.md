@@ -68,3 +68,35 @@ update of the root on chain (rewards of the previous epoch). You are still able 
 
 ## Rounding errors
 Due to rounding errors, the total amount distributed has a precision of more or less 10e-9 MORPHO distributed (over all markets) for age 1, and 10e-2 for the age 2.
+
+
+# Vault distribution
+The ERC4626 is a standard for vaults, which [is used on top of the Morpho protocol](https://github.com/morpho-labs/morpho-tokenized-vaults) to aggregate users.
+Each Vault Contract has MORPHO rewards distributed from main distribution, and must redistribute rewards to users who are depositing their tokens in the vaults.
+
+`morpho-rewards` is providing a standardized script to redistribute MORPHO rewards to vaults users through a dedicated merkle tree.
+
+To use it, you can change the configuration here: [src/vaults/script/configuration.ts](.src/vaults/script/configuration.ts) with your own Vaults parameters.
+
+Then, you can run the script to compute the distribution and the Merkle tree:
+
+```bash
+yarn vaults:distribute
+```
+
+The output will be in the `distribution/vaults` folder.
+By default, the script provides only the last epoch merkle tree, but if
+you want to have per-epoch distribution, you can run the script with the flag `--save-history` to save the distribution of each epoch:
+
+
+```bash
+yarn vaults:distribute --save-history
+```
+
+You can also merge all your vaults distributions to only one Merkle tree by using the flag `--merge-trees`:
+It is useful when you have multiple vaults, and you want to merge all the distributions to only one Merkle tree.
+
+```bash
+yarn vaults:distribute --merge-trees
+```
+

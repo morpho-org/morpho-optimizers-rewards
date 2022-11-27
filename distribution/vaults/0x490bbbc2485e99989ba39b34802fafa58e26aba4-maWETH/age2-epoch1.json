@@ -1,0 +1,14 @@
+{
+    "epochId": "age2-epoch1",
+    "root": "0x4098376ab85c251241996e623dbb301b39e4b31a3259cc60aa5e58a93246dfe1",
+    "proofs": {
+        "0x490bbbc2485e99989ba39b34802fafa58e26aba4": {
+            "amount": "1107413225",
+            "proof": []
+        }
+    },
+    "leaves": [
+        "0x4098376ab85c251241996e623dbb301b39e4b31a3259cc60aa5e58a93246dfe1"
+    ],
+    "total": "1107413225"
+}
