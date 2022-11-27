@@ -9,5 +9,6 @@ export const getAgeAndEpoch = (timestamp: BigInt): string | null => {
   if (timestamp.le(endTimestamps.get("age1-epoch3"))) return "age1-epoch3";
   if (timestamp.le(endTimestamps.get("age2-epoch1"))) return "age2-epoch1";
   if (timestamp.le(endTimestamps.get("age2-epoch2"))) return "age2-epoch2";
+  if (timestamp.le(endTimestamps.get("age2-epoch3"))) return "age2-epoch3";
   return null;
 };
