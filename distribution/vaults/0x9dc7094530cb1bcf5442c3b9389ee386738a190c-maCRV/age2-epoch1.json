@@ -1,14 +1,14 @@
 {
-    "epochId": "age2-epoch1",
-    "root": "0x72c9265151a5f5ac75d5dde54e0d9ce7ec060f67aa2a092d6fc72afda17ec359",
-    "proofs": {
-        "0x9dc7094530cb1bcf5442c3b9389ee386738a190c": {
-            "amount": "810788",
-            "proof": []
-        }
-    },
-    "leaves": [
-        "0x72c9265151a5f5ac75d5dde54e0d9ce7ec060f67aa2a092d6fc72afda17ec359"
-    ],
-    "total": "810788"
+  "epochId": "age2-epoch1",
+  "root": "0x72c9265151a5f5ac75d5dde54e0d9ce7ec060f67aa2a092d6fc72afda17ec359",
+  "proofs": {
+    "0x9dc7094530cb1bcf5442c3b9389ee386738a190c": {
+      "amount": "810788",
+      "proof": []
+    }
+  },
+  "leaves": [
+    "0x72c9265151a5f5ac75d5dde54e0d9ce7ec060f67aa2a092d6fc72afda17ec359"
+  ],
+  "total": "810788"
 }
