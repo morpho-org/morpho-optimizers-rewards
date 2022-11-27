@@ -13,16 +13,16 @@
   "homepage": "https://github.com/morpho-labs/morpho-rewards#readme",
   "contributors": [
     {
-      "name" : "Julien",
-      "email" : "julien@morpho.xyz"
+      "name": "Julien",
+      "email": "julien@morpho.xyz"
     },
     {
-      "name" : "Romain",
-      "email" : "romain@morpho.xyz"
+      "name": "Romain",
+      "email": "romain@morpho.xyz"
     },
     {
-      "name" : "Oumar",
-      "email" : "oumar@morpho.xyz"
+      "name": "Oumar",
+      "email": "oumar@morpho.xyz"
     }
   ],
   "license": "MIT",
@@ -50,29 +50,29 @@
     "@types/node": "^17.0.42",
     "@typescript-eslint/eslint-plugin": "^5.27.1",
     "@typescript-eslint/parser": "^5.27.1",
+    "commitizen": "^4.2.5",
+    "conventional-changelog-conventionalcommits": "^5.0.0",
+    "cz-conventional-changelog": "^3.3.0",
     "eslint": "^8.17.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-prettier": "^4.0.0",
     "jest": "^28.1.1",
+    "lint-staged": "^10.5.4",
     "prettier": "^2.6.2",
     "ts-jest": "^28.0.4",
     "ts-node": "^10.8.1",
-    "typescript": "^4.7.3",
-    "commitizen": "^4.2.5",
-    "lint-staged": "^10.5.4",
-    "conventional-changelog-conventionalcommits": "^5.0.0",
-    "cz-conventional-changelog": "^3.3.0"
+    "typescript": "^4.7.3"
   },
   "dependencies": {
-    "@morpho-labs/morpho-ethers-contract": "^1.1.1",
-    "axios": "^0.27.2",
+    "@morpho-labs/morpho-ethers-contract": "^1.4.0",
+    "axios": "^1.2.0",
     "dotenv": "^16.0.2",
-    "ethers": "^5.6.8",
+    "ethers": "^5.7.2",
     "merkletreejs": "^0.2.31"
   },
   "peerDependencies": {
-    "@morpho-labs/morpho-ethers-contract": "^1.1.1",
-    "axios": "^0.27.2",
+    "@morpho-labs/morpho-ethers-contract": "^1.4.0",
+    "axios": "^1.0.0",
     "ethers": "^5.0.0"
   },
   "config": {
