@@ -8,10 +8,11 @@ import {
 } from "../../src/utils";
 import { BigNumber, providers } from "ethers";
 import { WAD } from "../../src/helpers";
-import { parseUnits } from "ethers/lib/utils";
+import {formatUnits, parseUnits} from "ethers/lib/utils";
 import { expectBNApproxEquals } from "../ageOne/epochOne.test";
+import * as fs from "fs";
 
-describe.each([0])("Age 2 users distribution", (epochId) => {
+describe.each([0, 1])("Age 2 users distribution", (epochId) => {
   const epochConfig = ages[1].epochs[epochId];
   const ageConfig = ages[1];
   let usersBalances: UserBalances[];
@@ -60,7 +61,8 @@ describe.each([0])("Age 2 users distribution", (epochId) => {
       .flat()
       .reduce((a, b) => a.add(b), BigNumber.from(0));
     const totalEpochsTokens = getAccumulatedEmission(epochConfig.id).mul(WAD);
-    expectBNApproxEquals(totalEpochsTokens, totalEmitted, parseUnits("0.1"));
+    console.log(formatUnits(totalEpochsTokens), formatUnits(totalEmitted));
+    expectBNApproxEquals(totalEpochsTokens, totalEmitted, parseUnits("1"));
   });
 
   it(`Should should compute the correct root for epoch ${epochConfig.id}`, async () => {
@@ -80,6 +82,13 @@ describe.each([0])("Age 2 users distribution", (epochId) => {
     const totalEmittedTheorical = allEpochs
       .filter((epoch) => epoch.finalTimestamp.lte(epochConfig.finalTimestamp))
       .reduce((acc, epoch) => acc.add(epoch.totalEmission.mul(WAD)), BigNumber.from(0));
-    expectBNApproxEquals(totalEmitted, totalEmittedTheorical, parseUnits("0.1"));
+    expectBNApproxEquals(totalEmitted, totalEmittedTheorical, parseUnits("1"));
+  });
+  it(`Should dump ${epochConfig.id}`, async () => {
+    // remove users with 0 MORPHO to claim
+    usersAccumulatedRewards = usersAccumulatedRewards.filter((b) => b.accumulatedRewards !== "0");
+    const {leaves, ...merkleTree} = computeMerkleTree(usersAccumulatedRewards);
+    await fs.promises.writeFile(`distribution/proofs/proofs-${epochConfig.number}.json`, JSON.stringify({epoch: epochConfig.id, ...merkleTree}, null, 4));
+
   });
 });
