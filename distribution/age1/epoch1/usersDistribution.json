@@ -1,6 +1,8 @@
 {
-  "date": "1657731600",
+  "age": "age1",
   "epoch": "epoch1",
+  "totalEmissionInitial": "350000",
+  "totalDistributed": "349999.999999999800531676",
   "distribution": [
     {
       "address": "0x00e043300ebebd0f68e1373cc2167eebdb21516c",
