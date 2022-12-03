@@ -92,7 +92,10 @@ NB: The on-chain data provider is not yet implemented.
 ```bash
 yarn users:distribute --dataProvider subgraph
 ```
-
+#### Age 1 Epoch 2 specifications
+After the Age 1 Epoch 2, the script was refactored to improve distribution precision. The previous script and the current one are given the same result for the first epoch, 
+but the second epoch is different and more precise now. However, the on_chain root was computed at [this commit](https://github.com/morpho-labs/morpho-rewards/tree/49282489fc8e376a7806dc49ec145ed724b783ae)
+and the result is [here](./distribution/fromDeprecatedScript/proofs-2.json).
 
 ### Terminate an epoch and updating the Merkle tree root on chain
 After each epoch, Morpho Labs is computing the Rewards distribution and submitting the new root to the Morpho governance. 
@@ -102,7 +105,19 @@ update of the root on chain (rewards of the previous epoch). You are still able 
 
 
 ## Rounding errors
-Due to rounding errors, the total amount distributed has a precision of more or less 10e-9 MORPHO distributed (over all markets) for age 1, and 10e-2 for the age 2.
+Due to rounding errors, the total amount distributed has a precision of more or less 10e-9 MORPHO distributed (over all markets) for age 1, and 10e-2 for the age 2. You have more details when you're running the users distribution script:
+
+
+
+
+│ (index) │  age   │  epoch   │ users │                                 root                                 │ totalEmission │             total              │
+├─────────┼────────┼──────────┼───────┼──────────────────────────────────────────────────────────────────────┼───────────────┼─────────────────────────────────┤
+│    0    │ 'age1' │ 'epoch1' │  226  │ '0xca64d60cf02765803feb6298e4c851689fbc896d0e73c00e0c2f678f353f0d19' │   '350,000'   │  '349,999.999999999800531676'  │
+│    1    │ 'age1' │ 'epoch2' │  836  │ '0x7510de9d121824eeb7beee216e1b17e93634c493f23b931dbecd9c7489490237' │  '2,050,000'  │ '2,049,999.999999995047580557' │
+│    2    │ 'age1' │ 'epoch3' │ 1020  │ '0xa033808b8ad6b65291bc542b033f869ed82412707ca7127f4d3564d0b6d8abb3' │  '5,000,000'  │ '4,999,999.999999992368510877' │
+│    3    │ 'age2' │ 'epoch1' │ 1257  │ '0xd455ed17a36422d897d2ec46d738278c1385b5c14468e827e836b2f9988b6feb' │  '8,000,000'  │ '7,999,999.937276468309385008' │
+│    4    │ 'age2' │ 'epoch2' │ 1468  │ '0xf7f279235b2273be2560e553122cab5b88d409f2bc6cd8132803daa46462524b' │ '11,400,000'  │ '11,399,999.18768007238288912' │
+
 
 
 # Vault distribution
