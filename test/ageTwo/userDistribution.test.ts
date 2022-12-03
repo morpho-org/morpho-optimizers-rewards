@@ -8,9 +8,8 @@ import {
 } from "../../src/utils";
 import { BigNumber, providers } from "ethers";
 import { WAD } from "../../src/helpers";
-import {formatUnits, parseUnits} from "ethers/lib/utils";
+import { formatUnits, parseUnits } from "ethers/lib/utils";
 import { expectBNApproxEquals } from "../ageOne/epochOne.test";
-import * as fs from "fs";
 
 describe.each([0, 1])("Age 2 users distribution", (epochId) => {
   const epochConfig = ages[1].epochs[epochId];
@@ -56,10 +55,7 @@ describe.each([0, 1])("Age 2 users distribution", (epochId) => {
 
   it(`should emit the correct number of tokens for all epochs to epoch ${epochConfig.id}`, async () => {
     const totalEmitted = usersAccumulatedRewards.reduce((a, b) => a.add(b.accumulatedRewards), BigNumber.from(0));
-    const fromGraph = usersBalances
-      .map((b) => b.balances.map((b2) => b2.accumulatedMorpho))
-      .flat()
-      .reduce((a, b) => a.add(b), BigNumber.from(0));
+
     const totalEpochsTokens = getAccumulatedEmission(epochConfig.id).mul(WAD);
     console.log(formatUnits(totalEpochsTokens), formatUnits(totalEmitted));
     expectBNApproxEquals(totalEpochsTokens, totalEmitted, parseUnits("1"));
@@ -83,12 +79,5 @@ describe.each([0, 1])("Age 2 users distribution", (epochId) => {
       .filter((epoch) => epoch.finalTimestamp.lte(epochConfig.finalTimestamp))
       .reduce((acc, epoch) => acc.add(epoch.totalEmission.mul(WAD)), BigNumber.from(0));
     expectBNApproxEquals(totalEmitted, totalEmittedTheorical, parseUnits("1"));
-  });
-  it(`Should dump ${epochConfig.id}`, async () => {
-    // remove users with 0 MORPHO to claim
-    usersAccumulatedRewards = usersAccumulatedRewards.filter((b) => b.accumulatedRewards !== "0");
-    const {leaves, ...merkleTree} = computeMerkleTree(usersAccumulatedRewards);
-    await fs.promises.writeFile(`distribution/proofs/proofs-${epochConfig.number}.json`, JSON.stringify({epoch: epochConfig.id, ...merkleTree}, null, 4));
-
   });
 });
