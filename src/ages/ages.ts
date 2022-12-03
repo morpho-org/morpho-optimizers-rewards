@@ -125,4 +125,8 @@ export const allEpochs = ages
   )
   .flat();
 
+export const finishedEpochs = allEpochs.filter((epoch) => epoch.finalTimestamp.lte(Math.round(Date.now() / 1000)));
+
+export const startedEpochs = allEpochs.filter((epoch) => epoch.initialTimestamp.lte(Math.round(Date.now() / 1000)));
+
 export const numberOfEpochs = allEpochs.length;

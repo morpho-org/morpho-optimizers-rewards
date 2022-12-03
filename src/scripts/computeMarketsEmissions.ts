@@ -1,8 +1,10 @@
-import { getEpochFromId, startedEpochs } from "../utils/timestampToEpoch";
+import { getEpochFromId } from "../utils/timestampToEpoch";
 import { providers } from "ethers";
 import { commify, formatUnits } from "ethers/lib/utils";
 import * as fs from "fs";
 import * as dotenv from "dotenv";
+import { startedEpochs } from "../ages/ages";
+
 dotenv.config();
 
 const computeMarketsEmissions = async (epochId?: string) => {

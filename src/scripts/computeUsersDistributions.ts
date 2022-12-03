@@ -1,10 +1,11 @@
 import * as dotenv from "dotenv";
 import { ethers } from "ethers";
-import { finishedEpochs, getEpochFromId } from "../utils/timestampToEpoch";
+import { getEpochFromId } from "../utils/timestampToEpoch";
 import { computeMerkleTree, fetchUsers, getAccumulatedEmission, userBalancesToUnclaimedTokens } from "../utils";
 import { ages } from "../ages";
 import { commify, formatUnits } from "ethers/lib/utils";
 import * as fs from "fs";
+import { finishedEpochs } from "../ages/ages";
 dotenv.config();
 
 enum DataProvider {
