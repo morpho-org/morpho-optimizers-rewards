@@ -38,6 +38,20 @@ The subgraph used for automatic real-time indexation is available on the [hoste
 
 For each epoch, we distribute a given amount of rewards (e.g. 350,000 MORPHO for Age 1 - Epoch 1) overall open markets, ponderated by the underlying market-specific USD TVL, computed at the `snapshotBlock` of the epoch. This means that market ETH with `marketSupply` ETH supplied on the underlying pool, `marketBorrow` ETH borrowed from the underlying pool and a ETH at a price of `marketUSDPrice` at the first block of the epoch (according to Compound's protocol) will get the following amount of rewards distributed:totalEmission×(marketSupply+marketBorrow)×marketUSDPricetotalUSDTVL
 
+You can compute the markets emissions using the following command: 
+
+```bash
+yarn markets:emissions
+```
+this will output the per-market emissions in the [distribution](./distribution) directory.
+
+
+If you want to compute the emissions for a specific epoch, you can use the `--epoch` flag:
+
+```bash
+yarn markets:emissions --epoch age2-epoch1
+```
+
 ## **Epochs**
 
 Morpho rewards are distributed through epochs (~3 weeks), with each epoch's per-market distribution ultimately being voted by the Morpho protocol's governance at the beginning of the Epoch. For now and until governance is set up, each epoch's per-market distribution is computed based on a given total emission distributed over open markets, based on their underlying TVL.
@@ -97,6 +111,6 @@ You can also merge all your vaults distributions to only one Merkle tree by usin
 It is useful when you have multiple vaults, and you want to merge all the distributions to only one Merkle tree.
 
 ```bash
-yarn vaults:distribute --merge-trees
+yarn vaults:distribute --merge-trees --save-history
 ```
 
