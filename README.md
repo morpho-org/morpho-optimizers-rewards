@@ -67,11 +67,32 @@ with parameters coming from the last distribution in [proofs](./distribution/pro
 
 At the end of each epoch, all tokens will be distributed.
 
-To compute the Merkle tree, you can run the tests which are verifying the result with the ones of the [proofs](./distribution/proofs) folder
+
+You can compute the users distribution and the merkle tree using the following command:
 
 ```bash
-yarn test
+yarn users:distribute
 ```
+this will output the users distribution in the [distribution](./distribution) directory, and the merkle tree in the [proofs](./distribution/proofs) directory.
+
+
+If you want to compute the users distribution for a specific epoch, you can use the `--epoch` flag:
+
+```bash
+yarn users:distribute --epoch age2-epoch1
+```
+
+You can also choose the data provider for the users balances between `rpc` or `subgraph`. 
+
+By default, the subgraph is used, but you can also use the on-chain data by using the `--dataProvider` flag.
+
+
+NB: The on-chain data provider is not yet implemented.
+
+```bash
+yarn users:distribute --dataProvider subgraph
+```
+
 
 ### Terminate an epoch and updating the Merkle tree root on chain
 After each epoch, Morpho Labs is computing the Rewards distribution and submitting the new root to the Morpho governance. 
