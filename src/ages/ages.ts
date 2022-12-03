@@ -116,7 +116,13 @@ export const ages: AgeConfig[] = [
 ];
 
 export const allEpochs = ages
-  .map((age, ageId) => age.epochs.map((epoch, epochId) => ({ ...epoch, age: age.ageName, ageId, epochId })))
+  .map((age, ageId) =>
+    age.epochs.map((epoch, epochId) => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { epochs, ...ageConfig } = age;
+      return { ...epoch, age: age.ageName, ageId, epochId, ageConfig };
+    })
+  )
   .flat();
 
 export const numberOfEpochs = allEpochs.length;

@@ -59,3 +59,7 @@ export const getPrevEpoch = (epochId?: string) => {
 };
 
 export const getEpochFromId = (epochId: string) => allEpochs.find((e) => e.id === epochId);
+
+export const finishedEpochs = allEpochs.filter((epoch) => epoch.finalTimestamp.lte(Math.round(Date.now() / 1000)));
+
+export const startedEpochs = allEpochs.filter((epoch) => epoch.initialTimestamp.lte(Math.round(Date.now() / 1000)));
