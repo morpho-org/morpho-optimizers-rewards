@@ -9,7 +9,6 @@ import {
 } from "../../src/utils";
 import { BigNumber, providers } from "ethers";
 import { formatUnits } from "ethers/lib/utils";
-import { WAD } from "../../src/helpers";
 import { expectBNApproxEquals } from "./epochOne.test";
 import { ages } from "../../src";
 jest.setTimeout(100000);
@@ -43,7 +42,7 @@ describe("Test the distribution for the third epoch", () => {
     const emitted = (Object.values(distribution.markets) as { supplyRate: string; borrowRate: string }[])
       .map((market) => BigNumber.from(market.supplyRate).add(market.borrowRate).mul(duration))
       .reduce((acc, b) => acc.add(b), BigNumber.from(0));
-    const totalEmittedInTheory = epochConfig.totalEmission.mul(WAD);
+    const totalEmittedInTheory = epochConfig.totalEmission;
     console.log(formatUnits(emitted), "over", formatUnits(totalEmittedInTheory));
     expectBNApproxEquals(emitted, totalEmittedInTheory, 1e10);
     expect(epochConfig.finalBlock).not.toBeUndefined();
@@ -56,7 +55,7 @@ describe("Test the distribution for the third epoch", () => {
       .flat()
       .reduce((a, b) => a.add(b), BigNumber.from(0));
     console.log("from graph", formatUnits(fromGraph));
-    const totalEpochsTokens = getAccumulatedEmission(epochConfig.id).mul(WAD);
+    const totalEpochsTokens = getAccumulatedEmission(epochConfig.id);
     console.log("Total tokens emitted:", formatUnits(totalEmitted), "over", formatUnits(totalEpochsTokens));
     expectBNApproxEquals(totalEpochsTokens, totalEmitted, 1e10);
   });
@@ -75,7 +74,7 @@ describe("Test the distribution for the third epoch", () => {
       .map((proof) => BigNumber.from(proof.amount))
       .reduce((acc, b) => acc.add(b), BigNumber.from(0));
     const totalEmittedTheorical = ages[0].epochs.reduce(
-      (acc, epoch) => acc.add(epoch.totalEmission.mul(WAD)),
+      (acc, epoch) => acc.add(epoch.totalEmission),
       BigNumber.from(0)
     );
     console.log(formatUnits(totalEmitted), "over", formatUnits(totalEmittedTheorical));

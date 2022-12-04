@@ -52,7 +52,7 @@ const computeUsersDistributions = async (dataProvider: DataProvider, epochId?: s
         {
           age: epoch.ageConfig.ageName,
           epoch: epoch.epochName,
-          totalEmissionInitial: totalEmission.toString(),
+          totalEmissionInitial: formatUnits(totalEmission),
           totalDistributed: formatUnits(merkleTree.total),
           distribution: usersAccumulatedRewards,
         },
@@ -78,7 +78,7 @@ const computeUsersDistributions = async (dataProvider: DataProvider, epochId?: s
       epoch: epoch.epochName,
       users: usersAccumulatedRewards.length,
       root: merkleTree.root,
-      totalEmission: commify(totalEmission.toString()),
+      totalEmission: commify(formatUnits(totalEmission)),
       total: commify(formatUnits(merkleTree.total)),
     });
   }

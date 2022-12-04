@@ -3,7 +3,6 @@
 import { userBalancesToUnclaimedTokens, UserBalances, fetchUsers, computeMerkleTree } from "../../src/utils";
 import { BigNumber, BigNumberish, providers } from "ethers";
 import { formatUnits } from "ethers/lib/utils";
-import { WAD } from "../../src/helpers";
 import { ages } from "../../src";
 describe("Test the distribution for the first epoch", () => {
   const epochConfig = ages[0].epochs[0];
@@ -27,9 +26,9 @@ describe("Test the distribution for the first epoch", () => {
   it("Should distribute the correct number of tokens over Morpho users", async () => {
     const totalEmitted = usersAccumulatedRewards.reduce((a, b) => a.add(b.accumulatedRewards), BigNumber.from(0));
 
-    console.log("Total tokens emitted:", formatUnits(totalEmitted, 18), "over", epochConfig.totalEmission.toString());
+    console.log("Total tokens emitted:", formatUnits(totalEmitted, 18), "over", formatUnits(epochConfig.totalEmission));
 
-    expectBNApproxEquals(totalEmitted, epochConfig.totalEmission.mul(WAD), 1e9); // 8 over 18 decimals
+    expectBNApproxEquals(totalEmitted, epochConfig.totalEmission, 1e9); // 8 over 18 decimals
   });
   it("Should should compute the correct root", async () => {
     const userRewards = usersAccumulatedRewards.filter((b) => b.accumulatedRewards !== "0");

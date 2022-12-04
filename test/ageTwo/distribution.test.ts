@@ -7,7 +7,6 @@ import { aStEth, cFei } from "../../src/helpers";
 import { MarketEmission } from "../../src/utils";
 import { Optional } from "../../src/helpers/types";
 import { expectBNApproxEquals } from "../ageOne/epochOne.test";
-import { WAD } from "../../src/helpers";
 dotenv.config();
 describe.each([0, 1, 2])("Test the distribution of the second age", (epochIndex) => {
   const ageId = 1;
@@ -34,6 +33,6 @@ describe.each([0, 1, 2])("Test the distribution of the second age", (epochIndex)
       (acc, emission) => acc.add(emission!.borrowRate.add(emission!.supplyRate).mul(duration)),
       BigNumber.from(0)
     );
-    expectBNApproxEquals(totalRewards.mul(WAD), totalEmitted, 1e8);
+    expectBNApproxEquals(totalRewards, totalEmitted, 1e8);
   });
 });
