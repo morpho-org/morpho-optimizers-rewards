@@ -10,10 +10,15 @@ dotenv.config();
 const computeMarketsEmissions = async (epochId?: string) => {
   if (epochId) console.log(`Compute markets emissions for ${epochId}`);
   else console.log("Compute markets emissions for all epochs");
+
   const provider = new providers.JsonRpcProvider(process.env.RPC_URL);
+
   if (epochId && !getEpochFromId(epochId)) throw new Error("Invalid epoch id");
+
   const epochs = epochId ? [getEpochFromId(epochId)!] : startedEpochs;
   if (!epochId) console.log(`${epochs.length} epochs to compute, to ${epochs[epochs.length - 1].id}`);
+
+  // Compute emissions for each epoch
   const emissions = await Promise.all(
     epochs.map(async (epoch) => {
       const { marketsEmissions } = await epoch.ageConfig.distribution(epoch, provider);
@@ -23,6 +28,8 @@ const computeMarketsEmissions = async (epochId?: string) => {
       };
     })
   );
+
+  // Dump emissions to file in the distribution folder
   await Promise.all(
     emissions.map(async ({ epoch, marketsEmissions }) => {
       const distribution = {
@@ -47,6 +54,7 @@ const computeMarketsEmissions = async (epochId?: string) => {
           ])
         ),
       };
+
       await fs.promises.mkdir(`distribution/${epoch.ageConfig.ageName}/${epoch.epochName}`, { recursive: true });
       await fs.promises.writeFile(
         `distribution/${epoch.ageConfig.ageName}/${epoch.epochName}/marketsEmission.json`,
@@ -55,6 +63,7 @@ const computeMarketsEmissions = async (epochId?: string) => {
     })
   );
 
+  // Log a recap to the console
   const recap = emissions.map(({ epoch, marketsEmissions }) => {
     return {
       age: epoch.age,

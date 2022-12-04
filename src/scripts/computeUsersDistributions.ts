@@ -16,10 +16,15 @@ enum DataProvider {
 const computeUsersDistributions = async (dataProvider: DataProvider, epochId?: string) => {
   if (dataProvider === DataProvider.RPC) throw new Error("RPC not supported yet");
   if (epochId && !getEpochFromId(epochId)) throw new Error("Invalid epoch id");
+
   const provider = new ethers.providers.JsonRpcProvider(process.env.RPC_URL);
+
   const epochs = epochId ? [getEpochFromId(epochId)!] : finishedEpochs;
   if (!epochId) console.log(`${epochs.length} epochs to compute, to ${epochs[epochs.length - 1].id}`);
-  const recap: any[] = [];
+
+  const recap: any[] = []; // used to log the recap of the distribution
+
+  // Compute emissions for each epoch synchronously for throughput reasons
   for (const epoch of epochs) {
     console.log(`Compute users distribution for ${epoch.id}`);
 
@@ -34,9 +39,13 @@ const computeUsersDistributions = async (dataProvider: DataProvider, epochId?: s
         }))
       )
     ).filter(({ accumulatedRewards }) => accumulatedRewards !== "0");
+
     const merkleTree = computeMerkleTree(usersAccumulatedRewards);
+
     await fs.promises.mkdir(`distribution/${epoch.ageConfig.ageName}/${epoch.epochName}`, { recursive: true });
+
     const totalEmission = getAccumulatedEmission(epoch.id);
+
     await fs.promises.writeFile(
       `distribution/${epoch.ageConfig.ageName}/${epoch.epochName}/usersDistribution.json`,
       JSON.stringify(
