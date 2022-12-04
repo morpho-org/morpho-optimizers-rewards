@@ -83,7 +83,8 @@ const distribute = async (
     );
     if (createBatch) {
       // create the batch file for gnosis
-      const batchFilename = `${baseDir}/${epoch}-batch.json`;
+      await fs.promises.mkdir(`${baseDir}/batch`, { recursive: true });
+      const batchFilename = `${baseDir}/batch/${epoch}-batch.json`;
       const txs = trees.flatMap((tree, i) => {
         const vaultAddress = vaults[i].address;
 
@@ -122,6 +123,7 @@ const distribute = async (
       });
 
       const batch = TxBuilder.batch(DAO_SAFE_ADDRESS, txs);
+
       await fs.promises.writeFile(batchFilename, JSON.stringify(batch, null, 2));
       console.log(`Saved batch file to ${batchFilename}`);
     }

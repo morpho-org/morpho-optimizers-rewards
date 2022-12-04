@@ -161,4 +161,4 @@ This option is only possible with the `--merge-trees` flag, and is doing:
 - updating the root of the Vaults rewards distributor with the root of the merged Merkle tree
 
 
-This transaction can only be executed by the owwner of the vaults and the owner of the rewards distributor, which is the Morpho DAO Safe for the defaults vaults.
+This transaction can only be executed by the owner of the vaults and the owner of the Rewards distributor, which is the Morpho DAO Safe for the defaults vaults.
