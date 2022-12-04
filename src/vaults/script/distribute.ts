@@ -12,7 +12,7 @@ import { getAllProofs } from "../../utils/getCurrentOnChainDistribution";
 import { formatUnits } from "ethers/lib/utils";
 import addresses from "@morpho-labs/morpho-ethers-contract/lib/addresses";
 import { DAO_SAFE_ADDRESS, VAULTS_REWARDS_DISTRIBUTOR } from "../constants";
-import { RewardsDistributor__factory } from "@morpho-labs/morpho-ethers-contract";
+import { MorphoToken__factory, RewardsDistributor__factory } from "@morpho-labs/morpho-ethers-contract";
 import { TxBuilder } from "@morpho-labs/gnosis-tx-builder";
 dotenv.config();
 
@@ -92,6 +92,11 @@ const distribute = async (
         const { address } = vaults[i];
 
         return [
+          {
+            to: addresses.morphoDao.morphoToken,
+            value: "0",
+            data: MorphoToken__factory.createInterface().encodeFunctionData("setUserRole", [vaultAddress, 0, true]),
+          },
           // Claim on the main Rewards Distributor on behalf of the Vault
           {
             to: addresses.morphoDao.rewardsDistributor,
