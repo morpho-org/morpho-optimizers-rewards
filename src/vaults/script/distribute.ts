@@ -9,6 +9,7 @@ import * as dotenv from "dotenv";
 import { Tree } from "../../utils/merkleTree/merkleTree";
 import { mergeMerkleTrees } from "../../utils/merkleTree/mergeMerkleTree";
 import { getAllProofs } from "../../utils/getCurrentOnChainDistribution";
+import { formatUnits } from "ethers/lib/utils";
 dotenv.config();
 
 const baseDir = "./distribution/vaults";
@@ -24,22 +25,31 @@ const distribute = async (
     console.error("Please set RPC_URL env variable");
     process.exit(1);
   }
-
+  const recap: any[] = [];
   const provider = new providers.JsonRpcProvider(rpcUrl);
   const trees: Tree[] = [];
   for (const { address, deploymentBlock } of vaults) {
     const vault = ERC4626__factory.connect(address, provider);
     const symbol = await vault.symbol();
     console.log(`Distributing for vault ${address} (${symbol}) deployed at block ${deploymentBlock}`);
-    const fetcher = new VaultEventsFetcher(address, provider, deploymentBlock);
+
+    const eventsFetcher = new VaultEventsFetcher(address, provider, deploymentBlock);
     const proofsFetcher = new ProofsFetcher();
-    const distributor = new Distributor(address, fetcher, proofsFetcher);
+    const distributor = new Distributor(address, eventsFetcher, proofsFetcher);
     const { history, lastMerkleTree } = await distributor.distributeMorpho(epochTo);
     console.log(`Distributed ${Object.keys(history).length} epochs`);
     const proofsDir = `${baseDir}/${address}-${symbol}`;
 
     await fs.promises.mkdir(proofsDir, { recursive: true });
     trees.push(lastMerkleTree);
+    recap.push({
+      address,
+      symbol,
+      epochs: Object.keys(history).length,
+      totalMorpho: formatUnits(lastMerkleTree.total),
+      totalUsers: Object.keys(lastMerkleTree.proofs).length,
+    });
+
     if (!mergeTrees || uploadHistory) {
       const toUpload = uploadHistory ? history : { [Object.keys(history).pop()!]: Object.values(history).pop()! };
       await Promise.all(
@@ -50,6 +60,7 @@ const distribute = async (
         })
       );
     }
+
     console.log(`Done distributing for vault ${address} (${symbol})`);
   }
   if (mergeTrees) {
@@ -62,6 +73,7 @@ const distribute = async (
       JSON.stringify({ epoch, vaults: vaults.map((v) => v.address), ...mergedTree }, null, 2)
     );
   }
+  console.table(recap);
 };
 
 distribute(
