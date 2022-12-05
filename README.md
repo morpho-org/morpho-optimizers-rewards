@@ -149,3 +149,16 @@ It is useful when you have multiple vaults, and you want to merge all the distri
 yarn vaults:distribute --merge-trees --save-history
 ```
 
+For the DAO transaction, you can generate the transactions in a Safe Transaction Builder format by using the flag `--create-batch`:
+
+```bash
+yarn vaults:distribute  --merge-trees --create-batch
+```
+
+This option is only possible with the `--merge-trees` flag, and is doing: 
+- claiming on behalf of each vaults
+- transferring the claimed MORPHO to the rewards distributor for each vaults
+- updating the root of the Vaults rewards distributor with the root of the merged Merkle tree
+
+
+This transaction can only be executed by the owner of the vaults and the owner of the Rewards distributor, which is the Morpho DAO Safe for the defaults vaults.

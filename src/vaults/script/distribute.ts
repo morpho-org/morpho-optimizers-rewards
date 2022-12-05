@@ -10,6 +10,10 @@ import { Tree } from "../../utils/merkleTree/merkleTree";
 import { mergeMerkleTrees } from "../../utils/merkleTree/mergeMerkleTree";
 import { getAllProofs } from "../../utils/getCurrentOnChainDistribution";
 import { formatUnits } from "ethers/lib/utils";
+import addresses from "@morpho-labs/morpho-ethers-contract/lib/addresses";
+import { DAO_SAFE_ADDRESS, VAULTS_REWARDS_DISTRIBUTOR } from "../constants";
+import { RewardsDistributor__factory } from "@morpho-labs/morpho-ethers-contract";
+import { TxBuilder } from "@morpho-labs/gnosis-tx-builder";
 dotenv.config();
 
 const baseDir = "./distribution/vaults";
@@ -18,7 +22,8 @@ const distribute = async (
   vaults: VaultConfiguration[],
   epochTo?: string,
   uploadHistory = false,
-  mergeTrees = false
+  mergeTrees = false,
+  createBatch = false
 ) => {
   const rpcUrl = process.env.RPC_URL;
   if (!rpcUrl) {
@@ -65,13 +70,63 @@ const distribute = async (
   }
   if (mergeTrees) {
     const mergedTree = mergeMerkleTrees(trees);
-    const epoch = getAllProofs()[0].epoch;
+
+    const lastProof = getAllProofs()[0];
+    const epoch = lastProof.epoch;
+
     const filename = `${baseDir}/${epoch}-merged.json`;
     console.log(`Saving proof for ${filename}`);
+
     await fs.promises.writeFile(
       filename,
       JSON.stringify({ epoch, vaults: vaults.map((v) => v.address), ...mergedTree }, null, 2)
     );
+    if (createBatch) {
+      // Create the batch file for gnosis
+      await fs.promises.mkdir(`${baseDir}/batch`, { recursive: true });
+      const batchFilename = `${baseDir}/batch/${epoch}-batch.json`;
+      const txs = trees.flatMap((tree, i) => {
+        const vaultAddress = vaults[i].address;
+
+        const vaultProof = lastProof.proofs[vaultAddress]!;
+        const { address } = vaults[i];
+
+        return [
+          // Claim on the main Rewards Distributor on behalf of the Vault
+          {
+            to: addresses.morphoDao.rewardsDistributor,
+            value: "0",
+            data: RewardsDistributor__factory.createInterface().encodeFunctionData("claim", [
+              vaultAddress,
+              vaultProof.amount,
+              vaultProof.proof,
+            ]),
+          },
+          // Transfer the claimed tokens to the Vaults Rewards Distributor
+          {
+            to: address,
+            value: "0",
+            data: ERC4626__factory.createInterface().encodeFunctionData("transferTokens", [
+              addresses.morphoDao.morphoToken,
+              VAULTS_REWARDS_DISTRIBUTOR,
+              tree.total,
+            ]),
+          },
+        ];
+      });
+
+      // Update the root for the vaults rewards distributor
+      txs.push({
+        to: VAULTS_REWARDS_DISTRIBUTOR,
+        value: "0",
+        data: RewardsDistributor__factory.createInterface().encodeFunctionData("updateRoot", [mergedTree.root]),
+      });
+
+      const batch = TxBuilder.batch(DAO_SAFE_ADDRESS, txs);
+
+      await fs.promises.writeFile(batchFilename, JSON.stringify(batch, null, 2));
+      console.log(`Saved batch file to ${batchFilename}`);
+    }
   }
   console.table(recap);
 };
@@ -80,7 +135,8 @@ distribute(
   configuration.vaults,
   configuration.epochTo,
   process.argv.includes("--save-history"),
-  process.argv.includes("--merge-trees")
+  process.argv.includes("--merge-trees"),
+  process.argv.includes("--create-batch")
 )
   .then(() => {
     console.log("Done");
