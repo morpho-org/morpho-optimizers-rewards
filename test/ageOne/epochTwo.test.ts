@@ -9,7 +9,6 @@ import {
 } from "../../src/utils";
 import { BigNumber, providers } from "ethers";
 import { formatUnits } from "ethers/lib/utils";
-import { WAD } from "../../src/helpers";
 import { expectBNApproxEquals } from "./epochOne.test";
 import { ages } from "../../src";
 
@@ -40,13 +39,7 @@ describe("Test the distribution for the second epoch", () => {
     const totalEmitted = usersAccumulatedRewards.reduce((a, b) => a.add(b.accumulatedRewards), BigNumber.from(0));
     const accumulatedEmission = getAccumulatedEmission(epochConfig.id); // we sum the emissions
     console.log("Total tokens emitted:", formatUnits(totalEmitted, 18), "over", accumulatedEmission.toString());
-    expectBNApproxEquals(
-      totalEmitted,
-      accumulatedEmission.mul(
-        WAD // convert to 18 decimals
-      ),
-      1e10
-    ); // 10 over 18 decimals
+    expectBNApproxEquals(totalEmitted, accumulatedEmission, 1e10);
   });
   it.skip("Should should compute the correct root", async () => {
     const usersRewards = usersAccumulatedRewards

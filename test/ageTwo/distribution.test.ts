@@ -7,9 +7,6 @@ import { aStEth, cFei } from "../../src/helpers";
 import { MarketEmission } from "../../src/utils";
 import { Optional } from "../../src/helpers/types";
 import { expectBNApproxEquals } from "../ageOne/epochOne.test";
-import { WAD } from "../../src/helpers";
-import * as fs from "fs";
-import { formatUnits } from "ethers/lib/utils";
 dotenv.config();
 describe.each([0, 1, 2])("Test the distribution of the second age", (epochIndex) => {
   const ageId = 1;
@@ -19,41 +16,6 @@ describe.each([0, 1, 2])("Test the distribution of the second age", (epochIndex)
   let marketsEmissions: Record<string, Optional<MarketEmission>> = {};
   beforeAll(async () => {
     ({ marketsEmissions } = await ageTwoDistribution(epoch, provider));
-    console.log("Epoch distrib", epoch.id);
-    await fs.promises.mkdir(`distribution/age${ageId + 1}/epoch${epochIndex + 1}`, { recursive: true });
-    await fs.promises.writeFile(
-      `distribution/age${ageId + 1}/epoch${epochIndex + 1}/marketsEmission.json`,
-      JSON.stringify(
-        {
-          age: age.ageName,
-          epoch: epoch.epochName,
-          totalEmission: epoch.totalEmission.toString(),
-          parameters: {
-            snapshotBlock: epoch.snapshotBlock,
-            initialTimestamp: epoch.initialTimestamp.toString(),
-            finalTimestamp: epoch.finalTimestamp.toString(),
-            duration: epoch.finalTimestamp.sub(epoch.initialTimestamp).toString(),
-          },
-          markets: Object.fromEntries(
-            Object.entries(marketsEmissions).map(([market, emissions]) => [
-              market,
-              {
-                supply: formatUnits(emissions!.supply),
-                supplyRate: emissions!.supplyRate.toString(),
-                borrow: formatUnits(emissions!.borrow),
-                borrowRate: emissions!.borrowRate.toString(),
-                marketEmission: formatUnits(emissions!.marketEmission),
-                p2pIndexCursor: formatUnits(emissions!.p2pIndexCursor, 4),
-              },
-            ])
-          ),
-        },
-        null,
-        2
-      )
-    );
-    // log dump of emission
-    console.log(`Dump emission for ${epoch.id}`);
   });
 
   it(`Should not distribute tokens on Compound FEI for epoch ${epoch.id}`, async () => {
@@ -71,6 +33,6 @@ describe.each([0, 1, 2])("Test the distribution of the second age", (epochIndex)
       (acc, emission) => acc.add(emission!.borrowRate.add(emission!.supplyRate).mul(duration)),
       BigNumber.from(0)
     );
-    expectBNApproxEquals(totalRewards.mul(WAD), totalEmitted, 1e8);
+    expectBNApproxEquals(totalRewards, totalEmitted, 1e8);
   });
 });

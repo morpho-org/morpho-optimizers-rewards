@@ -23,11 +23,8 @@ export const ageTwoDistribution = async (epochConfig: EpochConfig, provider?: pr
   if (!epochConfig.snapshotBlock) throw Error(`Cannot distribute tokens for epoch ${epochConfig.id}: no snapshotBlock`);
   provider ??= new providers.InfuraProvider("mainnet");
   const { aave, compound } = await getMarketsData(epochConfig.snapshotBlock, provider);
-  const aaveTokens = epochConfig.totalEmission
-    .mul(WAD)
-    .mul(epochConfig.protocolDistribution.morphoAave)
-    .div(BASIS_POINTS);
-  const compoundTokens = epochConfig.totalEmission.mul(WAD).sub(aaveTokens);
+  const aaveTokens = epochConfig.totalEmission.mul(epochConfig.protocolDistribution.morphoAave).div(BASIS_POINTS);
+  const compoundTokens = epochConfig.totalEmission.sub(aaveTokens);
   const duration = epochConfig.finalTimestamp.sub(epochConfig.initialTimestamp);
   const aaveDistribution = distributeTokens(aave, aaveTokens, duration);
   const compoundDistribution = distributeTokens(compound, compoundTokens, duration);

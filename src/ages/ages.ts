@@ -2,6 +2,7 @@ import { ageOneDistribution, ageTwoDistribution } from "./distributions";
 import { BigNumber } from "ethers";
 import { AgeConfig } from "./ages.types";
 import { BASIS_POINTS } from "../helpers";
+import { parseUnits } from "ethers/lib/utils";
 
 /**
  * Check the docs for repartition explanation
@@ -24,7 +25,7 @@ export const ages: AgeConfig[] = [
         initialBlock: 14_927_832,
         finalTimestamp: BigNumber.from(new Date("2022-07-13T17:00:00.000Z").getTime() / 1000),
         finalBlock: 15_135_480,
-        totalEmission: BigNumber.from(350_000),
+        totalEmission: parseUnits("350000"),
         protocolDistribution: {
           morphoCompound: BASIS_POINTS, // Rewards are distributed to morpho-compound on age 1
         },
@@ -38,7 +39,7 @@ export const ages: AgeConfig[] = [
         initialBlock: 15_135_481,
         finalTimestamp: BigNumber.from(new Date("2022-08-16T17:00:00.000Z").getTime() / 1000),
         finalBlock: 15_353_545,
-        totalEmission: BigNumber.from(1_700_000),
+        totalEmission: parseUnits("1700000"),
         protocolDistribution: {
           morphoCompound: BASIS_POINTS, // Rewards are distributed to morpho-compound on age 1
         },
@@ -52,7 +53,7 @@ export const ages: AgeConfig[] = [
         initialBlock: 15_353_547,
         finalTimestamp: BigNumber.from(new Date("2022-09-20T15:00:00.000Z").getTime() / 1000), // 17h CET
         finalBlock: 15_575_441,
-        totalEmission: BigNumber.from(2_950_000),
+        totalEmission: parseUnits("2950000"),
         protocolDistribution: {
           morphoCompound: BASIS_POINTS, // Rewards are distributed to morpho-compound on age 1
         },
@@ -76,7 +77,7 @@ export const ages: AgeConfig[] = [
         initialBlock: 15_575_442,
         finalTimestamp: BigNumber.from(new Date("2022-10-24T15:00:00.000Z").getTime() / 1000),
         finalBlock: 15818711,
-        totalEmission: BigNumber.from(3_000_000),
+        totalEmission: parseUnits("3000000"),
         protocolDistribution: {
           morphoCompound: BigNumber.from(9_000),
           morphoAave: BigNumber.from(1_000),
@@ -91,7 +92,7 @@ export const ages: AgeConfig[] = [
         finalBlock: 16062077,
         initialTimestamp: BigNumber.from(new Date("2022-10-24T15:00:00.000Z").getTime() / 1000),
         finalTimestamp: BigNumber.from(new Date("2022-11-27T15:00:00.000Z").getTime() / 1000),
-        totalEmission: BigNumber.from(3_400_000),
+        totalEmission: parseUnits("3400000"),
         protocolDistribution: {
           morphoCompound: BigNumber.from(6_500),
           morphoAave: BigNumber.from(3_500),
@@ -105,7 +106,7 @@ export const ages: AgeConfig[] = [
         initialBlock: 16062078,
         initialTimestamp: BigNumber.from(new Date("2022-11-27T15:00:00.000Z").getTime() / 1000),
         finalTimestamp: BigNumber.from(new Date("2022-12-29T15:00:00.000Z").getTime() / 1000), // 17h CET
-        totalEmission: BigNumber.from(3_600_000),
+        totalEmission: parseUnits("3600000"),
         protocolDistribution: {
           morphoCompound: BigNumber.from(5_000),
           morphoAave: BigNumber.from(5_000),
@@ -116,7 +117,17 @@ export const ages: AgeConfig[] = [
 ];
 
 export const allEpochs = ages
-  .map((age, ageId) => age.epochs.map((epoch, epochId) => ({ ...epoch, age: age.ageName, ageId, epochId })))
+  .map((age, ageId) =>
+    age.epochs.map((epoch, epochId) => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { epochs, ...ageConfig } = age;
+      return { ...epoch, age: age.ageName, ageId, epochId, ageConfig };
+    })
+  )
   .flat();
+
+export const finishedEpochs = allEpochs.filter((epoch) => epoch.finalTimestamp.lte(Math.round(Date.now() / 1000)));
+
+export const startedEpochs = allEpochs.filter((epoch) => epoch.initialTimestamp.lte(Math.round(Date.now() / 1000)));
 
 export const numberOfEpochs = allEpochs.length;

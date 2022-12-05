@@ -29,7 +29,7 @@ export const computeMarketsEmissions = (
     const market: MarketMinimal = ageOneMarketsParameters[marketAddress];
     // total market value at the beginning of the age
     const totalMarketUSD = market.totalBorrow.add(market.totalSupply).mul(market.price); // 18 * 2 units
-    const marketEmission = totalMarketUSD.mul(totalEmission).div(total); // in WEI units
+    const marketEmission = totalMarketUSD.mul(totalEmission.div(WAD)).div(total); // in WEI units
     const supplyTokens = marketEmission.mul(market.p2pIndexCursor).div(BASIS_POINTS);
     const supplyRate = supplyTokens.div(duration);
     const borrowTokens = marketEmission.sub(supplyTokens);
