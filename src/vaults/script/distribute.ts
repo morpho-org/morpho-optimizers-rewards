@@ -82,7 +82,7 @@ const distribute = async (
       JSON.stringify({ epoch, vaults: vaults.map((v) => v.address), ...mergedTree }, null, 2)
     );
     if (createBatch) {
-      // create the batch file for gnosis
+      // Create the batch file for gnosis
       await fs.promises.mkdir(`${baseDir}/batch`, { recursive: true });
       const batchFilename = `${baseDir}/batch/${epoch}-batch.json`;
       const txs = trees.flatMap((tree, i) => {
