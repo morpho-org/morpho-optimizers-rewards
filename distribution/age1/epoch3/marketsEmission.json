@@ -1,6 +1,7 @@
 {
   "age": "age1",
   "epoch": "epoch3",
+  "epochNumber": 3,
   "totalEmission": "2950000000000000000000000",
   "parameters": {
     "snapshotBlock": "15353032",
