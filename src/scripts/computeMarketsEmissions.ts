@@ -35,6 +35,7 @@ const computeMarketsEmissions = async (epochId?: string) => {
       const distribution = {
         age: epoch.ageConfig.ageName,
         epoch: epoch.epochName,
+        epochNumber: epoch.number,
         totalEmission: epoch.totalEmission.toString(),
         parameters: {
           snapshotBlock: epoch.snapshotBlock!.toString(),
