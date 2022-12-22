@@ -35,6 +35,7 @@ export const computeMarketsEmissions = (
     const borrowTokens = marketEmission.sub(supplyTokens);
     const borrowRate = borrowTokens.div(duration);
     marketEmissionTotal = marketEmissionTotal.add(marketEmission);
+
     marketsEmissions[marketAddress] = {
       supply: supplyTokens,
       supplyRate,
@@ -42,6 +43,8 @@ export const computeMarketsEmissions = (
       borrowRate,
       p2pIndexCursor: market.p2pIndexCursor,
       marketEmission,
+      morphoBorrow: market.totalMorphoBorrow,
+      morphoSupply: market.totalMorphoSupply,
     };
   });
   const liquidity = {

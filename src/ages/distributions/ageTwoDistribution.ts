@@ -10,6 +10,7 @@ import {
   MorphoAaveV2__factory,
   MorphoAaveV2Lens__factory,
   MorphoCompound__factory,
+  MorphoCompoundLens__factory,
   VariableDebtToken__factory,
 } from "@morpho-labs/morpho-ethers-contract";
 import addresses from "@morpho-labs/morpho-ethers-contract/lib/addresses";
@@ -54,6 +55,8 @@ const distributeTokens = (marketsData: MarketMinimal[], distribution: BigNumber,
       borrowRate,
       marketEmission,
       p2pIndexCursor: marketData.p2pIndexCursor,
+      morphoBorrow: marketData.totalBorrow,
+      morphoSupply: marketData.totalSupply,
     };
   });
   return marketsEmissions;
@@ -86,10 +89,16 @@ const getAaveMarketsParameters = async (snapshotBlock: providers.BlockTag, provi
   return Promise.all(
     allMarkets.map(async (market) => {
       const aToken = AToken__factory.connect(market, provider);
-      const [underlying, decimals, totalSupply] = await Promise.all([
+      const [
+        underlying,
+        decimals,
+        totalSupply,
+        { poolBorrowAmount, poolSupplyAmount, p2pSupplyAmount, p2pBorrowAmount },
+      ] = await Promise.all([
         aToken.UNDERLYING_ASSET_ADDRESS(overrides),
         aToken.decimals(overrides),
         aToken.totalSupply(overrides),
+        lens.getMainMarketData(market, overrides),
       ]);
       const { variableDebtTokenAddress } = await lendingPool.getReserveData(underlying, overrides);
       const debtToken = VariableDebtToken__factory.connect(variableDebtTokenAddress, provider);
@@ -102,6 +111,8 @@ const getAaveMarketsParameters = async (snapshotBlock: providers.BlockTag, provi
         address: market,
         totalSupply: totalSupply.mul(price).div(pow10BN(decimals)),
         totalBorrow: totalBorrow.mul(price).div(pow10BN(decimals)),
+        totalMorphoBorrow: poolBorrowAmount.add(p2pBorrowAmount),
+        totalMorphoSupply: poolSupplyAmount.add(p2pSupplyAmount),
         price,
         p2pIndexCursor: BigNumber.from(p2pIndexCursor),
       };
@@ -111,6 +122,7 @@ const getAaveMarketsParameters = async (snapshotBlock: providers.BlockTag, provi
 };
 const getCompoundMarketsParameters = async (snapshotBlock: providers.BlockTag, provider: providers.Provider) => {
   const morpho = MorphoCompound__factory.connect(addresses.morphoCompound.morpho, provider);
+  const lens = MorphoCompoundLens__factory.connect(addresses.morphoCompound.lens, provider);
   const overrides = { blockTag: snapshotBlock };
   const allMarkets = await morpho
     .getAllMarkets(overrides)
@@ -122,18 +134,28 @@ const getCompoundMarketsParameters = async (snapshotBlock: providers.BlockTag, p
     allMarkets.map(async (market) => {
       market = market.toLowerCase();
       const cToken = CToken__factory.connect(market, provider);
-      const [totalSupplyRaw, supplyIndex, totalBorrow, price, { p2pIndexCursor }] = await Promise.all([
+      const [
+        totalSupplyRaw,
+        supplyIndex,
+        totalBorrow,
+        price,
+        { p2pIndexCursor },
+        { p2pBorrowAmount, p2pSupplyAmount, poolBorrowAmount, poolSupplyAmount },
+      ] = await Promise.all([
         cToken.totalSupply(overrides),
         cToken.exchangeRateStored(overrides),
         cToken.totalBorrows(overrides),
         oracle.getUnderlyingPrice(market, overrides),
         morpho.marketParameters(market, overrides),
+        lens.getMainMarketData(market, overrides),
       ]);
       const totalSupply = totalSupplyRaw.mul(supplyIndex).div(WAD);
       const marketParameters: MarketMinimal = {
         address: market,
         totalSupply: totalSupply.mul(price).div(WAD),
         totalBorrow: totalBorrow.mul(price).div(WAD),
+        totalMorphoSupply: p2pSupplyAmount.add(poolSupplyAmount),
+        totalMorphoBorrow: p2pBorrowAmount.add(poolBorrowAmount),
         price,
         p2pIndexCursor: BigNumber.from(p2pIndexCursor),
       };

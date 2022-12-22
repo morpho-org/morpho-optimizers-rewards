@@ -51,6 +51,8 @@ const computeMarketsEmissions = async (epochId?: string) => {
               supplyRate: marketConfig!.supplyRate.toString(),
               borrowRate: marketConfig!.borrowRate.toString(),
               borrow: formatUnits(marketConfig!.borrow),
+              totalMarketSupply: marketConfig!.morphoSupply.toString(),
+              totalMarketBorrow: marketConfig!.morphoBorrow.toString(),
             },
           ])
         ),

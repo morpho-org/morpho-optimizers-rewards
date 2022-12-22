@@ -8,10 +8,20 @@ markets(first: 128 block: {number: $blockTag}) {
     reserveData {
       usd
       supplyPoolIndex
+      borrowPoolIndex
     }
     metrics {
       totalBorrowOnPool
       totalSupplyOnPool
+     
+      borrowBalanceInP2P
+      borrowBalanceOnPool
+      supplyBalanceInP2P
+      supplyBalanceOnPool
     }
+  p2pData {
+    p2pSupplyIndex
+    p2pBorrowIndex
+  }
   }
 }`;
