@@ -7,10 +7,19 @@ export interface GraphMarketConfiguration {
   reserveData: {
     usd: string;
     supplyPoolIndex: string;
+    borrowPoolIndex: string;
   };
   metrics: {
     totalBorrowOnPool: string;
     totalSupplyOnPool: string;
+    borrowBalanceInP2P: string;
+    borrowBalanceOnPool: string;
+    supplyBalanceInP2P: string;
+    supplyBalanceOnPool: string;
+  };
+  p2pData: {
+    p2pSupplyIndex: string;
+    p2pBorrowIndex: string;
   };
 }
 export interface Market {
@@ -32,4 +41,6 @@ export interface MarketMinimal {
   totalSupply: BigNumber;
   totalBorrow: BigNumber;
   p2pIndexCursor: BigNumber;
+  totalMorphoSupply: BigNumber;
+  totalMorphoBorrow: BigNumber;
 }

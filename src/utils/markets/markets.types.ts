@@ -7,4 +7,6 @@ export interface MarketEmission {
   borrowRate: BigNumber;
   p2pIndexCursor: BigNumber;
   marketEmission: BigNumber;
+  morphoSupply: BigNumber;
+  morphoBorrow: BigNumber;
 }
