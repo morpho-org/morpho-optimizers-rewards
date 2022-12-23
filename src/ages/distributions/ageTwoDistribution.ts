@@ -55,8 +55,8 @@ const distributeTokens = (marketsData: MarketMinimal[], distribution: BigNumber,
       borrowRate,
       marketEmission,
       p2pIndexCursor: marketData.p2pIndexCursor,
-      morphoBorrow: marketData.totalBorrow,
-      morphoSupply: marketData.totalSupply,
+      morphoBorrow: marketData.totalMorphoBorrow,
+      morphoSupply: marketData.totalMorphoSupply,
     };
   });
   return marketsEmissions;
