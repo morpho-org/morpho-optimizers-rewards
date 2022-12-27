@@ -2,7 +2,7 @@ import axios from "axios";
 
 const SNAPSHOT_ENDPOINT = "https://hub.snapshot.org/graphql";
 
-const query = `query Proposal($id: ID!) {
+const query = `query Proposal($id: String!) {
   proposal(id: $id) {
     id
     choices
