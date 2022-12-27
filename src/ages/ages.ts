@@ -3,6 +3,7 @@ import { BigNumber } from "ethers";
 import { AgeConfig } from "./ages.types";
 import { BASIS_POINTS } from "../helpers";
 import { parseUnits } from "ethers/lib/utils";
+import { ageThreeDistribution } from "./distributions/ageThreeDistribution";
 
 /**
  * Check the docs for repartition explanation
@@ -111,6 +112,52 @@ export const ages: AgeConfig[] = [
           morphoCompound: BigNumber.from(5_000),
           morphoAave: BigNumber.from(5_000),
         },
+      },
+    ],
+  },
+  {
+    ageName: "age3",
+    startTimestamp: BigNumber.from(new Date("2022-12-29T15:00:00.000Z").getTime() / 1000),
+    endTimestamp: BigNumber.from(new Date("2023-04-07T15:00:00.000Z").getTime() / 1000),
+    distribution: ageThreeDistribution,
+    subgraphUrl: "https://api.thegraph.com/subgraphs/name/morpho-labs/morpho-rewards",
+    epochs: [
+      {
+        id: "age3-epoch1",
+        number: 7,
+        epochName: "epoch1",
+        snapshotProposal: "0xf402161143c42ac5edf6589b7833eb760cbe556e18451a232e6be3d34d06f287",
+        snapshotBlock: undefined,
+        initialTimestamp: BigNumber.from(new Date("2022-12-29T15:00:00.000Z").getTime() / 1000),
+        initialBlock: undefined,
+        finalTimestamp: BigNumber.from(new Date("2023-02-01T15:00:00.000Z").getTime() / 1000),
+        finalBlock: undefined,
+        totalEmission: parseUnits("3333333"),
+        protocolDistribution: undefined,
+      },
+      {
+        id: "age3-epoch2",
+        number: 8,
+        epochName: "epoch2",
+        snapshotBlock: undefined,
+        initialTimestamp: BigNumber.from(new Date("2023-02-01T15:00:00.000Z").getTime() / 1000),
+        initialBlock: undefined,
+        finalTimestamp: BigNumber.from(new Date("2023-03-04T15:00:00.000Z").getTime() / 1000),
+        finalBlock: undefined,
+        totalEmission: parseUnits("3333333"),
+        protocolDistribution: undefined,
+      },
+      {
+        id: "age3-epoch3",
+        number: 9,
+        epochName: "epoch3",
+        snapshotBlock: undefined,
+        initialTimestamp: BigNumber.from(new Date("2023-03-04T15:00:00.000Z").getTime() / 1000),
+        initialBlock: undefined,
+        finalTimestamp: BigNumber.from(new Date("2023-04-07T15:00:00.000Z").getTime() / 1000),
+        finalBlock: undefined,
+        totalEmission: parseUnits("3333334"),
+        protocolDistribution: undefined,
       },
     ],
   },
