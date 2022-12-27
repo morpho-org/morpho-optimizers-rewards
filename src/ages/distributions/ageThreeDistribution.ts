@@ -12,7 +12,7 @@ const MARKETS = {
   cUSDC: tokens.usdc.cToken!,
   cUSDT: tokens.usdt.cToken!,
   cWBTC: tokens.wBtc.cToken!,
-  cETH: tokens.eth.cToken!,
+  cETH: tokens.wEth.cToken!,
   cCOMP: tokens.comp.cToken!,
   cUNI: tokens.uni.cToken!,
   aDai: tokens.dai.aToken!,
