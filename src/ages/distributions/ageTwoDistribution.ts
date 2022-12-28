@@ -29,16 +29,16 @@ export const ageTwoDistribution = async (
 };
 
 const distributeTokens = (marketsData: MarketMinimal[], distribution: BigNumber, duration: BigNumber) => {
-  const totalSupply = marketsData.reduce((acc, market) => acc.add(market.totalSupply), BigNumber.from(0));
-  const totalBorrow = marketsData.reduce((acc, market) => acc.add(market.totalBorrow), BigNumber.from(0));
-  const total = totalBorrow.add(totalSupply);
+  const totalPoolSupplyUSD = marketsData.reduce((acc, market) => acc.add(market.totalPoolSupplyUSD), BigNumber.from(0));
+  const totalBorrow = marketsData.reduce((acc, market) => acc.add(market.totalPoolBorrowUSD), BigNumber.from(0));
+  const total = totalBorrow.add(totalPoolSupplyUSD);
   const marketsEmissions: {
     [market: string]: Optional<MarketEmission>;
   } = {};
   marketsData.forEach((marketData) => {
-    const supply = marketData.totalSupply.mul(distribution).div(total);
+    const supply = marketData.totalPoolSupplyUSD.mul(distribution).div(total);
     const supplyRate = supply.div(duration);
-    const borrow = marketData.totalBorrow.mul(distribution).div(total);
+    const borrow = marketData.totalPoolBorrowUSD.mul(distribution).div(total);
     const borrowRate = borrow.div(duration);
     const marketEmission = supply.add(borrow);
     marketsEmissions[marketData.address.toLowerCase()] = {
@@ -47,8 +47,8 @@ const distributeTokens = (marketsData: MarketMinimal[], distribution: BigNumber,
       borrow,
       borrowRate,
       marketEmission,
-      morphoBorrow: marketData.totalMorphoBorrow,
-      morphoSupply: marketData.totalMorphoSupply,
+      morphoBorrow: marketData.morphoBorrowMarketSize,
+      morphoSupply: marketData.morphoSupplyMarketSize,
       p2pIndexCursor: marketData.p2pIndexCursor,
     };
   });

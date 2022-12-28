@@ -38,9 +38,9 @@ export interface Market {
 export interface MarketMinimal {
   address: string;
   price: BigNumber;
-  totalSupply: BigNumber;
-  totalBorrow: BigNumber;
+  totalPoolSupplyUSD: BigNumber;
+  totalPoolBorrowUSD: BigNumber;
   p2pIndexCursor: BigNumber;
-  totalMorphoSupply: BigNumber;
-  totalMorphoBorrow: BigNumber;
+  morphoSupplyMarketSize: BigNumber;
+  morphoBorrowMarketSize: BigNumber;
 }

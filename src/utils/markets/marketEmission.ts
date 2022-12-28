@@ -12,11 +12,11 @@ export const computeMarketsEmissions = (
   duration: BigNumber
 ) => {
   const totalSupplyUSD = Object.values(ageOneMarketsParameters)
-    .map((market) => market.totalSupply.mul(market.price))
+    .map((market) => market.totalPoolSupplyUSD.mul(market.price))
     .reduce((a, b) => a.add(b), BigNumber.from(0));
 
   const totalBorrowUSD = Object.values(ageOneMarketsParameters)
-    .map((market) => market.totalBorrow.mul(market.price))
+    .map((market) => market.totalPoolBorrowUSD.mul(market.price))
     .reduce((a, b) => a.add(b), BigNumber.from(0));
 
   const total = totalBorrowUSD.add(totalSupplyUSD).div(WAD);
@@ -28,7 +28,7 @@ export const computeMarketsEmissions = (
   Object.keys(ageOneMarketsParameters).forEach((marketAddress) => {
     const market: MarketMinimal = ageOneMarketsParameters[marketAddress];
     // total market value at the beginning of the age
-    const totalMarketUSD = market.totalBorrow.add(market.totalSupply).mul(market.price); // 18 * 2 units
+    const totalMarketUSD = market.totalPoolBorrowUSD.add(market.totalPoolSupplyUSD).mul(market.price); // 18 * 2 units
     const marketEmission = totalMarketUSD.mul(totalEmission.div(WAD)).div(total); // in WEI units
     const supplyTokens = marketEmission.mul(market.p2pIndexCursor).div(BASIS_POINTS);
     const supplyRate = supplyTokens.div(duration);
@@ -43,12 +43,12 @@ export const computeMarketsEmissions = (
       borrowRate,
       p2pIndexCursor: market.p2pIndexCursor,
       marketEmission,
-      morphoBorrow: market.totalMorphoBorrow,
-      morphoSupply: market.totalMorphoSupply,
+      morphoBorrow: market.morphoBorrowMarketSize,
+      morphoSupply: market.morphoSupplyMarketSize,
     };
   });
   const liquidity = {
-    totalSupply: totalSupplyUSD.div(WAD),
+    totalPoolSupplyUSD: totalSupplyUSD.div(WAD),
     totalBorrow: totalBorrowUSD.div(WAD),
     total,
   };

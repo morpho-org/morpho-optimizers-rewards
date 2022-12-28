@@ -45,7 +45,7 @@ const getAaveMarketsParameters = async (snapshotBlock: providers.BlockTag, provi
   return Promise.all(
     allMarkets.map(async (market) => {
       const aToken = AToken__factory.connect(market, provider);
-      const [underlying, decimals, totalSupply] = await Promise.all([
+      const [underlying, decimals, totalPoolSupply] = await Promise.all([
         aToken.UNDERLYING_ASSET_ADDRESS(overrides),
         aToken.decimals(overrides),
         aToken.totalSupply(overrides),
@@ -53,7 +53,7 @@ const getAaveMarketsParameters = async (snapshotBlock: providers.BlockTag, provi
       const { variableDebtTokenAddress } = await lendingPool.getReserveData(underlying, overrides);
       const debtToken = VariableDebtToken__factory.connect(variableDebtTokenAddress, provider);
       const [
-        totalBorrow,
+        totalPoolBorrow,
         price,
         { p2pIndexCursor },
         { p2pBorrowAmount, poolBorrowAmount, p2pSupplyAmount, poolSupplyAmount },
@@ -65,10 +65,10 @@ const getAaveMarketsParameters = async (snapshotBlock: providers.BlockTag, provi
       ]);
       const marketParameters: MarketMinimal = {
         address: market,
-        totalSupply: totalSupply.mul(price).div(pow10BN(decimals)),
-        totalBorrow: totalBorrow.mul(price).div(pow10BN(decimals)),
-        totalMorphoSupply: p2pSupplyAmount.add(poolSupplyAmount),
-        totalMorphoBorrow: p2pBorrowAmount.add(poolBorrowAmount),
+        totalPoolSupplyUSD: totalPoolSupply.mul(price).div(pow10BN(decimals)),
+        totalPoolBorrowUSD: totalPoolBorrow.mul(price).div(pow10BN(decimals)),
+        morphoSupplyMarketSize: p2pSupplyAmount.add(poolSupplyAmount),
+        morphoBorrowMarketSize: p2pBorrowAmount.add(poolBorrowAmount),
         price,
         p2pIndexCursor: BigNumber.from(p2pIndexCursor),
       };
@@ -93,7 +93,7 @@ const getCompoundMarketsParameters = async (snapshotBlock: providers.BlockTag, p
       const [
         totalSupplyRaw,
         supplyIndex,
-        totalBorrow,
+        totalPoolBorrow,
         price,
         { p2pIndexCursor },
         { p2pBorrowAmount, poolBorrowAmount, p2pSupplyAmount, poolSupplyAmount },
@@ -105,14 +105,14 @@ const getCompoundMarketsParameters = async (snapshotBlock: providers.BlockTag, p
         morpho.marketParameters(market, overrides),
         lens.getMainMarketData(market, overrides),
       ]);
-      const totalSupply = totalSupplyRaw.mul(supplyIndex).div(WAD);
+      const totalPoolSupply = totalSupplyRaw.mul(supplyIndex).div(WAD);
       const marketParameters: MarketMinimal = {
         address: market,
-        totalSupply: totalSupply.mul(price).div(WAD),
-        totalBorrow: totalBorrow.mul(price).div(WAD),
+        totalPoolSupplyUSD: totalPoolSupply.mul(price).div(WAD),
+        totalPoolBorrowUSD: totalPoolBorrow.mul(price).div(WAD),
         price,
-        totalMorphoSupply: p2pSupplyAmount.add(poolSupplyAmount),
-        totalMorphoBorrow: p2pBorrowAmount.add(poolBorrowAmount),
+        morphoSupplyMarketSize: p2pSupplyAmount.add(poolSupplyAmount),
+        morphoBorrowMarketSize: p2pBorrowAmount.add(poolBorrowAmount),
         p2pIndexCursor: BigNumber.from(p2pIndexCursor),
       };
       return marketParameters;

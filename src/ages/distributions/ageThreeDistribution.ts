@@ -50,10 +50,10 @@ export const ageThreeDistribution = async (
         throw Error(`Cannot distribute tokens for epoch ${epochConfig.id}: no market data for ${symbol}`);
       const scoreBn = parseUnits(score.toString());
       const distribution = epochConfig.totalEmission.mul(scoreBn).div(totalScoreBn);
-      const total = marketData.totalMorphoSupply.add(marketData.totalMorphoBorrow);
-      const supply = marketData.totalMorphoSupply.mul(distribution).div(total);
+      const total = marketData.morphoSupplyMarketSize.add(marketData.morphoBorrowMarketSize);
+      const supply = marketData.morphoSupplyMarketSize.mul(distribution).div(total);
       const supplyRate = supply.div(duration);
-      const borrow = marketData.totalMorphoBorrow.mul(distribution).div(total);
+      const borrow = marketData.morphoBorrowMarketSize.mul(distribution).div(total);
       const borrowRate = borrow.div(duration);
       const marketEmission = supply.add(borrow);
       return [
@@ -64,8 +64,8 @@ export const ageThreeDistribution = async (
           borrow,
           borrowRate,
           marketEmission,
-          morphoBorrow: marketData.totalMorphoBorrow,
-          morphoSupply: marketData.totalMorphoSupply,
+          morphoBorrow: marketData.morphoBorrowMarketSize,
+          morphoSupply: marketData.morphoSupplyMarketSize,
           p2pIndexCursor: marketData.p2pIndexCursor,
         } as MarketEmission,
       ];
