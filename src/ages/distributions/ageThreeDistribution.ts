@@ -39,7 +39,7 @@ export const ageThreeDistribution = async (
     );
   const duration = epochConfig.finalTimestamp.sub(epochConfig.initialTimestamp);
   const { markets } = await getMarketsData(epochConfig.snapshotBlock, provider!);
-  const totalScoreBn = parseUnits(proposal.scores_total);
+  const totalScoreBn = parseUnits(proposal.scores_total.toString());
   const marketsEmissions = Object.fromEntries(
     proposal.scores.map((score, index) => {
       const symbol = proposal.choices[index];
