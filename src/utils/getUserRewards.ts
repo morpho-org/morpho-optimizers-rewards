@@ -1,5 +1,4 @@
 import { BigNumber, BigNumberish, providers } from "ethers";
-import axios from "axios";
 import { maxBN, minBN, now, WAD } from "../helpers";
 import { GraphUserBalances, UserBalance, formatGraphBalances } from "./graph";
 import { Market } from "./graph/getGraphMarkets/markets.types";
@@ -160,21 +159,22 @@ const computeIndex = async (
   }, lastIndex);
 };
 
-export const getUserBalances = async (graphUrl: string, user: string, block?: number) =>
-  axios
-    .post<
-      { query: string; variables: { user: string } },
-      { data: { data?: { user?: GraphUserBalances }; errors?: any } }
-    >(graphUrl, {
+export const getUserBalances = async (graphUrl: string, user: string, block?: number) => {
+  const res = await fetch(graphUrl, {
+    method: "POST",
+    body: JSON.stringify({
       query: block ? queryWithBlock : query,
       variables: { user, block },
-    })
-    .then((r) => {
-      if (!r.data?.data) throw Error(JSON.stringify(r.data.errors));
-      if (!r.data.data.user) return undefined;
-      return formatGraphBalances(r.data.data.user);
-    });
+    }),
+  });
+  if (!res.ok) throw Error(res.status.toString());
+  const data: QueryUserBalancesResponse = await res.json();
+  if (!data?.data) throw Error(JSON.stringify(data.errors));
+  if (!data.data.user) return undefined;
+  return formatGraphBalances(data.data.user);
+};
 
+type QueryUserBalancesResponse = { data?: { user?: GraphUserBalances }; errors?: any };
 const query = `query GetUserBalances($user: ID!){
   user(id: $user) {
     address

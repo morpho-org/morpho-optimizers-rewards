@@ -23,7 +23,7 @@ jobs:
 
       - uses: actions/setup-node@v3
         with:
-          node-version: "16"
+          node-version: 18
 
       - name: Node dependencies cache
         uses: actions/cache@v3
@@ -46,7 +46,7 @@ jobs:
 
       - uses: actions/setup-node@v3
         with:
-          node-version: "16"
+          node-version: 18
 
       - name: Node dependencies cache
         uses: actions/cache@v3
@@ -69,7 +69,7 @@ jobs:
 
       - uses: actions/setup-node@v3
         with:
-          node-version: "16"
+          node-version: 18
 
       - name: Node dependencies cache
         uses: actions/cache@v3
