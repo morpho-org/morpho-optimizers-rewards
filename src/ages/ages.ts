@@ -107,6 +107,7 @@ export const ages: AgeConfig[] = [
         initialBlock: 16062078,
         initialTimestamp: BigNumber.from(new Date("2022-11-27T15:00:00.000Z").getTime() / 1000),
         finalTimestamp: BigNumber.from(new Date("2022-12-29T15:00:00.000Z").getTime() / 1000), // 17h CET
+        finalBlock: 16291169,
         totalEmission: parseUnits("3600000"),
         protocolDistribution: {
           morphoCompound: BigNumber.from(5_000),
@@ -128,8 +129,8 @@ export const ages: AgeConfig[] = [
         epochName: "epoch1",
         snapshotProposal: "0xf402161143c42ac5edf6589b7833eb760cbe556e18451a232e6be3d34d06f287",
         snapshotBlock: 16290872,
+        initialBlock: 16291170,
         initialTimestamp: BigNumber.from(new Date("2022-12-29T15:00:00.000Z").getTime() / 1000),
-        initialBlock: undefined,
         finalTimestamp: BigNumber.from(new Date("2023-02-01T15:00:00.000Z").getTime() / 1000),
         finalBlock: undefined,
         totalEmission: parseUnits("3333333"),
