@@ -1,0 +1,126 @@
+{
+  "age": "age3",
+  "epoch": "epoch1",
+  "epochNumber": 7,
+  "totalEmission": "3333333000000000000000000",
+  "parameters": {
+    "snapshotBlock": "16290872",
+    "initialTimestamp": "1672326000",
+    "finalTimestamp": "1675263600",
+    "duration": "2937600"
+  },
+  "markets": {
+    "0x030ba81f1c18d280636f32af80b9aad02cf0854e": {
+      "supply": "598957.00783715519754146",
+      "supplyRate": "203893316938029410",
+      "borrowRate": "204119559276401402",
+      "borrow": "599621.61733035675949242",
+      "totalMarketSupply": "79165048483013311484897",
+      "totalMarketBorrow": "79252890919220147288127"
+    },
+    "0x8dae6cb04688c62d939ed9b68d32bc62e49970b1": {
+      "supply": "4272.753433144735924831",
+      "supplyRate": "1454504845160925",
+      "borrowRate": "3386137310205531",
+      "borrow": "9947.116962459769198894",
+      "totalMarketSupply": "1245629475852006528887765",
+      "totalMarketBorrow": "2899868265758561616520579"
+    },
+    "0x1982b2f5814301d4e9a8b0201555376e62f82428": {
+      "supply": "232921.66034966202995758",
+      "supplyRate": "79289780892450309",
+      "borrowRate": "0",
+      "borrow": "0.0",
+      "totalMarketSupply": "96412000735823119695481",
+      "totalMarketBorrow": "0"
+    },
+    "0x9ff58f4ffb29fa2266ab25e75e2a8b3503311656": {
+      "supply": "124537.808032882944424721",
+      "supplyRate": "42394406329276601",
+      "borrowRate": "43092966375813539",
+      "borrow": "126589.898025589854903714",
+      "totalMarketSupply": "72324495047",
+      "totalMarketBorrow": "73516232519"
+    },
+    "0x3ed3b47dd13ec9a98b44e6204a523e766b225811": {
+      "supply": "197595.723731467899733423",
+      "supplyRate": "67264339505537819",
+      "borrowRate": "112142193854658172",
+      "borrow": "329428.90866744384756196",
+      "totalMarketSupply": "5975341637677",
+      "totalMarketBorrow": "9962008475903"
+    },
+    "0xbcca60bb61934080951369a648fb03df4f96263c": {
+      "supply": "277122.689767360699848917",
+      "supplyRate": "94336427616884769",
+      "borrowRate": "59889059832511417",
+      "borrow": "175930.102163985539320635",
+      "totalMarketSupply": "46230855595303",
+      "totalMarketBorrow": "29349452240226"
+    },
+    "0x028171bca77440897b824ca71d1c56cac55b68a3": {
+      "supply": "80628.012501415564942657",
+      "supplyRate": "27446899680492771",
+      "borrowRate": "5252095250017918",
+      "borrow": "15428.555006452637002625",
+      "totalMarketSupply": "13774697603050368385097035",
+      "totalMarketBorrow": "2635854129012329023416714"
+    },
+    "0xccf4429db6322d5c611ee964527d42e5d685dd6a": {
+      "supply": "28606.606294066022329924",
+      "supplyRate": "9738087654570405",
+      "borrowRate": "6441503049541133",
+      "borrow": "18922.559358332034592331",
+      "totalMarketSupply": "54822875363",
+      "totalMarketBorrow": "36263970028"
+    },
+    "0xf650c3d88d12db855b8bf7d11be6c55a4e07dcc9": {
+      "supply": "104118.812503868386464625",
+      "supplyRate": "35443495541894194",
+      "borrowRate": "27188439448721695",
+      "borrow": "79868.759724564853385561",
+      "totalMarketSupply": "12104386428147",
+      "totalMarketBorrow": "9285183993114"
+    },
+    "0x39aa39c021dfbae8fac545936693ac917d5e7563": {
+      "supply": "107504.135893631105427749",
+      "supplyRate": "36595906826535643",
+      "borrowRate": "15150395936979816",
+      "borrow": "44505.80310447190951616",
+      "totalMarketSupply": "39754973996265",
+      "totalMarketBorrow": "16458223029222"
+    },
+    "0x35a18000230da775cac24873d00ff85bccded550": {
+      "supply": "1536.71672402017318112",
+      "supplyRate": "523119799843468",
+      "borrowRate": "219094208418618",
+      "borrow": "643.611146650533250906",
+      "totalMarketSupply": "66648301055675491605578",
+      "totalMarketBorrow": "27913791002765281903613"
+    },
+    "0x4ddc2d193948926d02f9b1fe9e1daa0718270ed5": {
+      "supply": "35088.48571447738874759",
+      "supplyRate": "11944609788425037",
+      "borrowRate": "11277313413251786",
+      "borrow": "33128.235882768449050302",
+      "totalMarketSupply": "7538767837953939402375",
+      "totalMarketBorrow": "7117607788304242518348"
+    },
+    "0x70e36f6bf80a52b3b46b3af8e106cc0ed743e8e4": {
+      "supply": "1757.218128562705220812",
+      "supplyRate": "598181552479134",
+      "borrowRate": "566521289123281",
+      "borrow": "1664.212938928552136079",
+      "totalMarketSupply": "9250731582815694522920",
+      "totalMarketBorrow": "8761113344118061390243"
+    },
+    "0x5d3a536e4d6dbd6114cc1ead35777bab948e3643": {
+      "supply": "62512.682809592914267178",
+      "supplyRate": "21280188864921335",
+      "borrowRate": "13784485963605344",
+      "borrow": "40493.305966687060692972",
+      "totalMarketSupply": "34998100436842312626954326",
+      "totalMarketBorrow": "22670420233898911238735512"
+    }
+  }
+}
