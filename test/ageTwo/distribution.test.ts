@@ -15,7 +15,7 @@ describe.each([0, 1, 2])("Test the distribution of the second age", (epochIndex)
   const provider = new providers.JsonRpcProvider(process.env.RPC_URL, "mainnet");
   let marketsEmissions: Record<string, Optional<MarketEmission>> = {};
   beforeAll(async () => {
-    ({ marketsEmissions } = await ageTwoDistribution(epoch, provider));
+    ({ marketsEmissions } = await ageTwoDistribution(age, epoch, provider));
   });
 
   it(`Should not distribute tokens on Compound FEI for epoch ${epoch.id}`, async () => {

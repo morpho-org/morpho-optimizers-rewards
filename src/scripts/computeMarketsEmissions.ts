@@ -21,7 +21,7 @@ const computeMarketsEmissions = async (epochId?: string) => {
   // Compute emissions for each epoch
   const emissions = await Promise.all(
     epochs.map(async (epoch) => {
-      const { marketsEmissions } = await epoch.ageConfig.distribution(epoch, provider);
+      const { marketsEmissions } = await epoch.ageConfig.distribution(epoch.ageConfig, epoch, provider);
       return {
         epoch,
         marketsEmissions,

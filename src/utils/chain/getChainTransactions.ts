@@ -32,7 +32,7 @@ export const getChainTransactions = async (
         logIndex: event.logIndex,
         user: event.args._onBehalf,
         timestamp: await getBlockTimestamp(event),
-        market: event.args._poolTokenAddress,
+        market: event.args._poolToken,
         type: "Supply" as TransactionType,
       }))
     )
@@ -46,7 +46,7 @@ export const getChainTransactions = async (
         logIndex: event.logIndex,
         user: event.args._borrower,
         timestamp: await getBlockTimestamp(event),
-        market: event.args._poolTokenAddress,
+        market: event.args._poolToken,
         type: "Supply" as TransactionType,
       }))
     )
@@ -60,7 +60,7 @@ export const getChainTransactions = async (
         logIndex: event.logIndex,
         user: event.args._supplier,
         timestamp: await getBlockTimestamp(event),
-        market: event.args._poolTokenAddress,
+        market: event.args._poolToken,
         type: "Supply" as TransactionType,
       }))
     )
@@ -74,7 +74,7 @@ export const getChainTransactions = async (
         logIndex: event.logIndex,
         user: event.args._onBehalf,
         timestamp: await getBlockTimestamp(event),
-        market: event.args._poolTokenAddress,
+        market: event.args._poolToken,
         type: "Supply" as TransactionType,
       }))
     )
