@@ -1,7 +1,6 @@
 import { BigNumber, BigNumberish, constants, providers } from "ethers";
 import { TransactionEvents, VaultDepositEvent, VaultTransferEvent, VaultWithdrawEvent } from "./types";
 import { maxBN } from "@morpho-labs/ethers-utils/lib/utils";
-import _sortBy from "lodash/sortBy";
 import { EpochConfig } from "../ages";
 import { ERC4626, ERC4626__factory } from "./contracts";
 import { VaultEventType } from "./Distributor";
@@ -48,9 +47,15 @@ export default class VaultEventsFetcher implements EventsFetcherInterface {
     }
 
     // now we first order events
-    const allEvents: TransactionEvents[] = _sortBy(
-      [...depositEvents, ...withdrawEvents, ...transferEvents],
-      (ev: TransactionEvents) => [ev.event.blockNumber, ev.event.transactionIndex, ev.event.logIndex]
+    const allEvents: TransactionEvents[] = [...depositEvents, ...withdrawEvents, ...transferEvents].sort(
+      (event1, event2) => {
+        if (event1.event.blockNumber !== event2.event.blockNumber)
+          return event1.event.blockNumber - event2.event.blockNumber;
+        if (event1.event.transactionIndex !== event2.event.transactionIndex)
+          return event1.event.transactionIndex - event2.event.transactionIndex;
+        if (event1.event.logIndex !== event2.event.logIndex) return event1.event.logIndex - event2.event.logIndex;
+        return 0;
+      }
     );
     return [allEvents, timeFrom];
   }
@@ -68,7 +73,6 @@ export default class VaultEventsFetcher implements EventsFetcherInterface {
       +blockFromCurrentEpoch.toString(),
       +BigNumber.from(blockTo).toString()
     );
-
     return events.map((event) => ({
       type: VaultEventType.Deposit,
       event,
