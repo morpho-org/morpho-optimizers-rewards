@@ -162,6 +162,7 @@ const computeIndex = async (
 export const getUserBalances = async (graphUrl: string, user: string, block?: number) => {
   const res = await fetch(graphUrl, {
     method: "POST",
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
       query: block ? queryWithBlock : query,
       variables: { user, block },
