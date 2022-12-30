@@ -54,7 +54,7 @@ export default class VaultEventsFetcher implements EventsFetcherInterface {
         if (event1.event.transactionIndex !== event2.event.transactionIndex)
           return event1.event.transactionIndex - event2.event.transactionIndex;
         if (event1.event.logIndex !== event2.event.logIndex) return event1.event.logIndex - event2.event.logIndex;
-        return 0;
+        throw Error("Inconsistent events");
       }
     );
     return [allEvents, timeFrom];
