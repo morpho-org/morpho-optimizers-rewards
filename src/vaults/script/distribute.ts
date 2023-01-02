@@ -1,4 +1,4 @@
-import { providers } from "ethers";
+import { BigNumber, providers } from "ethers";
 import configuration, { VaultConfiguration } from "./configuration";
 import { ERC4626__factory } from "../contracts";
 import VaultEventsFetcher from "../VaultEventsFetcher";
@@ -14,6 +14,7 @@ import addresses from "@morpho-labs/morpho-ethers-contract/lib/addresses";
 import { DAO_SAFE_ADDRESS, VAULTS_REWARDS_DISTRIBUTOR } from "../constants";
 import { RewardsDistributor__factory } from "@morpho-labs/morpho-ethers-contract";
 import { TxBuilder } from "@morpho-labs/gnosis-tx-builder";
+import { getEpochFromId } from "../../utils/timestampToEpoch";
 dotenv.config();
 
 const baseDir = "./distribution/vaults";
@@ -83,37 +84,45 @@ const distribute = async (
     );
     if (createBatch) {
       // Create the batch file for gnosis
+      const epochConfig = getEpochFromId(epoch);
       await fs.promises.mkdir(`${baseDir}/batch`, { recursive: true });
       const batchFilename = `${baseDir}/batch/${epoch}-batch.json`;
-      const txs = trees.flatMap((tree, i) => {
-        const vaultAddress = vaults[i].address;
+      const txs = await Promise.all(
+        trees.map(async (tree, i) => {
+          const rewardsDistributor = RewardsDistributor__factory.connect(
+            addresses.morphoDao.rewardsDistributor,
+            provider
+          );
+          const vaultAddress = vaults[i].address;
+          const claimed = await rewardsDistributor.claimed(vaultAddress, { blockTag: epochConfig?.finalBlock });
+          console.log(`Claimed for ${vaultAddress} is ${formatUnits(claimed)}`);
+          const vaultProof = lastProof.proofs[vaultAddress]!;
+          const { address } = vaults[i];
 
-        const vaultProof = lastProof.proofs[vaultAddress]!;
-        const { address } = vaults[i];
-
-        return [
-          // Claim on the main Rewards Distributor on behalf of the Vault
-          {
-            to: addresses.morphoDao.rewardsDistributor,
-            value: "0",
-            data: RewardsDistributor__factory.createInterface().encodeFunctionData("claim", [
-              vaultAddress,
-              vaultProof.amount,
-              vaultProof.proof,
-            ]),
-          },
-          // Transfer the claimed tokens to the Vaults Rewards Distributor
-          {
-            to: address,
-            value: "0",
-            data: ERC4626__factory.createInterface().encodeFunctionData("transferTokens", [
-              addresses.morphoDao.morphoToken,
-              VAULTS_REWARDS_DISTRIBUTOR,
-              tree.total,
-            ]),
-          },
-        ];
-      });
+          return [
+            // Claim on the main Rewards Distributor on behalf of the Vault
+            {
+              to: addresses.morphoDao.rewardsDistributor,
+              value: "0",
+              data: RewardsDistributor__factory.createInterface().encodeFunctionData("claim", [
+                vaultAddress,
+                vaultProof.amount,
+                vaultProof.proof,
+              ]),
+            },
+            // Transfer the claimed tokens to the Vaults Rewards Distributor
+            {
+              to: address,
+              value: "0",
+              data: ERC4626__factory.createInterface().encodeFunctionData("transferTokens", [
+                addresses.morphoDao.morphoToken,
+                VAULTS_REWARDS_DISTRIBUTOR,
+                BigNumber.from(tree.total).sub(claimed),
+              ]),
+            },
+          ];
+        })
+      ).then((txArrays) => txArrays.flat());
 
       // Update the root for the vaults rewards distributor
       txs.push({
