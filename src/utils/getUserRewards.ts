@@ -159,6 +159,17 @@ const computeIndex = async (
   }, lastIndex);
 };
 
+const extractSubgraphBody = (status: number, body: string) => {
+  try {
+    const data = JSON.parse(body) as QueryUserBalancesResponse;
+    const errors = data?.errors ? JSON.stringify(data.errors) : body;
+    const errorMessage = `[${status}] - ${errors}`;
+    return <const>[data, errorMessage];
+  } catch (error) {
+    return <const>[null, body];
+  }
+};
+
 export const getUserBalances = async (graphUrl: string, user: string, block?: number) => {
   const res = await fetch(graphUrl, {
     method: "POST",
@@ -168,9 +179,9 @@ export const getUserBalances = async (graphUrl: string, user: string, block?: nu
       variables: { user, block },
     }),
   });
-  if (!res.ok) throw Error(res.status.toString());
-  const data: QueryUserBalancesResponse = await res.json();
-  if (!data?.data) throw Error(JSON.stringify(data.errors));
+  const body = await res.text();
+  const [data, errorMessage] = extractSubgraphBody(res.status, body);
+  if (!res.ok || !data?.data) throw Error(errorMessage);
   if (!data.data.user) return undefined;
   return formatGraphBalances(data.data.user);
 };
