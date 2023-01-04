@@ -54,8 +54,7 @@ export default class Distributor {
         this._morphoAccumulatedFromMainDistribution
       );
       console.log(`Total MORPHO distributed: ${formatUnits(totalMorphoDistributed, 18)}`);
-      this._morphoAccumulatedFromMainDistribution =
-        this._morphoAccumulatedFromMainDistribution.add(totalMorphoDistributed);
+      this._morphoAccumulatedFromMainDistribution = BigNumber.from(epochProofs.proofs[this.vaultAddress]!.amount);
       // timeFrom is the timestamp of the first block with a transaction during the current epoch.
       const [allEvents, timeFrom] = await this.eventsFetcher.fetchSortedEventsForEpoch(epochConfig);
       if (timeFrom.gt(this._lastTimestamp) && firstEpochId === epochConfig.id)
