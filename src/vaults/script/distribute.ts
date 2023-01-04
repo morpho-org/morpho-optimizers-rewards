@@ -95,9 +95,7 @@ const distribute = async (
           );
           const vaultAddress = vaults[i].address;
           const claimed = await rewardsDistributor.claimed(vaultAddress, { blockTag: epochConfig?.finalBlock });
-          console.log(`Claimed for ${vaultAddress} is ${formatUnits(claimed)}`);
           const vaultProof = lastProof.proofs[vaultAddress]!;
-          const { address } = vaults[i];
 
           return [
             // Claim on the main Rewards Distributor on behalf of the Vault
@@ -112,7 +110,7 @@ const distribute = async (
             },
             // Transfer the claimed tokens to the Vaults Rewards Distributor
             {
-              to: address,
+              to: vaultAddress,
               value: "0",
               data: ERC4626__factory.createInterface().encodeFunctionData("transferTokens", [
                 addresses.morphoDao.morphoToken,
