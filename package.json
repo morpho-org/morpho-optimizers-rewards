@@ -82,6 +82,9 @@
     "axios": "^0.27.2",
     "ethers": "^5.0.0"
   },
+  "engines": {
+    "node": ">=18"
+  },
   "config": {
     "commitizen": {
       "path": "./node_modules/cz-conventional-changelog"
