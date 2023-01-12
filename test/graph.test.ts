@@ -6,6 +6,7 @@ import * as dotenv from "dotenv";
 import { ages } from "../src";
 import { now } from "../src/helpers";
 import addresses from "@morpho-labs/morpho-ethers-contract/lib/addresses";
+import { SUBGRAPH_URL } from "../src/config";
 dotenv.config();
 jest.setTimeout(300_000);
 
@@ -13,7 +14,6 @@ const rpcUrl = process.env.RPC_URL;
 
 // run only locally to be sure of the sync of the graph without slow down the CI
 describe.skip.each(ages)("Test the current state of the subgraph", (age) => {
-  const graphUrl = age.subgraphUrl;
   const provider = new providers.JsonRpcProvider(rpcUrl);
 
   describe.each(age.epochs)(`Test subgraph for all epochs of ${age.ageName}`, (epoch) => {
@@ -23,7 +23,7 @@ describe.skip.each(ages)("Test the current state of the subgraph", (age) => {
       const MORPHO_AAVE_DEPLOYMENT_BLOCK = 15383036;
       if (epoch.finalBlock! < MORPHO_AAVE_DEPLOYMENT_BLOCK) return;
       const graphTransactions = await getGraphTransactions(
-        graphUrl,
+        SUBGRAPH_URL,
         epoch.initialTimestamp,
         epoch.finalTimestamp,
         addresses.morphoAave.morpho.toLowerCase()
@@ -51,7 +51,7 @@ describe.skip.each(ages)("Test the current state of the subgraph", (age) => {
     });
     it(`Should have handled all the transactions of the epoch ${epoch.id} for Morpho Compound`, async () => {
       const graphTransactions = await getGraphTransactions(
-        graphUrl,
+        SUBGRAPH_URL,
         epoch.initialTimestamp,
         epoch.finalTimestamp,
         addresses.morphoCompound.morpho.toLowerCase()

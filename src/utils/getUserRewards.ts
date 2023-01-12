@@ -5,9 +5,9 @@ import { Market } from "./graph/getGraphMarkets/markets.types";
 import { getEpochsBetweenTimestamps, getPrevEpoch, timestampToEpoch } from "./timestampToEpoch";
 import { RewardsDistributor__factory } from "@morpho-labs/morpho-ethers-contract";
 import addresses from "@morpho-labs/morpho-ethers-contract/lib/addresses";
-import { ages } from "../ages";
 import { getCurrentOnChainDistribution } from "./getCurrentOnChainDistribution";
 import { getEpochMarketsDistribution } from "./getEpochMarketsDistribution";
+import { SUBGRAPH_URL } from "../config";
 
 export const getUserRewards = async (
   address: string,
@@ -19,11 +19,7 @@ export const getUserRewards = async (
     const block = await provider.getBlock(blockNumber);
     timestampEnd = block.timestamp;
   }
-  const userBalances = await getUserBalances(
-    ages[0].subgraphUrl, // TODO: export the subgraphUrl
-    address.toLowerCase(),
-    blockNumber
-  );
+  const userBalances = await getUserBalances(SUBGRAPH_URL, address.toLowerCase(), blockNumber);
   const currentEpoch = timestampToEpoch(timestampEnd);
   await getEpochMarketsDistribution(currentEpoch!.epoch.id, provider); // preload to cache the current epoch configuration
   // to prevent parallel fetching of the same data

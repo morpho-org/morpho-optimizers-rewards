@@ -15,7 +15,6 @@ export const ages: AgeConfig[] = [
     startTimestamp: BigNumber.from(new Date("2022-06-08T17:00:06.000Z").getTime() / 1000),
     endTimestamp: BigNumber.from(new Date("2022-09-20T15:00:00.000Z").getTime() / 1000),
     distribution: ageOneDistribution,
-    subgraphUrl: "https://api.thegraph.com/subgraphs/name/morpho-labs/morpho-rewards",
     epochs: [
       {
         id: "age1-epoch1",
@@ -66,7 +65,6 @@ export const ages: AgeConfig[] = [
     startTimestamp: BigNumber.from(new Date("2022-09-20T15:00:00.000Z").getTime() / 1000),
     endTimestamp: BigNumber.from(new Date("2022-12-29T15:00:00.000Z").getTime() / 1000),
     distribution: ageTwoDistribution,
-    subgraphUrl: "https://api.thegraph.com/subgraphs/name/morpho-labs/morpho-rewards",
 
     epochs: [
       {
@@ -121,7 +119,6 @@ export const ages: AgeConfig[] = [
     startTimestamp: BigNumber.from(new Date("2022-12-29T15:00:00.000Z").getTime() / 1000),
     endTimestamp: BigNumber.from(new Date("2023-04-07T15:00:00.000Z").getTime() / 1000),
     distribution: ageThreeDistribution,
-    subgraphUrl: "https://api.thegraph.com/subgraphs/name/morpho-labs/morpho-rewards",
     epochs: [
       {
         id: "age3-epoch1",
