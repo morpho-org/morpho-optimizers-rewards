@@ -11,6 +11,7 @@ import { BigNumber, providers } from "ethers";
 import { formatUnits } from "ethers/lib/utils";
 import { expectBNApproxEquals } from "./epochOne.test";
 import { ages } from "../../src";
+import { SUBGRAPH_URL } from "../../src/config";
 
 describe("Test the distribution for the second epoch", () => {
   const epochConfig = ages[0].epochs[1];
@@ -20,7 +21,7 @@ describe("Test the distribution for the second epoch", () => {
   const provider = new providers.JsonRpcProvider(process.env.RPC_URL);
 
   beforeAll(async () => {
-    usersBalances = await fetchUsers(ages[0].subgraphUrl, epochConfig.finalBlock);
+    usersBalances = await fetchUsers(SUBGRAPH_URL, epochConfig.finalBlock);
     usersAccumulatedRewards = await Promise.all(
       usersBalances.map(async ({ address, balances }) => ({
         address,

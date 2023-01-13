@@ -9,6 +9,7 @@ import {
 import { BigNumber, constants, providers } from "ethers";
 import { formatUnits, parseUnits } from "ethers/lib/utils";
 import { expectBNApproxEquals } from "../ageOne/epochOne.test";
+import { SUBGRAPH_URL } from "../../src/config";
 
 describe.each([0, 1])("Age 2 users distribution", (epochId) => {
   const epochConfig = ages[1].epochs[epochId];
@@ -19,7 +20,7 @@ describe.each([0, 1])("Age 2 users distribution", (epochId) => {
   const provider = new providers.JsonRpcProvider(process.env.RPC_URL);
 
   beforeAll(async () => {
-    usersBalances = await fetchUsers(ages[0].subgraphUrl, epochConfig.finalBlock);
+    usersBalances = await fetchUsers(SUBGRAPH_URL, epochConfig.finalBlock);
     try {
       // fetch root from proofs
       onchainRoot = require(`../../distribution/proofs/proofs-${epochConfig.number}.json`).root;

@@ -2,10 +2,10 @@ import * as dotenv from "dotenv";
 import { ethers } from "ethers";
 import { getEpochFromId } from "../utils/timestampToEpoch";
 import { computeMerkleTree, fetchUsers, getAccumulatedEmission, userBalancesToUnclaimedTokens } from "../utils";
-import { ages } from "../ages";
 import { commify, formatUnits } from "ethers/lib/utils";
 import * as fs from "fs";
 import { finishedEpochs } from "../ages/ages";
+import { SUBGRAPH_URL } from "../config";
 dotenv.config();
 
 enum DataProvider {
@@ -28,7 +28,7 @@ const computeUsersDistributions = async (dataProvider: DataProvider, epochId?: s
   for (const epoch of epochs) {
     console.log(`Compute users distribution for ${epoch.id}`);
 
-    const usersBalances = await fetchUsers(ages[0].subgraphUrl, epoch.finalBlock);
+    const usersBalances = await fetchUsers(SUBGRAPH_URL, epoch.finalBlock);
     const usersAccumulatedRewards = (
       await Promise.all(
         usersBalances.map(async ({ address, balances }) => ({

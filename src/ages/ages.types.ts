@@ -29,6 +29,5 @@ export interface AgeConfig {
     epoch: EpochConfig,
     provider?: providers.Provider
   ) => Promise<{ marketsEmissions: { [p: string]: Optional<MarketEmission> } }>;
-  subgraphUrl: string;
   epochs: EpochConfig[];
 }
