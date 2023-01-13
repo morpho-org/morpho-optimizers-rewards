@@ -11,4 +11,13 @@ describe("Markets distribution", () => {
     const marketDistribution = await getMarketsDistribution(now(), provider);
     expect(marketDistribution).not.toBeUndefined();
   });
+  it("Should include the snapshotProposal field for age3", async () => {
+    const marketDistribution = await getMarketsDistribution(1672326000);
+    expect(marketDistribution.snapshotProposal).toBeTruthy();
+  });
+  // delete this test if snapshot has been deprecated
+  it("Should now include the snapshotProposal field (true until deprecation)", async () => {
+    const marketDistribution = await getMarketsDistribution();
+    expect(marketDistribution.snapshotProposal).toBeTruthy();
+  });
 });

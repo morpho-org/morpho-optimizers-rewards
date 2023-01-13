@@ -37,6 +37,7 @@ const computeMarketsEmissions = async (epochId?: string) => {
         epoch: epoch.epochName,
         epochNumber: epoch.number,
         totalEmission: epoch.totalEmission.toString(),
+        snapshotProposal: epoch.snapshotProposal?.toString(),
         parameters: {
           snapshotBlock: epoch.snapshotBlock!.toString(),
           initialTimestamp: epoch.initialTimestamp.toString(),

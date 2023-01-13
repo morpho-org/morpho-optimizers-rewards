@@ -2,6 +2,7 @@ export interface MarketsEmission {
   age: string;
   epoch: string;
   totalEmission: string;
+  snapshotProposal?: string;
   parameters: {
     snapshotBlock: string;
     initialTimestamp: string;
