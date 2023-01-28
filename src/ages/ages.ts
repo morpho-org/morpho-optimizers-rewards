@@ -1,8 +1,7 @@
-import { ageOneDistribution, ageTwoDistribution } from "./distributions";
+import { ageOneDistribution, ageTwoDistribution, ageThreeDistribution } from "./distributions";
 import { BigNumber } from "ethers";
 import { AgeConfig, ProtocolDistribution } from "./ages.types";
 import { parseUnits } from "ethers/lib/utils";
-import { ageThreeDistribution } from "./distributions/ageThreeDistribution";
 import agesData from "./ages.data.json";
 
 /**

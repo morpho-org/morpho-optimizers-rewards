@@ -1,0 +1,35 @@
+name: Create new Morpho Rewards
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    paths:
+      - "src/**"
+
+jobs:
+  compute-market-distribution:
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install dependencies
+        run: yarn install --immutable
+
+      - name: Compute Market Distribution
+        run: yarn getMarketsDistribution
+
+      - name: Commit new files to repo
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_user_name: Morpho GitHub Actions Bot
+          commit_user_email: dev@morpho.xyz
+          commit_message: Generate new distribution for rewards
+          branch: test-distribution-commit
+          create_branch: true
