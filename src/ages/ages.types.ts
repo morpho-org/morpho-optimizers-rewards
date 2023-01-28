@@ -14,10 +14,11 @@ export interface EpochConfig {
   finalBlock?: number;
   totalEmission: BigNumber;
   epochName: string;
+  protocolDistribution?: ProtocolDistribution;
+}
 
-  protocolDistribution?: {
-    [protocol: string]: BigNumber; // the percentage of tokens distributed to users of Morpho-protocol in bps
-  };
+export interface ProtocolDistribution {
+  [protocol: string]: BigNumber; // the percentage of tokens distributed to users of Morpho-protocol in bps
 }
 
 export interface AgeConfig {

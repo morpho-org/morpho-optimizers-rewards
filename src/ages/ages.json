@@ -1,0 +1,151 @@
+[
+  {
+    "ageName": "age1",
+    "startTimestamp": 1654707606,
+    "endTimestamp": 1663686000,
+    "distribution": "ageOneDistribution",
+    "epochs": [
+      {
+        "id": "age1-epoch1",
+        "number": 1,
+        "epochName": "epoch1",
+        "snapshotBlock": 14927832,
+        "initialTimestamp": 1654707606,
+        "initialBlock": 14927832,
+        "finalTimestamp": 1657731600,
+        "finalBlock": 15135480,
+        "totalEmission": "350000",
+        "protocolDistribution": {
+          "morphoCompound": 10000
+        }
+      },
+      {
+        "id": "age1-epoch2",
+        "number": 2,
+        "epochName": "epoch2",
+        "snapshotBlock": 15134933,
+        "initialTimestamp": 1657731606,
+        "initialBlock": 15135481,
+        "finalTimestamp": 1660669200,
+        "finalBlock": 15353545,
+        "totalEmission": "1700000",
+        "protocolDistribution": {
+          "morphoCompound": 10000
+        }
+      },
+      {
+        "id": "age1-epoch3",
+        "number": 3,
+        "epochName": "epoch3",
+        "snapshotBlock": 15353032,
+        "initialTimestamp": 1660669206,
+        "initialBlock": 15353547,
+        "finalTimestamp": 1663686000,
+        "finalBlock": 15575441,
+        "totalEmission": "2950000",
+        "protocolDistribution": {
+          "morphoCompound": 10000
+        }
+      }
+    ]
+  },
+  {
+    "ageName": "age2",
+    "startTimestamp": 1663686000,
+    "endTimestamp": 1672326000,
+    "distribution": "ageTwoDistribution",
+
+    "epochs": [
+      {
+        "id": "age2-epoch1",
+        "number": 4,
+        "epochName": "epoch1",
+        "snapshotBlock": 15575331,
+        "initialTimestamp": 1663686000,
+        "initialBlock": 15575442,
+        "finalTimestamp": 1666623600,
+        "finalBlock": 15818711,
+        "totalEmission": "3000000",
+        "protocolDistribution": {
+          "morphoCompound": 9000,
+          "morphoAave": 1000
+        }
+      },
+      {
+        "id": "age2-epoch2",
+        "number": 5,
+        "epochName": "epoch2",
+        "snapshotBlock": 15818122,
+        "initialBlock": 15818712,
+        "finalBlock": 16062077,
+        "initialTimestamp": 1666623600,
+        "finalTimestamp": 1669561200,
+        "totalEmission": "3400000",
+        "protocolDistribution": {
+          "morphoCompound": 6500,
+          "morphoAave": 3500
+        }
+      },
+      {
+        "id": "age2-epoch3",
+        "number": 6,
+        "epochName": "epoch3",
+        "snapshotBlock": 16061781,
+        "initialBlock": 16062078,
+        "initialTimestamp": 1669561200,
+        "finalTimestamp": 1672326000,
+        "finalBlock": 16291169,
+        "totalEmission": "3600000",
+        "protocolDistribution": {
+          "morphoCompound": 5000,
+          "morphoAave": 5000
+        }
+      }
+    ]
+  },
+  {
+    "ageName": "age3",
+    "startTimestamp": 1672326000,
+    "endTimestamp": 1680879600,
+    "distribution": "ageThreeDistribution",
+    "epochs": [
+      {
+        "id": "age3-epoch1",
+        "number": 7,
+        "epochName": "epoch1",
+        "snapshotProposal": "0xf402161143c42ac5edf6589b7833eb760cbe556e18451a232e6be3d34d06f287",
+        "snapshotBlock": 16290872,
+        "initialBlock": 16291170,
+        "initialTimestamp": 1672326000,
+        "finalTimestamp": 1675263600,
+        "finalBlock": null,
+        "totalEmission": "3333333",
+        "protocolDistribution": null
+      },
+      {
+        "id": "age3-epoch2",
+        "number": 8,
+        "epochName": "epoch2",
+        "snapshotBlock": null,
+        "initialTimestamp": 1675263600,
+        "initialBlock": null,
+        "finalTimestamp": 1677942000,
+        "finalBlock": null,
+        "totalEmission": "3333333",
+        "protocolDistribution": null
+      },
+      {
+        "id": "age3-epoch3",
+        "number": 9,
+        "epochName": "epoch3",
+        "snapshotBlock": null,
+        "initialTimestamp": 1677942000,
+        "initialBlock": null,
+        "finalTimestamp": 1680879600,
+        "finalBlock": null,
+        "totalEmission": "3333334",
+        "protocolDistribution": null
+      }
+    ]
+  }
+]
