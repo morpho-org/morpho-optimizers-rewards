@@ -21,6 +21,7 @@ const computeProtocolDistribution = (
   if (!distribution) return;
   const protocolDistribution: ProtocolDistribution = { morphoCompound: BigNumber.from(distribution.morphoCompound) };
   if ("morphoAave" in distribution) protocolDistribution.morphoAave = BigNumber.from(distribution.morphoAave);
+  return protocolDistribution;
 };
 
 export const ages: AgeConfig[] = agesData.map((data) => {

@@ -10,6 +10,8 @@ on:
 
 jobs:
   compute-market-distribution:
+    name: Compute markets distribution
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -22,10 +24,26 @@ jobs:
       - name: Install dependencies
         run: yarn install --immutable
 
-      - name: Compute Market Distribution
-        run: yarn getMarketsDistribution
+      - name: Sync snapshotBlock, initialBlock & finalBlock for epochs
+        run: yarn updateAgesData
+        env:
+          RPC_URL: ${{ secrets.RPC_URL }}
 
-      - name: Commit new files to repo
+      - name: Commit synced snapshotBlock, initialBlock & finalBlock for epochs if needed
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_user_name: Morpho GitHub Actions Bot
+          commit_user_email: dev@morpho.xyz
+          commit_message: Sync snapshotBlock, initialBlock & finalBlock for epochs
+          branch: test-distribution-commit
+          create_branch: true
+
+      - name: Compute Market Distribution
+        run: yarn markets:emissions
+        env:
+          RPC_URL: ${{ secrets.RPC_URL }}
+
+      - name: Commit new distribution to repo
         uses: stefanzweifel/git-auto-commit-action@v4
         with:
           commit_user_name: Morpho GitHub Actions Bot

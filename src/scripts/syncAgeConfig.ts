@@ -23,8 +23,8 @@ export const syncAgeConfig = async () => {
           // Workaround rate limits of Etherscan
           await new Promise((r) => setTimeout(r, index * 1000));
           if (epoch.initialTimestamp.lt(currentTimestamp) && !(epoch.initialBlock && epoch.snapshotBlock)) {
-            const block = await blockFromTimestamp(epoch.initialTimestamp, "after", apiKey);
             if (!epoch.initialBlock) {
+              const block = await blockFromTimestamp(epoch.initialTimestamp, "after", apiKey);
               changes.push({
                 epoch: epoch.id,
                 variable: "initialBlock",
@@ -33,6 +33,7 @@ export const syncAgeConfig = async () => {
               console.log("Initial block of epoch", epoch.id, "is", block);
             }
             if (!epoch.snapshotBlock) {
+              const block = await blockFromTimestamp(epoch.initialTimestamp.sub(3600), "after", apiKey);
               changes.push({
                 epoch: epoch.id,
                 variable: "snapshotBlock",
