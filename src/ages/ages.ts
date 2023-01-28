@@ -3,7 +3,8 @@ import { BigNumber } from "ethers";
 import { AgeConfig, ProtocolDistribution } from "./ages.types";
 import { parseUnits } from "ethers/lib/utils";
 import { ageThreeDistribution } from "./distributions/ageThreeDistribution";
-import agesData from "./ages.json";
+import agesData from "./ages.data.json";
+
 /**
  * Check the docs for repartition explanation
  * https://docs.morpho.xyz/usdmorpho/ages-and-epochs
@@ -30,7 +31,7 @@ export const ages: AgeConfig[] = agesData.map((data) => {
   const endTimestamp = BigNumber.from(data.endTimestamp);
   const epochs = data.epochs.map((epoch) => {
     const initialTimestamp = BigNumber.from(epoch.initialTimestamp);
-    const finalTimestamp = BigNumber.from(epoch.initialTimestamp);
+    const finalTimestamp = BigNumber.from(epoch.finalTimestamp);
     const totalEmission = parseUnits(epoch.totalEmission);
     const protocolDistribution = computeProtocolDistribution(epoch.protocolDistribution);
     const finalBlock = epoch.finalBlock ?? undefined;
