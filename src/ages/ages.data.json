@@ -54,7 +54,6 @@
     "startTimestamp": 1663686000,
     "endTimestamp": 1672326000,
     "distribution": "ageTwoDistribution",
-
     "epochs": [
       {
         "id": "age2-epoch1",
