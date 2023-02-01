@@ -1,9 +1,8 @@
-import { ageOneDistribution, ageTwoDistribution } from "./distributions";
+import { ageOneDistribution, ageTwoDistribution, ageThreeDistribution } from "./distributions";
 import { BigNumber } from "ethers";
 import { AgeConfig } from "./ages.types";
 import { BASIS_POINTS } from "../helpers";
 import { parseUnits } from "ethers/lib/utils";
-import { ageThreeDistribution } from "./distributions/ageThreeDistribution";
 
 /**
  * Check the docs for repartition explanation
@@ -137,7 +136,8 @@ export const ages: AgeConfig[] = [
         id: "age3-epoch2",
         number: 8,
         epochName: "epoch2",
-        snapshotBlock: undefined,
+        snapshotProposal: "0xa33106ba7eacd9ed97f1a5a5da6b5a9e7bec0085b0472ea0e8222c226c7acdca",
+        snapshotBlock: 16534421,
         initialTimestamp: BigNumber.from(new Date("2023-02-01T15:00:00.000Z").getTime() / 1000),
         initialBlock: undefined,
         finalTimestamp: BigNumber.from(new Date("2023-03-04T15:00:00.000Z").getTime() / 1000),
