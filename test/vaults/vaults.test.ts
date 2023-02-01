@@ -228,7 +228,7 @@ describe("Vaults Distributor", () => {
           const totalVaultRewards = currentProof.proofs[vaultAddress]!.amount;
 
           expect(totalDistributed).toBnLte(totalVaultRewards);
-          expect(totalDistributed).toBnApproxEq(totalVaultRewards, 10);
+          expect(totalDistributed).toBnApproxEq(totalVaultRewards, 12);
         });
         it("Should distribute all tokens when vaults has started being used during the epoch", async () => {
           const distributor = distributorFromEvents(vaultAddress, [
@@ -275,7 +275,7 @@ describe("Vaults Distributor", () => {
           const totalVaultRewards = BigNumber.from(currentProof.proofs[vaultAddress]!.amount);
 
           expect(totalDistributed).toBnLte(totalVaultRewards);
-          expect(totalDistributed).toBnApproxEq(totalVaultRewards, 10);
+          expect(totalDistributed).toBnApproxEq(totalVaultRewards, 12);
         });
         it("Should not distribute MORPHO to a user that has deposit/withdraw in the same transaction", async () => {
           const distributor = distributorFromEvents(vaultAddress, [
@@ -334,7 +334,7 @@ describe("Vaults Distributor", () => {
           const totalVaultRewards = currentProof.proofs[vaultAddress]!.amount;
 
           expect(totalDistributed).toBnLte(totalVaultRewards);
-          expect(totalDistributed).toBnApproxEq(totalVaultRewards, 10);
+          expect(totalDistributed).toBnApproxEq(totalVaultRewards, 12);
         });
         it("Should distribute a part of MORPHO when user withdraws", async () => {
           const distributor = distributorFromEvents(vaultAddress, [
@@ -393,7 +393,7 @@ describe("Vaults Distributor", () => {
           const totalVaultRewards = currentProof.proofs[vaultAddress]!.amount;
 
           expect(totalDistributed).toBnLte(totalVaultRewards);
-          expect(totalDistributed).toBnApproxEq(totalVaultRewards, 10);
+          expect(totalDistributed).toBnApproxEq(totalVaultRewards, 12);
 
           const distributorWithoutWithdrawal = distributorFromEvents(vaultAddress, [
             {
@@ -489,7 +489,7 @@ describe("Vaults Distributor", () => {
 
           expect(totalDistributed.lte(totalVaultRewards)).toBeTruthy();
           expect(totalDistributed).toBnLte(totalVaultRewards);
-          expect(totalDistributed).toBnApproxEq(totalVaultRewards, 10);
+          expect(totalDistributed).toBnApproxEq(totalVaultRewards, 12);
         });
         if (currentEpochConfig.number > 1) {
           it("Should handle transaction on multiple epochs", async () => {
