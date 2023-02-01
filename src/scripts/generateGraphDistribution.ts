@@ -20,10 +20,11 @@ const generateGraphDistribution = async () => {
     });
   });
   const startTimestamps = Object.fromEntries(allEpochs.map((e) => [e.id, e.initialTimestamp.toString()]));
+  const endTimestamps = Object.fromEntries(allEpochs.map((e) => [e.id, e.finalTimestamp.toString()]));
 
   await fs.promises.writeFile(
     "distribution/ipfs.json",
-    JSON.stringify({ startTimestamps, formattedEmissions }, null, 2)
+    JSON.stringify({ startTimestamps, endTimestamps, formattedEmissions }, null, 2)
   );
 };
 

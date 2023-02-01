@@ -10,6 +10,17 @@
     "age3-epoch2": "1675263600",
     "age3-epoch3": "1677942000"
   },
+  "endTimestamps": {
+    "age1-epoch1": "1657731600",
+    "age1-epoch2": "1660669200",
+    "age1-epoch3": "1663686000",
+    "age2-epoch1": "1666623600",
+    "age2-epoch2": "1669561200",
+    "age2-epoch3": "1672326000",
+    "age3-epoch1": "1675263600",
+    "age3-epoch2": "1677942000",
+    "age3-epoch3": "1680879600"
+  },
   "formattedEmissions": {
     "age1-epoch1-Supply-0x35a18000230da775cac24873d00ff85bccded550": "252003228310040",
     "age1-epoch1-Borrow-0x35a18000230da775cac24873d00ff85bccded550": "648008301368675",
