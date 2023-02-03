@@ -23,6 +23,10 @@
     {
       "name": "Oumar",
       "email": "oumar@morpho.xyz"
+    },
+    {
+      "name": "Guillaume",
+      "email": "guillaume@morpho.xyz"
     }
   ],
   "license": "MIT",
