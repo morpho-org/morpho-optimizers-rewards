@@ -6,7 +6,7 @@ import * as fs from "fs";
 dotenv.config();
 
 import { pinata, uploadToIPFS } from "../utils/ipfs/uploadToIPFS";
-const generateGraphEmission = async () => {
+const generateGraphEmissions = async () => {
   const canUse = await pinata.testAuthentication();
 
   if (!canUse.authenticated) throw new Error("Wrong Pinata Key");
@@ -40,7 +40,7 @@ const generateGraphEmission = async () => {
   );
 };
 
-generateGraphEmission().catch((e) => {
+generateGraphEmissions().catch((e) => {
   console.error(e);
   process.exit(1);
 });

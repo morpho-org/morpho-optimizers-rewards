@@ -45,7 +45,7 @@
     "updateAgesData": "ts-node src/scripts/updateAgesData.ts",
     "vaults:distribute": "ts-node src/vaults/script/distribute.ts",
     "markets:emissions": "ts-node src/scripts/computeMarketsEmissions.ts",
-    "markets:emissions:subgraph": "ts-node src/scripts/generateGraphEmission.ts",
+    "markets:emissions:subgraph": "ts-node src/scripts/generateGraphEmissions.ts",
     "users:distribute": "ts-node src/scripts/computeUsersDistributions.ts",
     "ipfs:upload": "ts-node src/scripts/uploadProofsToPinata.ts",
     "prepublishOnly": "yarn build && yarn lint",
