@@ -7,14 +7,14 @@ export interface EpochConfig {
   id: string;
   number: number;
   snapshotProposal?: string;
-  snapshotBlock?: number;
+  snapshotBlock?: number | null;
   initialTimestamp: BigNumber;
   finalTimestamp: BigNumber;
-  initialBlock?: number;
-  finalBlock?: number;
+  initialBlock?: number | null;
+  finalBlock?: number | null;
   totalEmission: BigNumber;
   epochName: string;
-  protocolDistribution?: ProtocolDistribution;
+  protocolDistribution?: ProtocolDistribution | null;
 }
 
 export interface ProtocolDistribution {

@@ -24,32 +24,19 @@ const computeProtocolDistribution = (
   return protocolDistribution;
 };
 
-export const ages: AgeConfig[] = agesData.map((data) => {
-  // @ts-ignore
-  const distribution = distributions[data.ageName];
-  const startTimestamp = BigNumber.from(data.startTimestamp);
-  const endTimestamp = BigNumber.from(data.endTimestamp);
-  const epochs = data.epochs.map((epoch) => {
-    const initialTimestamp = BigNumber.from(epoch.initialTimestamp);
-    const finalTimestamp = BigNumber.from(epoch.finalTimestamp);
-    const totalEmission = parseUnits(epoch.totalEmission);
-    const protocolDistribution = computeProtocolDistribution(epoch.protocolDistribution);
-    const finalBlock = epoch.finalBlock ?? undefined;
-    const initialBlock = epoch.initialBlock ?? undefined;
-    const snapshotBlock = epoch.snapshotBlock ?? undefined;
-    return {
-      ...epoch,
-      initialTimestamp,
-      finalTimestamp,
-      totalEmission,
-      protocolDistribution,
-      finalBlock,
-      initialBlock,
-      snapshotBlock,
-    };
-  });
-  return { ...data, distribution, startTimestamp, endTimestamp, epochs };
-});
+export const ages: AgeConfig[] = agesData.map(({ startTimestamp, endTimestamp, epochs, ...data }) => ({
+  ...data,
+  distribution: distributions[data.ageName as keyof typeof distributions],
+  startTimestamp: BigNumber.from(new Date(startTimestamp).getTime() / 1000),
+  endTimestamp: BigNumber.from(new Date(endTimestamp).getTime() / 1000),
+  epochs: epochs.map(({ initialTimestamp, finalTimestamp, totalEmission, protocolDistribution, ...epoch }) => ({
+    ...epoch,
+    initialTimestamp: BigNumber.from(new Date(initialTimestamp).getTime() / 1000),
+    finalTimestamp: BigNumber.from(new Date(finalTimestamp).getTime() / 1000),
+    totalEmission: parseUnits(totalEmission),
+    protocolDistribution: computeProtocolDistribution(protocolDistribution),
+  })),
+}));
 
 export const allEpochs = ages.flatMap((age, ageId) =>
   age.epochs.map((epoch, epochId) => {
