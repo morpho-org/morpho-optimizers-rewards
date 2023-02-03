@@ -4,7 +4,7 @@ import { allEpochs, startedEpochs } from "../ages/ages";
 import * as fs from "fs";
 
 dotenv.config();
-const generateGraphDistribution = async () => {
+const generateGraphEmission = async () => {
   const provider = new providers.JsonRpcProvider(process.env.RPC_URL);
   const distributions = await Promise.all(
     startedEpochs.map(async (epoch) => ({
@@ -28,7 +28,7 @@ const generateGraphDistribution = async () => {
   );
 };
 
-generateGraphDistribution().catch((e) => {
+generateGraphEmission().catch((e) => {
   console.error(e);
   process.exit(1);
 });

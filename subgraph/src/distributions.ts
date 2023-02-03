@@ -1,7 +1,7 @@
 import { Address, BigInt, ipfs, json, JSONValue, JSONValueKind, log, TypedMap } from "@graphprotocol/graph-ts";
 import { one } from "./constants";
+import { IPFS_HASH } from "./ipfs";
 
-const IPFS_HASH = "QmTeTzGngALH3m3Nsir8ohGaH6MCErQYTuPxqjbZNLYBPg";
 export const getNextId = (id: string): string => {
   const ageEpoch = id.split("-");
   const age = ageEpoch[0];
