@@ -1,7 +1,7 @@
 name: Create new Morpho Rewards
 
 on:
-  workflow_dispatch
+  workflow_dispatch:
   schedule:
     - cron: '0 15 * * *'
 
@@ -32,7 +32,7 @@ jobs:
         with:
           commit_user_name: Morpho GitHub Actions Bot
           commit_user_email: dev@morpho.xyz
-          commit_message: Sync snapshotBlock, initialBlock & finalBlock for epochs
+          commit_message: "feat: Sync snapshotBlock, initialBlock & finalBlock for epochs"
 
       - name: Compute Market Distribution
         run: yarn markets:emissions
@@ -44,4 +44,4 @@ jobs:
         with:
           commit_user_name: Morpho GitHub Actions Bot
           commit_user_email: dev@morpho.xyz
-          commit_message: Generate new distribution for rewards
+          commit_message: "feat: Generate new distribution for rewards"
