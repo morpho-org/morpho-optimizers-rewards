@@ -56,6 +56,18 @@ If you want to compute the emissions for a specific epoch, you can use the `--ep
 yarn markets:emissions --epoch age2-epoch1
 ```
 
+## **Subgraph**
+
+The subgraph is tracking users position in "real time", but it must use the markets emissions as input.  
+So after each market emission update, the subgraph must be bupdated by using IPFS file for the distribution.  
+So you first need to generate the subgraph distribution file:
+
+```bash
+yarn markets:emissions:subgraph
+```
+Then, upload the generated file to IPFS and update the distribution IPFS hash on the subgraph [here](./subgraph/src/ipfs.ts).  
+You need to reindex the subgraph from scratch in order to fully rsync the subgraph.
+
 ## **Epochs**
 
 Morpho rewards are distributed through epochs (~3 weeks), with each epoch's per-market distribution ultimately being voted by the Morpho protocol's governance at the beginning of the Epoch. For now and until governance is set up, each epoch's per-market distribution is computed based on a given total emission distributed over open markets, based on their underlying TVL.

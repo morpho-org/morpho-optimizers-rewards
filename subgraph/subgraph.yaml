@@ -1,6 +1,7 @@
 specVersion: 0.0.4
 description: Query Morpho-Compound $MORPHO rewards through ages on mainnet
-
+features:
+  - ipfsOnEthereumContracts
 schema:
   file: ./schema.graphql
 dataSources:

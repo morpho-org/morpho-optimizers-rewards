@@ -1,9 +1,9 @@
-import { Address, BigInt, log } from "@graphprotocol/graph-ts";
+import { Address, BigInt } from "@graphprotocol/graph-ts";
 
 import { Balance, Market, MarketEpochDistribution, User } from "../generated/schema";
 
-import { emissions } from "./distributions";
 import { WAD, initialIndex } from "./constants";
+import { fetchDistributionFromDistributionId, ipfsJson } from "./distributions";
 
 export function getOrInitUser(userAddress: Address): User {
   let user = User.load(userAddress.toHexString());
@@ -72,12 +72,11 @@ export function getOrInitMarketEpoch(
   const id = epochId + "-" + poolTokenAddress.toHexString();
   let marketEpoch = MarketEpochDistribution.load(id);
   if (!marketEpoch) {
-    const emissionId = epochId + "-" + marketSide;
-    if (!emissions.has(emissionId)) log.critical("Unknown epoch id: {}", [epochId]);
-    const marketEmission = emissions.get(emissionId);
-    let speed: BigInt;
-    if (marketEmission.has(poolTokenAddress.toHexString())) speed = marketEmission.get(poolTokenAddress.toHexString());
-    else speed = BigInt.zero();
+    const obj = ipfsJson();
+    const speed = fetchDistributionFromDistributionId(
+      obj,
+      epochId + "-" + marketSide + "-" + poolTokenAddress.toHexString()
+    );
     marketEpoch = new MarketEpochDistribution(id);
     const market = getOrInitMarket(poolTokenAddress, currentTimestamp);
     market.save();

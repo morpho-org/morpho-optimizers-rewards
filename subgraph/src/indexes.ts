@@ -1,10 +1,14 @@
-import { Address, BigInt, log } from "@graphprotocol/graph-ts";
+import { Address, BigInt, Bytes, log } from "@graphprotocol/graph-ts";
 
-import { emissions } from "./distributions";
+import {
+  epochIdToEndTimestamp,
+  epochIdToStartTimestamp,
+  fetchDistribution,
+  fetchDistributionFromDistributionId,
+  ipfsJson,
+  timestampToEpochId,
+} from "./distributions";
 import { getOrInitMarket, getOrInitMarketEpoch } from "./initializer";
-import { getAgeAndEpoch } from "./constants/getAgeAndEpoch";
-import { endTimestamps } from "./constants/endTimestamps";
-import { startTimestamps } from "./constants/startTimestamps";
 import { WAD } from "./constants";
 
 /**
@@ -12,22 +16,12 @@ import { WAD } from "./constants";
  * to be in the same epoch
  */
 const computeOneEpochDistribuedRewards = (
-  marketAddress: Address,
   timestampFrom: BigInt,
   timestampTo: BigInt,
   totalSupply: BigInt,
-  emissionId: string
+  speed: BigInt
 ): BigInt => {
-  if (!emissions.has(emissionId)) log.critical("No emission defined for id {}", [emissionId]);
-  const speeds = emissions.get(emissionId);
-  if (!speeds.has(marketAddress.toHexString())) {
-    // there is no rewards for this market
-    log.info("No speed for {} on emission {}", [marketAddress.toHexString(), emissionId]);
-    return BigInt.zero();
-  }
-  const speed = speeds.get(marketAddress.toHexString());
-  log.debug("$MORPHO {} speed for market {}: {}", [emissionId, marketAddress.toHexString(), speed.toHexString()]);
-
+  if (speed.isZero()) return BigInt.zero();
   const morphoAccrued = timestampTo.minus(timestampFrom).times(speed); // WAD
   if (morphoAccrued.lt(BigInt.zero())) log.critical("negative token emission {}", [morphoAccrued.toString()]);
 
@@ -42,56 +36,70 @@ const computeUpdatedMorphoIndex = (
   lastTotalUnderlying: BigInt,
   marketSide: string
 ): BigInt => {
+  const obj = ipfsJson();
   // sync eventual previous epoch
-  const prevEpochId = getAgeAndEpoch(lastUpdateBlockTimestamp);
-  const currentEpochId = getAgeAndEpoch(blockTimestamp);
-  if (!currentEpochId) return lastMorphoIndex;
-  const emissionId = currentEpochId + "-" + marketSide;
+  const prevEpochId = timestampToEpochId(obj, lastUpdateBlockTimestamp);
+  const currentEpochId = timestampToEpochId(obj, blockTimestamp);
+  if (!currentEpochId) return lastMorphoIndex; // TODO: to move at the end
+
   if (!prevEpochId && currentEpochId) {
     // start of the first epoch
-    if (!startTimestamps.has(currentEpochId)) log.critical("No start timestamp for epoch {}", [currentEpochId]);
+    const start = epochIdToStartTimestamp(obj, currentEpochId);
+    if (!start) {
+      log.critical("No start timestamp for epoch {}", [currentEpochId as string]);
+      return BigInt.zero();
+    }
     const accrualIndex = computeOneEpochDistribuedRewards(
-      marketAddress,
-      startTimestamps.get(currentEpochId),
+      start,
       blockTimestamp,
       lastTotalUnderlying,
-      emissionId
+      fetchDistribution(obj, blockTimestamp, marketSide, marketAddress)
     );
     return lastMorphoIndex.plus(accrualIndex);
   }
-  if (prevEpochId && prevEpochId !== currentEpochId) {
+  if (
+    prevEpochId &&
+    currentEpochId &&
+    // string comparison is not working when compiled with WASM, we have to pass through bytes comparison
+    !Bytes.fromUTF8(prevEpochId.toString()).equals(Bytes.fromUTF8(currentEpochId.toString()))
+  ) {
     // need to tackle multiple speeds
+    log.warning("Prev epoch: {}, current epoch: {}", [prevEpochId, currentEpochId as string]);
+    const end = epochIdToEndTimestamp(obj, prevEpochId);
 
-    if (!endTimestamps.has(prevEpochId)) log.critical("No end timestamp for epoch {}", [prevEpochId]);
-    const endTimestamp = endTimestamps.get(prevEpochId);
+    if (!end) {
+      log.critical("No end timestamp for epoch {}", [prevEpochId]);
+      return BigInt.zero();
+    }
     lastMorphoIndex = lastMorphoIndex.plus(
       computeOneEpochDistribuedRewards(
-        marketAddress,
         lastUpdateBlockTimestamp,
-        endTimestamp,
+        end,
         lastTotalUnderlying,
-        prevEpochId + "-" + marketSide
+        fetchDistributionFromDistributionId(obj, prevEpochId + "-" + marketSide + "-" + marketAddress.toHexString())
       )
     );
-    const snapshot = getOrInitMarketEpoch(marketAddress, prevEpochId, marketSide, endTimestamp);
+    const snapshot = getOrInitMarketEpoch(marketAddress, prevEpochId, marketSide, end);
     snapshot.index = lastMorphoIndex;
-    snapshot.timestamp = endTimestamp;
+    snapshot.timestamp = end;
     snapshot.isFinished = true;
     snapshot.save();
-    if (!startTimestamps.has(currentEpochId as string)) {
+    const startTimestamp = epochIdToStartTimestamp(obj, currentEpochId as string);
+
+    if (!startTimestamp) {
       log.critical("No start timestamp for epoch {}", [currentEpochId as string]);
+      return BigInt.zero();
     }
-    const startTimestamp = startTimestamps.get(currentEpochId as string);
     lastUpdateBlockTimestamp = startTimestamp;
     if (startTimestamp.ge(blockTimestamp)) return lastMorphoIndex;
     // stop the distribution if it is the beginning of the current epoch, else start distribution
   }
+  const id = ((currentEpochId as string) + "-" + marketSide + "-" + marketAddress.toHexString()) as string;
   const accrualIndex = computeOneEpochDistribuedRewards(
-    marketAddress,
     lastUpdateBlockTimestamp,
     blockTimestamp,
     lastTotalUnderlying,
-    emissionId
+    fetchDistributionFromDistributionId(obj, id)
   );
   const newIndex = lastMorphoIndex.plus(accrualIndex);
 
