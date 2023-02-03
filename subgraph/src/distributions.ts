@@ -1,7 +1,7 @@
 import { Address, BigInt, ipfs, json, JSONValue, JSONValueKind, log, TypedMap } from "@graphprotocol/graph-ts";
 import { one } from "./constants";
 
-const IPFS_HASH = "QmT29MKM3i9UcP99efhrdae6yYr3T3CG39y6rvqDxM4tWx";
+const IPFS_HASH = "QmTeTzGngALH3m3Nsir8ohGaH6MCErQYTuPxqjbZNLYBPg";
 export const getNextId = (id: string): string => {
   const ageEpoch = id.split("-");
   const age = ageEpoch[0];
@@ -78,13 +78,9 @@ export const timestampToEpochId = (obj: TypedMap<string, JSONValue>, timestamp: 
   let epoch = "age1-epoch1";
   while (true) {
     let endTimestamp = epochIdToEndTimestamp(obj, epoch);
-    if (endTimestamp && endTimestamp.ge(timestamp)) return epoch;
-    let nextEpoch = getNextId(epoch);
-    let nextTimestamp = epochIdToStartTimestamp(obj, nextEpoch);
-    if (!nextTimestamp) log.warning("Epoch Id: {}", [nextEpoch]);
-    if (nextTimestamp && endTimestamp && timestamp.gt(endTimestamp) && timestamp.le(nextTimestamp)) return null; // between 2 epochs
-    if (!nextTimestamp || (endTimestamp && endTimestamp.gt(timestamp))) return epoch; // last epoch considered as the current one
-    epoch = nextEpoch;
+    if (!endTimestamp) return epoch;
+    if (timestamp.le(endTimestamp)) return epoch;
+    epoch = getNextId(epoch);
   }
 };
 export const fetchDistribution = (

@@ -1,4 +1,4 @@
-import { Address, BigInt, log } from "@graphprotocol/graph-ts";
+import { Address, BigInt, Bytes, log } from "@graphprotocol/graph-ts";
 
 import {
   epochIdToEndTimestamp,
@@ -57,8 +57,14 @@ const computeUpdatedMorphoIndex = (
     );
     return lastMorphoIndex.plus(accrualIndex);
   }
-  if (prevEpochId && prevEpochId !== currentEpochId) {
+  if (
+    prevEpochId &&
+    currentEpochId &&
+    // string comparison is not working when compiled with WASM, we have to pass through bytes comparison
+    !Bytes.fromUTF8(prevEpochId.toString()).equals(Bytes.fromUTF8(currentEpochId.toString()))
+  ) {
     // need to tackle multiple speeds
+    log.warning("Prev epoch: {}, current epoch: {}", [prevEpochId, currentEpochId as string]);
     const end = epochIdToEndTimestamp(obj, prevEpochId);
 
     if (!end) {
