@@ -28,7 +28,7 @@ const computeUsersDistributions = async (dataProvider: DataProvider, epochId?: s
   for (const epoch of epochs) {
     console.log(`Compute users distribution for ${epoch.id}`);
 
-    const usersBalances = await fetchUsers(SUBGRAPH_URL, epoch.finalBlock);
+    const usersBalances = await fetchUsers(SUBGRAPH_URL, epoch.finalBlock ?? undefined);
     const usersAccumulatedRewards = (
       await Promise.all(
         usersBalances.map(async ({ address, balances }) => ({

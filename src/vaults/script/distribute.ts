@@ -94,7 +94,9 @@ const distribute = async (
             provider
           );
           const vaultAddress = vaults[i].address;
-          const claimed = await rewardsDistributor.claimed(vaultAddress, { blockTag: epochConfig?.finalBlock });
+          const claimed = await rewardsDistributor.claimed(vaultAddress, {
+            blockTag: epochConfig?.finalBlock ?? undefined,
+          });
           const vaultProof = lastProof.proofs[vaultAddress]!;
 
           return [
