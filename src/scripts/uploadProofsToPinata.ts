@@ -1,12 +1,7 @@
 import "dotenv/config";
-import PinataSDK from "@pinata/sdk";
 import * as fs from "fs";
 import * as path from "path";
-
-const pinataJWTKey = process.env.PINATA_JWT_KEY;
-if (!pinataJWTKey) console.error("Missing Pinata_JWT_KEY");
-if (!pinataJWTKey) process.exit(0);
-const pinata = new PinataSDK({ pinataJWTKey });
+import { pinata, uploadToIPFS } from "../utils/ipfs/uploadToIPFS";
 
 const readAllFiles = async (folders: string[]): Promise<string[]> => {
   const nested = await Promise.all(
@@ -26,23 +21,6 @@ const readAllFiles = async (folders: string[]): Promise<string[]> => {
     })
   );
   return nested.flat();
-};
-
-const uploadToIPFS = async (file: { name: string; body: any }, iteration = 0) => {
-  if (iteration > 10) return;
-  const { name, body } = file;
-  console.log(`Pinning ${name} to IPFS, iteration ${iteration}`);
-  try {
-    await new Promise((r) => setTimeout(r, 1000));
-    await pinata.pinJSONToIPFS(body, {
-      pinataMetadata: { name },
-      pinataOptions: { cidVersion: 0 },
-    });
-    console.log(`Added ${name} to IPFS`);
-  } catch (error) {
-    console.error(`Unable to add ${name} to IPFS`);
-    await uploadToIPFS(file, iteration + 1);
-  }
 };
 
 const uploadProofsToPinata = async () => {
