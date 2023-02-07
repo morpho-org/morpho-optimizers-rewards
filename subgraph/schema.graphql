@@ -67,14 +67,22 @@ type Balance @entity {
   userBorrowOnPoolIndex: BigInt!
   "V2 distribution mechanism borrow in p2p index"
   userBorrowInP2PIndex: BigInt!
-  "Number of MORPHO accumulated at the last transaction of the user"
-  accumulatedMorpho: BigInt!
+  "Number of MORPHO accumulated at the last transaction of the user from supply position with V1"
+  accumulatedSupplyMorphoV1: BigInt!
+  "Number of MORPHO accumulated at the last transaction of the user from borrow position with V1"
+  accumulatedBorrowMorphoV1: BigInt!
 
   "Number of MORPHO accumulated at the last transaction of the user from supply position"
-  accumulatedSupplyMorpho: BigInt!
+  accumulatedSupplyMorphoV2: BigInt!
 
   "Number of MORPHO accumulated at the last transaction of the user from borrow position"
+  accumulatedBorrowMorphoV2: BigInt!
+
+  "Number of MORPHO accumulated at the last transaction of the user from supply position with V1 and V2 versions"
+  accumulatedSupplyMorpho: BigInt!
+  "Number of MORPHO accumulated at the last transaction of the user from borrow position with V1 and V2 versions"
   accumulatedBorrowMorpho: BigInt!
+
 }
 
 type Transaction @entity {
