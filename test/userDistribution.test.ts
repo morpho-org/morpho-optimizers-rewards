@@ -14,7 +14,6 @@ import { RewardsDistributor__factory } from "@morpho-labs/morpho-ethers-contract
 import addresses from "@morpho-labs/morpho-ethers-contract/lib/addresses";
 import { getPrevEpoch } from "../src/utils/timestampToEpoch";
 
-console.log(ages);
 describe.each([...ages])("Age Users Distribution", (age) => {
   const provider = new providers.JsonRpcProvider(process.env.RPC_URL);
   const now = Math.floor(Date.now() / 1000);
