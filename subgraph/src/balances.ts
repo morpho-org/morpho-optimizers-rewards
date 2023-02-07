@@ -37,8 +37,8 @@ export const updateSupplyBalanceAndMarket = (
     .div(WAD);
 
   const previousBalance = balance.underlyingSupplyBalance;
-  const prevInP2P = balance.scaledBorrowInP2P;
-  const prevOnPool = balance.scaledBorrowOnPool;
+  const prevInP2P = balance.scaledSupplyInP2P;
+  const prevOnPool = balance.scaledSupplyOnPool;
   const accumulatedRewards = accrueMorphoTokens(newSupplyIndex, balance.userSupplyIndex, previousBalance);
 
   balance.timestamp = blockTimestamp;
@@ -47,13 +47,13 @@ export const updateSupplyBalanceAndMarket = (
   balance.userSupplyIndex = newSupplyIndex;
   balance.accumulatedMorpho = balance.accumulatedMorpho.plus(accumulatedRewards);
 
-  balance.accumulatedBorrowMorpho = balance.accumulatedBorrowMorpho.plus(
-    accrueMorphoTokens(newSupplyIndexOnPool, balance.userBorrowOnPoolIndex, balance.scaledBorrowOnPool).plus(
-      accrueMorphoTokens(newSupplyIndexInP2P, balance.userBorrowInP2PIndex, balance.scaledBorrowInP2P)
+  balance.accumulatedSupplyMorpho = balance.accumulatedSupplyMorpho.plus(
+    accrueMorphoTokens(newSupplyIndexOnPool, balance.userSupplyOnPoolIndex, balance.scaledSupplyOnPool).plus(
+      accrueMorphoTokens(newSupplyIndexInP2P, balance.userSupplyInP2PIndex, balance.scaledSupplyInP2P)
     )
   );
-  balance.userBorrowOnPoolIndex = newSupplyIndexOnPool;
-  balance.userBorrowInP2PIndex = newSupplyIndexInP2P;
+  balance.userSupplyOnPoolIndex = newSupplyIndexOnPool;
+  balance.userSupplyInP2PIndex = newSupplyIndexInP2P;
 
   balance.scaledSupplyOnPool = newBalanceOnPool;
   balance.scaledSupplyInP2P = newBalanceP2P;

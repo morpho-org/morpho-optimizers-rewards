@@ -134,6 +134,9 @@ const computeUpdatedMorphoIndexV2 = (
       return BigInt.zero();
     }
     const distribution = fetchDistribution(obj, blockTimestamp, marketSide, marketAddress);
+    // consider the speed between onPool & inP2P to be constant between 2 markets update.
+    // That means that we consider that the difference of interest generated does not make changes between
+    // on pool & in P2P repartition, i.e. lastPercentSpeed is constant.
     const speed = distribution.times(lastPercentSpeed).div(BigInt.fromString("10000"));
     const accrualIndex = computeOneEpochDistribuedRewards(start, blockTimestamp, lastTotalScaled, speed);
     return lastMorphoIndex.plus(accrualIndex);
@@ -255,7 +258,7 @@ export function updateBorrowIndexInP2P(marketAddress: Address, blockTimestamp: B
   return computeUpdatedMorphoIndexV2(
     marketAddress,
     blockTimestamp,
-    market.poolBorrowIndex,
+    market.p2pBorrowIndex,
     market.borrowUpdateBlockTimestamp,
     inP2PPercent,
     market.scaledBorrowInP2P,
@@ -302,7 +305,7 @@ export function updateSupplyIndexInP2P(marketAddress: Address, blockTimestamp: B
   return computeUpdatedMorphoIndexV2(
     marketAddress,
     blockTimestamp,
-    market.poolSupplyIndex,
+    market.p2pSupplyIndex,
     market.supplyUpdateBlockTimestamp,
     inP2PPercent,
     market.scaledSupplyInP2P,
