@@ -12,9 +12,7 @@ import {
   updateSupplyIndexOnPool,
 } from "./indexes";
 import { getOrInitBalance, getOrInitMarket } from "./initializer";
-import { WAD } from "./constants";
-
-const VERSION_2_TIMESTAMP = BigInt.fromString("1675263600"); // age3 epoch 2 initial timestamp
+import { VERSION_2_TIMESTAMP, WAD } from "./constants";
 
 /**
  * blockTimestamp & supplyUpdateBlockTimestamp must be in
@@ -38,7 +36,9 @@ const computeSupplyIndexUpdate = (
     balance.userSupplyIndex,
     balance.underlyingSupplyBalance
   );
+
   if (!skipV1Accounting) {
+    // We skip accounting for a Supplier position update on V1 script
     balance.userSupplyIndex = newSupplyIndex;
     market.supplyIndex = newSupplyIndex;
 
@@ -142,6 +142,8 @@ const computeBorrowIndexUpdate = (
     balance.underlyingBorrowBalance
   );
   if (!skipV1Accounting) {
+    // We skip accounting for a Borrower position update on V1 script
+
     balance.userBorrowIndex = newBorrowIndex;
     balance.accumulatedBorrowMorphoV1 = balance.accumulatedBorrowMorphoV1.plus(accumulatedMorphoV1);
     market.borrowIndex = newBorrowIndex;
@@ -155,6 +157,7 @@ const computeBorrowIndexUpdate = (
   ).plus(accrueMorphoTokens(newBorrowIndexInP2P, balance.userBorrowInP2PIndex, balance.scaledBorrowInP2P));
 
   balance.accumulatedBorrowMorphoV2 = balance.accumulatedBorrowMorphoV2.plus(accumulatedMorphoV2);
+
   if (blockTimestamp.le(VERSION_2_TIMESTAMP)) {
     if (!skipV1Accounting) balance.accumulatedBorrowMorpho = balance.accumulatedBorrowMorpho.plus(accumulatedMorphoV1);
   } else {

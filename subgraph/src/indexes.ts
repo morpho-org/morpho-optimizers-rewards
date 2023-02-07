@@ -9,7 +9,7 @@ import {
   timestampToEpochId,
 } from "./distributions";
 import { getOrInitMarket, getOrInitMarketEpoch } from "./initializer";
-import { WAD } from "./constants";
+import { BASIS_POINTS, WAD } from "./constants";
 
 /**
  * The emission between timestamp from and timestamp to is linear, and the two timestamps has
@@ -265,15 +265,17 @@ export function updateBorrowIndexInP2P(marketAddress: Address, blockTimestamp: B
   );
 }
 export function updateSupplyIndexOnPool(marketAddress: Address, blockTimestamp: BigInt, indexUnits: u8): BigInt {
+  const baseUnits = BigInt.fromString("10").pow(indexUnits);
+
   const market = getOrInitMarket(marketAddress, blockTimestamp);
   if (market.supplyUpdateBlockTimestamp.ge(blockTimestamp)) return market.poolSupplyIndex;
-  const totalOnPoolInUnderlying = market.scaledSupplyOnPool
-    .times(market.lastPoolSupplyIndex)
-    .div(BigInt.fromString("10").pow(indexUnits));
-  const totalInP2PInUnderlying = market.scaledSupplyInP2P
-    .times(market.lastP2PSupplyIndex)
-    .div(BigInt.fromString("10").pow(indexUnits));
+
+  const totalOnPoolInUnderlying = market.scaledSupplyOnPool.times(market.lastPoolSupplyIndex).div(baseUnits);
+
+  const totalInP2PInUnderlying = market.scaledSupplyInP2P.times(market.lastP2PSupplyIndex).div(baseUnits);
+
   const total = totalOnPoolInUnderlying.plus(totalInP2PInUnderlying);
+
   const onPoolPercent = total.isZero()
     ? BigInt.zero()
     : totalOnPoolInUnderlying.times(BigInt.fromString("10000")).div(total);
@@ -289,18 +291,17 @@ export function updateSupplyIndexOnPool(marketAddress: Address, blockTimestamp: 
 }
 
 export function updateSupplyIndexInP2P(marketAddress: Address, blockTimestamp: BigInt, indexUnits: u8): BigInt {
+  const baseUnits = BigInt.fromString("10").pow(indexUnits);
   const market = getOrInitMarket(marketAddress, blockTimestamp);
   if (market.supplyUpdateBlockTimestamp.ge(blockTimestamp)) return market.p2pSupplyIndex;
-  const totalOnPoolInUnderlying = market.scaledSupplyOnPool
-    .times(market.lastPoolSupplyIndex)
-    .div(BigInt.fromString("10").pow(indexUnits));
-  const totalInP2PInUnderlying = market.scaledSupplyInP2P
-    .times(market.lastP2PSupplyIndex)
-    .div(BigInt.fromString("10").pow(indexUnits));
+
+  const totalOnPoolInUnderlying = market.scaledSupplyOnPool.times(market.lastPoolSupplyIndex).div(baseUnits);
+
+  const totalInP2PInUnderlying = market.scaledSupplyInP2P.times(market.lastP2PSupplyIndex).div(baseUnits);
+
   const total = totalOnPoolInUnderlying.plus(totalInP2PInUnderlying);
-  const inP2PPercent = total.isZero()
-    ? BigInt.zero()
-    : totalInP2PInUnderlying.times(BigInt.fromString("10000")).div(total);
+
+  const inP2PPercent = total.isZero() ? BigInt.zero() : totalInP2PInUnderlying.times(BASIS_POINTS).div(total);
   return computeUpdatedMorphoIndexV2(
     marketAddress,
     blockTimestamp,
