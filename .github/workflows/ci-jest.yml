@@ -84,3 +84,4 @@ jobs:
         run: yarn test
         env:
           RPC_URL: ${{ secrets.RPC_URL }}
+          SUBGRAPH_URL: ${{ secrets.SUBGRAPH_URL }}
