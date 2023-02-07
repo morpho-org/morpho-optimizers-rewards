@@ -16,7 +16,7 @@ import {
   handleSupplierPositionUpdatedInternal,
   handleWithdrawnInternal,
 } from "../mapping-internal";
-const RAY_UNITS = 27;
+const RAY_UNITS = 27 as u8;
 export function handleBorrowed(event: Borrowed): void {
   const marketAddress = event.params._poolToken;
   const userAddress = event.params._borrower;

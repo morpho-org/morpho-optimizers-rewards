@@ -31,8 +31,8 @@ export function getOrInitBalance(userAddress: Address, marketAddress: Address, c
     balance.user = getOrInitUser(userAddress).id;
 
     // V1 distribution mechanism properties
-    balance.userBorrowIndex = market.borrowIndex;
     balance.userSupplyIndex = market.supplyIndex;
+    balance.userBorrowIndex = market.borrowIndex;
     balance.underlyingSupplyBalance = BigInt.zero();
     balance.underlyingBorrowBalance = BigInt.zero();
 
@@ -43,10 +43,10 @@ export function getOrInitBalance(userAddress: Address, marketAddress: Address, c
     balance.scaledBorrowOnPool = BigInt.zero();
     balance.scaledBorrowInP2P = BigInt.zero();
 
-    balance.userSupplyOnPoolIndex = market.lastPoolSupplyIndex;
-    balance.userSupplyInP2PIndex = market.lastP2PSupplyIndex;
-    balance.userBorrowOnPoolIndex = market.lastPoolBorrowIndex;
-    balance.userBorrowInP2PIndex = market.lastP2PBorrowIndex;
+    balance.userSupplyOnPoolIndex = market.poolSupplyIndex;
+    balance.userSupplyInP2PIndex = market.p2pSupplyIndex;
+    balance.userBorrowOnPoolIndex = market.poolBorrowIndex;
+    balance.userBorrowInP2PIndex = market.p2pBorrowIndex;
 
     // Initialize the number of MORPHO distributed to zero.
     balance.accumulatedMorpho = BigInt.zero();
