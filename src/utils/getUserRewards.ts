@@ -10,6 +10,8 @@ import { getEpochMarketsDistribution } from "./getEpochMarketsDistribution";
 import { SUBGRAPH_URL } from "../config";
 import balancesQuery from "./graph/getGraphBalances/balances.query";
 
+export const VERSION_2_TIMESTAMP = BigNumber.from(1675263600);
+
 export const getUserRewards = async (
   address: string,
   blockNumber?: number,
