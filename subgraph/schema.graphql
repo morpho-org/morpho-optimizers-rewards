@@ -9,65 +9,90 @@ type User @entity {
 type Market @entity {
   "<marketAddress>"
   id: ID!
+  "The pool token address"
   address: Bytes!
-
+  "V1: The MORPHO supply index of the market"
   supplyIndex: BigInt!
+  "V2: The MORPHO pool supply index"
   poolSupplyIndex: BigInt!
+  "V2: The MORPHO P2P supply index"
   p2pSupplyIndex: BigInt!
+  "V2: The block timestamp at the last supply update"
   supplyUpdateBlockTimestamp: BigInt!
+  "V1: The block timestamp at the last supply update, without SupplierPositionUpdated events"
   supplyUpdateBlockTimestampV1: BigInt!
 
+  "V1: The MORPHO borrow index of the market"
   borrowIndex: BigInt!
+  "V2: The MORPHO pool borrow index"
   poolBorrowIndex: BigInt!
+  "V2: The MORPHO P2P borrow index"
   p2pBorrowIndex: BigInt!
+  "V2: The block timestamp at the last borrow update"
   borrowUpdateBlockTimestamp: BigInt!
+  "V1: The block timestamp at the last borrow update, without BorrowerPositionUpdated events"
   borrowUpdateBlockTimestampV1: BigInt!
 
+  "The last pool supply index of the market"
   lastPoolSupplyIndex: BigInt!
+  "The last P2P supply index of the market"
   lastP2PSupplyIndex: BigInt!
+  "The last pool borrow index of the market"
   lastPoolBorrowIndex: BigInt!
+  "The last P2P borrow index of the market"
   lastP2PBorrowIndex: BigInt!
+  "V1: The last total supply of the market (in underlying)"
   lastTotalSupply: BigInt!
+  "V1: The last total borrow of the market (in underlying)"
   lastTotalBorrow: BigInt!
 
+  "V2: The last total supply on pool of the market (in poolUnits)"
   scaledSupplyOnPool: BigInt!
+  "V2: The last total supply in P2P of the market (in p2pUnits)"
   scaledSupplyInP2P: BigInt!
+  "V2: The last total borrow on pool of the market (in poolUnits)"
   scaledBorrowOnPool: BigInt!
+  "V2: The last total borrow in P2P of the market (in p2pUnits)"
   scaledBorrowInP2P: BigInt!
 }
 
 type Balance @entity {
+
+  "<marketAddress>-<userAddress>"
   id: ID!
+  "Timestamp of the last user interaction on this market"
   timestamp: BigInt!
+
+  "Block number of the last user interaction on this market"
   blockNumber: Int!
   market: Market!
   user: User!
 
-  "V1 distribution mechanism supply index"
+  "V1 distribution mechanism user supply index"
   userSupplyIndex: BigInt!
-  "V1 distribution mechanism borrow index"
+  "V1 distribution mechanism user borrow index"
   userBorrowIndex: BigInt!
   "V1 distribution mechanism supply normalizer"
   underlyingSupplyBalance: BigInt!
   "V1 distribution mechanism borrow normalizer"
   underlyingBorrowBalance: BigInt!
 
-  "V2 distribution mechanism supply on pool normalizer"
+  "V2 distribution mechanism user supply on pool normalizer"
   scaledSupplyOnPool: BigInt!
-  "V2 distribution mechanism supply in p2p normalizer"
+  "V2 distribution mechanism user supply in p2p normalizer"
   scaledSupplyInP2P: BigInt!
-  "V2 distribution mechanism borrow on pool normalizer"
+  "V2 distribution mechanism user borrow on pool normalizer"
   scaledBorrowOnPool: BigInt!
-  "V2 distribution mechanism borrow in p2p normalizer"
+  "V2 distribution mechanism user borrow in p2p normalizer"
   scaledBorrowInP2P: BigInt!
 
-  "V2 distribution mechanism supply on pool index"
+  "V2 distribution mechanism user supply on pool index"
   userSupplyOnPoolIndex: BigInt!
-  "V2 distribution mechanism supply in p2p index"
+  "V2 distribution mechanism user supply in p2p index"
   userSupplyInP2PIndex: BigInt!
-  "V2 distribution mechanism borrow on pool index"
+  "V2 distribution mechanism user borrow on pool index"
   userBorrowOnPoolIndex: BigInt!
-  "V2 distribution mechanism borrow in p2p index"
+  "V2 distribution mechanism user borrow in p2p index"
   userBorrowInP2PIndex: BigInt!
   "Number of MORPHO accumulated at the last transaction of the user from supply position with V1"
   accumulatedSupplyMorphoV1: BigInt!
@@ -88,19 +113,33 @@ type Balance @entity {
 }
 
 type Transaction @entity {
-  "<txHash>"
+  "<txHash>-<logIndex>"
   id: ID!
+  "The hash of the transaction"
   hash: Bytes!
+
+  "The block timestamp of the tx"
   timestamp: BigInt!
+  "The block number of the tx"
   blockNumber: Int!
+  "The market of the tx"
   market: Market!
+  "The user that has receive the position modification"
   user: User!
+  "The type of the transaction"
   type: TransactionType!
+  "The Morpho Contract where the event was emmited"
   target: Bytes!
+  "The tx event log index"
   logIndex: BigInt!
+
+  "The user supply or borrow balance on pool (in poolUnits)"
   scaledOnPool: BigInt!
+  "The user supply or borrow balance in P2P (in p2pUnits)"
   scaledInP2P: BigInt!
+  "The underlying supply balance at the moment of the tx"
   underlyingSupplyBalance: BigInt!
+  "The underlying borrow balance at the moment of the tx"
   underlyingBorrowBalance: BigInt!
 }
 type MarketEpochDistribution @entity {
