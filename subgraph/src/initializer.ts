@@ -49,7 +49,10 @@ export function getOrInitBalance(userAddress: Address, marketAddress: Address, c
     balance.userBorrowInP2PIndex = market.p2pBorrowIndex;
 
     // Initialize the number of MORPHO distributed to zero.
-    balance.accumulatedMorpho = BigInt.zero();
+    balance.accumulatedSupplyMorphoV1 = BigInt.zero();
+    balance.accumulatedBorrowMorphoV1 = BigInt.zero();
+    balance.accumulatedBorrowMorphoV2 = BigInt.zero();
+    balance.accumulatedSupplyMorphoV2 = BigInt.zero();
     balance.accumulatedBorrowMorpho = BigInt.zero();
     balance.accumulatedSupplyMorpho = BigInt.zero();
     balance.save();
