@@ -8,6 +8,7 @@ import addresses from "@morpho-labs/morpho-ethers-contract/lib/addresses";
 import { getCurrentOnChainDistribution } from "./getCurrentOnChainDistribution";
 import { getEpochMarketsDistribution } from "./getEpochMarketsDistribution";
 import { SUBGRAPH_URL } from "../config";
+import balancesQuery from "./graph/getGraphBalances/balances.query";
 
 export const getUserRewards = async (
   address: string,
@@ -88,7 +89,7 @@ export const userBalancesToUnclaimedTokens = async (
 ) => {
   return Promise.all(
     balances.map(async (b) => {
-      let accumulated = b.accumulatedMorpho;
+      let accumulated = b.accumulatedBorrowMorphoV1.add(b.accumulatedSupplyMorphoV1);
       const supplyIndex = await computeSupplyIndex(b.market, currentTimestamp, provider);
       accumulated = accumulated.add(
         getUserAccumulatedRewards(supplyIndex, b.userSupplyIndex, b.underlyingSupplyBalance)
@@ -110,7 +111,7 @@ const computeSupplyIndex = async (market: Market, currentTimestamp: BigNumberish
   computeIndex(
     market.address,
     market.supplyIndex,
-    market.supplyUpdateBlockTimestamp,
+    market.supplyUpdateBlockTimestampV1,
     currentTimestamp,
     "supplyRate",
     market.lastTotalSupply,
@@ -120,7 +121,7 @@ const computeBorrowIndex = async (market: Market, currentTimestamp: BigNumberish
   computeIndex(
     market.address,
     market.borrowIndex,
-    market.borrowUpdateBlockTimestamp,
+    market.borrowUpdateBlockTimestampV1,
     currentTimestamp,
     "borrowRate",
     market.lastTotalBorrow,
@@ -137,7 +138,7 @@ const computeIndex = async (
   provider: providers.Provider
 ) => {
   const epochs = getEpochsBetweenTimestamps(lastUpdateTimestamp, currentTimestamp) ?? [];
-  // we first compute distributionof each epoch,
+  // we first compute distribution of each epoch
   const distributions = Object.fromEntries(
     await Promise.all(
       epochs.map(async (epoch) => [epoch.epoch.id, await getEpochMarketsDistribution(epoch.epoch.id, provider)])
@@ -171,7 +172,7 @@ export const getUserBalances = async (graphUrl: string, user: string, block?: nu
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
-      query: block ? queryWithBlock : query,
+      query: block ? balancesQuery.queryWithBlock : balancesQuery.query,
       variables: { user, block },
     }),
   });
@@ -183,56 +184,3 @@ export const getUserBalances = async (graphUrl: string, user: string, block?: nu
 };
 
 type QueryUserBalancesResponse = { data?: { user?: GraphUserBalances }; errors?: any };
-const query = `query GetUserBalances($user: ID!){
-  user(id: $user) {
-    address
-    balances {
-      timestamp
-      underlyingSupplyBalance
-      underlyingBorrowBalance
-      userSupplyIndex
-      userBorrowIndex
-      unclaimedMorpho
-      market {
-        address
-        supplyIndex
-        borrowIndex
-        supplyUpdateBlockTimestamp
-        borrowUpdateBlockTimestamp
-        lastP2PBorrowIndex
-        lastPoolBorrowIndex
-        lastP2PSupplyIndex
-        lastPoolSupplyIndex
-        lastTotalSupply
-        lastTotalBorrow
-      }
-    }
-  }
-}`;
-
-const queryWithBlock = `query GetUserBalances($user: ID! $block: Int!){
-  user(id: $user block: {number: $block}) {
-    address
-    balances {
-      timestamp
-      underlyingSupplyBalance
-      underlyingBorrowBalance
-      userSupplyIndex
-      userBorrowIndex
-      unclaimedMorpho
-      market {
-        address
-        supplyIndex
-        borrowIndex
-        supplyUpdateBlockTimestamp
-        borrowUpdateBlockTimestamp
-        lastP2PBorrowIndex
-        lastPoolBorrowIndex
-        lastP2PSupplyIndex
-        lastPoolSupplyIndex
-        lastTotalSupply
-        lastTotalBorrow
-      }
-    }
-  }
-}`;
