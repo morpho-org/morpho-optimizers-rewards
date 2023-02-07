@@ -224,9 +224,10 @@ export function updateBorrowIndexOnPool(marketAddress: Address, blockTimestamp: 
   const totalInP2PInUnderlying = market.scaledBorrowInP2P
     .times(market.lastP2PBorrowIndex)
     .div(BigInt.fromString("10").pow(indexUnits));
-  const onPoolPercent = totalOnPoolInUnderlying
-    .times(BigInt.fromString("10000"))
-    .div(totalOnPoolInUnderlying.plus(totalInP2PInUnderlying));
+  const total = totalOnPoolInUnderlying.plus(totalInP2PInUnderlying);
+  const onPoolPercent = total.isZero()
+    ? BigInt.zero()
+    : totalOnPoolInUnderlying.times(BigInt.fromString("10000")).div(total);
   return computeUpdatedMorphoIndexV2(
     marketAddress,
     blockTimestamp,
@@ -247,9 +248,10 @@ export function updateBorrowIndexInP2P(marketAddress: Address, blockTimestamp: B
   const totalInP2PInUnderlying = market.scaledBorrowInP2P
     .times(market.lastP2PBorrowIndex)
     .div(BigInt.fromString("10").pow(indexUnits));
-  const inP2PPercent = totalInP2PInUnderlying
-    .times(BigInt.fromString("10000"))
-    .div(totalOnPoolInUnderlying.plus(totalInP2PInUnderlying));
+  const total = totalOnPoolInUnderlying.plus(totalInP2PInUnderlying);
+  const inP2PPercent = total.isZero()
+    ? BigInt.zero()
+    : totalInP2PInUnderlying.times(BigInt.fromString("10000")).div(total);
   return computeUpdatedMorphoIndexV2(
     marketAddress,
     blockTimestamp,
@@ -269,9 +271,10 @@ export function updateSupplyIndexOnPool(marketAddress: Address, blockTimestamp: 
   const totalInP2PInUnderlying = market.scaledSupplyInP2P
     .times(market.lastP2PSupplyIndex)
     .div(BigInt.fromString("10").pow(indexUnits));
-  const onPoolPercent = totalOnPoolInUnderlying
-    .times(BigInt.fromString("10000"))
-    .div(totalOnPoolInUnderlying.plus(totalInP2PInUnderlying));
+  const total = totalOnPoolInUnderlying.plus(totalInP2PInUnderlying);
+  const onPoolPercent = total.isZero()
+    ? BigInt.zero()
+    : totalOnPoolInUnderlying.times(BigInt.fromString("10000")).div(total);
   return computeUpdatedMorphoIndexV2(
     marketAddress,
     blockTimestamp,
@@ -292,9 +295,10 @@ export function updateSupplyIndexInP2P(marketAddress: Address, blockTimestamp: B
   const totalInP2PInUnderlying = market.scaledSupplyInP2P
     .times(market.lastP2PSupplyIndex)
     .div(BigInt.fromString("10").pow(indexUnits));
-  const inP2PPercent = totalInP2PInUnderlying
-    .times(BigInt.fromString("10000"))
-    .div(totalOnPoolInUnderlying.plus(totalInP2PInUnderlying));
+  const total = totalOnPoolInUnderlying.plus(totalInP2PInUnderlying);
+  const inP2PPercent = total.isZero()
+    ? BigInt.zero()
+    : totalInP2PInUnderlying.times(BigInt.fromString("10000")).div(total);
   return computeUpdatedMorphoIndexV2(
     marketAddress,
     blockTimestamp,

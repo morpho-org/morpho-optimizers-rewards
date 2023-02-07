@@ -17,7 +17,7 @@ import {
 } from "../mapping-internal";
 import { getOrInitMarket } from "../initializer";
 
-const WAD_UNITS = 18;
+const WAD_UNITS = 18 as u8;
 export function handleP2PIndexesUpdated(event: P2PIndexesUpdated): void {
   const market = getOrInitMarket(event.params._poolTokenAddress, event.block.timestamp);
 
