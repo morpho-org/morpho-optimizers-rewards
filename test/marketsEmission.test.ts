@@ -67,7 +67,7 @@ describe.each(ages)("Test Ages Distributions", (age) => {
         });
         it(`Should have the correct borrow rates computed for ${epochConfig.id}`, async () => {
           Object.entries(marketsEmissions).forEach(([market, emission]) =>
-            expect(emission!.supplyRate.toString()).toEqual(file.markets[market].supplyRate)
+            expect(emission!.borrowRate.toString()).toEqual(file.markets[market].borrowRate)
           );
         });
         if (epochConfig.number >= 4) {
