@@ -3,6 +3,7 @@ import { getMarketsDistribution } from "../src/utils/getEpochMarketsDistribution
 import { providers } from "ethers";
 import { MarketEmission } from "../src/utils";
 import { Optional } from "../src/helpers/types";
+import { aStEth, cFei } from "../src/helpers";
 
 describe.each(ages)("Test Ages Distributions", (age) => {
   const EPOCHS_PER_AGE = 3;
@@ -69,6 +70,16 @@ describe.each(ages)("Test Ages Distributions", (age) => {
             expect(emission!.supplyRate.toString()).toEqual(file.markets[market].supplyRate)
           );
         });
+        if (epochConfig.number >= 4) {
+          it(`Should not distribute tokens on Compound FEI deprecated market for epoch ${epochConfig.id}`, async () => {
+            expect(marketsEmissions[cFei]).toBeUndefined(); // no distribution for the fei token
+          });
+
+          it(`Should not distribute tokens to StEth borrowers on Aave for epoch ${epochConfig.id}`, async () => {
+            expect(marketsEmissions[aStEth]?.borrowRate.isZero()).toEqual(true); // no borrowers of steth on aave
+            expect(marketsEmissions[aStEth]?.borrow.isZero()).toEqual(true); // no borrowers of steth on aave
+          });
+        }
       });
     }
     if (epochConfig.finalTimestamp.lt(ts)) {
