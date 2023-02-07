@@ -185,20 +185,19 @@ const computeUpdatedMorphoIndexV2 = (
     lastTotalScaled,
     speed
   );
-  const newIndex = lastMorphoIndex.plus(accrualIndex);
 
-  return newIndex;
+  return lastMorphoIndex.plus(accrualIndex);
 };
 
 export function updateSupplyIndex(marketAddress: Address, blockTimestamp: BigInt): BigInt {
   const market = getOrInitMarket(marketAddress, blockTimestamp);
-  if (market.supplyUpdateBlockTimestamp.equals(blockTimestamp)) return market.supplyIndex; // nothing to update
+  if (market.supplyUpdateBlockTimestampV1.equals(blockTimestamp)) return market.supplyIndex; // nothing to update
 
   return computeUpdatedMorphoIndex(
     marketAddress,
     blockTimestamp,
     market.supplyIndex,
-    market.supplyUpdateBlockTimestamp,
+    market.supplyUpdateBlockTimestampV1,
     market.lastTotalSupply,
     "Supply"
   );
@@ -207,13 +206,13 @@ export function updateSupplyIndex(marketAddress: Address, blockTimestamp: BigInt
 export function updateBorrowIndex(marketAddress: Address, blockTimestamp: BigInt): BigInt {
   const market = getOrInitMarket(marketAddress, blockTimestamp);
 
-  if (market.borrowUpdateBlockTimestamp.ge(blockTimestamp)) return market.borrowIndex;
+  if (market.borrowUpdateBlockTimestampV1.ge(blockTimestamp)) return market.borrowIndex;
 
   return computeUpdatedMorphoIndex(
     marketAddress,
     blockTimestamp,
     market.borrowIndex,
-    market.borrowUpdateBlockTimestamp,
+    market.borrowUpdateBlockTimestampV1,
     market.lastTotalBorrow,
     "Borrow"
   );

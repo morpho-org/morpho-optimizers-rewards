@@ -15,11 +15,13 @@ type Market @entity {
   poolSupplyIndex: BigInt!
   p2pSupplyIndex: BigInt!
   supplyUpdateBlockTimestamp: BigInt!
+  supplyUpdateBlockTimestampV1: BigInt!
 
   borrowIndex: BigInt!
   poolBorrowIndex: BigInt!
   p2pBorrowIndex: BigInt!
   borrowUpdateBlockTimestamp: BigInt!
+  borrowUpdateBlockTimestampV1: BigInt!
 
   lastPoolSupplyIndex: BigInt!
   lastP2PSupplyIndex: BigInt!

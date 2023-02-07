@@ -89,6 +89,8 @@ export function getOrInitMarket(poolTokenAddress: Address, currentTimestamp: Big
 
     market.supplyUpdateBlockTimestamp = currentTimestamp;
     market.borrowUpdateBlockTimestamp = currentTimestamp;
+    market.supplyUpdateBlockTimestampV1 = currentTimestamp;
+    market.borrowUpdateBlockTimestampV1 = currentTimestamp;
     market.lastPoolSupplyIndex = WAD;
     market.lastP2PSupplyIndex = WAD;
     market.lastPoolBorrowIndex = WAD;

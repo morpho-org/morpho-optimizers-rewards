@@ -18,7 +18,8 @@ export const handleBorrowedInternal = (
     event.block.timestamp,
     balanceInP2P,
     balanceOnPool,
-    indexUnits
+    indexUnits,
+    false
   );
 
   const tx = new Transaction(event.transaction.hash.toHexString() + "-" + event.logIndex.toHexString());
@@ -52,7 +53,8 @@ export const handleRepaidInternal = (
     event.block.timestamp,
     balanceInP2P,
     balanceOnPool,
-    indexUnits
+    indexUnits,
+    false
   );
 
   const tx = new Transaction(event.transaction.hash.toHexString() + "-" + event.logIndex.toHexString());
@@ -86,7 +88,8 @@ export const handleSuppliedInternal = (
     event.block.timestamp,
     balanceInP2P,
     balanceOnPool,
-    indexUnits
+    indexUnits,
+    false
   );
 
   const tx = new Transaction(event.transaction.hash.toHexString() + "-" + event.logIndex.toHexString());
@@ -120,7 +123,8 @@ export const handleWithdrawnInternal = (
     event.block.timestamp,
     balanceInP2P,
     balanceOnPool,
-    indexUnits
+    indexUnits,
+    false
   );
 
   const tx = new Transaction(event.transaction.hash.toHexString() + "-" + event.logIndex.toHexString());
@@ -154,7 +158,8 @@ export const handleBorrowerPositionUpdatedInternal = (
     event.block.timestamp,
     balanceInP2P,
     balanceOnPool,
-    indexUnits
+    indexUnits,
+    true
   );
 
   const tx = new Transaction(event.transaction.hash.toHexString() + "-" + event.logIndex.toHexString());
@@ -187,7 +192,8 @@ export const handleSupplierPositionUpdatedInternal = (
     event.block.timestamp,
     balanceInP2P,
     balanceOnPool,
-    indexUnits
+    indexUnits,
+    true
   );
 
   const tx = new Transaction(event.transaction.hash.toHexString() + "-" + event.logIndex.toHexString());
