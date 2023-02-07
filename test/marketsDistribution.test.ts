@@ -38,19 +38,19 @@ describe("Age 1 Epoch 2 approximation", () => {
   });
 
   it("Should derive of 7e-18 only", () => {
-    const newDistriUsers = Object.entries(newDistribution.proofs);
-    Object.entries(onChainDistribution.proofs).forEach(([onChainUser, onChainDistrib]) => {
-      const [, compareTo] = newDistriUsers.find(([u]) => u === onChainUser)!;
-      // @ts-ignore unknown type
-      const compareToAmount = BigNumber.from(compareTo.amount);
-      // @ts-ignore unknown type
-      const onChainAmount = BigNumber.from(onChainDistrib.amount);
-      const dust = compareToAmount.gte(onChainAmount)
-        ? compareToAmount.sub(onChainAmount)
-        : onChainAmount.sub(compareToAmount);
-      // the max derivation from script version one and script version two is 7 * 1e-18 $MORPHO
-      expect(dust).toBnLte(7);
-    });
+    const newDistriUsers = Object.entries(newDistribution.proofs as Record<string, { amount: string }>);
+    Object.entries(onChainDistribution.proofs as Record<string, { amount: string }>).forEach(
+      ([onChainUser, onChainDistrib]) => {
+        const [, compareTo] = newDistriUsers.find(([u]) => u === onChainUser)!;
+        const compareToAmount = BigNumber.from(compareTo.amount);
+        const onChainAmount = BigNumber.from(onChainDistrib.amount);
+        const dust = compareToAmount.gte(onChainAmount)
+          ? compareToAmount.sub(onChainAmount)
+          : onChainAmount.sub(compareToAmount);
+        // the max derivation from script version one and script version two is 7 * 1e-18 $MORPHO
+        expect(dust).toBnLte(7);
+      }
+    );
   });
 
   it("Should have the correct root on chain", async () => {
