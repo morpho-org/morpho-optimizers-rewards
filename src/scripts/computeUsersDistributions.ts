@@ -6,6 +6,7 @@ import { commify, formatUnits } from "ethers/lib/utils";
 import * as fs from "fs";
 import { finishedEpochs } from "../ages/ages";
 import { SUBGRAPH_URL } from "../config";
+import { sumRewards } from "../utils/getUserRewards";
 dotenv.config();
 
 enum DataProvider {
@@ -33,9 +34,9 @@ const computeUsersDistributions = async (dataProvider: DataProvider, epochId?: s
       await Promise.all(
         usersBalances.map(async ({ address, balances }) => ({
           address,
-          accumulatedRewards: await userBalancesToUnclaimedTokens(balances, epoch.finalTimestamp, provider).then((r) =>
-            r.toString()
-          ), // with 18 decimals
+          accumulatedRewards: sumRewards(
+            await userBalancesToUnclaimedTokens(balances, epoch.finalTimestamp, provider)
+          ).toString(), // with 18 decimals
         }))
       )
     ).filter(({ accumulatedRewards }) => accumulatedRewards !== "0");
