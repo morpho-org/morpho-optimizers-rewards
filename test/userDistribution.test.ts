@@ -13,6 +13,7 @@ import { RootUpdatedEvent } from "@morpho-labs/morpho-ethers-contract/lib/Reward
 import { RewardsDistributor__factory } from "@morpho-labs/morpho-ethers-contract";
 import addresses from "@morpho-labs/morpho-ethers-contract/lib/addresses";
 import { getPrevEpoch } from "../src/utils/timestampToEpoch";
+import { sumRewards, VERSION_2_TIMESTAMP } from "../src/utils/getUserRewards";
 
 describe.each([...ages])("Age Users Distribution", (age) => {
   const provider = new providers.JsonRpcProvider(process.env.RPC_URL);
@@ -26,9 +27,9 @@ describe.each([...ages])("Age Users Distribution", (age) => {
       usersAccumulatedRewards = await Promise.all(
         usersBalances.map(async ({ address, balances }) => ({
           address,
-          accumulatedRewards: await userBalancesToUnclaimedTokens(balances, epochConfig.finalTimestamp, provider).then(
-            (r) => r.toString()
-          ), // with 18 * 2 decimals
+          accumulatedRewards: sumRewards(
+            await userBalancesToUnclaimedTokens(balances, epochConfig.finalTimestamp, provider)
+          ).toString(), // with 18 * 2 decimals
         }))
       );
     });
@@ -64,11 +65,9 @@ describe("On chain roots update", () => {
         const usersAccumulatedRewards = await Promise.all(
           usersBalances.map(async ({ address, balances }) => ({
             address,
-            accumulatedRewards: await userBalancesToUnclaimedTokens(
-              balances,
-              epochConfig!.epoch.finalTimestamp,
-              provider
-            ).then((r) => r.toString()), // with 18 * 2 decimals
+            accumulatedRewards: sumRewards(
+              await userBalancesToUnclaimedTokens(balances, epochConfig!.epoch.finalTimestamp, provider)
+            ).toString(), // with 18 * 2 decimals
           }))
         );
         const merkleRoot = computeMerkleTree(usersAccumulatedRewards.filter((r) => r.accumulatedRewards !== "0"));
