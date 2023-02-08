@@ -12,8 +12,7 @@ import { PercentMath, WadRayMath } from "@morpho-labs/ethers-utils/lib/maths";
 import { Provider } from "@ethersproject/providers";
 import { cloneDeep } from "lodash";
 import { getUserBalances } from "./getUserBalances";
-
-export const VERSION_2_TIMESTAMP = BigNumber.from(1675263600);
+import { MARKETS_UPGRADE_SNAPSHOTS, VERSION_2_TIMESTAMP } from "../constants/mechanismUpgrade";
 
 export const getUserRewards = async (
   address: string,
@@ -29,9 +28,8 @@ export const getUserRewards = async (
   const currentEpoch = timestampToEpoch(timestampEnd);
   await getEpochMarketsDistribution(currentEpoch!.epoch.id, provider); // preload to cache the current epoch configuration
   // to prevent parallel fetching of the same data
-  const currentRewards = sumRewards(
-    await userBalancesToUnclaimedTokens(userBalances?.balances || [], timestampEnd, provider)
-  );
+  const marketsRewards = await userBalancesToUnclaimedTokens(userBalances?.balances || [], timestampEnd, provider);
+  const currentRewards = sumRewards(marketsRewards);
   const onChainDistribution = await getCurrentOnChainDistribution(provider, blockNumber);
   const claimableRaw = onChainDistribution.proofs[address.toLowerCase()];
   const claimable = claimableRaw ? BigNumber.from(claimableRaw.amount) : BigNumber.from(0);
@@ -87,6 +85,7 @@ export const getUserRewards = async (
     claimableSoon,
     claimedRewards: claimed,
     claimData,
+    markets: Object.fromEntries(marketsRewards.map(({ market, ...rewards }) => [market.address, rewards])),
   };
 };
 
@@ -107,13 +106,10 @@ export const userBalancesToUnclaimedTokens = async (
   const ts = BigNumber.from(currentTimestamp);
   return Promise.all(
     balances.map(async (b) => {
-      let balance = b;
+      let balance = cloneDeep(b);
       let accumulatedSupplyV1 = b.accumulatedSupplyMorphoV1;
       let accumulatedSupplyV2 = b.accumulatedSupplyMorphoV2;
       let accumulatedSupply = b.accumulatedSupplyMorpho;
-      let accumulatedBorrowV1 = b.accumulatedBorrowMorphoV1;
-      let accumulatedBorrowV2 = b.accumulatedBorrowMorphoV2;
-      let accumulatedBorrow = b.accumulatedBorrowMorpho;
       if (b.market.supplyUpdateBlockTimestamp.lt(VERSION_2_TIMESTAMP) && ts.gte(VERSION_2_TIMESTAMP)) {
         // compute twice when upgrading to v2 distribution mechanism
         const { updatedBalance, accruedSupplyV1, accruedSupplyV2 } = await accrueSupplyRewards(
@@ -125,15 +121,28 @@ export const userBalancesToUnclaimedTokens = async (
         accumulatedSupplyV2 = accumulatedSupplyV2.add(accruedSupplyV2);
         accumulatedSupply = accumulatedSupply.add(accruedSupplyV1);
         balance = updatedBalance;
-        const {
-          updatedBalance: updatedBalanceBorrow,
-          accruedBorrowV1,
-          accruedBorrowV2,
-        } = await accrueBorrowRewards(balance, VERSION_2_TIMESTAMP, provider);
-        accumulatedBorrowV1 = accumulatedBorrowV1.add(accruedBorrowV1);
-        accumulatedBorrowV2 = accumulatedBorrowV2.add(accruedBorrowV2);
-        accumulatedBorrow = accumulatedBorrow.add(accruedBorrowV1);
-        balance = updatedBalanceBorrow;
+      }
+      if (b.timestamp.lt(VERSION_2_TIMESTAMP) && b.market.supplyUpdateBlockTimestamp.gte(VERSION_2_TIMESTAMP)) {
+        const snapshot = MARKETS_UPGRADE_SNAPSHOTS.find((s) => s.id === b.market.address + "-supply");
+        if (!snapshot) throw Error(`No snapshot for market ${b.market.address} on supply side`);
+        const accruedSupplyV1 = getUserAccumulatedRewards(
+          BigNumber.from(snapshot.indexV1),
+          b.userSupplyIndex,
+          b.underlyingSupplyBalance
+        );
+        const accruedSupplyV2 = getUserAccumulatedRewards(
+          BigNumber.from(snapshot.poolIndex),
+          b.userSupplyOnPoolIndex,
+          b.scaledSupplyOnPool
+        ).add(
+          getUserAccumulatedRewards(BigNumber.from(snapshot.p2pIndex), b.userSupplyInP2PIndex, b.scaledSupplyInP2P)
+        );
+        accumulatedSupplyV1 = accumulatedSupplyV1.add(accruedSupplyV1);
+        accumulatedSupplyV2 = accumulatedSupplyV2.add(accruedSupplyV2);
+        accumulatedSupply = accumulatedSupply.add(accruedSupplyV1);
+        balance.userSupplyInP2PIndex = BigNumber.from(snapshot.p2pIndex);
+        balance.userSupplyOnPoolIndex = BigNumber.from(snapshot.poolIndex);
+        balance.userSupplyIndex = BigNumber.from(snapshot.indexV1);
       }
 
       const { accruedSupplyV1, accruedSupplyV2 } = await accrueSupplyRewards(balance, ts, provider);
@@ -143,12 +152,56 @@ export const userBalancesToUnclaimedTokens = async (
       if (ts.gt(VERSION_2_TIMESTAMP)) accumulatedSupply = accumulatedSupply.add(accruedSupplyV2);
       else accumulatedSupply = accumulatedSupply.add(accruedSupplyV1);
 
+      // BORROW SIDE
+
+      let accumulatedBorrowV1 = b.accumulatedBorrowMorphoV1;
+      let accumulatedBorrowV2 = b.accumulatedBorrowMorphoV2;
+      let accumulatedBorrow = b.accumulatedBorrowMorpho;
+
+      if (b.market.borrowUpdateBlockTimestamp.lt(VERSION_2_TIMESTAMP) && ts.gte(VERSION_2_TIMESTAMP)) {
+        // compute twice when upgrading to v2 distribution mechanism
+
+        const { updatedBalance, accruedBorrowV1, accruedBorrowV2 } = await accrueBorrowRewards(
+          balance,
+          VERSION_2_TIMESTAMP,
+          provider
+        );
+        accumulatedBorrowV1 = accumulatedBorrowV1.add(accruedBorrowV1);
+        accumulatedBorrowV2 = accumulatedBorrowV2.add(accruedBorrowV2);
+        accumulatedBorrow = accumulatedBorrow.add(accruedBorrowV1);
+        balance = updatedBalance;
+      }
+      if (b.timestamp.lt(VERSION_2_TIMESTAMP) && b.market.borrowUpdateBlockTimestamp.gte(VERSION_2_TIMESTAMP)) {
+        const snapshot = MARKETS_UPGRADE_SNAPSHOTS.find((s) => s.id === b.market.address + "-borrow");
+        if (!snapshot) throw Error(`No snapshot for market ${b.market.address} on borrow side`);
+
+        const accruedBorrowV1 = getUserAccumulatedRewards(
+          BigNumber.from(snapshot.indexV1),
+          b.userBorrowIndex,
+          b.underlyingBorrowBalance
+        );
+        const accruedBorrowV2 = getUserAccumulatedRewards(
+          BigNumber.from(snapshot.poolIndex),
+          b.userBorrowOnPoolIndex,
+          b.scaledBorrowOnPool
+        ).add(
+          getUserAccumulatedRewards(BigNumber.from(snapshot.p2pIndex), b.userBorrowInP2PIndex, b.scaledBorrowInP2P)
+        );
+        accumulatedBorrowV1 = accumulatedBorrowV1.add(accruedBorrowV1);
+        accumulatedBorrowV2 = accumulatedBorrowV2.add(accruedBorrowV2);
+        accumulatedBorrow = accumulatedBorrow.add(accruedBorrowV1);
+        balance.userBorrowInP2PIndex = BigNumber.from(snapshot.p2pIndex);
+        balance.userBorrowOnPoolIndex = BigNumber.from(snapshot.poolIndex);
+        balance.userBorrowIndex = BigNumber.from(snapshot.indexV1);
+      }
+
       const { accruedBorrowV1, accruedBorrowV2 } = await accrueBorrowRewards(balance, ts, provider);
       accumulatedBorrowV1 = accumulatedBorrowV1.add(accruedBorrowV1);
       accumulatedBorrowV2 = accumulatedBorrowV2.add(accruedBorrowV2);
 
       if (ts.gt(VERSION_2_TIMESTAMP)) accumulatedBorrow = accumulatedBorrow.add(accruedBorrowV2);
       else accumulatedBorrow = accumulatedBorrow.add(accruedBorrowV1);
+
       return {
         market: b.market,
         accumulatedSupplyV1,
