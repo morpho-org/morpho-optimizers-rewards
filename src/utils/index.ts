@@ -1,6 +1,7 @@
 export { timestampToEpoch, getEpochsBetweenTimestamps, getNextEpoch } from "./timestampToEpoch";
-export { userBalancesToUnclaimedTokens, getUserBalances, getUserRewards } from "./getUserRewards";
+export { userBalancesToUnclaimedTokens, getUserRewards } from "./getUserRewards";
 export { getAccumulatedEmission } from "./accumulatedEmission";
+export { getUserBalances } from "./getUserBalances";
 export * from "./markets";
 export * from "./merkleTree";
 export * from "./graph";

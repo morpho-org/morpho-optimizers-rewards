@@ -1,6 +1,6 @@
 import { BigNumber, BigNumberish, constants, providers } from "ethers";
 import { maxBN, minBN, now, WAD } from "../helpers";
-import { GraphUserBalances, UserBalance, formatGraphBalances } from "./graph";
+import { UserBalance } from "./graph";
 import { Market } from "./graph/getGraphMarkets/markets.types";
 import { getEpochsBetweenTimestamps, getPrevEpoch, timestampToEpoch } from "./timestampToEpoch";
 import { RewardsDistributor__factory } from "@morpho-labs/morpho-ethers-contract";
@@ -8,8 +8,10 @@ import addresses from "@morpho-labs/morpho-ethers-contract/lib/addresses";
 import { getCurrentOnChainDistribution } from "./getCurrentOnChainDistribution";
 import { getEpochMarketsDistribution } from "./getEpochMarketsDistribution";
 import { SUBGRAPH_URL } from "../config";
-import balancesQuery from "./graph/getGraphBalances/balances.query";
 import { PercentMath, WadRayMath } from "@morpho-labs/ethers-utils/lib/maths";
+import { Provider } from "@ethersproject/providers";
+import { cloneDeep } from "lodash";
+import { getUserBalances } from "./getUserBalances";
 
 export const VERSION_2_TIMESTAMP = BigNumber.from(1675263600);
 
@@ -88,89 +90,64 @@ export const getUserRewards = async (
   };
 };
 
+export interface MarketRewards {
+  market: Market;
+  accumulatedSupplyV1: BigNumber;
+  accumulatedSupplyV2: BigNumber;
+  accumulatedSupply: BigNumber;
+  accumulatedBorrowV1: BigNumber;
+  accumulatedBorrowV2: BigNumber;
+  accumulatedBorrow: BigNumber;
+}
 export const userBalancesToUnclaimedTokens = async (
   balances: UserBalance[],
   currentTimestamp: BigNumberish,
   provider: providers.Provider
-) => {
+): Promise<MarketRewards[]> => {
+  const ts = BigNumber.from(currentTimestamp);
   return Promise.all(
     balances.map(async (b) => {
+      let balance = b;
       let accumulatedSupplyV1 = b.accumulatedSupplyMorphoV1;
       let accumulatedSupplyV2 = b.accumulatedSupplyMorphoV2;
       let accumulatedSupply = b.accumulatedSupplyMorpho;
       let accumulatedBorrowV1 = b.accumulatedBorrowMorphoV1;
       let accumulatedBorrowV2 = b.accumulatedBorrowMorphoV2;
       let accumulatedBorrow = b.accumulatedBorrowMorpho;
-      if (
-        b.market.supplyUpdateBlockTimestamp.lt(VERSION_2_TIMESTAMP) &&
-        BigNumber.from(currentTimestamp).gte(VERSION_2_TIMESTAMP)
-      ) {
-        const supplyIndex = await computeSupplyIndex(b.market, VERSION_2_TIMESTAMP, provider);
-        const { p2pSupplyIndex, poolSupplyIndex } = await computeSupplyIndexes(b.market, VERSION_2_TIMESTAMP, provider);
-        const accruedSupplyV1 = getUserAccumulatedRewards(supplyIndex, b.userSupplyIndex, b.underlyingSupplyBalance);
+      if (b.market.supplyUpdateBlockTimestamp.lt(VERSION_2_TIMESTAMP) && ts.gte(VERSION_2_TIMESTAMP)) {
+        // compute twice when upgrading to v2 distribution mechanism
+        const { updatedBalance, accruedSupplyV1, accruedSupplyV2 } = await accrueSupplyRewards(
+          b,
+          VERSION_2_TIMESTAMP,
+          provider
+        );
         accumulatedSupplyV1 = accumulatedSupplyV1.add(accruedSupplyV1);
-        accumulatedSupplyV2 = accumulatedSupplyV2.add(
-          getUserAccumulatedRewards(p2pSupplyIndex, b.userSupplyInP2PIndex, b.scaledSupplyInP2P).add(
-            getUserAccumulatedRewards(poolSupplyIndex, b.userSupplyOnPoolIndex, b.scaledSupplyOnPool)
-          )
-        );
+        accumulatedSupplyV2 = accumulatedSupplyV2.add(accruedSupplyV2);
         accumulatedSupply = accumulatedSupply.add(accruedSupplyV1);
-        // update the market
-        b.market.p2pSupplyIndex = p2pSupplyIndex;
-        b.market.poolSupplyIndex = poolSupplyIndex;
-        b.market.supplyIndex = supplyIndex;
-        b.market.supplyUpdateBlockTimestamp = VERSION_2_TIMESTAMP;
-        b.market.supplyUpdateBlockTimestampV1 = VERSION_2_TIMESTAMP;
-        b.userSupplyOnPoolIndex = poolSupplyIndex;
-        b.userSupplyInP2PIndex = p2pSupplyIndex;
-        b.userSupplyIndex = supplyIndex;
-
-        const borrowIndex = await computeBorrowIndex(b.market, VERSION_2_TIMESTAMP, provider);
-        const { p2pBorrowIndex, poolBorrowIndex } = await computeBorrowIndexes(b.market, VERSION_2_TIMESTAMP, provider);
-        const accruedBorrowV1 = getUserAccumulatedRewards(borrowIndex, b.userBorrowIndex, b.underlyingBorrowBalance);
+        balance = updatedBalance;
+        const {
+          updatedBalance: updatedBalanceBorrow,
+          accruedBorrowV1,
+          accruedBorrowV2,
+        } = await accrueBorrowRewards(balance, VERSION_2_TIMESTAMP, provider);
         accumulatedBorrowV1 = accumulatedBorrowV1.add(accruedBorrowV1);
-        accumulatedBorrowV2 = accumulatedBorrowV2.add(
-          getUserAccumulatedRewards(p2pBorrowIndex, b.userBorrowInP2PIndex, b.scaledBorrowInP2P).add(
-            getUserAccumulatedRewards(poolBorrowIndex, b.userBorrowOnPoolIndex, b.scaledBorrowOnPool)
-          )
-        );
+        accumulatedBorrowV2 = accumulatedBorrowV2.add(accruedBorrowV2);
         accumulatedBorrow = accumulatedBorrow.add(accruedBorrowV1);
-        // update the market
-        b.market.p2pBorrowIndex = p2pBorrowIndex;
-        b.market.poolBorrowIndex = poolBorrowIndex;
-        b.market.borrowIndex = borrowIndex;
-        b.market.borrowUpdateBlockTimestamp = VERSION_2_TIMESTAMP;
-        b.market.borrowUpdateBlockTimestampV1 = VERSION_2_TIMESTAMP;
-        b.userBorrowOnPoolIndex = poolBorrowIndex;
-        b.userBorrowInP2PIndex = p2pBorrowIndex;
-        b.userBorrowIndex = borrowIndex;
+        balance = updatedBalanceBorrow;
       }
-      const supplyIndex = await computeSupplyIndex(b.market, currentTimestamp, provider);
-      const { p2pSupplyIndex, poolSupplyIndex } = await computeSupplyIndexes(b.market, currentTimestamp, provider);
-      const accruedSupplyV1 = getUserAccumulatedRewards(supplyIndex, b.userSupplyIndex, b.underlyingSupplyBalance);
-      const accruedSupplyV2 = getUserAccumulatedRewards(
-        p2pSupplyIndex,
-        b.userSupplyInP2PIndex,
-        b.scaledSupplyInP2P
-      ).add(getUserAccumulatedRewards(poolSupplyIndex, b.userSupplyOnPoolIndex, b.scaledSupplyOnPool));
+
+      const { accruedSupplyV1, accruedSupplyV2 } = await accrueSupplyRewards(balance, ts, provider);
+
       accumulatedSupplyV1 = accumulatedSupplyV1.add(accruedSupplyV1);
-      accumulatedSupplyV2 = accumulatedSupplyV2.add(accumulatedSupplyV2);
-      if (BigNumber.from(currentTimestamp).gt(VERSION_2_TIMESTAMP))
-        accumulatedSupply = accumulatedSupply.add(accruedSupplyV2);
+      accumulatedSupplyV2 = accumulatedSupplyV2.add(accruedSupplyV2);
+      if (ts.gt(VERSION_2_TIMESTAMP)) accumulatedSupply = accumulatedSupply.add(accruedSupplyV2);
       else accumulatedSupply = accumulatedSupply.add(accruedSupplyV1);
 
-      const borrowIndex = await computeBorrowIndex(b.market, currentTimestamp, provider);
-      const { p2pBorrowIndex, poolBorrowIndex } = await computeBorrowIndexes(b.market, currentTimestamp, provider);
-      const accruedBorrowV1 = getUserAccumulatedRewards(borrowIndex, b.userBorrowIndex, b.underlyingBorrowBalance);
-      const accruedBorrowV2 = getUserAccumulatedRewards(
-        p2pBorrowIndex,
-        b.userBorrowInP2PIndex,
-        b.scaledBorrowInP2P
-      ).add(getUserAccumulatedRewards(poolBorrowIndex, b.userBorrowOnPoolIndex, b.scaledBorrowOnPool));
+      const { accruedBorrowV1, accruedBorrowV2 } = await accrueBorrowRewards(balance, ts, provider);
       accumulatedBorrowV1 = accumulatedBorrowV1.add(accruedBorrowV1);
-      accumulatedBorrowV2 = accumulatedBorrowV2.add(accumulatedBorrowV2);
-      if (BigNumber.from(currentTimestamp).gt(VERSION_2_TIMESTAMP))
-        accumulatedBorrow = accumulatedBorrow.add(accruedBorrowV2);
+      accumulatedBorrowV2 = accumulatedBorrowV2.add(accruedBorrowV2);
+
+      if (ts.gt(VERSION_2_TIMESTAMP)) accumulatedBorrow = accumulatedBorrow.add(accruedBorrowV2);
       else accumulatedBorrow = accumulatedBorrow.add(accruedBorrowV1);
       return {
         market: b.market,
@@ -185,19 +162,56 @@ export const userBalancesToUnclaimedTokens = async (
   );
 };
 
-export interface MarketRewards {
-  market: Market;
-  accumulatedSupplyV1: BigNumber;
-  accumulatedSupplyV2: BigNumber;
-  accumulatedSupply: BigNumber;
-  accumulatedBorrowV1: BigNumber;
-  accumulatedBorrowV2: BigNumber;
-  accumulatedBorrow: BigNumber;
-}
 export const sumRewards = (marketsRewards: MarketRewards[]) =>
   marketsRewards.reduce((acc, m) => acc.add(m.accumulatedBorrow.add(m.accumulatedSupply)), constants.Zero);
 
 // last update and current timestamp must be in the same Version
+
+/**
+ * This method upgrades the market with the indexes at the given ts
+ */
+const accrueSupplyRewards = async (b: UserBalance, ts: BigNumber, provider: Provider) => {
+  const supplyIndex = await computeSupplyIndex(b.market, ts, provider);
+  const { p2pSupplyIndex, poolSupplyIndex } = await computeSupplyIndexes(b.market, ts, provider);
+  const accruedSupplyV1 = getUserAccumulatedRewards(supplyIndex, b.userSupplyIndex, b.underlyingSupplyBalance);
+  const accruedSupplyV2 = getUserAccumulatedRewards(p2pSupplyIndex, b.userSupplyInP2PIndex, b.scaledSupplyInP2P).add(
+    getUserAccumulatedRewards(poolSupplyIndex, b.userSupplyOnPoolIndex, b.scaledSupplyOnPool)
+  );
+  // update the market
+  const updatedBalance = cloneDeep(b);
+  updatedBalance.market.p2pSupplyIndex = p2pSupplyIndex;
+  updatedBalance.market.poolSupplyIndex = poolSupplyIndex;
+  updatedBalance.market.supplyIndex = supplyIndex;
+  updatedBalance.market.supplyUpdateBlockTimestamp = ts;
+  updatedBalance.market.supplyUpdateBlockTimestampV1 = ts;
+  updatedBalance.userSupplyOnPoolIndex = poolSupplyIndex;
+  updatedBalance.userSupplyInP2PIndex = p2pSupplyIndex;
+  updatedBalance.userSupplyIndex = supplyIndex;
+  return { updatedBalance, accruedSupplyV1, accruedSupplyV2 };
+};
+
+/**
+ * This method upgrades the market with the indexes at the given ts
+ */
+const accrueBorrowRewards = async (b: UserBalance, ts: BigNumber, provider: Provider) => {
+  const borrowIndex = await computeBorrowIndex(b.market, ts, provider);
+  const { p2pBorrowIndex, poolBorrowIndex } = await computeBorrowIndexes(b.market, ts, provider);
+  const accruedBorrowV1 = getUserAccumulatedRewards(borrowIndex, b.userBorrowIndex, b.underlyingBorrowBalance);
+  const accruedBorrowV2 = getUserAccumulatedRewards(p2pBorrowIndex, b.userBorrowInP2PIndex, b.scaledBorrowInP2P).add(
+    getUserAccumulatedRewards(poolBorrowIndex, b.userBorrowOnPoolIndex, b.scaledBorrowOnPool)
+  );
+  // update the market
+  const updatedBalance = cloneDeep(b);
+  updatedBalance.market.p2pBorrowIndex = p2pBorrowIndex;
+  updatedBalance.market.poolBorrowIndex = poolBorrowIndex;
+  updatedBalance.market.borrowIndex = borrowIndex;
+  updatedBalance.market.borrowUpdateBlockTimestamp = ts;
+  updatedBalance.market.borrowUpdateBlockTimestampV1 = ts;
+  updatedBalance.userBorrowOnPoolIndex = poolBorrowIndex;
+  updatedBalance.userBorrowInP2PIndex = p2pBorrowIndex;
+  updatedBalance.userBorrowIndex = borrowIndex;
+  return { updatedBalance, accruedBorrowV1, accruedBorrowV2 };
+};
 
 const getUserAccumulatedRewards = (marketIndex: BigNumber, userIndex: BigNumber, userBalance: BigNumber) => {
   if (userIndex.gt(marketIndex)) return BigNumber.from(0);
@@ -213,37 +227,6 @@ const computeSupplyIndex = async (market: Market, currentTimestamp: BigNumberish
     market.lastTotalSupply,
     provider
   );
-const computeUpdatedMorphoIndexV2 = async (
-  marketAddress: string,
-  currentTimestamp: BigNumberish,
-  lastMorphoIndex: BigNumber,
-  lastUpdateTimestamp: BigNumberish,
-  lastPercentSpeed: BigNumber,
-  lastTotalScaled: BigNumber,
-  marketSide: string,
-  provider: providers.Provider
-) => {
-  // we first compute distribution of each epoch
-  const epochs = getEpochsBetweenTimestamps(lastUpdateTimestamp, currentTimestamp) ?? [];
-  const distributions = Object.fromEntries(
-    await Promise.all(
-      epochs.map(async (epoch) => [epoch.epoch.id, await getEpochMarketsDistribution(epoch.epoch.id, provider)])
-    )
-  );
-
-  return epochs.reduce((currentIndex, epoch) => {
-    const initialTimestamp = maxBN(epoch.epoch.initialTimestamp, BigNumber.from(lastUpdateTimestamp));
-    const finalTimestamp = minBN(epoch.epoch.finalTimestamp, BigNumber.from(currentTimestamp));
-    const deltaTimestamp = finalTimestamp.sub(initialTimestamp);
-    const marketsEmission = distributions[epoch.epoch.id];
-
-    const emission = BigNumber.from(marketsEmission.markets[marketAddress]?.[marketSide] ?? 0);
-    const speed = PercentMath.percentMul(emission, lastPercentSpeed);
-    const morphoAccrued = deltaTimestamp.mul(speed); // in WEI units;
-    const ratio = lastTotalScaled.eq(0) ? BigNumber.from(0) : morphoAccrued.mul(WAD).div(lastTotalScaled); // in 18*2 - decimals units;
-    return currentIndex.add(ratio);
-  }, lastMorphoIndex);
-};
 
 const computeSupplyIndexes = async (market: Market, currentTimestamp: BigNumberish, provider: providers.Provider) => {
   const rateType = "supplyRate";
@@ -258,25 +241,25 @@ const computeSupplyIndexes = async (market: Market, currentTimestamp: BigNumberi
     ? constants.Zero
     : totalSupplyP2P.mul(PercentMath.BASE_PERCENT).div(totalSupply);
   return {
-    p2pSupplyIndex: await computeUpdatedMorphoIndexV2(
+    p2pSupplyIndex: await computeIndex(
       marketAddress,
-      currentTimestamp,
       market.p2pSupplyIndex,
       market.supplyUpdateBlockTimestamp,
-      lastPercentSpeed,
-      market.scaledSupplyInP2P,
-      rateType,
-      provider
-    ),
-    poolSupplyIndex: await computeUpdatedMorphoIndexV2(
-      marketAddress,
       currentTimestamp,
+      rateType,
+      market.scaledSupplyInP2P,
+      provider,
+      (emission) => PercentMath.percentMul(emission, lastPercentSpeed)
+    ),
+    poolSupplyIndex: await computeIndex(
+      marketAddress,
       market.poolSupplyIndex,
       market.supplyUpdateBlockTimestamp,
-      PercentMath.BASE_PERCENT.sub(lastPercentSpeed),
-      market.scaledSupplyOnPool,
+      currentTimestamp,
       rateType,
-      provider
+      market.scaledSupplyOnPool,
+      provider,
+      (emission) => PercentMath.percentMul(emission, PercentMath.BASE_PERCENT.sub(lastPercentSpeed))
     ),
   };
 };
@@ -294,7 +277,6 @@ const computeBorrowIndex = async (market: Market, currentTimestamp: BigNumberish
 const computeBorrowIndexes = async (market: Market, currentTimestamp: BigNumberish, provider: providers.Provider) => {
   const rateType = "borrowRate";
   const marketAddress = market.address;
-  const lastUpdateTimestamp = market.borrowUpdateBlockTimestamp;
 
   const totalBorrowP2P = WadRayMath.wadMul(market.scaledBorrowInP2P, market.lastP2PBorrowIndex);
   const totalBorrowOnPool = WadRayMath.wadMul(market.scaledBorrowOnPool, market.lastPoolBorrowIndex);
@@ -303,25 +285,25 @@ const computeBorrowIndexes = async (market: Market, currentTimestamp: BigNumberi
     ? constants.Zero
     : totalBorrowP2P.mul(PercentMath.BASE_PERCENT).div(totalBorrow);
   return {
-    p2pBorrowIndex: await computeUpdatedMorphoIndexV2(
+    p2pBorrowIndex: await computeIndex(
       marketAddress,
-      currentTimestamp,
       market.p2pBorrowIndex,
-      lastUpdateTimestamp,
-      lastPercentSpeed,
-      market.scaledBorrowInP2P,
-      rateType,
-      provider
-    ),
-    poolBorrowIndex: await computeUpdatedMorphoIndexV2(
-      marketAddress,
+      market.borrowUpdateBlockTimestamp,
       currentTimestamp,
-      market.poolBorrowIndex,
-      lastUpdateTimestamp,
-      PercentMath.BASE_PERCENT.sub(lastPercentSpeed),
-      market.scaledBorrowOnPool,
       rateType,
-      provider
+      market.scaledBorrowInP2P,
+      provider,
+      (emission) => PercentMath.percentMul(emission, lastPercentSpeed)
+    ),
+    poolBorrowIndex: await computeIndex(
+      marketAddress,
+      market.poolBorrowIndex,
+      market.borrowUpdateBlockTimestamp,
+      currentTimestamp,
+      rateType,
+      market.scaledBorrowOnPool,
+      provider,
+      (emission) => PercentMath.percentMul(emission, PercentMath.BASE_PERCENT.sub(lastPercentSpeed))
     ),
   };
 };
@@ -332,7 +314,8 @@ const computeIndex = async (
   currentTimestamp: BigNumberish,
   rateType: "borrowRate" | "supplyRate",
   totalUnderlying: BigNumber,
-  provider: providers.Provider
+  provider: providers.Provider,
+  speed: (emission: BigNumber) => BigNumber = (e) => e
 ) => {
   const epochs = getEpochsBetweenTimestamps(lastUpdateTimestamp, currentTimestamp) ?? [];
   // we first compute distribution of each epoch
@@ -346,38 +329,9 @@ const computeIndex = async (
     const finalTimestamp = minBN(epoch.epoch.finalTimestamp, BigNumber.from(currentTimestamp));
     const deltaTimestamp = finalTimestamp.sub(initialTimestamp);
     const marketsEmission = distributions[epoch.epoch.id];
-    const speed = BigNumber.from(marketsEmission.markets[marketAddress]?.[rateType] ?? 0);
-    const morphoAccrued = deltaTimestamp.mul(speed); // in WEI units;
+    const emission = BigNumber.from(marketsEmission.markets[marketAddress]?.[rateType] ?? 0);
+    const morphoAccrued = deltaTimestamp.mul(speed(emission)); // in WEI units;
     const ratio = totalUnderlying.eq(0) ? BigNumber.from(0) : morphoAccrued.mul(WAD).div(totalUnderlying); // in 18*2 - decimals units;
     return currentIndex.add(ratio);
   }, lastIndex);
 };
-
-const extractSubgraphBody = (status: number, body: string) => {
-  try {
-    const data = JSON.parse(body) as QueryUserBalancesResponse;
-    const errors = data?.errors ? JSON.stringify(data.errors) : body;
-    const errorMessage = `[${status}] - ${errors}`;
-    return <const>[data, errorMessage];
-  } catch (error) {
-    return <const>[null, body];
-  }
-};
-
-export const getUserBalances = async (graphUrl: string, user: string, block?: number) => {
-  const res = await fetch(graphUrl, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      query: block ? balancesQuery.queryWithBlock : balancesQuery.query,
-      variables: { user, block },
-    }),
-  });
-  const body = await res.text();
-  const [data, errorMessage] = extractSubgraphBody(res.status, body);
-  if (!res.ok || !data?.data) throw Error(errorMessage);
-  if (!data.data.user) return undefined;
-  return formatGraphBalances(data.data.user);
-};
-
-type QueryUserBalancesResponse = { data?: { user?: GraphUserBalances }; errors?: any };
