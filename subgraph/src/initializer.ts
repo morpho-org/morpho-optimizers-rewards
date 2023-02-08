@@ -2,7 +2,7 @@ import { Address, BigInt, Bytes } from "@graphprotocol/graph-ts";
 
 import { Balance, Market, MarketEpochDistribution, User } from "../generated/schema";
 
-import { WAD, initialIndex } from "./constants";
+import { WAD, initialIndex, SUPPLY } from "./constants";
 import { fetchDistributionFromDistributionId, ipfsJson } from "./distributions";
 
 export function getOrInitUser(userAddress: Address): User {
@@ -125,7 +125,7 @@ export function getOrInitMarketEpoch(
     marketEpoch.isFinished = false;
     marketEpoch.timestamp = currentTimestamp;
     marketEpoch.speed = speed;
-    if (Bytes.fromUTF8(marketSide).equals(Bytes.fromUTF8("Supply"))) {
+    if (Bytes.fromUTF8(marketSide).equals(SUPPLY)) {
       // V1
       marketEpoch.index = market.supplyIndex;
 
