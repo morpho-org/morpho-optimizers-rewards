@@ -5,6 +5,7 @@ dotenv.config();
 import { getUserRewards } from "../utils";
 import { formatUnits } from "ethers/lib/utils";
 import { providers } from "ethers";
+import { mapValues } from "lodash";
 
 const provider = process.env.RPC_URL
   ? new providers.JsonRpcProvider(process.env.RPC_URL)
@@ -20,7 +21,10 @@ getUserRewards(process.argv[2], process.argv[3] ? +process.argv[3] : undefined, 
       claimable: formatUnits(r.claimable),
       claimableSoon: formatUnits(r.claimableSoon),
       claimData: r.claimData,
-      markets: r.markets,
+      markets: mapValues(r.markets, ({ accumulatedSupply, accumulatedBorrow }) => ({
+        accumulatedSupply: formatUnits(accumulatedSupply),
+        accumulatedBorrow: formatUnits(accumulatedBorrow),
+      })),
     })
   )
   .catch((e) => {
