@@ -76,5 +76,59 @@ describe("On chain roots update", () => {
     );
   });
 });
+describe("Version 2 rewards distribution mechanism", () => {
+  const provider = new providers.JsonRpcProvider(process.env.RPC_URL);
+  const version2Block = ages[2].epochs[0].finalBlock;
+  let usersBalancesMerge: UserBalances[];
+  beforeAll(async () => {
+    usersBalancesMerge = await fetchUsers(SUBGRAPH_URL, version2Block);
+  });
+  it("Should have a block corresponding to the update", () => expect(version2Block).not.toBeUndefined());
+  it("Should be equal to version one rewards at the moment of the switch on the subgraph", () => {
+    usersBalancesMerge.forEach(async (user) =>
+      user.balances.forEach((r) => {
+        expect(r.accumulatedSupplyMorpho).toBnEq(r.accumulatedSupplyMorphoV1);
+        expect(r.accumulatedBorrowMorpho).toBnEq(r.accumulatedBorrowMorphoV1);
+      })
+    );
+  });
+  it("Should be equal to version one rewards at the moment of the switch", async () => {
+    await Promise.all(
+      usersBalancesMerge.map(async (user) => {
+        const rewards = await userBalancesToUnclaimedTokens(user.balances, VERSION_2_TIMESTAMP, provider);
+        rewards.forEach((r) => {
+          expect(r.accumulatedSupply).toBnEq(r.accumulatedSupplyV1);
+          expect(r.accumulatedBorrow).toBnEq(r.accumulatedBorrowV1);
+        });
+      })
+    );
+  });
+  it("Cannot be less than v1 rewards after the version 2 upgrade", async () => {
+    const upgradeRewards = await Promise.all(
+      usersBalancesMerge.map(async (user) => ({
+        userAddress: user.address,
+        rewards: await userBalancesToUnclaimedTokens(user.balances, VERSION_2_TIMESTAMP, provider),
+      }))
+    );
+    await Promise.all(
+      usersBalancesMerge.map(async (user) => {
+        const userUpgradeRewards = upgradeRewards.find((u) => u.userAddress === user.address);
+        expect(userUpgradeRewards).not.toBeUndefined();
+
+        const rewards = await userBalancesToUnclaimedTokens(
+          user.balances,
+          VERSION_2_TIMESTAMP.add(3600 * 24 * 7),
+          provider
+        );
+        rewards.forEach((r) => {
+          const upgradeReward = userUpgradeRewards!.rewards.find((_r) => _r.market.address === r.market.address);
+          expect(upgradeReward).not.toBeUndefined();
+          expect(r.accumulatedSupply).toBnGte(upgradeReward!.accumulatedSupply);
+          expect(r.accumulatedBorrow).toBnGte(upgradeReward!.accumulatedBorrow);
+        });
+      })
+    );
+  });
+});
 
 const linearPrecision = (epochNumber: number) => (epochNumber >= 6 ? 2e18 : 1e18).toString();
