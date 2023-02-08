@@ -5,6 +5,7 @@ export interface GraphUserBalances {
   id: string;
   address: string;
   balances: {
+    timestamp: string;
     userSupplyIndex: string;
     userBorrowIndex: string;
     underlyingSupplyBalance: string;
@@ -85,5 +86,6 @@ export interface UserBalance {
 
   accumulatedSupplyMorpho: BigNumber;
   accumulatedBorrowMorpho: BigNumber;
+  timestamp: BigNumber;
   market: Market;
 }

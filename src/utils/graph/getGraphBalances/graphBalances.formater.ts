@@ -31,6 +31,7 @@ export const formatGraphBalances = (graphBalance: GraphUserBalances): UserBalanc
       scaledBorrowOnPool: BigNumber.from(market.scaledBorrowOnPool),
       scaledBorrowInP2P: BigNumber.from(market.scaledBorrowInP2P),
     },
+    timestamp: BigNumber.from(balance.timestamp),
     userSupplyIndex: BigNumber.from(balance.userSupplyIndex),
     userBorrowIndex: BigNumber.from(balance.userBorrowIndex),
     underlyingSupplyBalance: BigNumber.from(balance.underlyingSupplyBalance),

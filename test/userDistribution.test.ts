@@ -13,7 +13,8 @@ import { RootUpdatedEvent } from "@morpho-labs/morpho-ethers-contract/lib/Reward
 import { RewardsDistributor__factory } from "@morpho-labs/morpho-ethers-contract";
 import addresses from "@morpho-labs/morpho-ethers-contract/lib/addresses";
 import { getPrevEpoch } from "../src/utils/timestampToEpoch";
-import { sumRewards, VERSION_2_TIMESTAMP } from "../src/utils/getUserRewards";
+import { sumRewards } from "../src/utils/getUserRewards";
+import { VERSION_2_TIMESTAMP } from "../src/constants/mechanismUpgrade";
 
 describe.each([...ages])("Age Users Distribution", (age) => {
   const provider = new providers.JsonRpcProvider(process.env.RPC_URL);

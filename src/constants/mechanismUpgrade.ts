@@ -1,0 +1,222 @@
+import { BigNumber } from "ethers";
+
+export const VERSION_2_TIMESTAMP = BigNumber.from(1675263600);
+
+export const MARKETS_UPGRADE_SNAPSHOTS = [
+  {
+    id: "0x028171bca77440897b824ca71d1c56cac55b68a3-borrow",
+    market: {
+      id: "0x028171bca77440897b824ca71d1c56cac55b68a3",
+    },
+    indexV1: "2447824319",
+    p2pIndex: "2448255744470032347",
+    poolIndex: "199916514366833",
+  },
+  {
+    id: "0x028171bca77440897b824ca71d1c56cac55b68a3-supply",
+    market: {
+      id: "0x028171bca77440897b824ca71d1c56cac55b68a3",
+    },
+    indexV1: "25377226",
+    p2pIndex: "25404257351205810",
+    poolIndex: "27331999079785377",
+  },
+  {
+    id: "0x030ba81f1c18d280636f32af80b9aad02cf0854e-borrow",
+    market: {
+      id: "0x030ba81f1c18d280636f32af80b9aad02cf0854e",
+    },
+    indexV1: "136601366115",
+    p2pIndex: "136838343736998953065",
+    poolIndex: "19642620290779343945",
+  },
+  {
+    id: "0x030ba81f1c18d280636f32af80b9aad02cf0854e-supply",
+    market: {
+      id: "0x030ba81f1c18d280636f32af80b9aad02cf0854e",
+    },
+    indexV1: "85476195650",
+    p2pIndex: "86013272700151255018",
+    poolIndex: "17229977378155797356",
+  },
+  {
+    id: "0x1982b2f5814301d4e9a8b0201555376e62f82428-supply",
+    market: {
+      id: "0x1982b2f5814301d4e9a8b0201555376e62f82428",
+    },
+    indexV1: "28221025681",
+    p2pIndex: "0",
+    poolIndex: "28362698121075318982",
+  },
+  {
+    id: "0x35a18000230da775cac24873d00ff85bccded550-borrow",
+    market: {
+      id: "0x35a18000230da775cac24873d00ff85bccded550",
+    },
+    indexV1: "3171056129440680613",
+    p2pIndex: "635473846951686470708236201",
+    poolIndex: "857422537253706089",
+  },
+  {
+    id: "0x35a18000230da775cac24873d00ff85bccded550-supply",
+    market: {
+      id: "0x35a18000230da775cac24873d00ff85bccded550",
+    },
+    indexV1: "746471912659154208",
+    p2pIndex: "150160399418792966054346271",
+    poolIndex: "151238372115755818644463579",
+  },
+  {
+    id: "0x39aa39c021dfbae8fac545936693ac917d5e7563-borrow",
+    market: {
+      id: "0x39aa39c021dfbae8fac545936693ac917d5e7563",
+    },
+    indexV1: "170950207453881819979783334077",
+    p2pIndex: "20918411940307215050056667",
+    poolIndex: "197863597605566699525097991836",
+  },
+  {
+    id: "0x39aa39c021dfbae8fac545936693ac917d5e7563-supply",
+    market: {
+      id: "0x39aa39c021dfbae8fac545936693ac917d5e7563",
+    },
+    indexV1: "49460073218411069725090319058",
+    p2pIndex: "8867646782536519233359152",
+    poolIndex: "11202763414228625368136169",
+  },
+  {
+    id: "0x3ed3b47dd13ec9a98b44e6204a523e766b225811-borrow",
+    market: {
+      id: "0x3ed3b47dd13ec9a98b44e6204a523e766b225811",
+    },
+    indexV1: "1780878730667350355806",
+    p2pIndex: "1781324695983335733276383875019",
+    poolIndex: "49788272164237612999962922586",
+  },
+  {
+    id: "0x3ed3b47dd13ec9a98b44e6204a523e766b225811-supply",
+    market: {
+      id: "0x3ed3b47dd13ec9a98b44e6204a523e766b225811",
+    },
+    indexV1: "129501595274919005881",
+    p2pIndex: "129769321690931657195455532949",
+    poolIndex: "55050688996651838345081665928",
+  },
+  {
+    id: "0x4ddc2d193948926d02f9b1fe9e1daa0718270ed5-borrow",
+    market: {
+      id: "0x4ddc2d193948926d02f9b1fe9e1daa0718270ed5",
+    },
+    indexV1: "402395591242915211223",
+    p2pIndex: "80444542096419978151188586762",
+    poolIndex: "132191333327868014021",
+  },
+  {
+    id: "0x4ddc2d193948926d02f9b1fe9e1daa0718270ed5-supply",
+    market: {
+      id: "0x4ddc2d193948926d02f9b1fe9e1daa0718270ed5",
+    },
+    indexV1: "175637520145758121463",
+    p2pIndex: "35091178195454439311407108023",
+    poolIndex: "35220527416642573954375138588",
+  },
+  {
+    id: "0x5d3a536e4d6dbd6114cc1ead35777bab948e3643-borrow",
+    market: {
+      id: "0x5d3a536e4d6dbd6114cc1ead35777bab948e3643",
+    },
+    indexV1: "73480771974662546",
+    p2pIndex: "14153412480980629750637268",
+    poolIndex: "83275231941254478",
+  },
+  {
+    id: "0x5d3a536e4d6dbd6114cc1ead35777bab948e3643-supply",
+    market: {
+      id: "0x5d3a536e4d6dbd6114cc1ead35777bab948e3643",
+    },
+    indexV1: "43453003594601620",
+    p2pIndex: "8531782946314424598013165",
+    poolIndex: "9586341049594868516035559",
+  },
+  {
+    id: "0x8dae6cb04688c62d939ed9b68d32bc62e49970b1-borrow",
+    market: {
+      id: "0x8dae6cb04688c62d939ed9b68d32bc62e49970b1",
+    },
+    indexV1: "2354583091",
+    p2pIndex: "2355393089163154884",
+    poolIndex: "19090670572197773",
+  },
+  {
+    id: "0x9ff58f4ffb29fa2266ab25e75e2a8b3503311656-borrow",
+    market: {
+      id: "0x9ff58f4ffb29fa2266ab25e75e2a8b3503311656",
+    },
+    indexV1: "5382685305729357707600",
+    p2pIndex: "5388682626813176363076843935295",
+    poolIndex: "843118969254919311432179587074",
+  },
+  {
+    id: "0x9ff58f4ffb29fa2266ab25e75e2a8b3503311656-supply",
+    market: {
+      id: "0x9ff58f4ffb29fa2266ab25e75e2a8b3503311656",
+    },
+    indexV1: "16262050652616393881532",
+    p2pIndex: "16277818555684473730610457080191",
+    poolIndex: "14326072614511505508731268744641",
+  },
+  {
+    id: "0xbcca60bb61934080951369a648fb03df4f96263c-borrow",
+    market: {
+      id: "0xbcca60bb61934080951369a648fb03df4f96263c",
+    },
+    indexV1: "40855219124532904106",
+    p2pIndex: "40944440430299937874021604690",
+    poolIndex: "1274715677785446154622825897",
+  },
+  {
+    id: "0xbcca60bb61934080951369a648fb03df4f96263c-supply",
+    market: {
+      id: "0xbcca60bb61934080951369a648fb03df4f96263c",
+    },
+    indexV1: "31786320748130352000",
+    p2pIndex: "31856602301836011287838806493",
+    poolIndex: "34281408861353198002711375307",
+  },
+  {
+    id: "0xccf4429db6322d5c611ee964527d42e5d685dd6a-borrow",
+    market: {
+      id: "0xccf4429db6322d5c611ee964527d42e5d685dd6a",
+    },
+    indexV1: "37565017751679272211354882274065154",
+    p2pIndex: "87745508273556013995513431166",
+    poolIndex: "39487976185561167566024414860121176",
+  },
+  {
+    id: "0xccf4429db6322d5c611ee964527d42e5d685dd6a-supply",
+    market: {
+      id: "0xccf4429db6322d5c611ee964527d42e5d685dd6a",
+    },
+    indexV1: "161096004855545057914800839855556",
+    p2pIndex: "376397734895874638891581359036",
+    poolIndex: "3232432747941872478369677038157",
+  },
+  {
+    id: "0xf650c3d88d12db855b8bf7d11be6c55a4e07dcc9-borrow",
+    market: {
+      id: "0xf650c3d88d12db855b8bf7d11be6c55a4e07dcc9",
+    },
+    indexV1: "151001296682632981760435959435",
+    p2pIndex: "30341883049269165325047654",
+    poolIndex: "76543860087962127355545190690",
+  },
+  {
+    id: "0xf650c3d88d12db855b8bf7d11be6c55a4e07dcc9-supply",
+    market: {
+      id: "0xf650c3d88d12db855b8bf7d11be6c55a4e07dcc9",
+    },
+    indexV1: "195224279046289785941228186341",
+    p2pIndex: "39285518705248800678691724",
+    poolIndex: "16320509018262390831133170",
+  },
+];
