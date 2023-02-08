@@ -40,7 +40,7 @@ const computeUpdatedMorphoIndex = (
   // sync eventual previous epoch
   const prevEpochId = timestampToEpochId(obj, lastUpdateBlockTimestamp);
   const currentEpochId = timestampToEpochId(obj, blockTimestamp);
-  if (!currentEpochId) return lastMorphoIndex; // TODO: to move at the end
+  if (!currentEpochId) return lastMorphoIndex;
 
   if (!prevEpochId && currentEpochId) {
     // start of the first epoch
@@ -124,7 +124,7 @@ const computeUpdatedMorphoIndexV2 = (
   // sync eventual previous epoch
   const prevEpochId = timestampToEpochId(obj, lastUpdateBlockTimestamp);
   const currentEpochId = timestampToEpochId(obj, blockTimestamp);
-  if (!currentEpochId) return lastMorphoIndex; // TODO: to move at the end
+  if (!currentEpochId) return lastMorphoIndex;
 
   if (!prevEpochId && currentEpochId) {
     // start of the first epoch
