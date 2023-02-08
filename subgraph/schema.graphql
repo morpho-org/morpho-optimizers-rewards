@@ -160,6 +160,18 @@ type MarketEpochDistribution @entity {
   isFinished: Boolean!
 }
 
+type MechanismUpgradeSnapshot @entity {
+  "<marketAddress>-<Supply | Borrow>"
+  id: ID!
+  market: Market!
+  "V1: The MORPHO index of the market at the moment of the upgrade"
+  indexV1: BigInt!
+  "V2: The MORPHO pool index at the moment of the upgrade"
+  poolIndex: BigInt!
+  "V2: The MORPHO P2P index at the moment of the upgrade"
+  p2pIndex: BigInt!
+}
+
 enum TransactionType {
   Supply
   Borrow

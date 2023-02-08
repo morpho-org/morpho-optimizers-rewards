@@ -1,6 +1,6 @@
-import { Address, BigInt } from "@graphprotocol/graph-ts";
+import { Address, BigInt, log } from "@graphprotocol/graph-ts";
 
-import { Balance, Market } from "../generated/schema";
+import { Balance, Market, MechanismUpgradeSnapshot } from "../generated/schema";
 
 import {
   accrueMorphoTokens,
@@ -82,7 +82,40 @@ export const updateSupplyBalanceAndMarket = (
   const market = getOrInitMarket(marketAddress, blockTimestamp);
   const balance = getOrInitBalance(userAddress, marketAddress, blockTimestamp);
   if (market.supplyUpdateBlockTimestamp.lt(VERSION_2_TIMESTAMP) && blockTimestamp.ge(VERSION_2_TIMESTAMP)) {
+    // Upgrade to V2 mechanism
     computeSupplyIndexUpdate(marketAddress, VERSION_2_TIMESTAMP, indexUnits, balance, market, false);
+
+    const marketUpdate = new MechanismUpgradeSnapshot(market.id + "-supply");
+    marketUpdate.market = market.id;
+    marketUpdate.indexV1 = market.supplyIndex;
+    marketUpdate.poolIndex = market.poolSupplyIndex;
+    marketUpdate.p2pIndex = market.p2pSupplyIndex;
+    marketUpdate.save();
+  }
+  if (balance.timestamp.lt(VERSION_2_TIMESTAMP) && market.supplyUpdateBlockTimestamp.ge(VERSION_2_TIMESTAMP)) {
+    // we need to accrue user rewards until the update and do eveything like if the user has interacted at the moment of the upgrade
+    const marketUpdate = MechanismUpgradeSnapshot.load(market.id + "-supply");
+    if (marketUpdate === null) {
+      log.critical("No supply market update for market {} ", [market.id]);
+      return balance;
+    }
+    const v1Accrued = accrueMorphoTokens(
+      marketUpdate.indexV1,
+      balance.userSupplyIndex,
+      balance.underlyingSupplyBalance
+    );
+    balance.accumulatedSupplyMorphoV1 = balance.accumulatedSupplyMorphoV1.plus(v1Accrued);
+    balance.accumulatedSupplyMorphoV2 = balance.accumulatedSupplyMorphoV2.plus(
+      accrueMorphoTokens(marketUpdate.poolIndex, balance.userSupplyOnPoolIndex, balance.scaledSupplyOnPool).plus(
+        accrueMorphoTokens(marketUpdate.p2pIndex, balance.userSupplyInP2PIndex, balance.scaledSupplyInP2P)
+      )
+    );
+    balance.accumulatedSupplyMorpho = balance.accumulatedSupplyMorpho.plus(v1Accrued);
+    balance.userSupplyIndex = marketUpdate.indexV1;
+    balance.userSupplyInP2PIndex = marketUpdate.p2pIndex;
+    balance.userSupplyOnPoolIndex = marketUpdate.poolIndex;
+    // the update of user balances is not needed since user has the same balance before and after
+    balance.save();
   }
   computeSupplyIndexUpdate(marketAddress, blockTimestamp, indexUnits, balance, market, skipV1Accounting);
   // accounting
@@ -141,7 +174,7 @@ const computeBorrowIndexUpdate = (
     balance.userBorrowIndex,
     balance.underlyingBorrowBalance
   );
-  if (!skipV1Accounting) {
+  if (!skipV1Accounting && blockTimestamp.le(VERSION_2_TIMESTAMP)) {
     // We skip accounting for a Borrower position update on V1 script
 
     balance.userBorrowIndex = newBorrowIndex;
@@ -186,7 +219,40 @@ export const updateBorrowBalanceAndMarket = (
   const market = getOrInitMarket(marketAddress, blockTimestamp);
   const balance = getOrInitBalance(userAddress, marketAddress, blockTimestamp);
   if (market.borrowUpdateBlockTimestamp.lt(VERSION_2_TIMESTAMP) && blockTimestamp.ge(VERSION_2_TIMESTAMP)) {
+    // Upgrade to V2 mechanism
+
     computeBorrowIndexUpdate(marketAddress, VERSION_2_TIMESTAMP, indexUnits, balance, market, false);
+
+    const marketUpdate = new MechanismUpgradeSnapshot(market.id + "-borrow");
+    marketUpdate.market = market.id;
+    marketUpdate.indexV1 = market.borrowIndex;
+    marketUpdate.poolIndex = market.poolBorrowIndex;
+    marketUpdate.p2pIndex = market.p2pBorrowIndex;
+    marketUpdate.save();
+  }
+  if (balance.timestamp.lt(VERSION_2_TIMESTAMP) && market.borrowUpdateBlockTimestamp.ge(VERSION_2_TIMESTAMP)) {
+    // we need to accrue user rewards until the update and do eveything like if the user has interacted at the moment of the upgrade
+    const marketUpdate = MechanismUpgradeSnapshot.load(market.id + "-borrow");
+    if (marketUpdate === null) {
+      log.critical("No borrow market update for market {} ", [market.id]);
+      return balance;
+    }
+    const v1Accrued = accrueMorphoTokens(
+      marketUpdate.indexV1,
+      balance.userBorrowIndex,
+      balance.underlyingBorrowBalance
+    );
+    balance.accumulatedBorrowMorphoV1 = balance.accumulatedBorrowMorphoV1.plus(v1Accrued);
+    balance.accumulatedBorrowMorphoV2 = balance.accumulatedBorrowMorphoV2.plus(
+      accrueMorphoTokens(marketUpdate.poolIndex, balance.userBorrowOnPoolIndex, balance.scaledBorrowOnPool).plus(
+        accrueMorphoTokens(marketUpdate.p2pIndex, balance.userBorrowInP2PIndex, balance.scaledBorrowInP2P)
+      )
+    );
+    balance.accumulatedBorrowMorpho = balance.accumulatedBorrowMorpho.plus(v1Accrued);
+    balance.userBorrowIndex = marketUpdate.indexV1;
+    balance.userBorrowInP2PIndex = marketUpdate.p2pIndex;
+    balance.userBorrowOnPoolIndex = marketUpdate.poolIndex;
+    balance.save();
   }
   computeBorrowIndexUpdate(marketAddress, blockTimestamp, indexUnits, balance, market, skipV1Accounting);
   // accounting
@@ -213,6 +279,7 @@ export const updateBorrowBalanceAndMarket = (
   balance.scaledBorrowOnPool = newBalanceOnPool;
   balance.scaledBorrowInP2P = newBalanceP2P;
 
+  // Needed to handle the mechanism version change
   balance.timestamp = blockTimestamp;
   balance.blockNumber = blockNumber.toI32();
 
