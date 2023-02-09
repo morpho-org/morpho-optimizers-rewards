@@ -8,13 +8,14 @@ import {
   userBalancesToUnclaimedTokens,
 } from "../src/utils";
 import { SUBGRAPH_URL } from "../src/config";
-import { BigNumber, providers } from "ethers";
+import { BigNumber, constants, providers } from "ethers";
 import { RootUpdatedEvent } from "@morpho-labs/morpho-ethers-contract/lib/RewardsDistributor";
 import { RewardsDistributor__factory } from "@morpho-labs/morpho-ethers-contract";
 import addresses from "@morpho-labs/morpho-ethers-contract/lib/addresses";
 import { getPrevEpoch } from "../src/utils/timestampToEpoch";
-import { sumRewards } from "../src/utils/getUserRewards";
+import { MarketRewards, sumRewards } from "../src/utils/getUserRewards";
 import { VERSION_2_TIMESTAMP } from "../src/constants/mechanismUpgrade";
+import { getAccumulatedEmissionPerMarket } from "../src/utils/accumulatedEmission";
 
 describe.each([...ages])("Age Users Distribution", (age) => {
   const provider = new providers.JsonRpcProvider(process.env.RPC_URL);
@@ -22,16 +23,18 @@ describe.each([...ages])("Age Users Distribution", (age) => {
   describe.each(age.epochs)(`Epochs distribution for ${age.ageName}`, (epochConfig) => {
     if (epochConfig.finalTimestamp.gt(now)) return;
     let usersBalances: UserBalances[];
-    let usersAccumulatedRewards: { address: string; accumulatedRewards: string }[];
+    let usersAccumulatedRewards: { address: string; accumulatedRewards: string; rewards: MarketRewards[] }[];
     beforeAll(async () => {
       usersBalances = await fetchUsers(SUBGRAPH_URL, epochConfig.finalBlock ?? undefined);
       usersAccumulatedRewards = await Promise.all(
-        usersBalances.map(async ({ address, balances }) => ({
-          address,
-          accumulatedRewards: sumRewards(
-            await userBalancesToUnclaimedTokens(balances, epochConfig.finalTimestamp, provider)
-          ).toString(), // with 18 * 2 decimals
-        }))
+        usersBalances.map(async ({ address, balances }) => {
+          const rewards = await userBalancesToUnclaimedTokens(balances, epochConfig.finalTimestamp, provider);
+          return {
+            address,
+            rewards,
+            accumulatedRewards: sumRewards(rewards).toString(), // with 18 * 2 decimals
+          };
+        })
       );
     });
 
@@ -39,6 +42,29 @@ describe.each([...ages])("Age Users Distribution", (age) => {
       const totalEmitted = usersAccumulatedRewards.reduce((a, b) => a.add(b.accumulatedRewards), BigNumber.from(0));
       const accumulatedEmission = getAccumulatedEmission(epochConfig.id); // we sum the emissions
       expect(totalEmitted).toBnApproxEq(accumulatedEmission, linearPrecision(epochConfig.number));
+    });
+
+    it(`Should distribute the correct number of tokens per market for epoch ${epochConfig.id}`, async () => {
+      const markets = [...new Set(usersBalances.map((ub) => ub.balances.map((b) => b.market.address)).flat())];
+      console.log(markets.length, "markets");
+      await Promise.all(
+        markets.map(async (marketAddress) => {
+          const emissions = await getAccumulatedEmissionPerMarket(marketAddress, epochConfig.number);
+          const rewardsPerMarket = usersAccumulatedRewards.reduce(
+            (acc, b) => {
+              const marketRewards = b.rewards.find((r) => r.market.address === marketAddress);
+              if (!marketRewards) return acc;
+              return {
+                supply: acc.supply.add(marketRewards.accumulatedSupply),
+                borrow: acc.borrow.add(marketRewards.accumulatedBorrow),
+              };
+            },
+            { supply: constants.Zero, borrow: constants.Zero }
+          );
+          expect(emissions.supply).toBnApproxEq(rewardsPerMarket.supply, linearPrecision(epochConfig.number));
+          expect(emissions.borrow).toBnApproxEq(rewardsPerMarket.borrow, linearPrecision(epochConfig.number));
+        })
+      );
     });
   });
 });
