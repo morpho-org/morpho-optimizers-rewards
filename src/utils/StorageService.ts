@@ -6,13 +6,13 @@ import { numberOfEpochs } from "../ages/ages";
 import { UsersDistribution } from "../ages/distributions/UsersDistribution";
 
 export interface StorageService {
-  readMarketDistribution: (age: string, epoch: string) => Promise<MarketsEmission | undefined>;
+  readMarketDistribution: (age: string, epoch: string) => Promise<MarketsEmission | void>;
   writeMarketEmission: (age: string, epoch: string, emission: MarketsEmission) => Promise<void>;
-  readUsersDistribution: (age: string, epoch: string) => Promise<UsersDistribution | undefined>;
+  readUsersDistribution: (age: string, epoch: string) => Promise<UsersDistribution | void>;
   writeUsersDistribution: (age: string, epoch: string, distribution: UsersDistribution) => Promise<void>;
-  readProofs: (epoch: number) => Promise<Proofs | undefined>;
+  readProofs: (epoch: number) => Promise<Proofs | void>;
   readAllProofs: () => Promise<Proofs[]>;
-  readUserProof: (epoch: number, address: string) => Promise<Proof | undefined>;
+  readUserProof: (epoch: number, address: string) => Promise<Proof | void>;
   writeProofs: (epoch: number, proofs: Proofs) => Promise<void>;
 }
 
