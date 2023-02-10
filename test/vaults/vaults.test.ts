@@ -18,7 +18,7 @@ describe("Vaults Distributor", () => {
   const user2 = "0x0000000000000000000000000000000000000002";
   const user3 = "0x0000000000000000000000000000000000000003";
   const user4 = "0x0000000000000000000000000000000000000004";
-  let allProofs: Proofs[];
+  let allProofs: Proofs[] = [];
 
   beforeAll(async () => {
     allProofs = await storageService.readAllProofs();
