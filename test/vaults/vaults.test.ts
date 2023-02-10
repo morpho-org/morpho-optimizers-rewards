@@ -5,19 +5,24 @@ import { distributorFromEvents } from "./utils";
 import { VaultEventType } from "../../src/vaults/Distributor";
 import { allEpochs, EpochConfig } from "../../src";
 import { FileSystemStorageService } from "../../src/utils/StorageService";
+import { Proofs } from "../../src/ages/distributions/Proofs";
 
 const storageService = new FileSystemStorageService();
 
-describe("Vaults Distributor", async () => {
+describe("Vaults Distributor", () => {
   const vaultAddress = "0x6abfd6139c7c3cc270ee2ce132e309f59caaf6a2";
   const proofsFetcher = new ProofsFetcher(storageService);
   const epochConfig = proofsFetcher.getEpochFromId("age1-epoch1");
-  const allProofs = await storageService.readAllProofs();
   const user0 = "0x0000000000000000000000000000000000000000";
   const user1 = "0x0000000000000000000000000000000000000001";
   const user2 = "0x0000000000000000000000000000000000000002";
   const user3 = "0x0000000000000000000000000000000000000003";
   const user4 = "0x0000000000000000000000000000000000000004";
+  let allProofs: Proofs[];
+
+  beforeAll(async () => {
+    allProofs = await storageService.readAllProofs();
+  });
 
   it("Should distribute to the Deposit owner", async () => {
     const distributor = distributorFromEvents(vaultAddress, [
