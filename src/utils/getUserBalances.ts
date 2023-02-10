@@ -1,6 +1,7 @@
 import balancesQuery from "./graph/getGraphBalances/balances.query";
 import { formatGraphBalances, GraphUserBalances } from "./graph";
 
+type QueryUserBalancesResponse = { data?: { user?: GraphUserBalances }; errors?: any };
 const extractSubgraphBody = (status: number, body: string) => {
   try {
     const data = JSON.parse(body) as QueryUserBalancesResponse;
@@ -11,6 +12,7 @@ const extractSubgraphBody = (status: number, body: string) => {
     return <const>[null, body];
   }
 };
+
 export const getUserBalances = async (graphUrl: string, user: string, block?: number) => {
   const res = await fetch(graphUrl, {
     method: "POST",
@@ -26,4 +28,3 @@ export const getUserBalances = async (graphUrl: string, user: string, block?: nu
   if (!data.data.user) return undefined;
   return formatGraphBalances(data.data.user);
 };
-type QueryUserBalancesResponse = { data?: { user?: GraphUserBalances }; errors?: any };

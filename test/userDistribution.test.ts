@@ -16,6 +16,9 @@ import { getPrevEpoch } from "../src/utils/timestampToEpoch";
 import { MarketRewards, sumRewards } from "../src/utils/getUserRewards";
 import { VERSION_2_TIMESTAMP } from "../src/constants/mechanismUpgrade";
 import { getAccumulatedEmissionPerMarket } from "../src/utils/accumulatedEmission";
+import { FileSystemStorageService } from "../src/utils/StorageService";
+
+const storageService = new FileSystemStorageService();
 
 describe.each([...ages])("Age Users Distribution", (age) => {
   const provider = new providers.JsonRpcProvider(process.env.RPC_URL);
@@ -28,7 +31,12 @@ describe.each([...ages])("Age Users Distribution", (age) => {
       usersBalances = await fetchUsers(SUBGRAPH_URL, epochConfig.finalBlock ?? undefined);
       usersAccumulatedRewards = await Promise.all(
         usersBalances.map(async ({ address, balances }) => {
-          const rewards = await userBalancesToUnclaimedTokens(balances, epochConfig.finalTimestamp, provider);
+          const rewards = await userBalancesToUnclaimedTokens(
+            balances,
+            epochConfig.finalTimestamp,
+            provider,
+            storageService
+          );
           return {
             address,
             rewards,
@@ -49,7 +57,7 @@ describe.each([...ages])("Age Users Distribution", (age) => {
       console.log(markets.length, "markets");
       await Promise.all(
         markets.map(async (marketAddress) => {
-          const emissions = await getAccumulatedEmissionPerMarket(marketAddress, epochConfig.number);
+          const emissions = await getAccumulatedEmissionPerMarket(marketAddress, epochConfig.number, storageService);
           const rewardsPerMarket = usersAccumulatedRewards.reduce(
             (acc, b) => {
               const marketRewards = b.rewards.find((r) => r.market.address === marketAddress);
@@ -93,7 +101,7 @@ describe("On chain roots update", () => {
           usersBalances.map(async ({ address, balances }) => ({
             address,
             accumulatedRewards: sumRewards(
-              await userBalancesToUnclaimedTokens(balances, epochConfig!.epoch.finalTimestamp, provider)
+              await userBalancesToUnclaimedTokens(balances, epochConfig!.epoch.finalTimestamp, provider, storageService)
             ).toString(), // with 18 * 2 decimals
           }))
         );
@@ -122,7 +130,12 @@ describe("Version 2 rewards distribution mechanism", () => {
   it("Should be equal to version one rewards at the moment of the switch", async () => {
     await Promise.all(
       usersBalancesMerge.map(async (user) => {
-        const rewards = await userBalancesToUnclaimedTokens(user.balances, VERSION_2_TIMESTAMP, provider);
+        const rewards = await userBalancesToUnclaimedTokens(
+          user.balances,
+          VERSION_2_TIMESTAMP,
+          provider,
+          storageService
+        );
         rewards.forEach((r) => {
           expect(r.accumulatedSupply).toBnEq(r.accumulatedSupplyV1);
           expect(r.accumulatedBorrow).toBnEq(r.accumulatedBorrowV1);
@@ -134,7 +147,7 @@ describe("Version 2 rewards distribution mechanism", () => {
     const upgradeRewards = await Promise.all(
       usersBalancesMerge.map(async (user) => ({
         userAddress: user.address,
-        rewards: await userBalancesToUnclaimedTokens(user.balances, VERSION_2_TIMESTAMP, provider),
+        rewards: await userBalancesToUnclaimedTokens(user.balances, VERSION_2_TIMESTAMP, provider, storageService),
       }))
     );
     await Promise.all(
@@ -145,7 +158,8 @@ describe("Version 2 rewards distribution mechanism", () => {
         const rewards = await userBalancesToUnclaimedTokens(
           user.balances,
           VERSION_2_TIMESTAMP.add(3600 * 24 * 7),
-          provider
+          provider,
+          storageService
         );
         rewards.forEach((r) => {
           const upgradeReward = userUpgradeRewards!.rewards.find((_r) => _r.market.address === r.market.address);
