@@ -1,12 +1,5 @@
 import * as dotenv from "dotenv";
-import { ethers } from "ethers";
-import { getEpochFromId } from "../utils/timestampToEpoch";
-import { computeMerkleTree, fetchUsers, getAccumulatedEmission, userBalancesToUnclaimedTokens } from "../utils";
-import { commify, formatUnits } from "ethers/lib/utils";
-import { finishedEpochs } from "../ages/ages";
-import { SUBGRAPH_URL } from "../config";
-import { sumRewards } from "../utils/getUserRewards";
-import { FileSystemStorageService, StorageService } from "../utils/StorageService";
+import { FileSystemStorageService } from "../utils/StorageService";
 import { DataProvider, computeUsersDistributions } from "../utils/computeUsersDistributions";
 
 dotenv.config();

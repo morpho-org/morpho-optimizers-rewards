@@ -5,7 +5,7 @@ import { commify, formatUnits } from "ethers/lib/utils";
 import { finishedEpochs } from "../ages/ages";
 import { SUBGRAPH_URL } from "../config";
 import { sumRewards } from "../utils/getUserRewards";
-import { FileSystemStorageService, StorageService } from "../utils/StorageService";
+import { StorageService } from "../utils/StorageService";
 
 export enum DataProvider {
   Subgraph = "subgraph",
