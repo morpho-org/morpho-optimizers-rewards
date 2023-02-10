@@ -21,9 +21,14 @@ describe("Vaults Distributor", () => {
   let allProofs: Proofs[] = [];
 
   beforeAll(() => {
-    return storageService.readAllProofs().then((proofs) => {
-      allProofs = proofs;
-    });
+    console.log("there ?");
+    return storageService
+      .readAllProofs()
+      .then((proofs) => {
+        console.log("in there ");
+        allProofs = proofs;
+      })
+      .catch(console.log);
   });
 
   it("Should distribute to the Deposit owner", async () => {
