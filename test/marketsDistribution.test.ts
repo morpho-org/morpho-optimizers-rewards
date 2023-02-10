@@ -4,23 +4,27 @@ import { now } from "../src/helpers";
 import { RewardsDistributor__factory } from "@morpho-labs/morpho-ethers-contract";
 import addresses from "@morpho-labs/morpho-ethers-contract/lib/addresses";
 import { ages } from "../src";
+import { FileSystemStorageService } from "../src/utils/StorageService";
+
+const storageService = new FileSystemStorageService();
+
 describe("Markets distribution", () => {
   it("Should retrieve the latest market distribution", async () => {
-    const marketDistribution = await getMarketsDistribution();
+    const marketDistribution = await getMarketsDistribution(storageService);
     expect(marketDistribution).not.toBeUndefined();
   });
   it("Should retrieve the latest market distribution at one given block", async () => {
-    const provider = await providers.getDefaultProvider();
-    const marketDistribution = await getMarketsDistribution(now(), provider);
+    const provider = providers.getDefaultProvider();
+    const marketDistribution = await getMarketsDistribution(storageService, now(), provider);
     expect(marketDistribution).not.toBeUndefined();
   });
   it("Should include the snapshotProposal field for age3", async () => {
-    const marketDistribution = await getMarketsDistribution(1672326000);
+    const marketDistribution = await getMarketsDistribution(storageService, 1672326000);
     expect(marketDistribution.snapshotProposal).toBeTruthy();
   });
   // delete this test if snapshot has been deprecated
   it("Should now include the snapshotProposal field (true until deprecation)", async () => {
-    const marketDistribution = await getMarketsDistribution();
+    const marketDistribution = await getMarketsDistribution(storageService);
     expect(marketDistribution.snapshotProposal).toBeTruthy();
   });
 });

@@ -3,10 +3,11 @@ import { ethers } from "ethers";
 import { getEpochFromId } from "../utils/timestampToEpoch";
 import { computeMerkleTree, fetchUsers, getAccumulatedEmission, userBalancesToUnclaimedTokens } from "../utils";
 import { commify, formatUnits } from "ethers/lib/utils";
-import * as fs from "fs";
 import { finishedEpochs } from "../ages/ages";
 import { SUBGRAPH_URL } from "../config";
 import { sumRewards } from "../utils/getUserRewards";
+import { FileSystemStorageService, StorageService } from "../utils/StorageService";
+
 dotenv.config();
 
 enum DataProvider {
@@ -14,7 +15,11 @@ enum DataProvider {
   RPC = "rpc",
 }
 
-const computeUsersDistributions = async (dataProvider: DataProvider, epochId?: string) => {
+const computeUsersDistributions = async (
+  dataProvider: DataProvider,
+  storageService: StorageService,
+  epochId?: string
+) => {
   if (dataProvider === DataProvider.RPC) throw new Error("RPC not supported yet");
   if (epochId && !getEpochFromId(epochId)) throw new Error("Invalid epoch id");
 
@@ -35,7 +40,7 @@ const computeUsersDistributions = async (dataProvider: DataProvider, epochId?: s
         usersBalances.map(async ({ address, balances }) => ({
           address,
           accumulatedRewards: sumRewards(
-            await userBalancesToUnclaimedTokens(balances, epoch.finalTimestamp, provider)
+            await userBalancesToUnclaimedTokens(balances, epoch.finalTimestamp, provider, storageService)
           ).toString(), // with 18 decimals
         }))
       )
@@ -43,37 +48,21 @@ const computeUsersDistributions = async (dataProvider: DataProvider, epochId?: s
 
     const merkleTree = computeMerkleTree(usersAccumulatedRewards);
 
-    await fs.promises.mkdir(`distribution/${epoch.ageConfig.ageName}/${epoch.epochName}`, { recursive: true });
-
     const totalEmission = getAccumulatedEmission(epoch.id);
 
-    await fs.promises.writeFile(
-      `distribution/${epoch.ageConfig.ageName}/${epoch.epochName}/usersDistribution.json`,
-      JSON.stringify(
-        {
-          age: epoch.ageConfig.ageName,
-          epoch: epoch.epochName,
-          totalEmissionInitial: formatUnits(totalEmission),
-          totalDistributed: formatUnits(merkleTree.total),
-          distribution: usersAccumulatedRewards,
-        },
-        null,
-        2
-      )
-    );
-    await fs.promises.writeFile(
-      `distribution/proofs/proofs-${epoch.number}.json`,
-      JSON.stringify(
-        {
-          epoch: epoch.id,
-          root: merkleTree.root,
-          total: merkleTree.total,
-          proofs: merkleTree.proofs,
-        },
-        null,
-        2
-      )
-    );
+    await storageService.writeUsersDistribution(epoch.ageConfig.ageName, epoch.epochName, {
+      age: epoch.ageConfig.ageName,
+      epoch: epoch.epochName,
+      totalEmissionInitial: formatUnits(totalEmission),
+      totalDistributed: formatUnits(merkleTree.total),
+      distribution: usersAccumulatedRewards,
+    });
+    await storageService.writeProofs(epoch.number, {
+      epoch: epoch.id,
+      root: merkleTree.root,
+      total: merkleTree.total,
+      proofs: merkleTree.proofs,
+    });
     recap.push({
       age: epoch.age,
       epoch: epoch.epochName,
@@ -95,4 +84,5 @@ let dataProvider = DataProvider.Subgraph;
 if (dataProviderIndex !== -1) dataProvider = process.argv[dataProviderIndex + 1] as DataProvider;
 if ([DataProvider.Subgraph, DataProvider.RPC].indexOf(dataProvider) === -1) throw new Error("Invalid data provider");
 
-computeUsersDistributions(DataProvider.Subgraph, epochId).then(() => console.log("Done"));
+const storageService = new FileSystemStorageService();
+computeUsersDistributions(DataProvider.Subgraph, storageService, epochId).then(() => console.log("Done"));

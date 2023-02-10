@@ -1,6 +1,7 @@
 import { ages, allEpochs } from "../ages";
 import { BigNumber, constants } from "ethers";
 import { parseUnits } from "ethers/lib/utils";
+import { StorageService } from "./StorageService";
 
 /**
  * Returns the total distributed rewards for the previous epochs including the current one
@@ -21,23 +22,20 @@ export const getAccumulatedEmission = (epochId: string) => {
 /**
  * Returns the total distributed rewards for the previous epochs including the current one on one given market
  */
-export const getAccumulatedEmissionPerMarket = async (
+export const getAccumulatedEmissionPerMarket = (
   market: string,
-  epochNumber: number
+  epochNumber: number,
+  storageService: StorageService
 ): Promise<{ supply: BigNumber; borrow: BigNumber }> =>
   Promise.all(
     allEpochs
       .filter((e) => e.number <= epochNumber)
       .map(async ({ ageConfig, ...epoch }) => {
-        const { markets } = require(`../../distribution/${ageConfig.ageName}/${epoch.epochName}/marketsEmission.json`);
-        if (!markets[market])
-          return {
-            supply: constants.Zero,
-            borrow: constants.Zero,
-          };
+        const distribution = await storageService.readMarketDistribution(ageConfig.ageName, epoch.epochName);
+        const marketContent = distribution?.markets[market];
         return {
-          supply: parseUnits(markets[market]!.supply),
-          borrow: parseUnits(markets[market]!.borrow),
+          supply: marketContent?.supply ? parseUnits(marketContent.supply) : constants.Zero,
+          borrow: marketContent?.borrow ? parseUnits(marketContent.borrow) : constants.Zero,
         };
       })
   ).then((r) =>

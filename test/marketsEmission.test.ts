@@ -4,6 +4,9 @@ import { providers } from "ethers";
 import { MarketEmission } from "../src/utils";
 import { Optional } from "../src/helpers/types";
 import { aStEth, cFei } from "../src/helpers";
+import { FileSystemStorageService } from "../src/utils/StorageService";
+
+const storageService = new FileSystemStorageService();
 
 describe.each(ages)("Test Ages Distributions", (age) => {
   const EPOCHS_PER_AGE = 3;
@@ -23,7 +26,7 @@ describe.each(ages)("Test Ages Distributions", (age) => {
   });
 
   it(`Should return a market configuration for ${age.ageName}`, async () => {
-    const marketEmission = await getMarketsDistribution(age.startTimestamp.toNumber());
+    const marketEmission = await getMarketsDistribution(storageService, age.startTimestamp.toNumber());
     expect(marketEmission).not.toBeUndefined();
   });
 

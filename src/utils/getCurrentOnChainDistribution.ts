@@ -2,63 +2,22 @@ import { providers } from "ethers";
 import { RewardsDistributor__factory } from "@morpho-labs/morpho-ethers-contract";
 import addresses from "@morpho-labs/morpho-ethers-contract/lib/addresses";
 import { numberOfEpochs } from "../ages/ages";
+import { StorageService } from "./StorageService";
+
 export const getCurrentOnChainDistribution = async (
   provider: providers.Provider,
+  storageService: StorageService,
   blockTag: providers.BlockTag = "latest"
 ) => {
   const rewardsDisributor = RewardsDistributor__factory.connect(addresses.morphoDao.rewardsDistributor, provider);
   const root = await rewardsDisributor.currRoot({ blockTag });
-  return rootToProof(root);
-};
-export interface Proofs {
-  epoch: string;
-  root: string;
-  proofs: {
-    [address: string]:
-      | {
-          amount: string;
-          proof: string[];
-        }
-      | undefined;
-  };
-}
-export const getAllProofs = () => {
-  const proofs: Proofs[] = [];
-  for (let index = numberOfEpochs; index > 0; index--) {
-    const filename = `proofs-${index}.json`;
-    let lastProofRaw: any;
-    try {
-      lastProofRaw = require(`../../distribution/proofs/${filename}`);
-    } catch (e: any) {
-      if (e.code !== "MODULE_NOT_FOUND") throw Error(e);
-    }
-
-    if (lastProofRaw) proofs.push(lastProofRaw);
-  }
-  return proofs;
+  return rootToProof(root, storageService);
 };
 
-export const rootToProof = (root: string) => {
-  let index = numberOfEpochs;
-  let retrieved = false;
-  let proof: Proofs | undefined;
-  while (!retrieved && index > 0) {
-    const filename = `proofs-${index}.json`;
-    let lastProofRaw: any;
-    try {
-      lastProofRaw = require(`../../distribution/proofs/${filename}`);
-    } catch (e: any) {
-      if (e.code !== "MODULE_NOT_FOUND") throw Error(e);
-    }
-
-    if (lastProofRaw) {
-      proof = lastProofRaw;
-      if (proof!.root.toLowerCase() === root.toLowerCase()) {
-        retrieved = true;
-      }
-    }
-    index--;
+export const rootToProof = async (root: string, storageService: StorageService) => {
+  for (let epoch = numberOfEpochs; epoch > 0; epoch--) {
+    const proofs = await storageService.readProofs(epoch);
+    if (proofs?.root.toLowerCase() === root.toLowerCase()) return proofs;
   }
-  if (!proof) throw Error(`No proof found for root ${root}`);
-  return proof;
+  throw new Error(`No proof found for root ${root}`);
 };

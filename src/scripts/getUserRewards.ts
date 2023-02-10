@@ -6,12 +6,15 @@ import { getUserRewards } from "../utils";
 import { formatUnits } from "ethers/lib/utils";
 import { providers } from "ethers";
 import { mapValues } from "lodash";
+import { FileSystemStorageService } from "../utils/StorageService";
 
 const provider = process.env.RPC_URL
   ? new providers.JsonRpcProvider(process.env.RPC_URL)
   : new providers.InfuraProvider(1);
 
-getUserRewards(process.argv[2], process.argv[3] ? +process.argv[3] : undefined, provider)
+const storageService = new FileSystemStorageService();
+
+getUserRewards(process.argv[2], storageService, process.argv[3] ? +process.argv[3] : undefined, provider)
   .then((r) =>
     console.log({
       currentEpochRewards: formatUnits(r.currentEpochRewards),

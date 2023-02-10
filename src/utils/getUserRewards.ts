@@ -13,9 +13,11 @@ import { Provider } from "@ethersproject/providers";
 import { cloneDeep } from "lodash";
 import { getUserBalances } from "./getUserBalances";
 import { MARKETS_UPGRADE_SNAPSHOTS, VERSION_2_TIMESTAMP } from "../constants/mechanismUpgrade";
+import { StorageService } from "./StorageService";
 
 export const getUserRewards = async (
   address: string,
+  storageService: StorageService,
   blockNumber?: number,
   provider: providers.Provider = new providers.InfuraProvider(1)
 ) => {
@@ -24,13 +26,16 @@ export const getUserRewards = async (
     const block = await provider.getBlock(blockNumber);
     timestampEnd = block.timestamp;
   }
-  const userBalances = await getUserBalances(SUBGRAPH_URL, address.toLowerCase(), blockNumber);
+  const userBalances = await getUserBalances(SUBGRAPH_URL, address.toLowerCase(), blockNumber).then(
+    (u) => u?.balances ?? []
+  );
   const currentEpoch = timestampToEpoch(timestampEnd);
-  await getEpochMarketsDistribution(currentEpoch!.epoch.id, provider); // preload to cache the current epoch configuration
+  // preload to cache the current epoch configuration
+  await getEpochMarketsDistribution(currentEpoch!.epoch.id, provider, storageService);
   // to prevent parallel fetching of the same data
-  const marketsRewards = await userBalancesToUnclaimedTokens(userBalances?.balances || [], timestampEnd, provider);
+  const marketsRewards = await userBalancesToUnclaimedTokens(userBalances, timestampEnd, provider, storageService);
   const currentRewards = sumRewards(marketsRewards);
-  const onChainDistribution = await getCurrentOnChainDistribution(provider, blockNumber);
+  const onChainDistribution = await getCurrentOnChainDistribution(provider, storageService, blockNumber);
   const claimableRaw = onChainDistribution.proofs[address.toLowerCase()];
   const claimable = claimableRaw ? BigNumber.from(claimableRaw.amount) : BigNumber.from(0);
   const prevEpoch = getPrevEpoch(currentEpoch?.epoch.id);
@@ -51,7 +56,7 @@ export const getUserRewards = async (
   let currentEpochProjectedRewards = currentRewards;
   if (currentEpoch?.epoch.finalTimestamp)
     currentEpochProjectedRewards = sumRewards(
-      await userBalancesToUnclaimedTokens(userBalances?.balances || [], currentEpoch.epoch.finalTimestamp, provider)
+      await userBalancesToUnclaimedTokens(userBalances, currentEpoch.epoch.finalTimestamp, provider, storageService)
     )
       .sub(claimable)
       .sub(claimableSoon);
@@ -98,10 +103,12 @@ export interface MarketRewards {
   accumulatedBorrowV2: BigNumber;
   accumulatedBorrow: BigNumber;
 }
+
 export const userBalancesToUnclaimedTokens = async (
   balances: UserBalance[],
   currentTimestamp: BigNumberish,
-  provider: providers.Provider
+  provider: providers.Provider,
+  storageService: StorageService
 ): Promise<MarketRewards[]> => {
   const ts = BigNumber.from(currentTimestamp);
   return Promise.all(
@@ -115,7 +122,8 @@ export const userBalancesToUnclaimedTokens = async (
         const { updatedBalance, accruedSupplyV1, accruedSupplyV2 } = await accrueSupplyRewards(
           b,
           VERSION_2_TIMESTAMP,
-          provider
+          provider,
+          storageService
         );
         accumulatedSupplyV1 = accumulatedSupplyV1.add(accruedSupplyV1);
         accumulatedSupplyV2 = accumulatedSupplyV2.add(accruedSupplyV2);
@@ -164,7 +172,8 @@ export const userBalancesToUnclaimedTokens = async (
         const { updatedBalance, accruedBorrowV1, accruedBorrowV2 } = await accrueBorrowRewards(
           balance,
           VERSION_2_TIMESTAMP,
-          provider
+          provider,
+          storageService
         );
         accumulatedBorrowV1 = accumulatedBorrowV1.add(accruedBorrowV1);
         accumulatedBorrowV2 = accumulatedBorrowV2.add(accruedBorrowV2);
@@ -195,7 +204,7 @@ export const userBalancesToUnclaimedTokens = async (
         balance.userBorrowIndex = BigNumber.from(snapshot.indexV1);
       }
 
-      const { accruedBorrowV1, accruedBorrowV2 } = await accrueBorrowRewards(balance, ts, provider);
+      const { accruedBorrowV1, accruedBorrowV2 } = await accrueBorrowRewards(balance, ts, provider, storageService);
       accumulatedBorrowV1 = accumulatedBorrowV1.add(accruedBorrowV1);
       accumulatedBorrowV2 = accumulatedBorrowV2.add(accruedBorrowV2);
 
@@ -223,9 +232,14 @@ export const sumRewards = (marketsRewards: MarketRewards[]) =>
 /**
  * This method upgrades the market with the indexes at the given ts
  */
-const accrueSupplyRewards = async (b: UserBalance, ts: BigNumber, provider: Provider) => {
-  const supplyIndex = await computeSupplyIndex(b.market, ts, provider);
-  const { p2pSupplyIndex, poolSupplyIndex } = await computeSupplyIndexes(b.market, ts, provider);
+const accrueSupplyRewards = async (
+  b: UserBalance,
+  ts: BigNumber,
+  provider: Provider,
+  storageService: StorageService
+) => {
+  const supplyIndex = await computeSupplyIndex(b.market, ts, provider, storageService);
+  const { p2pSupplyIndex, poolSupplyIndex } = await computeSupplyIndexes(b.market, ts, provider, storageService);
   const accruedSupplyV1 = getUserAccumulatedRewards(supplyIndex, b.userSupplyIndex, b.underlyingSupplyBalance);
   const accruedSupplyV2 = getUserAccumulatedRewards(p2pSupplyIndex, b.userSupplyInP2PIndex, b.scaledSupplyInP2P).add(
     getUserAccumulatedRewards(poolSupplyIndex, b.userSupplyOnPoolIndex, b.scaledSupplyOnPool)
@@ -246,9 +260,14 @@ const accrueSupplyRewards = async (b: UserBalance, ts: BigNumber, provider: Prov
 /**
  * This method upgrades the market with the indexes at the given ts
  */
-const accrueBorrowRewards = async (b: UserBalance, ts: BigNumber, provider: Provider) => {
-  const borrowIndex = await computeBorrowIndex(b.market, ts, provider);
-  const { p2pBorrowIndex, poolBorrowIndex } = await computeBorrowIndexes(b.market, ts, provider);
+const accrueBorrowRewards = async (
+  b: UserBalance,
+  ts: BigNumber,
+  provider: Provider,
+  storageService: StorageService
+) => {
+  const borrowIndex = await computeBorrowIndex(b.market, ts, provider, storageService);
+  const { p2pBorrowIndex, poolBorrowIndex } = await computeBorrowIndexes(b.market, ts, provider, storageService);
   const accruedBorrowV1 = getUserAccumulatedRewards(borrowIndex, b.userBorrowIndex, b.underlyingBorrowBalance);
   const accruedBorrowV2 = getUserAccumulatedRewards(p2pBorrowIndex, b.userBorrowInP2PIndex, b.scaledBorrowInP2P).add(
     getUserAccumulatedRewards(poolBorrowIndex, b.userBorrowOnPoolIndex, b.scaledBorrowOnPool)
@@ -270,8 +289,15 @@ const getUserAccumulatedRewards = (marketIndex: BigNumber, userIndex: BigNumber,
   if (userIndex.gt(marketIndex)) return BigNumber.from(0);
   return marketIndex.sub(userIndex).mul(userBalance).div(WAD); // with 18 decimals
 };
-const computeSupplyIndex = async (market: Market, currentTimestamp: BigNumberish, provider: providers.Provider) =>
+
+const computeSupplyIndex = async (
+  market: Market,
+  currentTimestamp: BigNumberish,
+  provider: providers.Provider,
+  storageService: StorageService
+) =>
   computeIndex(
+    storageService,
     market.address,
     market.supplyIndex,
     market.supplyUpdateBlockTimestampV1,
@@ -281,7 +307,12 @@ const computeSupplyIndex = async (market: Market, currentTimestamp: BigNumberish
     provider
   );
 
-const computeSupplyIndexes = async (market: Market, currentTimestamp: BigNumberish, provider: providers.Provider) => {
+const computeSupplyIndexes = async (
+  market: Market,
+  currentTimestamp: BigNumberish,
+  provider: providers.Provider,
+  storageService: StorageService
+) => {
   const rateType = "supplyRate";
   const marketAddress = market.address;
 
@@ -295,6 +326,7 @@ const computeSupplyIndexes = async (market: Market, currentTimestamp: BigNumberi
     : totalSupplyP2P.mul(PercentMath.BASE_PERCENT).div(totalSupply);
   return {
     p2pSupplyIndex: await computeIndex(
+      storageService,
       marketAddress,
       market.p2pSupplyIndex,
       market.supplyUpdateBlockTimestamp,
@@ -305,6 +337,7 @@ const computeSupplyIndexes = async (market: Market, currentTimestamp: BigNumberi
       (emission) => PercentMath.percentMul(emission, lastPercentSpeed)
     ),
     poolSupplyIndex: await computeIndex(
+      storageService,
       marketAddress,
       market.poolSupplyIndex,
       market.supplyUpdateBlockTimestamp,
@@ -316,8 +349,15 @@ const computeSupplyIndexes = async (market: Market, currentTimestamp: BigNumberi
     ),
   };
 };
-const computeBorrowIndex = async (market: Market, currentTimestamp: BigNumberish, provider: providers.Provider) =>
+
+const computeBorrowIndex = async (
+  market: Market,
+  currentTimestamp: BigNumberish,
+  provider: providers.Provider,
+  storageService: StorageService
+) =>
   computeIndex(
+    storageService,
     market.address,
     market.borrowIndex,
     market.borrowUpdateBlockTimestampV1,
@@ -327,7 +367,12 @@ const computeBorrowIndex = async (market: Market, currentTimestamp: BigNumberish
     provider
   );
 
-const computeBorrowIndexes = async (market: Market, currentTimestamp: BigNumberish, provider: providers.Provider) => {
+const computeBorrowIndexes = async (
+  market: Market,
+  currentTimestamp: BigNumberish,
+  provider: providers.Provider,
+  storageService: StorageService
+) => {
   const rateType = "borrowRate";
   const marketAddress = market.address;
 
@@ -339,6 +384,7 @@ const computeBorrowIndexes = async (market: Market, currentTimestamp: BigNumberi
     : totalBorrowP2P.mul(PercentMath.BASE_PERCENT).div(totalBorrow);
   return {
     p2pBorrowIndex: await computeIndex(
+      storageService,
       marketAddress,
       market.p2pBorrowIndex,
       market.borrowUpdateBlockTimestamp,
@@ -349,6 +395,7 @@ const computeBorrowIndexes = async (market: Market, currentTimestamp: BigNumberi
       (emission) => PercentMath.percentMul(emission, lastPercentSpeed)
     ),
     poolBorrowIndex: await computeIndex(
+      storageService,
       marketAddress,
       market.poolBorrowIndex,
       market.borrowUpdateBlockTimestamp,
@@ -360,7 +407,9 @@ const computeBorrowIndexes = async (market: Market, currentTimestamp: BigNumberi
     ),
   };
 };
+
 const computeIndex = async (
+  storageService: StorageService,
   marketAddress: string,
   lastIndex: BigNumber,
   lastUpdateTimestamp: BigNumberish,
@@ -374,7 +423,10 @@ const computeIndex = async (
   // we first compute distribution of each epoch
   const distributions = Object.fromEntries(
     await Promise.all(
-      epochs.map(async (epoch) => [epoch.epoch.id, await getEpochMarketsDistribution(epoch.epoch.id, provider)])
+      epochs.map(async (epoch) => [
+        epoch.epoch.id,
+        await getEpochMarketsDistribution(epoch.epoch.id, provider, storageService),
+      ])
     )
   );
   return epochs.reduce((currentIndex, epoch) => {
