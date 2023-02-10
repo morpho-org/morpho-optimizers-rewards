@@ -153,7 +153,7 @@ export const userBalancesToUnclaimedTokens = async (
         balance.userSupplyIndex = BigNumber.from(snapshot.indexV1);
       }
 
-      const { accruedSupplyV1, accruedSupplyV2 } = await accrueSupplyRewards(balance, ts, provider);
+      const { accruedSupplyV1, accruedSupplyV2 } = await accrueSupplyRewards(balance, ts, provider, storageService);
 
       accumulatedSupplyV1 = accumulatedSupplyV1.add(accruedSupplyV1);
       accumulatedSupplyV2 = accumulatedSupplyV2.add(accruedSupplyV2);

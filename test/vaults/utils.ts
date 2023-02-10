@@ -5,6 +5,9 @@ import { EpochConfig } from "../../src";
 import { BigNumber, providers } from "ethers";
 import ProofsFetcher from "../../src/vaults/ProofsFetcher";
 import { maxBN } from "@morpho-labs/ethers-utils/lib/utils";
+import { FileSystemStorageService } from "../../src/utils/StorageService";
+
+const storageService = new FileSystemStorageService();
 
 export const distributorFromEvents = (vaultAddress: string, events: TransactionEvents[]): Distributor => {
   class LocalEventFetcher implements EventsFetcherInterface {
@@ -27,7 +30,7 @@ export const distributorFromEvents = (vaultAddress: string, events: TransactionE
     }
   }
   const eventsFetcher = new LocalEventFetcher();
-  const proofsFetcher = new ProofsFetcher();
+  const proofsFetcher = new ProofsFetcher(storageService);
 
   return new Distributor(vaultAddress, eventsFetcher, proofsFetcher);
 };

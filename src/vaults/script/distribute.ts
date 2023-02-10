@@ -8,16 +8,18 @@ import * as fs from "fs";
 import * as dotenv from "dotenv";
 import { Tree } from "../../utils/merkleTree/merkleTree";
 import { mergeMerkleTrees } from "../../utils/merkleTree/mergeMerkleTree";
-import { getAllProofs } from "../../utils/getCurrentOnChainDistribution";
 import { formatUnits } from "ethers/lib/utils";
 import addresses from "@morpho-labs/morpho-ethers-contract/lib/addresses";
 import { DAO_SAFE_ADDRESS, VAULTS_REWARDS_DISTRIBUTOR } from "../constants";
 import { RewardsDistributor__factory } from "@morpho-labs/morpho-ethers-contract";
 import { TxBuilder } from "@morpho-labs/gnosis-tx-builder";
 import { getEpochFromId } from "../../utils/timestampToEpoch";
+import { FileSystemStorageService } from "../../utils/StorageService";
 dotenv.config();
 
 const baseDir = "./distribution/vaults";
+
+const storageService = new FileSystemStorageService();
 
 const distribute = async (
   vaults: VaultConfiguration[],
@@ -40,7 +42,7 @@ const distribute = async (
     console.log(`Distributing for vault ${address} (${symbol}) deployed at block ${deploymentBlock}`);
 
     const eventsFetcher = new VaultEventsFetcher(address, provider, deploymentBlock);
-    const proofsFetcher = new ProofsFetcher();
+    const proofsFetcher = new ProofsFetcher(storageService);
     const distributor = new Distributor(address, eventsFetcher, proofsFetcher);
     const { history, lastMerkleTree } = await distributor.distributeMorpho(epochTo);
     console.log(`Distributed ${Object.keys(history).length} epochs`);
@@ -72,7 +74,7 @@ const distribute = async (
   if (mergeTrees) {
     const mergedTree = mergeMerkleTrees(trees);
 
-    const lastProof = getAllProofs()[0];
+    const [lastProof] = await storageService.readAllProofs();
     const epoch = lastProof.epoch;
 
     const filename = `${baseDir}/${epoch}-merged.json`;

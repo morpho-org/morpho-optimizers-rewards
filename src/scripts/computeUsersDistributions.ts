@@ -57,12 +57,7 @@ const computeUsersDistributions = async (
       totalDistributed: formatUnits(merkleTree.total),
       distribution: usersAccumulatedRewards,
     });
-    await storageService.writeProofs(epoch.number, {
-      epoch: epoch.id,
-      root: merkleTree.root,
-      total: merkleTree.total,
-      proofs: merkleTree.proofs,
-    });
+    await storageService.writeProofs(epoch.number, { epoch: epoch.id, ...merkleTree });
     recap.push({
       age: epoch.age,
       epoch: epoch.epochName,
