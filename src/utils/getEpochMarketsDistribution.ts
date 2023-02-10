@@ -42,7 +42,7 @@ export const computeEpochMarketsDistribution = async (
   const epochConfig = ageConfig.epochs.find((e) => e.epochName === epoch);
   if (!epochConfig) throw Error(`Unknown epoch: ${age}-${epoch}`);
 
-  // Will reverts if snapshotBlock is not defined
+  // Will revert if snapshotBlock is not defined
   const { marketsEmissions } = await ageConfig.distribution(ageConfig, epochConfig, provider);
 
   const formattedMarketsEmissions = Object.fromEntries(
