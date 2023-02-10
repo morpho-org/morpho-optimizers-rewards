@@ -16,3 +16,6 @@ lib
 generated
 build
 coverage
+
+# Compilation remaining artifacts
+tsconfig.build.tsbuildinfo
