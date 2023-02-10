@@ -6,6 +6,7 @@ import { VaultEventType } from "../../src/vaults/Distributor";
 import { allEpochs, EpochConfig } from "../../src";
 import { FileSystemStorageService } from "../../src/utils/StorageService";
 import { Proofs } from "../../src/ages/distributions/Proofs";
+import "dotenv/config";
 
 const storageService = new FileSystemStorageService();
 
@@ -20,16 +21,7 @@ describe("Vaults Distributor", () => {
   const user4 = "0x0000000000000000000000000000000000000004";
   let allProofs: Proofs[] = [];
 
-  beforeAll(() => {
-    console.log("there ?");
-    return storageService
-      .readAllProofs()
-      .then((proofs) => {
-        console.log("in there ");
-        allProofs = proofs;
-      })
-      .catch(console.log);
-  });
+  beforeAll(async () => (allProofs = await storageService.readAllProofs()));
 
   it("Should distribute to the Deposit owner", async () => {
     const distributor = distributorFromEvents(vaultAddress, [
@@ -171,7 +163,9 @@ describe("Vaults Distributor", () => {
     "Vaults Epochs",
     (currentEpochConfig: EpochConfig) => {
       describe(`Epoch ${currentEpochConfig.number}`, () => {
-        const currentProof = allProofs[allProofs.length - currentEpochConfig.number];
+        let currentProof: Proofs;
+
+        beforeAll(() => (currentProof = allProofs[allProofs.length - currentEpochConfig.number]));
 
         it("Should distribute tokens to vaults users with only one user", async () => {
           const distributor = distributorFromEvents(vaultAddress, [
