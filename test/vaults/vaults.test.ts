@@ -20,8 +20,10 @@ describe("Vaults Distributor", () => {
   const user4 = "0x0000000000000000000000000000000000000004";
   let allProofs: Proofs[] = [];
 
-  beforeAll(async () => {
-    allProofs = await storageService.readAllProofs();
+  beforeAll(() => {
+    return storageService.readAllProofs().then((proofs) => {
+      allProofs = proofs;
+    });
   });
 
   it("Should distribute to the Deposit owner", async () => {
