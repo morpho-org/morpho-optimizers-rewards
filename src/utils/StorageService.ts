@@ -34,25 +34,6 @@ export class FileSystemStorageService implements StorageService {
   #proofsCache: ProofsCache = {};
   #distributionRoot = "../../distribution";
 
-  #generateDistributionPath(age: string, epoch: string) {
-    const folder = path.resolve(__dirname, this.#distributionRoot, age, epoch);
-    const file = path.resolve(folder, "marketsEmission.json");
-    return { folder, file };
-  }
-
-  #generateProofsPath(epoch: number) {
-    const folder = path.resolve(__dirname, this.#distributionRoot, "proofs");
-    const filename = `proofs-${epoch}.json`;
-    const file = path.resolve(folder, filename);
-    return { folder, file };
-  }
-
-  #generateUsersDistributionPath(age: string, epoch: string) {
-    const folder = path.resolve(__dirname, this.#distributionRoot, age, epoch);
-    const file = path.resolve(folder, "usersDistribution.json");
-    return { folder, file };
-  }
-
   async readMarketDistribution(age: string, epoch: string) {
     try {
       const inCache = this.#emissionsCache[age]?.[epoch];
@@ -139,5 +120,24 @@ export class FileSystemStorageService implements StorageService {
     if (fileExists) throw new Error(`File ${file} already exists, can't write it.`);
     await fs.promises.mkdir(folder, { recursive: true });
     await fs.promises.writeFile(file, JSON.stringify(proofs, null, 2));
+  }
+
+  #generateDistributionPath(age: string, epoch: string) {
+    const folder = path.resolve(__dirname, this.#distributionRoot, age, epoch);
+    const file = path.resolve(folder, "marketsEmission.json");
+    return { folder, file };
+  }
+
+  #generateProofsPath(epoch: number) {
+    const folder = path.resolve(__dirname, this.#distributionRoot, "proofs");
+    const filename = `proofs-${epoch}.json`;
+    const file = path.resolve(folder, filename);
+    return { folder, file };
+  }
+
+  #generateUsersDistributionPath(age: string, epoch: string) {
+    const folder = path.resolve(__dirname, this.#distributionRoot, age, epoch);
+    const file = path.resolve(folder, "usersDistribution.json");
+    return { folder, file };
   }
 }
