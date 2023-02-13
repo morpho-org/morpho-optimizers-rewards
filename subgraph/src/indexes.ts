@@ -137,7 +137,7 @@ const computeUpdatedMorphoIndexV2 = (
     // consider the speed between onPool & inP2P to be constant between 2 markets update.
     // That means that we consider that the difference of interest generated does not make changes between
     // on pool & in P2P repartition, i.e. lastPercentSpeed is constant.
-    const speed = distribution.times(lastPercentSpeed).div(BigInt.fromString("10000"));
+    const speed = distribution.times(lastPercentSpeed).div(BASIS_POINTS);
     const accrualIndex = computeOneEpochDistribuedRewards(start, blockTimestamp, lastTotalScaled, speed);
     return lastMorphoIndex.plus(accrualIndex);
   }
@@ -160,7 +160,7 @@ const computeUpdatedMorphoIndexV2 = (
       obj,
       prevEpochId + "-" + marketSide + "-" + marketAddress.toHexString()
     );
-    const speed = distribution.times(lastPercentSpeed).div(BigInt.fromString("10000"));
+    const speed = distribution.times(lastPercentSpeed).div(BASIS_POINTS);
 
     lastMorphoIndex = lastMorphoIndex.plus(
       computeOneEpochDistribuedRewards(lastUpdateBlockTimestamp, end, lastTotalScaled, speed)
@@ -178,7 +178,7 @@ const computeUpdatedMorphoIndexV2 = (
   const id = ((currentEpochId as string) + "-" + marketSide + "-" + marketAddress.toHexString()) as string;
 
   const distribution = fetchDistributionFromDistributionId(obj, id);
-  const speed = distribution.times(lastPercentSpeed).div(BigInt.fromString("10000"));
+  const speed = distribution.times(lastPercentSpeed).div(BASIS_POINTS);
   const accrualIndex = computeOneEpochDistribuedRewards(
     lastUpdateBlockTimestamp,
     blockTimestamp,
@@ -227,9 +227,7 @@ export function updateBorrowIndexOnPool(marketAddress: Address, blockTimestamp: 
     .times(market.lastP2PBorrowIndex)
     .div(BigInt.fromString("10").pow(indexUnits));
   const total = totalOnPoolInUnderlying.plus(totalInP2PInUnderlying);
-  const onPoolPercent = total.isZero()
-    ? BigInt.zero()
-    : totalOnPoolInUnderlying.times(BigInt.fromString("10000")).div(total);
+  const onPoolPercent = total.isZero() ? BigInt.zero() : totalOnPoolInUnderlying.times(BASIS_POINTS).div(total);
   return computeUpdatedMorphoIndexV2(
     marketAddress,
     blockTimestamp,
@@ -251,9 +249,7 @@ export function updateBorrowIndexInP2P(marketAddress: Address, blockTimestamp: B
     .times(market.lastP2PBorrowIndex)
     .div(BigInt.fromString("10").pow(indexUnits));
   const total = totalOnPoolInUnderlying.plus(totalInP2PInUnderlying);
-  const inP2PPercent = total.isZero()
-    ? BigInt.zero()
-    : totalInP2PInUnderlying.times(BigInt.fromString("10000")).div(total);
+  const inP2PPercent = total.isZero() ? BigInt.zero() : totalInP2PInUnderlying.times(BASIS_POINTS).div(total);
   return computeUpdatedMorphoIndexV2(
     marketAddress,
     blockTimestamp,
@@ -276,9 +272,7 @@ export function updateSupplyIndexOnPool(marketAddress: Address, blockTimestamp: 
 
   const total = totalOnPoolInUnderlying.plus(totalInP2PInUnderlying);
 
-  const onPoolPercent = total.isZero()
-    ? BigInt.zero()
-    : totalOnPoolInUnderlying.times(BigInt.fromString("10000")).div(total);
+  const onPoolPercent = total.isZero() ? BigInt.zero() : totalOnPoolInUnderlying.times(BASIS_POINTS).div(total);
   return computeUpdatedMorphoIndexV2(
     marketAddress,
     blockTimestamp,

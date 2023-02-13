@@ -124,11 +124,11 @@ type Transaction @entity {
   blockNumber: Int!
   "The market of the tx"
   market: Market!
-  "The user that has receive the position modification"
+  "The user that has received the position modification"
   user: User!
   "The type of the transaction"
   type: TransactionType!
-  "The Morpho Contract where the event was emmited"
+  "The Morpho Contract where the event was emited"
   target: Bytes!
   "The tx event log index"
   logIndex: BigInt!
