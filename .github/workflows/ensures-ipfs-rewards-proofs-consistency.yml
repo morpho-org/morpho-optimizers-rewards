@@ -1,0 +1,28 @@
+name: Ensures IPFS Rewards Proofs Consistency
+
+on:
+  workflow_dispatch:
+
+  schedule:
+    - cron: '0 16 * * *'
+
+jobs:
+  compute-market-distribution:
+    name: Ensures IPFS Rewards Proofs Consistency
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install dependencies
+        run: yarn install --immutable
+
+      - name: Pin missing proofs to IPFS
+        run: yarn ipfs:upload
+        env:
+          PINATA_JWT_KEY: ${{ secrets.PINATA_JWT_KEY }}

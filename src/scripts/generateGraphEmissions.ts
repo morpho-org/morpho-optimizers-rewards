@@ -4,7 +4,13 @@ import { allEpochs, startedEpochs } from "../ages/ages";
 import * as fs from "fs";
 
 dotenv.config();
-const generateGraphEmission = async () => {
+
+import { pinata, uploadToIPFS } from "../utils/ipfs/uploadToIPFS";
+const generateGraphEmissions = async () => {
+  const canUse = await pinata.testAuthentication();
+
+  if (!canUse.authenticated) throw new Error("Wrong Pinata Key");
+
   const provider = new providers.JsonRpcProvider(process.env.RPC_URL);
   const distributions = await Promise.all(
     startedEpochs.map(async (epoch) => ({
@@ -21,14 +27,20 @@ const generateGraphEmission = async () => {
   });
   const startTimestamps = Object.fromEntries(allEpochs.map((e) => [e.id, e.initialTimestamp.toString()]));
   const endTimestamps = Object.fromEntries(allEpochs.map((e) => [e.id, e.finalTimestamp.toString()]));
-
+  const hash = await uploadToIPFS({
+    name: "subgraph-distribution.json",
+    body: { startTimestamps, endTimestamps, formattedEmissions },
+  });
+  if (!hash) throw Error("Cannot upload to IPFS");
+  console.log("Override IPFS hash on the subgraph with", hash);
   await fs.promises.writeFile(
-    "distribution/ipfs.json",
-    JSON.stringify({ startTimestamps, endTimestamps, formattedEmissions }, null, 2)
+    "subgraph/src/ipfs.ts",
+    `export const IPFS_HASH = "${hash}";
+`
   );
 };
 
-generateGraphEmission().catch((e) => {
+generateGraphEmissions().catch((e) => {
   console.error(e);
   process.exit(1);
 });

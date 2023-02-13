@@ -7,17 +7,18 @@ export interface EpochConfig {
   id: string;
   number: number;
   snapshotProposal?: string;
-  snapshotBlock?: number;
+  snapshotBlock?: number | null;
   initialTimestamp: BigNumber;
   finalTimestamp: BigNumber;
-  initialBlock?: number;
-  finalBlock?: number;
+  initialBlock?: number | null;
+  finalBlock?: number | null;
   totalEmission: BigNumber;
   epochName: string;
+  protocolDistribution?: ProtocolDistribution | null;
+}
 
-  protocolDistribution?: {
-    [protocol: string]: BigNumber; // the percentage of tokens distributed to users of Morpho-protocol in bps
-  };
+export interface ProtocolDistribution {
+  [protocol: string]: BigNumber; // the percentage of tokens distributed to users of Morpho-protocol in bps
 }
 
 export interface AgeConfig {
