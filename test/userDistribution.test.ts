@@ -82,7 +82,7 @@ describe("Version 2 rewards distribution mechanism", () => {
   const version2Block = ages[2].epochs[0].finalBlock;
   let usersBalancesMerge: UserBalances[];
   beforeAll(async () => {
-    usersBalancesMerge = await fetchUsers(SUBGRAPH_URL, version2Block);
+    usersBalancesMerge = await fetchUsers(SUBGRAPH_URL, version2Block ?? undefined);
   });
   it("Should have a block corresponding to the update", () => expect(version2Block).not.toBeUndefined());
   it("Should be equal to version one rewards at the moment of the switch on the subgraph", () => {
