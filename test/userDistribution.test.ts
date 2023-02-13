@@ -23,7 +23,7 @@ describe.each([...ages])("Age Users Distribution", (age) => {
     let usersBalances: UserBalances[];
     let usersAccumulatedRewards: { address: string; accumulatedRewards: string }[];
     beforeAll(async () => {
-      usersBalances = await fetchUsers(SUBGRAPH_URL, epochConfig.finalBlock);
+      usersBalances = await fetchUsers(SUBGRAPH_URL, epochConfig.finalBlock ?? undefined);
       usersAccumulatedRewards = await Promise.all(
         usersBalances.map(async ({ address, balances }) => ({
           address,
@@ -61,7 +61,7 @@ describe("On chain roots update", () => {
         expect(epochConfig).not.toBeUndefined();
 
         if (epochConfig!.epoch.id === "age1-epoch2") return; // not check for root 2
-        const usersBalances = await fetchUsers(SUBGRAPH_URL, epochConfig!.epoch.finalBlock);
+        const usersBalances = await fetchUsers(SUBGRAPH_URL, epochConfig!.epoch.finalBlock ?? undefined);
         const usersAccumulatedRewards = await Promise.all(
           usersBalances.map(async ({ address, balances }) => ({
             address,
