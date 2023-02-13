@@ -3,7 +3,7 @@ name: Create new Morpho Users distribution
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 16 * * *'
+    - cron: '0 15 * * *'
 
 jobs:
   compute-market-distribution:

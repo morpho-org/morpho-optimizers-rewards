@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
 
   schedule:
-    - cron: '0 17 * * *'
+    - cron: '0 16 * * *'
 
 jobs:
   compute-market-distribution:
