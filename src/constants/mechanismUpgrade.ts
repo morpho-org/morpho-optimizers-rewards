@@ -4,6 +4,33 @@ export const VERSION_2_TIMESTAMP = BigNumber.from(1675263600);
 
 export const MARKETS_UPGRADE_SNAPSHOTS = [
   {
+    id: "0x1982b2f5814301d4e9a8b0201555376e62f82428-borrow",
+    market: {
+      id: "0x1982b2f5814301d4e9a8b0201555376e62f82428",
+    },
+    indexV1: "0",
+    p2pIndex: "0",
+    poolIndex: "0",
+  },
+  {
+    id: "0x70e36f6bf80a52b3b46b3af8e106cc0ed743e8e4-borrow",
+    market: {
+      id: "0x70e36f6bf80a52b3b46b3af8e106cc0ed743e8e4",
+    },
+    indexV1: "7295125819912579335",
+    p2pIndex: "1461201523352787605753385926",
+    poolIndex: "5418825810919017324",
+  },
+  {
+    id: "0x7713dd9ca933848f6819f38b8352d9a15ea73f67-borrow",
+    market: {
+      id: "0x7713dd9ca933848f6819f38b8352d9a15ea73f67",
+    },
+    indexV1: "508710825028647411",
+    p2pIndex: "101778696068575348516278594",
+    poolIndex: "110492255219298056",
+  },
+  {
     id: "0x028171bca77440897b824ca71d1c56cac55b68a3-borrow",
     market: {
       id: "0x028171bca77440897b824ca71d1c56cac55b68a3",
@@ -20,6 +47,33 @@ export const MARKETS_UPGRADE_SNAPSHOTS = [
     indexV1: "25377226",
     p2pIndex: "25404257351205810",
     poolIndex: "27331999079785377",
+  },
+  {
+    id: "0x70e36f6bf80a52b3b46b3af8e106cc0ed743e8e4-supply",
+    market: {
+      id: "0x70e36f6bf80a52b3b46b3af8e106cc0ed743e8e4",
+    },
+    indexV1: "24669686174723522125",
+    p2pIndex: "4947112996171624978731161656",
+    poolIndex: "2959120917457300923313603310",
+  },
+  {
+    id: "0x7713dd9ca933848f6819f38b8352d9a15ea73f67-supply",
+    market: {
+      id: "0x7713dd9ca933848f6819f38b8352d9a15ea73f67",
+    },
+    indexV1: "93842923777987239",
+    p2pIndex: "18825188841074285079066070",
+    poolIndex: "13377906617945417199395922",
+  },
+  {
+    id: "0x8dae6cb04688c62d939ed9b68d32bc62e49970b1-supply",
+    market: {
+      id: "0x8dae6cb04688c62d939ed9b68d32bc62e49970b1",
+    },
+    indexV1: "187982508",
+    p2pIndex: "188895942673496244",
+    poolIndex: "153644985060719188",
   },
   {
     id: "0x030ba81f1c18d280636f32af80b9aad02cf0854e-borrow",

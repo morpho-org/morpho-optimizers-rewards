@@ -5,32 +5,7 @@ export const formatGraphBalances = (graphBalance: GraphUserBalances): UserBalanc
   address: graphBalance.address,
   id: graphBalance.id,
   balances: graphBalance.balances.map(({ market, ...balance }) => ({
-    market: {
-      address: market.address,
-      supplyIndex: BigNumber.from(market.supplyIndex),
-      poolSupplyIndex: BigNumber.from(market.poolSupplyIndex),
-      p2pSupplyIndex: BigNumber.from(market.p2pSupplyIndex),
-      supplyUpdateBlockTimestamp: BigNumber.from(market.supplyUpdateBlockTimestamp),
-      supplyUpdateBlockTimestampV1: BigNumber.from(market.supplyUpdateBlockTimestampV1),
-
-      borrowIndex: BigNumber.from(market.borrowIndex),
-      poolBorrowIndex: BigNumber.from(market.poolBorrowIndex),
-      p2pBorrowIndex: BigNumber.from(market.p2pBorrowIndex),
-      borrowUpdateBlockTimestamp: BigNumber.from(market.borrowUpdateBlockTimestamp),
-      borrowUpdateBlockTimestampV1: BigNumber.from(market.borrowUpdateBlockTimestampV1),
-
-      lastPoolSupplyIndex: BigNumber.from(market.lastPoolSupplyIndex),
-      lastP2PSupplyIndex: BigNumber.from(market.lastP2PSupplyIndex),
-      lastPoolBorrowIndex: BigNumber.from(market.lastPoolBorrowIndex),
-      lastP2PBorrowIndex: BigNumber.from(market.lastP2PBorrowIndex),
-      lastTotalSupply: BigNumber.from(market.lastTotalSupply),
-      lastTotalBorrow: BigNumber.from(market.lastTotalBorrow),
-
-      scaledSupplyOnPool: BigNumber.from(market.scaledSupplyOnPool),
-      scaledSupplyInP2P: BigNumber.from(market.scaledSupplyInP2P),
-      scaledBorrowOnPool: BigNumber.from(market.scaledBorrowOnPool),
-      scaledBorrowInP2P: BigNumber.from(market.scaledBorrowInP2P),
-    },
+    market: formatGraphMarket(market),
     timestamp: BigNumber.from(balance.timestamp),
     userSupplyIndex: BigNumber.from(balance.userSupplyIndex),
     userBorrowIndex: BigNumber.from(balance.userBorrowIndex),
@@ -56,4 +31,31 @@ export const formatGraphBalances = (graphBalance: GraphUserBalances): UserBalanc
     accumulatedSupplyMorpho: BigNumber.from(balance.accumulatedSupplyMorpho),
     accumulatedBorrowMorpho: BigNumber.from(balance.accumulatedBorrowMorpho),
   })),
+});
+
+export const formatGraphMarket = (market: any) => ({
+  address: market.address,
+  supplyIndex: BigNumber.from(market.supplyIndex),
+  poolSupplyIndex: BigNumber.from(market.poolSupplyIndex),
+  p2pSupplyIndex: BigNumber.from(market.p2pSupplyIndex),
+  supplyUpdateBlockTimestamp: BigNumber.from(market.supplyUpdateBlockTimestamp),
+  supplyUpdateBlockTimestampV1: BigNumber.from(market.supplyUpdateBlockTimestampV1),
+
+  borrowIndex: BigNumber.from(market.borrowIndex),
+  poolBorrowIndex: BigNumber.from(market.poolBorrowIndex),
+  p2pBorrowIndex: BigNumber.from(market.p2pBorrowIndex),
+  borrowUpdateBlockTimestamp: BigNumber.from(market.borrowUpdateBlockTimestamp),
+  borrowUpdateBlockTimestampV1: BigNumber.from(market.borrowUpdateBlockTimestampV1),
+
+  lastPoolSupplyIndex: BigNumber.from(market.lastPoolSupplyIndex),
+  lastP2PSupplyIndex: BigNumber.from(market.lastP2PSupplyIndex),
+  lastPoolBorrowIndex: BigNumber.from(market.lastPoolBorrowIndex),
+  lastP2PBorrowIndex: BigNumber.from(market.lastP2PBorrowIndex),
+  lastTotalSupply: BigNumber.from(market.lastTotalSupply),
+  lastTotalBorrow: BigNumber.from(market.lastTotalBorrow),
+
+  scaledSupplyOnPool: BigNumber.from(market.scaledSupplyOnPool),
+  scaledSupplyInP2P: BigNumber.from(market.scaledSupplyInP2P),
+  scaledBorrowOnPool: BigNumber.from(market.scaledBorrowOnPool),
+  scaledBorrowInP2P: BigNumber.from(market.scaledBorrowInP2P),
 });

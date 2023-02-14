@@ -14,6 +14,7 @@ import { cloneDeep } from "lodash";
 import { getUserBalances } from "./getUserBalances";
 import { MARKETS_UPGRADE_SNAPSHOTS, VERSION_2_TIMESTAMP } from "../constants/mechanismUpgrade";
 import { StorageService } from "./StorageService";
+import { getAddress } from "ethers/lib/utils";
 
 export const getUserRewards = async (
   address: string,
@@ -307,6 +308,18 @@ const computeSupplyIndex = async (
     provider
   );
 
+const isCompound = (marketAddress: string) =>
+  [
+    "0x5d3a536E4D6DbD6114cc1Ead35777bAB948E3643",
+    "0x70e36f6BF80a52b3B46b3aF8e106CC0ed743E8e4",
+    "0x4Ddc2D193948926D02f9B1fE9e1daa0718270ED5",
+    "0x7713DD9Ca933848F6819F38B8352D9A15EA73F67",
+    "0x35A18000230DA775CAc24873d00Ff85BccdeD550",
+    "0x39AA39c021dfbaE8faC545936693aC917d5E7563",
+    "0xf650C3d88D12dB855b8bf7D11Be6C55A4e07dCC9",
+    "0xccF4429DB6322D5C611ee964527D42E5d685DD6a",
+  ].includes(getAddress(marketAddress));
+
 const computeSupplyIndexes = async (
   market: Market,
   currentTimestamp: BigNumberish,
@@ -318,8 +331,12 @@ const computeSupplyIndexes = async (
 
   // even if the index is in RAY for Morpho-Aave markets, this is not a big deal since we are using the proportion
   // between p2p and pool volumes
-  const totalSupplyP2P = WadRayMath.wadMul(market.scaledSupplyInP2P, market.lastP2PSupplyIndex);
-  const totalSupplyOnPool = WadRayMath.wadMul(market.scaledSupplyOnPool, market.lastPoolSupplyIndex);
+  const totalSupplyP2P = market.scaledSupplyInP2P
+    .mul(market.lastP2PSupplyIndex)
+    .div(isCompound(market.address) ? WadRayMath.WAD : WadRayMath.RAY);
+  const totalSupplyOnPool = market.scaledSupplyOnPool
+    .mul(market.lastPoolSupplyIndex)
+    .div(isCompound(market.address) ? WadRayMath.WAD : WadRayMath.RAY);
   const totalSupply = totalSupplyOnPool.add(totalSupplyP2P);
   const lastPercentSpeed = totalSupply.isZero()
     ? constants.Zero
@@ -440,3 +457,5 @@ const computeIndex = async (
     return currentIndex.add(ratio);
   }, lastIndex);
 };
+
+export { computeIndex, computeSupplyIndex, computeSupplyIndexes, computeBorrowIndex, computeBorrowIndexes };
