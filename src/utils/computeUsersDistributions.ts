@@ -1,11 +1,16 @@
 import { ethers } from "ethers";
-import { getEpochFromId } from "../utils/timestampToEpoch";
-import { computeMerkleTree, fetchUsers, getAccumulatedEmission, userBalancesToUnclaimedTokens } from "../utils";
+import {
+  computeMerkleTree,
+  fetchUsers,
+  getAccumulatedEmission,
+  userBalancesToUnclaimedTokens,
+  getEpochFromId,
+  sumRewards,
+} from ".";
 import { commify, formatUnits } from "ethers/lib/utils";
 import { finishedEpochs } from "../ages/ages";
 import { SUBGRAPH_URL } from "../config";
-import { sumRewards } from "../utils/getUserRewards";
-import { StorageService } from "../utils/StorageService";
+import { StorageService } from "./StorageService";
 
 export enum DataProvider {
   Subgraph = "subgraph",
@@ -31,7 +36,7 @@ export const computeUsersDistributions = async (
   for (const epoch of epochs) {
     console.log(`Compute users distribution for ${epoch.id}`);
 
-    const usersBalances = await fetchUsers(SUBGRAPH_URL, epoch.finalBlock);
+    const usersBalances = await fetchUsers(SUBGRAPH_URL, epoch.finalBlock ?? undefined);
     const usersAccumulatedRewards = (
       await Promise.all(
         usersBalances.map(async ({ address, balances }) => ({
