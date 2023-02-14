@@ -6,23 +6,54 @@ export interface GraphUserBalances {
   address: string;
   balances: {
     timestamp: string;
-    underlyingSupplyBalance: string;
-    underlyingBorrowBalance: string;
     userSupplyIndex: string;
     userBorrowIndex: string;
-    unclaimedMorpho: string;
+    underlyingSupplyBalance: string;
+    underlyingBorrowBalance: string;
+
+    scaledSupplyOnPool: string;
+    scaledSupplyInP2P: string;
+    scaledBorrowOnPool: string;
+    scaledBorrowInP2P: string;
+
+    userSupplyOnPoolIndex: string;
+    userSupplyInP2PIndex: string;
+    userBorrowOnPoolIndex: string;
+    userBorrowInP2PIndex: string;
+    accumulatedSupplyMorphoV1: string;
+    accumulatedBorrowMorphoV1: string;
+
+    accumulatedSupplyMorphoV2: string;
+
+    accumulatedBorrowMorphoV2: string;
+
+    accumulatedSupplyMorpho: string;
+    accumulatedBorrowMorpho: string;
     market: {
       address: string;
       supplyIndex: string;
-      borrowIndex: string;
+      poolSupplyIndex: string;
+      p2pSupplyIndex: string;
       supplyUpdateBlockTimestamp: string;
+      supplyUpdateBlockTimestampV1: string;
+
+      borrowIndex: string;
+      poolBorrowIndex: string;
+      p2pBorrowIndex: string;
       borrowUpdateBlockTimestamp: string;
-      lastP2PBorrowIndex: string;
-      lastPoolBorrowIndex: string;
-      lastP2PSupplyIndex: string;
+      borrowUpdateBlockTimestampV1: string;
+
       lastPoolSupplyIndex: string;
-      lastTotalBorrow: string;
+      lastP2PSupplyIndex: string;
+      lastPoolBorrowIndex: string;
+      lastP2PBorrowIndex: string;
       lastTotalSupply: string;
+      lastTotalBorrow: string;
+
+      scaledSupplyOnPool: string;
+      scaledSupplyInP2P: string;
+      scaledBorrowOnPool: string;
+      scaledBorrowInP2P: string;
     };
   }[];
 }
@@ -32,11 +63,29 @@ export interface UserBalances {
   balances: UserBalance[];
 }
 export interface UserBalance {
-  timestamp: BigNumber;
-  underlyingSupplyBalance: BigNumber;
-  underlyingBorrowBalance: BigNumber;
   userSupplyIndex: BigNumber;
   userBorrowIndex: BigNumber;
-  accumulatedMorpho: BigNumber;
+  underlyingSupplyBalance: BigNumber;
+  underlyingBorrowBalance: BigNumber;
+
+  scaledSupplyOnPool: BigNumber;
+  scaledSupplyInP2P: BigNumber;
+  scaledBorrowOnPool: BigNumber;
+  scaledBorrowInP2P: BigNumber;
+
+  userSupplyOnPoolIndex: BigNumber;
+  userSupplyInP2PIndex: BigNumber;
+  userBorrowOnPoolIndex: BigNumber;
+  userBorrowInP2PIndex: BigNumber;
+  accumulatedSupplyMorphoV1: BigNumber;
+  accumulatedBorrowMorphoV1: BigNumber;
+
+  accumulatedSupplyMorphoV2: BigNumber;
+
+  accumulatedBorrowMorphoV2: BigNumber;
+
+  accumulatedSupplyMorpho: BigNumber;
+  accumulatedBorrowMorpho: BigNumber;
+  timestamp: BigNumber;
   market: Market;
 }

@@ -7,6 +7,7 @@ import { ages } from "../src";
 import { now } from "../src/helpers";
 import addresses from "@morpho-labs/morpho-ethers-contract/lib/addresses";
 import { SUBGRAPH_URL } from "../src/config";
+import { fetchUsers, UserBalances } from "../src/utils";
 dotenv.config();
 jest.setTimeout(300_000);
 
@@ -77,4 +78,20 @@ describe.skip.each(ages)("Test the current state of the subgraph", (age) => {
       expect(graphTransactions.length).toEqual(chainTransactions.length);
     });
   });
+});
+
+describe("Subgraph versioning", () => {
+  let usersBalances: UserBalances[];
+
+  beforeAll(async () => {
+    usersBalances = await fetchUsers(SUBGRAPH_URL, ages[2].epochs[0].finalBlock!);
+  });
+
+  it("Should distribute only from the version 1 of the script before rewards mechanism version 2", () =>
+    usersBalances.forEach((userBalances) => {
+      userBalances.balances.forEach((b) => {
+        expect(b.accumulatedBorrowMorpho).toBnEq(b.accumulatedBorrowMorphoV1);
+        expect(b.accumulatedSupplyMorpho).toBnEq(b.accumulatedSupplyMorphoV1);
+      });
+    }));
 });

@@ -1,5 +1,5 @@
 specVersion: 0.0.4
-description: Query Morpho-Compound $MORPHO rewards through ages on mainnet
+description: Distribute $MORPHO rewards to Morpho users through ages on mainnet
 features:
   - ipfsOnEthereumContracts
 schema:
@@ -34,12 +34,16 @@ dataSources:
       eventHandlers:
         - event: Borrowed(indexed address,indexed address,uint256,uint256,uint256)
           handler: handleBorrowed
+        - event: BorrowerPositionUpdated(indexed address,indexed address,uint256,uint256)
+          handler: handleBorrowerPositionUpdated
         - event: P2PIndexesUpdated(indexed address,uint256,uint256,uint256,uint256)
           handler: handleP2PIndexesUpdated
         - event:  Repaid(indexed address,indexed address,indexed address,uint256,uint256,uint256)
           handler: handleRepaid
         - event: Supplied(indexed address,indexed address,indexed address,uint256,uint256,uint256)
           handler: handleSupplied
+        - event: SupplierPositionUpdated(indexed address,indexed address,uint256,uint256)
+          handler: handleSupplierPositionUpdated
         - event: Withdrawn(indexed address,indexed address,indexed address,uint256,uint256,uint256)
           handler: handleWithdrawn
       file: ./src/mapping/morpho-compound.ts
@@ -67,10 +71,14 @@ dataSources:
       eventHandlers:
         - event: Borrowed(indexed address,indexed address,uint256,uint256,uint256)
           handler: handleBorrowed
-        - event: Supplied(indexed address,indexed address,indexed address,uint256,uint256,uint256)
-          handler: handleSupplied
+        - event: BorrowerPositionUpdated(indexed address,indexed address,uint256,uint256)
+          handler: handleBorrowerPositionUpdated
         - event: P2PIndexesUpdated(indexed address,uint256,uint256,uint256,uint256)
           handler: handleP2PIndexesUpdated
+        - event: Supplied(indexed address,indexed address,indexed address,uint256,uint256,uint256)
+          handler: handleSupplied
+        - event: SupplierPositionUpdated(indexed address,indexed address,uint256,uint256)
+          handler: handleSupplierPositionUpdated
         - event: Withdrawn(indexed address,indexed address,indexed address,uint256,uint256,uint256)
           handler: handleWithdrawn
         - event: Repaid(indexed address,indexed address,indexed address,uint256,uint256,uint256)

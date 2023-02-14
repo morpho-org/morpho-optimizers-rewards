@@ -25,15 +25,28 @@ export interface GraphMarketConfiguration {
 export interface Market {
   address: string;
   supplyIndex: BigNumber;
-  borrowIndex: BigNumber;
+  poolSupplyIndex: BigNumber;
+  p2pSupplyIndex: BigNumber;
   supplyUpdateBlockTimestamp: BigNumber;
+  supplyUpdateBlockTimestampV1: BigNumber;
+
+  borrowIndex: BigNumber;
+  poolBorrowIndex: BigNumber;
+  p2pBorrowIndex: BigNumber;
   borrowUpdateBlockTimestamp: BigNumber;
-  lastP2PBorrowIndex: BigNumber;
-  lastPoolBorrowIndex: BigNumber;
-  lastP2PSupplyIndex: BigNumber;
+  borrowUpdateBlockTimestampV1: BigNumber;
+
   lastPoolSupplyIndex: BigNumber;
-  lastTotalBorrow: BigNumber;
+  lastP2PSupplyIndex: BigNumber;
+  lastPoolBorrowIndex: BigNumber;
+  lastP2PBorrowIndex: BigNumber;
   lastTotalSupply: BigNumber;
+  lastTotalBorrow: BigNumber;
+
+  scaledSupplyOnPool: BigNumber;
+  scaledSupplyInP2P: BigNumber;
+  scaledBorrowOnPool: BigNumber;
+  scaledBorrowInP2P: BigNumber;
 }
 export interface MarketMinimal {
   address: string;

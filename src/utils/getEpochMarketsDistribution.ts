@@ -4,42 +4,47 @@ import { timestampToEpoch } from "./timestampToEpoch";
 import { MarketsEmission } from "../ages/distributions/MarketsEmission";
 import { formatUnits } from "ethers/lib/utils";
 import { now } from "../helpers";
+import { StorageService } from "./StorageService";
 
 export const getMarketsDistribution = async (
+  storageService: StorageService,
   timestamp?: number,
   provider: providers.Provider = new providers.InfuraProvider(1)
 ) => {
   const epochConfig = timestampToEpoch(timestamp ?? now());
   if (!epochConfig) throw Error(`No epoch found at timestamp ${timestamp}`);
-  return getEpochMarketsDistribution(epochConfig.epoch.id, provider);
+  return getEpochMarketsDistribution(epochConfig.epoch.id, provider, storageService);
 };
-export const getEpochMarketsDistribution = async (epochId: string, provider: providers.Provider) => {
+
+export const getEpochMarketsDistribution = async (
+  epochId: string,
+  provider: providers.Provider,
+  storageService: StorageService
+) => {
   const [age, epoch] = epochId.split("-");
-  let distribution;
-  try {
-    // try to retrieve distribution from json file
-    distribution = require(`../../distribution/${age}/${epoch}/marketsEmission.json`) as MarketsEmission;
-    return distribution;
-  } catch (e) {
-    // need to compute distribution from chain
-    return computeEpochMarketsDistribution(age, epoch, provider);
-  }
+  const distribution = await storageService.readMarketDistribution(age, epoch);
+  if (distribution) return distribution;
+  // need to compute distribution from chain
+  return computeEpochMarketsDistribution(age, epoch, provider, storageService);
 };
 
-const distributionCache: { [epoch: string]: MarketsEmission } = {};
-
-export const computeEpochMarketsDistribution = async (age: string, epoch: string, provider: providers.Provider) => {
-  const fromCache = distributionCache[`${age}-${epoch}`];
-  if (fromCache) return fromCache;
-  // Warn in case of undesired scenario
-  /* eslint-disable-next-line  */
+export const computeEpochMarketsDistribution = async (
+  age: string,
+  epoch: string,
+  provider: providers.Provider,
+  storageService: StorageService
+) => {
+  const distribution = await storageService.readMarketDistribution(age, epoch);
+  if (distribution) return distribution;
   console.warn(`Commpute distribution for epoch ${age}-${epoch}`);
   const ageConfig = ages.find((a) => a.ageName === age);
   if (!ageConfig) throw Error(`Unknown age: ${age}`);
   const epochConfig = ageConfig.epochs.find((e) => e.epochName === epoch);
   if (!epochConfig) throw Error(`Unknown epoch: ${age}-${epoch}`);
 
-  const { marketsEmissions } = await ageConfig.distribution(ageConfig, epochConfig, provider); // reverts if snapshotBlock is not defined
+  // Will revert if snapshotBlock is not defined
+  const { marketsEmissions } = await ageConfig.distribution(ageConfig, epochConfig, provider);
+
   const formattedMarketsEmissions = Object.fromEntries(
     Object.entries(marketsEmissions).map(([key, marketConfig]) => [
       key,
@@ -63,6 +68,6 @@ export const computeEpochMarketsDistribution = async (age: string, epoch: string
     },
     markets: formattedMarketsEmissions,
   };
-  distributionCache[`${age}-${epoch}`] = result;
+  await storageService.writeMarketEmission(age, epoch, result);
   return result;
 };

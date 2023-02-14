@@ -9,7 +9,7 @@ import {
   timestampToEpochId,
 } from "./distributions";
 import { getOrInitMarket, getOrInitMarketEpoch } from "./initializer";
-import { WAD } from "./constants";
+import { BASIS_POINTS, WAD } from "./constants";
 
 /**
  * The emission between timestamp from and timestamp to is linear, and the two timestamps has
@@ -40,7 +40,7 @@ const computeUpdatedMorphoIndex = (
   // sync eventual previous epoch
   const prevEpochId = timestampToEpochId(obj, lastUpdateBlockTimestamp);
   const currentEpochId = timestampToEpochId(obj, blockTimestamp);
-  if (!currentEpochId) return lastMorphoIndex; // TODO: to move at the end
+  if (!currentEpochId) return lastMorphoIndex;
 
   if (!prevEpochId && currentEpochId) {
     // start of the first epoch
@@ -111,15 +111,93 @@ const computeUpdatedMorphoIndex = (
   return newIndex;
 };
 
+const computeUpdatedMorphoIndexV2 = (
+  marketAddress: Address,
+  blockTimestamp: BigInt,
+  lastMorphoIndex: BigInt,
+  lastUpdateBlockTimestamp: BigInt,
+  lastPercentSpeed: BigInt,
+  lastTotalScaled: BigInt,
+  marketSide: string
+): BigInt => {
+  const obj = ipfsJson();
+  // sync eventual previous epoch
+  const prevEpochId = timestampToEpochId(obj, lastUpdateBlockTimestamp);
+  const currentEpochId = timestampToEpochId(obj, blockTimestamp);
+  if (!currentEpochId) return lastMorphoIndex;
+
+  if (!prevEpochId && currentEpochId) {
+    // start of the first epoch
+    const start = epochIdToStartTimestamp(obj, currentEpochId);
+    if (!start) {
+      log.critical("No start timestamp for epoch {}", [currentEpochId as string]);
+      return BigInt.zero();
+    }
+    const distribution = fetchDistribution(obj, blockTimestamp, marketSide, marketAddress);
+    // consider the speed between onPool & inP2P to be constant between 2 markets update.
+    // That means that we consider that the difference of interest generated does not make changes between
+    // on pool & in P2P repartition, i.e. lastPercentSpeed is constant.
+    const speed = distribution.times(lastPercentSpeed).div(BASIS_POINTS);
+    const accrualIndex = computeOneEpochDistribuedRewards(start, blockTimestamp, lastTotalScaled, speed);
+    return lastMorphoIndex.plus(accrualIndex);
+  }
+
+  if (
+    prevEpochId &&
+    currentEpochId &&
+    // string comparison is not working when compiled with WASM, we have to pass through bytes comparison
+    !Bytes.fromUTF8(prevEpochId.toString()).equals(Bytes.fromUTF8(currentEpochId.toString()))
+  ) {
+    // need to tackle multiple speeds
+    log.warning("Prev epoch: {}, current epoch: {}", [prevEpochId, currentEpochId as string]);
+    const end = epochIdToEndTimestamp(obj, prevEpochId);
+
+    if (!end) {
+      log.critical("No end timestamp for epoch {}", [prevEpochId]);
+      return BigInt.zero();
+    }
+    const distribution = fetchDistributionFromDistributionId(
+      obj,
+      prevEpochId + "-" + marketSide + "-" + marketAddress.toHexString()
+    );
+    const speed = distribution.times(lastPercentSpeed).div(BASIS_POINTS);
+
+    lastMorphoIndex = lastMorphoIndex.plus(
+      computeOneEpochDistribuedRewards(lastUpdateBlockTimestamp, end, lastTotalScaled, speed)
+    );
+    const startTimestamp = epochIdToStartTimestamp(obj, currentEpochId as string);
+
+    if (!startTimestamp) {
+      log.critical("No start timestamp for epoch {}", [currentEpochId as string]);
+      return BigInt.zero();
+    }
+    lastUpdateBlockTimestamp = startTimestamp;
+    if (startTimestamp.ge(blockTimestamp)) return lastMorphoIndex;
+    // stop the distribution if it is the beginning of the current epoch, else start distribution
+  }
+  const id = ((currentEpochId as string) + "-" + marketSide + "-" + marketAddress.toHexString()) as string;
+
+  const distribution = fetchDistributionFromDistributionId(obj, id);
+  const speed = distribution.times(lastPercentSpeed).div(BASIS_POINTS);
+  const accrualIndex = computeOneEpochDistribuedRewards(
+    lastUpdateBlockTimestamp,
+    blockTimestamp,
+    lastTotalScaled,
+    speed
+  );
+
+  return lastMorphoIndex.plus(accrualIndex);
+};
+
 export function updateSupplyIndex(marketAddress: Address, blockTimestamp: BigInt): BigInt {
   const market = getOrInitMarket(marketAddress, blockTimestamp);
-  if (market.supplyUpdateBlockTimestamp.equals(blockTimestamp)) return market.supplyIndex; // nothing to update
+  if (market.supplyUpdateBlockTimestampV1.equals(blockTimestamp)) return market.supplyIndex; // nothing to update
 
   return computeUpdatedMorphoIndex(
     marketAddress,
     blockTimestamp,
     market.supplyIndex,
-    market.supplyUpdateBlockTimestamp,
+    market.supplyUpdateBlockTimestampV1,
     market.lastTotalSupply,
     "Supply"
   );
@@ -128,15 +206,104 @@ export function updateSupplyIndex(marketAddress: Address, blockTimestamp: BigInt
 export function updateBorrowIndex(marketAddress: Address, blockTimestamp: BigInt): BigInt {
   const market = getOrInitMarket(marketAddress, blockTimestamp);
 
-  if (market.borrowUpdateBlockTimestamp.ge(blockTimestamp)) return market.borrowIndex;
+  if (market.borrowUpdateBlockTimestampV1.ge(blockTimestamp)) return market.borrowIndex;
 
   return computeUpdatedMorphoIndex(
     marketAddress,
     blockTimestamp,
     market.borrowIndex,
-    market.borrowUpdateBlockTimestamp,
+    market.borrowUpdateBlockTimestampV1,
     market.lastTotalBorrow,
     "Borrow"
+  );
+}
+export function updateBorrowIndexOnPool(marketAddress: Address, blockTimestamp: BigInt, indexUnits: u8): BigInt {
+  const market = getOrInitMarket(marketAddress, blockTimestamp);
+  if (market.borrowUpdateBlockTimestamp.ge(blockTimestamp)) return market.poolBorrowIndex;
+  const totalOnPoolInUnderlying = market.scaledBorrowOnPool
+    .times(market.lastPoolBorrowIndex)
+    .div(BigInt.fromString("10").pow(indexUnits));
+  const totalInP2PInUnderlying = market.scaledBorrowInP2P
+    .times(market.lastP2PBorrowIndex)
+    .div(BigInt.fromString("10").pow(indexUnits));
+  const total = totalOnPoolInUnderlying.plus(totalInP2PInUnderlying);
+  const onPoolPercent = total.isZero() ? BigInt.zero() : totalOnPoolInUnderlying.times(BASIS_POINTS).div(total);
+  return computeUpdatedMorphoIndexV2(
+    marketAddress,
+    blockTimestamp,
+    market.poolBorrowIndex,
+    market.borrowUpdateBlockTimestamp,
+    onPoolPercent,
+    market.scaledBorrowOnPool,
+    "Borrow"
+  );
+}
+
+export function updateBorrowIndexInP2P(marketAddress: Address, blockTimestamp: BigInt, indexUnits: u8): BigInt {
+  const market = getOrInitMarket(marketAddress, blockTimestamp);
+  if (market.borrowUpdateBlockTimestamp.ge(blockTimestamp)) return market.p2pBorrowIndex;
+  const totalOnPoolInUnderlying = market.scaledBorrowOnPool
+    .times(market.lastPoolBorrowIndex)
+    .div(BigInt.fromString("10").pow(indexUnits));
+  const totalInP2PInUnderlying = market.scaledBorrowInP2P
+    .times(market.lastP2PBorrowIndex)
+    .div(BigInt.fromString("10").pow(indexUnits));
+  const total = totalOnPoolInUnderlying.plus(totalInP2PInUnderlying);
+  const inP2PPercent = total.isZero() ? BigInt.zero() : totalInP2PInUnderlying.times(BASIS_POINTS).div(total);
+  return computeUpdatedMorphoIndexV2(
+    marketAddress,
+    blockTimestamp,
+    market.p2pBorrowIndex,
+    market.borrowUpdateBlockTimestamp,
+    inP2PPercent,
+    market.scaledBorrowInP2P,
+    "Borrow"
+  );
+}
+export function updateSupplyIndexOnPool(marketAddress: Address, blockTimestamp: BigInt, indexUnits: u8): BigInt {
+  const baseUnits = BigInt.fromString("10").pow(indexUnits);
+
+  const market = getOrInitMarket(marketAddress, blockTimestamp);
+  if (market.supplyUpdateBlockTimestamp.ge(blockTimestamp)) return market.poolSupplyIndex;
+
+  const totalOnPoolInUnderlying = market.scaledSupplyOnPool.times(market.lastPoolSupplyIndex).div(baseUnits);
+
+  const totalInP2PInUnderlying = market.scaledSupplyInP2P.times(market.lastP2PSupplyIndex).div(baseUnits);
+
+  const total = totalOnPoolInUnderlying.plus(totalInP2PInUnderlying);
+
+  const onPoolPercent = total.isZero() ? BigInt.zero() : totalOnPoolInUnderlying.times(BASIS_POINTS).div(total);
+  return computeUpdatedMorphoIndexV2(
+    marketAddress,
+    blockTimestamp,
+    market.poolSupplyIndex,
+    market.supplyUpdateBlockTimestamp,
+    onPoolPercent,
+    market.scaledSupplyOnPool,
+    "Supply"
+  );
+}
+
+export function updateSupplyIndexInP2P(marketAddress: Address, blockTimestamp: BigInt, indexUnits: u8): BigInt {
+  const baseUnits = BigInt.fromString("10").pow(indexUnits);
+  const market = getOrInitMarket(marketAddress, blockTimestamp);
+  if (market.supplyUpdateBlockTimestamp.ge(blockTimestamp)) return market.p2pSupplyIndex;
+
+  const totalOnPoolInUnderlying = market.scaledSupplyOnPool.times(market.lastPoolSupplyIndex).div(baseUnits);
+
+  const totalInP2PInUnderlying = market.scaledSupplyInP2P.times(market.lastP2PSupplyIndex).div(baseUnits);
+
+  const total = totalOnPoolInUnderlying.plus(totalInP2PInUnderlying);
+
+  const inP2PPercent = total.isZero() ? BigInt.zero() : totalInP2PInUnderlying.times(BASIS_POINTS).div(total);
+  return computeUpdatedMorphoIndexV2(
+    marketAddress,
+    blockTimestamp,
+    market.p2pSupplyIndex,
+    market.supplyUpdateBlockTimestamp,
+    inP2PPercent,
+    market.scaledSupplyInP2P,
+    "Supply"
   );
 }
 

@@ -1,16 +1,20 @@
 /* eslint-disable no-console */
-import { getUserRewards } from "../utils";
-import { formatUnits } from "ethers/lib/utils";
 import * as dotenv from "dotenv";
-import { providers } from "ethers";
 
 dotenv.config();
+import { getUserRewards } from "../utils";
+import { formatUnits } from "ethers/lib/utils";
+import { providers } from "ethers";
+import { mapValues } from "lodash";
+import { FileSystemStorageService } from "../utils/StorageService";
 
 const provider = process.env.RPC_URL
   ? new providers.JsonRpcProvider(process.env.RPC_URL)
   : new providers.InfuraProvider(1);
 
-getUserRewards(process.argv[2], process.argv[3] ? +process.argv[3] : undefined, provider)
+const storageService = new FileSystemStorageService();
+
+getUserRewards(process.argv[2], storageService, process.argv[3] ? +process.argv[3] : undefined, provider)
   .then((r) =>
     console.log({
       currentEpochRewards: formatUnits(r.currentEpochRewards),
@@ -20,6 +24,10 @@ getUserRewards(process.argv[2], process.argv[3] ? +process.argv[3] : undefined, 
       claimable: formatUnits(r.claimable),
       claimableSoon: formatUnits(r.claimableSoon),
       claimData: r.claimData,
+      markets: mapValues(r.markets, ({ accumulatedSupply, accumulatedBorrow }) => ({
+        accumulatedSupply: formatUnits(accumulatedSupply),
+        accumulatedBorrow: formatUnits(accumulatedBorrow),
+      })),
     })
   )
   .catch((e) => {

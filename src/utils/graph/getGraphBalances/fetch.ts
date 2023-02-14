@@ -14,7 +14,7 @@ export const fetchUsers = async (graphUrl: string, block?: providers.BlockTag) =
   while (hasMore) {
     const newBalances = await axios
       .post<any, GraphResult<{ users: GraphUserBalances[] }>>(graphUrl, {
-        query: block ? balancesQuery.balancesQueryWithBlock : balancesQuery.balancesQuery,
+        query: block ? balancesQuery.balancesQueryWithBlockPaginated : balancesQuery.balancesQueryPaginated,
         variables: { size: batchSize, lastUser: offset, block },
       })
       .then((r) => {
