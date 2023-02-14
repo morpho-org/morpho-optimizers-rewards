@@ -1,6 +1,5 @@
 import { BigNumber } from "ethers";
 import { GraphUserBalances, UserBalances } from "./balances.types";
-import { GraphMarketConfiguration } from "../getGraphMarkets";
 
 export const formatGraphBalances = (graphBalance: GraphUserBalances): UserBalances => ({
   address: graphBalance.address,

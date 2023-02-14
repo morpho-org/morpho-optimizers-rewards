@@ -1,6 +1,6 @@
 import axios from "axios";
 import balancesQuery from "./balances.query";
-import { formatGraphBalances } from "./graphBalances.formater";
+import { formatGraphBalances } from "./graphBalances.formatter";
 import { providers } from "ethers";
 import { GraphUserBalances, UserBalances } from "./balances.types";
 

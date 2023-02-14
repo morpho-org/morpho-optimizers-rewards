@@ -14,7 +14,7 @@ import {
 } from "../src/utils/getUserRewards";
 import { MARKETS_UPGRADE_SNAPSHOTS, VERSION_2_TIMESTAMP } from "../src/constants/mechanismUpgrade";
 import { Market } from "../src/utils/graph/getGraphMarkets/markets.types";
-import { formatGraphMarket } from "../src/utils/graph/getGraphBalances/graphBalances.formater";
+import { formatGraphMarket } from "../src/utils/graph/getGraphBalances/graphBalances.formatter";
 
 const storageService = new FileSystemStorageService();
 
