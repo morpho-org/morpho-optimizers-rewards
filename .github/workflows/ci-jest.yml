@@ -14,6 +14,10 @@ on:
       - "package.json"
       - ".github/workflows/ci-jest.yml"
 
+concurrency:
+  group: ci-jest-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build:
     name: Build package
