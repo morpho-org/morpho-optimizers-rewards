@@ -132,7 +132,7 @@ export const userBalancesToUnclaimedTokens = async (
         balance = updatedBalance;
       }
       if (b.timestamp.lt(VERSION_2_TIMESTAMP) && b.market.supplyUpdateBlockTimestamp.gte(VERSION_2_TIMESTAMP)) {
-        const snapshot = MARKETS_UPGRADE_SNAPSHOTS.find((s) => s.id === b.market.address + "-supply");
+        const snapshot = MARKETS_UPGRADE_SNAPSHOTS.find((s: any) => s.id === b.market.address + "-supply") as any;
         if (!snapshot) throw Error(`No snapshot for market ${b.market.address} on supply side`);
         const accruedSupplyV1 = getUserAccumulatedRewards(
           BigNumber.from(snapshot.indexV1),
@@ -182,7 +182,7 @@ export const userBalancesToUnclaimedTokens = async (
         balance = updatedBalance;
       }
       if (b.timestamp.lt(VERSION_2_TIMESTAMP) && b.market.borrowUpdateBlockTimestamp.gte(VERSION_2_TIMESTAMP)) {
-        const snapshot = MARKETS_UPGRADE_SNAPSHOTS.find((s) => s.id === b.market.address + "-borrow");
+        const snapshot = MARKETS_UPGRADE_SNAPSHOTS.find((s: any) => s.id === b.market.address + "-borrow") as any;
         if (!snapshot) throw Error(`No snapshot for market ${b.market.address} on borrow side`);
 
         const accruedBorrowV1 = getUserAccumulatedRewards(
