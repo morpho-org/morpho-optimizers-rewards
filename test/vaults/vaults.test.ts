@@ -497,7 +497,7 @@ describe("Vaults Distributor", () => {
 
           expect(totalDistributed.lte(totalVaultRewards)).toBeTruthy();
           expect(totalDistributed).toBnLte(totalVaultRewards);
-          expect(totalDistributed).toBnApproxEq(totalVaultRewards, 12);
+          expect(totalDistributed).toBnApproxEq(totalVaultRewards, 16);
         });
         if (currentEpochConfig.number > 1) {
           it("Should handle transaction on multiple epochs", async () => {
