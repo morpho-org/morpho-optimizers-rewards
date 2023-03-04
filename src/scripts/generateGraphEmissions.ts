@@ -1,6 +1,6 @@
 import * as dotenv from "dotenv";
 import { providers } from "ethers";
-import { allEpochs, startedEpochs } from "../ages/ages";
+import { allEpochs } from "../ages";
 import * as fs from "fs";
 
 dotenv.config();
@@ -13,10 +13,12 @@ const generateGraphEmissions = async () => {
 
   const provider = new providers.JsonRpcProvider(process.env.RPC_URL);
   const distributions = await Promise.all(
-    startedEpochs.map(async (epoch) => ({
-      epoch,
-      distribution: await epoch.ageConfig.distribution(epoch.ageConfig, epoch, provider),
-    }))
+    allEpochs
+      .filter((epoch) => !!epoch.snapshotBlock)
+      .map(async (epoch) => ({
+        epoch,
+        distribution: await epoch.ageConfig.distribution(epoch.ageConfig, epoch, provider),
+      }))
   );
   const formattedEmissions: Record<string, string> = {};
   distributions.forEach(({ epoch, distribution }) => {
