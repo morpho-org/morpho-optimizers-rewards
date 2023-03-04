@@ -83,7 +83,6 @@ export default class Distributor {
       return acc.add(user.morphoAccrued);
     }, constants.Zero);
     const morphoRemaining = this._morphoAccumulatedFromMainDistribution.sub(totalTokenEmitted);
-    console.log(`Total MORPHO remaining: ${formatUnits(morphoRemaining)}`);
     if (morphoRemaining.gt(Distributor.MORPHO_DUST))
       throw Error(
         `Number of MORPHO remaining in the vault exceeds the threshold of ${formatUnits(
