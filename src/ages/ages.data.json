@@ -139,7 +139,7 @@
         "number": 9,
         "snapshotProposal": "0x2c10391797a45353092ed220f41411d18a1a1cf82ded0a8d68452619e46b273e",
         "epochName": "epoch3",
-        "snapshotBlock": null,
+        "snapshotBlock": 16755531,
         "initialTimestamp": "2023-03-04T15:00:00.000Z",
         "initialBlock": null,
         "finalTimestamp": "2023-04-07T15:00:00.000Z",
