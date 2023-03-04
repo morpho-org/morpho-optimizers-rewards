@@ -14,6 +14,10 @@ on:
       - "package.json"
       - ".github/workflows/ci-jest.yml"
 
+concurrency:
+  group: ci-jest-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build:
     name: Build package
@@ -84,4 +88,4 @@ jobs:
         run: yarn test
         env:
           RPC_URL: ${{ secrets.RPC_URL }}
-          SUBGRAPH_URL: ${{ secrets.SUBGRAPH_URL }}
+          SUBGRAPH_URL: ${{ vars.SUBGRAPH_URL }}

@@ -25,7 +25,7 @@ const computeOneEpochDistribuedRewards = (
   const morphoAccrued = timestampTo.minus(timestampFrom).times(speed); // WAD
   if (morphoAccrued.lt(BigInt.zero())) log.critical("negative token emission {}", [morphoAccrued.toString()]);
 
-  return morphoAccrued.times(WAD).div(totalSupply); // 18 * 2 - decimals
+  return morphoAccrued.times(WAD).div(totalSupply);
 };
 
 const computeUpdatedMorphoIndex = (

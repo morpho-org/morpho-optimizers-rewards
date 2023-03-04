@@ -13,6 +13,10 @@ defaults:
   run:
     working-directory: ./subgraph
 
+concurrency:
+    group: ci-subgraph-${{ github.ref }}
+    cancel-in-progress: true
+
 jobs:
   compilation:
     name: Codegen & Compile

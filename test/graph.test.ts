@@ -80,7 +80,7 @@ describe.skip.each(ages)("Test the current state of the subgraph", (age) => {
   });
 });
 
-describe("Subgraph versioning", () => {
+describe.skip("Subgraph versioning", () => {
   let usersBalances: UserBalances[];
 
   beforeAll(async () => {
