@@ -25,8 +25,8 @@ export const computeMerkleTree = (distribution: { address: string; accumulatedRe
 
   return {
     root,
+    total: total.toString(),
     proofs,
     leaves,
-    total: total.toString(),
   };
 };

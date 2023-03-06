@@ -14,4 +14,4 @@ if (dataProviderIndex !== -1) dataProvider = process.argv[dataProviderIndex + 1]
 if ([DataProvider.Subgraph, DataProvider.RPC].indexOf(dataProvider) === -1) throw new Error("Invalid data provider");
 
 const storageService = new FileSystemStorageService();
-computeUsersDistributions(DataProvider.Subgraph, storageService, epochId).then(() => console.log("Done"));
+computeUsersDistributions(DataProvider.Subgraph, storageService, epochId, true).then(() => console.log("Done"));

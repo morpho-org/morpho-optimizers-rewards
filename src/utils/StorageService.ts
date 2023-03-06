@@ -7,13 +7,18 @@ import { UsersDistribution } from "../ages/distributions/UsersDistribution";
 
 export interface StorageService {
   readMarketDistribution: (age: string, epoch: string) => Promise<MarketsEmission | void>;
-  writeMarketEmission: (age: string, epoch: string, emission: MarketsEmission) => Promise<void>;
+  writeMarketEmission: (age: string, epoch: string, emission: MarketsEmission, force?: boolean) => Promise<void>;
   readUsersDistribution: (age: string, epoch: string) => Promise<UsersDistribution | void>;
-  writeUsersDistribution: (age: string, epoch: string, distribution: UsersDistribution) => Promise<void>;
+  writeUsersDistribution: (
+    age: string,
+    epoch: string,
+    distribution: UsersDistribution,
+    force?: boolean
+  ) => Promise<void>;
   readProofs: (epoch: number) => Promise<Proofs | void>;
   readAllProofs: () => Promise<Proofs[]>;
   readUserProof: (epoch: number, address: string) => Promise<Proof | void>;
-  writeProofs: (epoch: number, proofs: Proofs) => Promise<void>;
+  writeProofs: (epoch: number, proofs: Proofs, force?: boolean) => Promise<void>;
 }
 
 export type ProofsCache = { [epoch: number]: Proofs | undefined };
@@ -47,13 +52,13 @@ export class FileSystemStorageService implements StorageService {
     }
   }
 
-  async writeMarketEmission(age: string, epoch: string, emission: MarketsEmission) {
+  async writeMarketEmission(age: string, epoch: string, emission: MarketsEmission, force?: boolean) {
     const { folder, file } = this.#generateDistributionPath(age, epoch);
     const fileExists = await fs.promises
       .access(file, fs.constants.R_OK | fs.constants.W_OK)
       .then(() => true)
       .catch(() => false);
-    if (fileExists) throw new Error(`File ${file} already exists, can't write it.`);
+    if (fileExists && !force) throw new Error(`File ${file} already exists, can't write it.`);
     await fs.promises.mkdir(folder, { recursive: true });
     await fs.promises.writeFile(file, JSON.stringify(emission, null, 2));
   }
@@ -71,13 +76,13 @@ export class FileSystemStorageService implements StorageService {
     }
   }
 
-  async writeUsersDistribution(age: string, epoch: string, distribution: UsersDistribution) {
+  async writeUsersDistribution(age: string, epoch: string, distribution: UsersDistribution, force?: boolean) {
     const { folder, file } = this.#generateUsersDistributionPath(age, epoch);
     const fileExists = await fs.promises
       .access(file, fs.constants.R_OK | fs.constants.W_OK)
       .then(() => true)
       .catch(() => false);
-    if (fileExists) throw new Error(`File ${file} already exists, can't write it.`);
+    if (fileExists && !force) throw new Error(`File ${file} already exists, can't write it.`);
     await fs.promises.mkdir(folder, { recursive: true });
     await fs.promises.writeFile(file, JSON.stringify(distribution, null, 2));
   }
@@ -111,13 +116,13 @@ export class FileSystemStorageService implements StorageService {
     return proof?.proofs?.[address];
   }
 
-  async writeProofs(epoch: number, proofs: Proofs) {
+  async writeProofs(epoch: number, proofs: Proofs, force?: boolean) {
     const { folder, file } = this.#generateProofsPath(epoch);
     const fileExists = await fs.promises
       .access(file, fs.constants.R_OK | fs.constants.W_OK)
       .then(() => true)
       .catch(() => false);
-    if (fileExists) throw new Error(`File ${file} already exists, can't write it.`);
+    if (fileExists && !force) throw new Error(`File ${file} already exists, can't write it.`);
     await fs.promises.mkdir(folder, { recursive: true });
     await fs.promises.writeFile(file, JSON.stringify(proofs, null, 2));
   }
