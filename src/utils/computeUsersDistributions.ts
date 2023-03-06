@@ -20,7 +20,8 @@ export enum DataProvider {
 export const computeUsersDistributions = async (
   dataProvider: DataProvider,
   storageService: StorageService,
-  epochId?: string
+  epochId?: string,
+  force?: boolean
 ) => {
   if (dataProvider === DataProvider.RPC) throw new Error("RPC not supported yet");
   if (epochId && !getEpochFromId(epochId)) throw new Error("Invalid epoch id");
@@ -52,14 +53,19 @@ export const computeUsersDistributions = async (
 
     const totalEmission = getAccumulatedEmission(epoch.id);
 
-    await storageService.writeUsersDistribution(epoch.ageConfig.ageName, epoch.epochName, {
-      age: epoch.ageConfig.ageName,
-      epoch: epoch.epochName,
-      totalEmissionInitial: formatUnits(totalEmission),
-      totalDistributed: formatUnits(merkleTree.total),
-      distribution: usersAccumulatedRewards,
-    });
-    await storageService.writeProofs(epoch.number, { epoch: epoch.id, ...merkleTree });
+    await storageService.writeUsersDistribution(
+      epoch.ageConfig.ageName,
+      epoch.epochName,
+      {
+        age: epoch.ageConfig.ageName,
+        epoch: epoch.epochName,
+        totalEmissionInitial: formatUnits(totalEmission),
+        totalDistributed: formatUnits(merkleTree.total),
+        distribution: usersAccumulatedRewards,
+      },
+      force
+    );
+    await storageService.writeProofs(epoch.number, { epoch: epoch.id, ...merkleTree }, force);
     recap.push({
       age: epoch.age,
       epoch: epoch.epochName,
