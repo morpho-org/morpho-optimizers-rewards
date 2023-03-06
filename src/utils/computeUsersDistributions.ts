@@ -49,7 +49,8 @@ export const computeUsersDistributions = async (
       )
     ).filter(({ accumulatedRewards }) => accumulatedRewards !== "0");
 
-    const merkleTree = computeMerkleTree(usersAccumulatedRewards);
+    // eslint-disable-next-line
+    const { leaves, ...merkleTree } = computeMerkleTree(usersAccumulatedRewards);
 
     const totalEmission = getAccumulatedEmission(epoch.id);
 
