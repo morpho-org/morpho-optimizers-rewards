@@ -1,5 +1,5 @@
 import { EpochConfig } from "../ages";
-import { getEpochFromId } from "../utils/timestampToEpoch";
+import { getEpochFromId } from "../utils";
 import { Proofs } from "../ages/distributions/Proofs";
 import { StorageService } from "../utils/StorageService";
 

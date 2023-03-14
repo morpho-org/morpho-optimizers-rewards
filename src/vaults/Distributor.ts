@@ -2,12 +2,16 @@ import { TransactionEvents, UserConfig } from "./types";
 import { EventsFetcherInterface } from "./VaultEventsFetcher";
 import { BigNumber, constants } from "ethers";
 import { WadRayMath } from "@morpho-labs/ethers-utils/lib/maths";
-import { DepositEvent, TransferEvent, WithdrawEvent } from "./contracts/ERC4626";
 import { formatUnits, parseUnits } from "ethers/lib/utils";
 import { computeMerkleTree } from "../utils";
 import { ProofsFetcherInterface } from "./ProofsFetcher";
 import { pow10 } from "@morpho-labs/ethers-utils/lib/utils";
 import { EpochConfig } from "../ages";
+import {
+  DepositEvent,
+  TransferEvent,
+  WithdrawEvent,
+} from "@morpho-labs/morpho-ethers-contract/lib/aave-v2/mainnet/MorphoAaveV2SupplyVault";
 
 export enum VaultEventType {
   Deposit = "DEPOSIT",

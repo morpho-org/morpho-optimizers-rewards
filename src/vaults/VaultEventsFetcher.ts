@@ -2,8 +2,12 @@ import { BigNumber, BigNumberish, constants, providers } from "ethers";
 import { TransactionEvents, VaultDepositEvent, VaultTransferEvent, VaultWithdrawEvent } from "./types";
 import { maxBN } from "@morpho-labs/ethers-utils/lib/utils";
 import { EpochConfig } from "../ages";
-import { ERC4626, ERC4626__factory } from "./contracts";
 import { VaultEventType } from "./Distributor";
+import {
+  MorphoAaveV2SupplyVault,
+  MorphoAaveV2SupplyVault__factory,
+  MorphoCompoundSupplyVault,
+} from "@morpho-labs/morpho-ethers-contract";
 
 export interface EventsFetcherInterface {
   fetchSortedEventsForEpoch: (epochConfig: EpochConfig) => Promise<[TransactionEvents[], BigNumber]>;
@@ -11,14 +15,15 @@ export interface EventsFetcherInterface {
 }
 
 export default class VaultEventsFetcher implements EventsFetcherInterface {
-  private vault: ERC4626;
+  private vault: MorphoAaveV2SupplyVault | MorphoCompoundSupplyVault;
 
   constructor(
     private vaultAddress: string,
     private provider: providers.Provider,
     private deploymentBlock: providers.BlockTag
   ) {
-    this.vault = ERC4626__factory.connect(vaultAddress, provider);
+    // We can use both AaveV2 and Compound vaults factory here
+    this.vault = MorphoAaveV2SupplyVault__factory.connect(vaultAddress, provider);
   }
 
   async fetchSortedEventsForEpoch(epochConfig: EpochConfig): Promise<[TransactionEvents[], BigNumber]> {
