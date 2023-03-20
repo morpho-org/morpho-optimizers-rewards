@@ -1,6 +1,7 @@
 export interface MarketsEmission {
   age: string;
   epoch: string;
+  epochNumber: number;
   totalEmission: string;
   snapshotProposal?: string;
   parameters: {
@@ -15,6 +16,8 @@ export interface MarketsEmission {
       supplyRate: string;
       borrowRate: string;
       borrow: string;
+      totalMarketSupply: string;
+      totalMarketBorrow: string;
     };
   };
 }

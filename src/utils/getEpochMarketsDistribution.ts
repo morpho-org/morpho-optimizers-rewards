@@ -9,33 +9,36 @@ import { StorageService } from "./StorageService";
 export const getMarketsDistribution = async (
   storageService: StorageService,
   timestamp?: number,
-  provider: providers.Provider = new providers.InfuraProvider(1)
+  provider: providers.Provider = new providers.InfuraProvider(1),
+  force?: boolean
 ) => {
   const epochConfig = timestampToEpoch(timestamp ?? now());
   if (!epochConfig) throw Error(`No epoch found at timestamp ${timestamp}`);
-  return getEpochMarketsDistribution(epochConfig.epoch.id, provider, storageService);
+  return getEpochMarketsDistribution(epochConfig.epoch.id, provider, storageService, force);
 };
 
 export const getEpochMarketsDistribution = async (
   epochId: string,
   provider: providers.Provider,
-  storageService: StorageService
+  storageService: StorageService,
+  force?: boolean
 ) => {
   const [age, epoch] = epochId.split("-");
   const distribution = await storageService.readMarketDistribution(age, epoch);
-  if (distribution) return distribution;
+  if (distribution && !force) return distribution;
   // need to compute distribution from chain
-  return computeEpochMarketsDistribution(age, epoch, provider, storageService);
+  return computeEpochMarketsDistribution(age, epoch, provider, storageService, force);
 };
 
 export const computeEpochMarketsDistribution = async (
   age: string,
   epoch: string,
   provider: providers.Provider,
-  storageService: StorageService
+  storageService: StorageService,
+  force?: boolean
 ) => {
   const distribution = await storageService.readMarketDistribution(age, epoch);
-  if (distribution) return distribution;
+  if (distribution && !force) return distribution;
   console.warn(`Commpute distribution for epoch ${age}-${epoch}`);
   const ageConfig = ages.find((a) => a.ageName === age);
   if (!ageConfig) throw Error(`Unknown age: ${age}`);
@@ -53,13 +56,17 @@ export const computeEpochMarketsDistribution = async (
         supplyRate: marketConfig!.supplyRate.toString(),
         borrowRate: marketConfig!.borrowRate.toString(),
         borrow: formatUnits(marketConfig!.borrow),
+        totalMarketSupply: marketConfig!.morphoSupply.toString(),
+        totalMarketBorrow: marketConfig!.morphoBorrow.toString(),
       },
     ])
   );
   const result: MarketsEmission = {
     age,
     epoch,
+    epochNumber: epochConfig.number,
     totalEmission: epochConfig.totalEmission.toString(),
+    snapshotProposal: epochConfig.snapshotProposal?.toString(),
     parameters: {
       snapshotBlock: epochConfig.snapshotBlock!.toString(),
       initialTimestamp: epochConfig.initialTimestamp.toString(),
@@ -68,6 +75,6 @@ export const computeEpochMarketsDistribution = async (
     },
     markets: formattedMarketsEmissions,
   };
-  await storageService.writeMarketEmission(age, epoch, result);
+  await storageService.writeMarketEmission(age, epoch, result, force);
   return result;
 };

@@ -1,11 +1,14 @@
 import { getEpochFromId } from "../utils/timestampToEpoch";
 import { providers } from "ethers";
 import { commify, formatUnits } from "ethers/lib/utils";
-import * as fs from "fs";
 import * as dotenv from "dotenv";
 import { startedEpochs } from "../ages/ages";
+import { FileSystemStorageService } from "../utils/StorageService";
+import { computeEpochMarketsDistribution } from "../utils/getEpochMarketsDistribution";
 
 dotenv.config();
+
+const storageService = new FileSystemStorageService();
 
 const computeMarketsEmissions = async (epochId?: string) => {
   if (epochId) console.log(`Compute markets emissions for ${epochId}`);
@@ -21,61 +24,19 @@ const computeMarketsEmissions = async (epochId?: string) => {
   // Compute emissions for each epoch
   const emissions = await Promise.all(
     epochs.map(async (epoch) => {
-      const { marketsEmissions } = await epoch.ageConfig.distribution(epoch.ageConfig, epoch, provider);
-      return {
-        epoch,
-        marketsEmissions,
-      };
-    })
-  );
-
-  // Dump emissions to file in the distribution folder
-  await Promise.all(
-    emissions.map(async ({ epoch, marketsEmissions }) => {
-      const distribution = {
-        age: epoch.ageConfig.ageName,
-        epoch: epoch.epochName,
-        epochNumber: epoch.number,
-        totalEmission: epoch.totalEmission.toString(),
-        snapshotProposal: epoch.snapshotProposal?.toString(),
-        parameters: {
-          snapshotBlock: epoch.snapshotBlock!.toString(),
-          initialTimestamp: epoch.initialTimestamp.toString(),
-          finalTimestamp: epoch.finalTimestamp.toString(),
-          duration: epoch.finalTimestamp.sub(epoch.initialTimestamp).toString(),
-        },
-        markets: Object.fromEntries(
-          Object.entries(marketsEmissions).map(([key, marketConfig]) => [
-            key.toLowerCase(),
-            {
-              supply: formatUnits(marketConfig!.supply),
-              supplyRate: marketConfig!.supplyRate.toString(),
-              borrowRate: marketConfig!.borrowRate.toString(),
-              borrow: formatUnits(marketConfig!.borrow),
-              totalMarketSupply: marketConfig!.morphoSupply.toString(),
-              totalMarketBorrow: marketConfig!.morphoBorrow.toString(),
-            },
-          ])
-        ),
-      };
-
-      await fs.promises.mkdir(`distribution/${epoch.ageConfig.ageName}/${epoch.epochName}`, { recursive: true });
-      await fs.promises.writeFile(
-        `distribution/${epoch.ageConfig.ageName}/${epoch.epochName}/marketsEmission.json`,
-        JSON.stringify(distribution, null, 2)
-      );
+      return computeEpochMarketsDistribution(epoch.ageConfig.ageName, epoch.epochName, provider, storageService, true);
     })
   );
 
   // Log a recap to the console
-  const recap = emissions.map(({ epoch, marketsEmissions }) => {
+  const recap = emissions.map((marketsEmissions) => {
     return {
-      age: epoch.age,
-      epoch: epoch.epochName,
-      markets: Object.keys(marketsEmissions).length,
-      totalEmission: commify(formatUnits(epoch.totalEmission)),
-      start: new Date(+epoch.initialTimestamp.toString() * 1000).toISOString(),
-      end: new Date(+epoch.finalTimestamp.toString() * 1000).toISOString(),
+      age: marketsEmissions.age,
+      epoch: marketsEmissions.epoch,
+      markets: Object.keys(marketsEmissions.markets).length,
+      totalEmission: commify(formatUnits(marketsEmissions.totalEmission)),
+      start: new Date(+marketsEmissions.parameters.initialTimestamp.toString() * 1000).toISOString(),
+      end: new Date(+marketsEmissions.parameters.finalTimestamp.toString() * 1000).toISOString(),
     };
   });
   console.table(recap);
