@@ -38,6 +38,7 @@
     "watch-ts": "tsc -w",
     "lint": "eslint src --fix --ext .ts",
     "start": "ts-node ./src/${SCRIPT:-index}",
+    "claim": "ts-node src/scripts/claim.ts",
     "getUserRewards": "ts-node src/scripts/getUserRewards.ts",
     "getMarketsDistribution": "ts-node src/scripts/getMarketsDistribution.ts",
     "distributeVaults": "ts-node src/scripts/distributeVaults.ts",
@@ -77,7 +78,7 @@
   "dependencies": {
     "@morpho-labs/ethers-utils": "^1.1.1",
     "@morpho-labs/gnosis-tx-builder": "^1.2.0",
-    "@morpho-labs/morpho-ethers-contract": "^1.10.0",
+    "@morpho-labs/morpho-ethers-contract": "^1.13.0",
     "@pinata/sdk": "^2.1.0",
     "axios": "^0.27.2",
     "dotenv": "^16.0.2",

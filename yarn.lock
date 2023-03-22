@@ -995,10 +995,10 @@
   dependencies:
     ethers "^5.7.0"
 
-"@morpho-labs/morpho-ethers-contract@^1.10.0":
-  version "1.10.0"
-  resolved "https://registry.yarnpkg.com/@morpho-labs/morpho-ethers-contract/-/morpho-ethers-contract-1.10.0.tgz#a0015263330565250c027319737cd24d72617d79"
-  integrity sha512-5uxTIxAEG/uc6qJeRwDzkRL+o3h8NYhN1Ez2MrkUt2o0pxLgdac1oyc7t1f/k6fEEax6YlFeZZ84QmrX7lD8Gg==
+"@morpho-labs/morpho-ethers-contract@^1.13.0":
+  version "1.13.0"
+  resolved "https://registry.yarnpkg.com/@morpho-labs/morpho-ethers-contract/-/morpho-ethers-contract-1.13.0.tgz#9f4adf02983bbec82f734dee8d69a85468e97f25"
+  integrity sha512-G5K6BuAknLTJ/quyP57Z8wizmowHH7ftHjYCwi+pEJpeyEgQJqVnZVATWo3sAeXJHxQZQaiX1cle0sRAC90RNg==
   dependencies:
     "@ethersproject/abi" "^5.0.0"
     "@ethersproject/providers" "^5.0.0"
