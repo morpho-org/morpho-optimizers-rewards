@@ -74,10 +74,36 @@ Morpho rewards are distributed through epochs (~3 weeks), with each epoch's per-
 
 ## **Claim Rewards**
 
-You can directly claim your rewards by using the Morpho dapp here: [gov.morpho.xyz](https://gov.morpho.xyz/)
-
+You can directly claim your rewards by using the Morpho dapp here: [governance.morpho.xyz](https://governance.morpho.xyz/)
 or by calling the `claim` function of the [Rewards Distributor](https://etherscan.io/address/0x3B14E5C73e0A56D607A8688098326fD4b4292135)
 with parameters coming from the last distribution in [proofs](./distribution/proofs) folder
+
+You can also use the built-in script to claim your rewards:
+
+```bash
+yarn claim --private-key <your-private-key>
+```
+
+Note that a rpc node is required to claim your rewards. You can provide it using `RPC_URL` environment variable or the `--rpc-url` flag.
+
+
+If you want to claim for someone else, you can also use a list of addresses:
+
+```bash
+yarn claim --private-key <your-private-key> --on-behalf <address1>,<address2>,<address3>
+```
+
+The script is batching the claim in one multicall transaction to save gas.
+
+The script is not supporting hardware wallet signature for now.
+
+If you just want to access the transaction data, you can call the `getUserRewards` script:
+
+```bash
+yarn getUserRewards <address>
+```
+If no calldata is returned, that means that you already have claimed your rewards.
+
 
 ## **Compute Merkle Tree**
 
@@ -175,3 +201,4 @@ This option is only possible with the `--merge-trees` flag, and is doing:
 - updating the root of the Vaults rewards distributor with the root of the merged Merkle tree
 
 This transaction can only be executed by the owner of the vaults and the owner of the Rewards distributor, which is the Morpho DAO Safe for the defaults vaults.
+
