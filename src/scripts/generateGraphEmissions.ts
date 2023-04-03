@@ -23,15 +23,15 @@ const generateGraphEmissions = async () => {
   const formattedEmissions: Record<string, string> = {};
   distributions.forEach(({ epoch, distribution }) => {
     Object.entries(distribution.marketsEmissions).forEach(([market, distribution]) => {
-      formattedEmissions[`${epoch.number}-Supply-${market}`] = distribution!.supplyRate.toString();
-      formattedEmissions[`${epoch.number}-Borrow-${market}`] = distribution!.borrowRate.toString();
+      formattedEmissions[`epoch-${epoch.number}-Supply-${market}`] = distribution!.supplyRate.toString();
+      formattedEmissions[`epoch-${epoch.number}-Borrow-${market}`] = distribution!.borrowRate.toString();
     });
   });
   const startTimestamps = Object.fromEntries(
-    allEpochs.map(({ epoch }) => [epoch.number, epoch.initialTimestamp.toString()])
+    allEpochs.map(({ epoch }) => [`epoch-${epoch.number}`, epoch.initialTimestamp.toString()])
   );
   const endTimestamps = Object.fromEntries(
-    allEpochs.map(({ epoch }) => [epoch.number, epoch.finalTimestamp.toString()])
+    allEpochs.map(({ epoch }) => [`epoch-${epoch.number}`, epoch.finalTimestamp.toString()])
   );
   const hash = await uploadToIPFS({
     name: "subgraph-distribution.json",

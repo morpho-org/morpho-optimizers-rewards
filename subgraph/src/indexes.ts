@@ -1,8 +1,8 @@
 import { Address, BigInt, Bytes, log } from "@graphprotocol/graph-ts";
 
 import {
-  epochIdToEndTimestamp,
-  epochIdToStartTimestamp,
+  epochNumberToEndTimestamp,
+  epochNumberToStartTimestamp,
   fetchDistribution,
   fetchDistributionFromDistributionId,
   ipfsJson,
@@ -38,15 +38,15 @@ const computeUpdatedMorphoIndex = (
 ): BigInt => {
   const obj = ipfsJson();
   // sync eventual previous epoch
-  const prevEpochId = timestampToEpochId(obj, lastUpdateBlockTimestamp);
-  const currentEpochId = timestampToEpochId(obj, blockTimestamp);
-  if (!currentEpochId) return lastMorphoIndex;
+  const prevEpochNumber = timestampToEpochId(obj, lastUpdateBlockTimestamp);
+  const currentEpochNumber = timestampToEpochId(obj, blockTimestamp);
+  if (!currentEpochNumber) return lastMorphoIndex;
 
-  if (!prevEpochId && currentEpochId) {
+  if (!prevEpochNumber && currentEpochNumber) {
     // start of the first epoch
-    const start = epochIdToStartTimestamp(obj, currentEpochId);
+    const start = epochNumberToStartTimestamp(obj, currentEpochNumber);
     if (!start) {
-      log.critical("No start timestamp for epoch {}", [currentEpochId as string]);
+      log.critical("No start timestamp for epoch {}", [currentEpochNumber.toString()]);
       return BigInt.zero();
     }
     const accrualIndex = computeOneEpochDistribuedRewards(
@@ -58,17 +58,17 @@ const computeUpdatedMorphoIndex = (
     return lastMorphoIndex.plus(accrualIndex);
   }
   if (
-    prevEpochId &&
-    currentEpochId &&
+    prevEpochNumber &&
+    currentEpochNumber &&
     // string comparison is not working when compiled with WASM, we have to pass through bytes comparison
-    !Bytes.fromUTF8(prevEpochId.toString()).equals(Bytes.fromUTF8(currentEpochId.toString()))
+    !Bytes.fromUTF8(prevEpochNumber.toString()).equals(Bytes.fromUTF8(currentEpochNumber.toString()))
   ) {
     // need to tackle multiple speeds
-    log.warning("Prev epoch: {}, current epoch: {}", [prevEpochId, currentEpochId as string]);
-    const end = epochIdToEndTimestamp(obj, prevEpochId);
+    log.warning("Prev epoch: {}, current epoch: {}", [prevEpochNumber.toString(), currentEpochNumber.toString()]);
+    const end = epochNumberToEndTimestamp(obj, prevEpochNumber);
 
     if (!end) {
-      log.critical("No end timestamp for epoch {}", [prevEpochId]);
+      log.critical("No end timestamp for epoch {}", [prevEpochNumber.toString()]);
       return BigInt.zero();
     }
     lastMorphoIndex = lastMorphoIndex.plus(
@@ -76,25 +76,28 @@ const computeUpdatedMorphoIndex = (
         lastUpdateBlockTimestamp,
         end,
         lastTotalUnderlying,
-        fetchDistributionFromDistributionId(obj, prevEpochId + "-" + marketSide + "-" + marketAddress.toHexString())
+        fetchDistributionFromDistributionId(
+          obj,
+          prevEpochNumber.toString() + "-" + marketSide + "-" + marketAddress.toHexString()
+        )
       )
     );
-    const snapshot = getOrInitMarketEpoch(marketAddress, prevEpochId, marketSide, end);
+    const snapshot = getOrInitMarketEpoch(marketAddress, prevEpochNumber, marketSide, end);
     snapshot.index = lastMorphoIndex;
     snapshot.timestamp = end;
     snapshot.isFinished = true;
     snapshot.save();
-    const startTimestamp = epochIdToStartTimestamp(obj, currentEpochId as string);
+    const startTimestamp = epochNumberToStartTimestamp(obj, currentEpochNumber);
 
     if (!startTimestamp) {
-      log.critical("No start timestamp for epoch {}", [currentEpochId as string]);
+      log.critical("No start timestamp for epoch {}", [currentEpochNumber.toString()]);
       return BigInt.zero();
     }
     lastUpdateBlockTimestamp = startTimestamp;
     if (startTimestamp.ge(blockTimestamp)) return lastMorphoIndex;
     // stop the distribution if it is the beginning of the current epoch, else start distribution
   }
-  const id = ((currentEpochId as string) + "-" + marketSide + "-" + marketAddress.toHexString()) as string;
+  const id = "epoch-" + currentEpochNumber.toString() + "-" + marketSide + "-" + marketAddress.toHexString();
   const accrualIndex = computeOneEpochDistribuedRewards(
     lastUpdateBlockTimestamp,
     blockTimestamp,
@@ -103,7 +106,7 @@ const computeUpdatedMorphoIndex = (
   );
   const newIndex = lastMorphoIndex.plus(accrualIndex);
 
-  const snapshot = getOrInitMarketEpoch(marketAddress, currentEpochId as string, marketSide, blockTimestamp);
+  const snapshot = getOrInitMarketEpoch(marketAddress, currentEpochNumber, marketSide, blockTimestamp);
   snapshot.index = newIndex;
   snapshot.timestamp = blockTimestamp;
   snapshot.save();
@@ -122,15 +125,15 @@ const computeUpdatedMorphoIndexV2 = (
 ): BigInt => {
   const obj = ipfsJson();
   // sync eventual previous epoch
-  const prevEpochId = timestampToEpochId(obj, lastUpdateBlockTimestamp);
-  const currentEpochId = timestampToEpochId(obj, blockTimestamp);
-  if (!currentEpochId) return lastMorphoIndex;
+  const prevEpochNumber = timestampToEpochId(obj, lastUpdateBlockTimestamp);
+  const currentEpochNumber = timestampToEpochId(obj, blockTimestamp);
+  if (!currentEpochNumber) return lastMorphoIndex;
 
-  if (!prevEpochId && currentEpochId) {
+  if (!prevEpochNumber && currentEpochNumber) {
     // start of the first epoch
-    const start = epochIdToStartTimestamp(obj, currentEpochId);
+    const start = epochNumberToStartTimestamp(obj, currentEpochNumber);
     if (!start) {
-      log.critical("No start timestamp for epoch {}", [currentEpochId as string]);
+      log.critical("No start timestamp for epoch {}", [currentEpochNumber.toString()]);
       return BigInt.zero();
     }
     const distribution = fetchDistribution(obj, blockTimestamp, marketSide, marketAddress);
@@ -142,40 +145,35 @@ const computeUpdatedMorphoIndexV2 = (
     return lastMorphoIndex.plus(accrualIndex);
   }
 
-  if (
-    prevEpochId &&
-    currentEpochId &&
-    // string comparison is not working when compiled with WASM, we have to pass through bytes comparison
-    !Bytes.fromUTF8(prevEpochId.toString()).equals(Bytes.fromUTF8(currentEpochId.toString()))
-  ) {
+  if (prevEpochNumber && currentEpochNumber && prevEpochNumber !== currentEpochNumber) {
     // need to tackle multiple speeds
-    log.warning("Prev epoch: {}, current epoch: {}", [prevEpochId, currentEpochId as string]);
-    const end = epochIdToEndTimestamp(obj, prevEpochId);
+    log.warning("Prev epoch: {}, current epoch: {}", [prevEpochNumber.toString(), currentEpochNumber.toString()]);
+    const end = epochNumberToEndTimestamp(obj, prevEpochNumber);
 
     if (!end) {
-      log.critical("No end timestamp for epoch {}", [prevEpochId]);
+      log.critical("No end timestamp for epoch {}", [prevEpochNumber.toString()]);
       return BigInt.zero();
     }
     const distribution = fetchDistributionFromDistributionId(
       obj,
-      prevEpochId + "-" + marketSide + "-" + marketAddress.toHexString()
+      prevEpochNumber.toString() + "-" + marketSide + "-" + marketAddress.toHexString()
     );
     const speed = distribution.times(lastPercentSpeed).div(BASIS_POINTS);
 
     lastMorphoIndex = lastMorphoIndex.plus(
       computeOneEpochDistribuedRewards(lastUpdateBlockTimestamp, end, lastTotalScaled, speed)
     );
-    const startTimestamp = epochIdToStartTimestamp(obj, currentEpochId as string);
+    const startTimestamp = epochNumberToStartTimestamp(obj, currentEpochNumber);
 
     if (!startTimestamp) {
-      log.critical("No start timestamp for epoch {}", [currentEpochId as string]);
+      log.critical("No start timestamp for epoch {}", [currentEpochNumber.toString()]);
       return BigInt.zero();
     }
     lastUpdateBlockTimestamp = startTimestamp;
     if (startTimestamp.ge(blockTimestamp)) return lastMorphoIndex;
     // stop the distribution if it is the beginning of the current epoch, else start distribution
   }
-  const id = ((currentEpochId as string) + "-" + marketSide + "-" + marketAddress.toHexString()) as string;
+  const id = "epoch-" + currentEpochNumber.toString() + "-" + marketSide + "-" + marketAddress.toHexString();
 
   const distribution = fetchDistributionFromDistributionId(obj, id);
   const speed = distribution.times(lastPercentSpeed).div(BASIS_POINTS);

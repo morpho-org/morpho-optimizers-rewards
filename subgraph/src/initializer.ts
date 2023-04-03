@@ -103,23 +103,23 @@ export function getOrInitMarket(poolTokenAddress: Address, currentTimestamp: Big
 }
 export function getOrInitMarketEpoch(
   poolTokenAddress: Address,
-  epochId: string,
+  epochNumber: i32,
   marketSide: string,
   currentTimestamp: BigInt
 ): MarketEpochDistribution {
-  const id = epochId + "-" + poolTokenAddress.toHexString();
+  const id = epochNumber.toString() + "-" + poolTokenAddress.toHexString();
   let marketEpoch = MarketEpochDistribution.load(id);
   if (!marketEpoch) {
     const obj = ipfsJson();
     const speed = fetchDistributionFromDistributionId(
       obj,
-      epochId + "-" + marketSide + "-" + poolTokenAddress.toHexString()
+      epochNumber.toString() + "-" + marketSide + "-" + poolTokenAddress.toHexString()
     );
     marketEpoch = new MarketEpochDistribution(id);
     const market = getOrInitMarket(poolTokenAddress, currentTimestamp);
     market.save();
     marketEpoch.market = market.id;
-    marketEpoch.epoch = epochId;
+    marketEpoch.epoch = epochNumber;
     marketEpoch.marketSide = marketSide;
     marketEpoch.index = marketSide === "Supply" ? market.supplyIndex : market.borrowIndex;
     marketEpoch.isFinished = false;
