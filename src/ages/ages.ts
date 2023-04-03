@@ -1,6 +1,6 @@
 import { ageOneDistribution, ageTwoDistribution, ageThreeDistribution } from "./distributions";
 import { BigNumber } from "ethers";
-import { AgeConfig, ProtocolDistribution } from "./ages.types";
+import { AgeConfig, EpochConfig, ProtocolDistribution } from "./ages.types";
 import { parseUnits } from "ethers/lib/utils";
 import agesData from "./ages.data.json";
 
@@ -38,16 +38,17 @@ export const ages: AgeConfig[] = agesData.map(({ startTimestamp, endTimestamp, e
   })),
 }));
 
-export const allEpochs = ages.flatMap((age, ageId) =>
-  age.epochs.map((epoch, epochId) => {
+export const allEpochs: { age: Omit<AgeConfig, "epochs">; epoch: EpochConfig }[] = ages.flatMap((age) =>
+  age.epochs.map((epoch) => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { epochs, ...ageConfig } = age;
-    return { ...epoch, age: age.ageName, ageId, epochId, ageConfig };
+
+    return { epoch, age: ageConfig };
   })
 );
 
-export const finishedEpochs = allEpochs.filter((epoch) => epoch.finalTimestamp.lte(Math.round(Date.now() / 1000)));
+export const finishedEpochs = allEpochs.filter(({ epoch }) => epoch.finalTimestamp.lte(Math.round(Date.now() / 1000)));
 
-export const startedEpochs = allEpochs.filter((epoch) => epoch.initialTimestamp.lte(Math.round(Date.now() / 1000)));
+export const startedEpochs = allEpochs.filter(({ epoch }) => epoch.initialTimestamp.lte(Math.round(Date.now() / 1000)));
 
 export const numberOfEpochs = allEpochs.length;

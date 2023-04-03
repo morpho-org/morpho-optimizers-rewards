@@ -5,8 +5,11 @@ import { DataProvider, computeUsersDistributions } from "../utils/computeUsersDi
 dotenv.config();
 
 const epochIdIndex = process.argv.indexOf("--epoch");
-let epochId = undefined;
-if (epochIdIndex !== -1) epochId = process.argv[epochIdIndex + 1];
+let epochNumber = undefined;
+if (epochIdIndex !== -1) {
+  epochNumber = parseFloat(process.argv[epochIdIndex + 1]);
+  if (isNaN(epochNumber)) throw new Error("Invalid epoch id");
+}
 
 const dataProviderIndex = process.argv.indexOf("--dataProvider");
 let dataProvider = DataProvider.Subgraph;
@@ -14,4 +17,4 @@ if (dataProviderIndex !== -1) dataProvider = process.argv[dataProviderIndex + 1]
 if ([DataProvider.Subgraph, DataProvider.RPC].indexOf(dataProvider) === -1) throw new Error("Invalid data provider");
 
 const storageService = new FileSystemStorageService();
-computeUsersDistributions(DataProvider.Subgraph, storageService, epochId, true).then(() => console.log("Done"));
+computeUsersDistributions(DataProvider.Subgraph, storageService, epochNumber, true).then(() => console.log("Done"));

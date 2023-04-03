@@ -20,7 +20,7 @@ describe.skip.each(ages)("Test the current state of the subgraph", (age) => {
   describe.each(age.epochs)(`Test subgraph for all epochs of ${age.ageName}`, (epoch) => {
     if (epoch.finalTimestamp.gt(now())) return;
 
-    it(`Should have handled all the transactions of the epoch ${epoch.id} for Morpho Aave`, async () => {
+    it(`Should have handled all the transactions of the epoch ${epoch.number} for Morpho Aave`, async () => {
       const MORPHO_AAVE_DEPLOYMENT_BLOCK = 15383036;
       if (epoch.finalBlock! < MORPHO_AAVE_DEPLOYMENT_BLOCK) return;
       const graphTransactions = await getGraphTransactions(
@@ -50,7 +50,7 @@ describe.skip.each(ages)("Test the current state of the subgraph", (age) => {
       expect(hasError).toBeFalsy();
       expect(graphTransactions.length).toEqual(chainTransactions.length);
     });
-    it(`Should have handled all the transactions of the epoch ${epoch.id} for Morpho Compound`, async () => {
+    it(`Should have handled all the transactions of the epoch ${epoch.number} for Morpho Compound`, async () => {
       const graphTransactions = await getGraphTransactions(
         SUBGRAPH_URL,
         epoch.initialTimestamp,

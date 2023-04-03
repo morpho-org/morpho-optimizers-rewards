@@ -11,7 +11,7 @@ const updateAgesData = async () => {
 
   const resulting = ages.map((age) => {
     const epochs = age.epochs.map((epoch) => {
-      const epochChanges = changes.filter((c) => c.epoch === epoch.id);
+      const epochChanges = changes.filter((c) => c.epochNumber === epoch.number);
 
       const allValues = epochChanges.reduce((acc, change) => {
         const parsed = +change.value;

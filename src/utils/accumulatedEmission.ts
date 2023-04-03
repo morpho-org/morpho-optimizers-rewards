@@ -5,18 +5,18 @@ import { StorageService } from "./StorageService";
 
 /**
  * Returns the total distributed rewards for the previous epochs including the current one
- * @param epochId "<ageName-epochName>"
+ * @param epochNumber The number of the epoch
  */
-export const getAccumulatedEmission = (epochId: string) => {
+export const getAccumulatedEmission = (epochNumber: number) => {
   const epochEmissions = ages
-    .map((a) => a.epochs.map((epoch) => ({ id: epoch.id, distributed: epoch.totalEmission })))
+    .map((a) => a.epochs.map((epoch) => ({ number: epoch.number, distributed: epoch.totalEmission })))
     .flat();
-  const currentEpoch = epochEmissions.find((e) => e.id === epochId);
-  if (!currentEpoch) throw Error(`Unknown epoch id ${epochId}`);
+  const currentEpoch = epochEmissions.find((e) => e.number === epochNumber);
+  if (!currentEpoch) throw Error(`Unknown epoch number ${epochNumber}`);
   const currentEpochIndex = epochEmissions.indexOf(currentEpoch);
   return epochEmissions
     .filter((e, index) => index <= currentEpochIndex)
-    .reduce((acc, b) => acc.add(b.distributed), BigNumber.from(0));
+    .reduce((acc, b) => acc.add(b.distributed), constants.Zero);
 };
 
 /**
@@ -29,9 +29,9 @@ export const getAccumulatedEmissionPerMarket = (
 ): Promise<{ supply: BigNumber; borrow: BigNumber }> =>
   Promise.all(
     allEpochs
-      .filter((e) => e.number <= epochNumber)
-      .map(async ({ ageConfig, ...epoch }) => {
-        const distribution = await storageService.readMarketDistribution(ageConfig.ageName, epoch.epochName);
+      .filter(({ epoch }) => epoch.number <= epochNumber)
+      .map(async ({ epoch }) => {
+        const distribution = await storageService.readMarketDistribution(epoch.number);
         const marketContent = distribution?.markets[market];
         return {
           supply: marketContent?.supply ? parseUnits(marketContent.supply) : constants.Zero,

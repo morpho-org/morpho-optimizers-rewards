@@ -4,7 +4,6 @@ import { MarketEmission } from "../utils";
 import { AgeDistribution } from "./distributions/distributions.types";
 
 export interface EpochConfig {
-  id: string;
   number: number;
   snapshotProposal?: string;
   snapshotBlock?: number | null;

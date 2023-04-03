@@ -1,4 +1,4 @@
-export interface MarketsEmission {
+export interface MarketsEmissionFs {
   age: string;
   epoch: string;
   epochNumber: number;

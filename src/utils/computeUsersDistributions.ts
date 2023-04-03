@@ -1,16 +1,10 @@
 import { ethers } from "ethers";
-import {
-  computeMerkleTree,
-  fetchUsers,
-  getAccumulatedEmission,
-  userBalancesToUnclaimedTokens,
-  getEpochFromId,
-  sumRewards,
-} from ".";
+import { computeMerkleTree, fetchUsers, getAccumulatedEmission, userBalancesToUnclaimedTokens, sumRewards } from ".";
 import { commify, formatUnits } from "ethers/lib/utils";
 import { finishedEpochs } from "../ages/ages";
 import { SUBGRAPH_URL } from "../config";
 import { StorageService } from "./StorageService";
+import { getEpochFromNumber } from "./timestampToEpoch";
 
 export enum DataProvider {
   Subgraph = "subgraph",
@@ -20,22 +14,25 @@ export enum DataProvider {
 export const computeUsersDistributions = async (
   dataProvider: DataProvider,
   storageService: StorageService,
-  epochId?: string,
+  epochNumber?: number,
   force?: boolean
 ) => {
   if (dataProvider === DataProvider.RPC) throw new Error("RPC not supported yet");
-  if (epochId && !getEpochFromId(epochId)) throw new Error("Invalid epoch id");
+  if (epochNumber && !getEpochFromNumber(epochNumber)) throw new Error("Invalid epoch id");
 
   const provider = new ethers.providers.JsonRpcProvider(process.env.RPC_URL);
 
-  const epochs = epochId ? [getEpochFromId(epochId)!] : finishedEpochs;
-  if (!epochId) console.log(`${epochs.length} epochs to compute, to ${epochs[epochs.length - 1].id}`);
+  const agesEpochs = epochNumber ? [getEpochFromNumber(epochNumber)!] : finishedEpochs;
+  if (!epochNumber)
+    console.log(`${agesEpochs.length} epochs to compute, to epoch ${agesEpochs[agesEpochs.length - 1].epoch.number}`);
 
   const recap: any[] = []; // used to log the recap of the distribution
 
   // Compute emissions for each epoch synchronously for throughput reasons
-  for (const epoch of epochs) {
-    console.log(`Compute users distribution for ${epoch.id}`);
+  for (const ageEpoch of agesEpochs) {
+    const { age, epoch } = ageEpoch;
+
+    console.log(`Compute users distribution for epoch ${epoch.number}`);
 
     const usersBalances = await fetchUsers(SUBGRAPH_URL, epoch.finalBlock ?? undefined);
     const usersAccumulatedRewards = (
@@ -52,13 +49,12 @@ export const computeUsersDistributions = async (
     // eslint-disable-next-line
     const { leaves, ...merkleTree } = computeMerkleTree(usersAccumulatedRewards);
 
-    const totalEmission = getAccumulatedEmission(epoch.id);
+    const totalEmission = getAccumulatedEmission(epoch.number);
 
     await storageService.writeUsersDistribution(
-      epoch.ageConfig.ageName,
-      epoch.epochName,
+      epoch.number,
       {
-        age: epoch.ageConfig.ageName,
+        age: age.ageName,
         epoch: epoch.epochName,
         totalEmissionInitial: formatUnits(totalEmission),
         totalDistributed: formatUnits(merkleTree.total),
@@ -66,9 +62,10 @@ export const computeUsersDistributions = async (
       },
       force
     );
-    await storageService.writeProofs(epoch.number, { epoch: epoch.id, ...merkleTree }, force);
+
+    await storageService.writeProofs(epoch.number, { epochNumber: epoch.number, ...merkleTree }, force);
     recap.push({
-      age: epoch.age,
+      age: age.ageName,
       epoch: epoch.epochName,
       users: usersAccumulatedRewards.length,
       root: merkleTree.root,
@@ -77,5 +74,5 @@ export const computeUsersDistributions = async (
     });
   }
   console.table(recap);
-  return epochs.map((epoch) => epoch.epochId);
+  return agesEpochs.map(({ epoch }) => epoch.number);
 };
