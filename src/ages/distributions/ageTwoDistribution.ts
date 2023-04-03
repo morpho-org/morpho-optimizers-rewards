@@ -5,7 +5,7 @@ import { BASIS_POINTS } from "../../helpers";
 import { MarketEmission } from "../../utils";
 import { EpochConfig } from "../ages.types";
 import { AgeDistribution } from "./distributions.types";
-import getMarketsData from "../../utils/markets/getMarketsData";
+import fetchMarketsData from "../../utils/markets/fetchMarketsData";
 
 export const ageTwoDistribution = async (
   epoch: AgeDistribution,
@@ -16,7 +16,7 @@ export const ageTwoDistribution = async (
   provider ??= new providers.InfuraProvider("mainnet");
   if (!protocolDistribution) throw Error(`Cannot distribute tokens for ${number}: no protocolDistribution`);
 
-  const { aave, compound } = await getMarketsData(snapshotBlock, provider);
+  const { aave, compound } = await fetchMarketsData(snapshotBlock, provider);
 
   const aaveTokens = totalEmission.mul(protocolDistribution.morphoAave).div(BASIS_POINTS);
 

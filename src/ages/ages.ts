@@ -1,4 +1,4 @@
-import { ageOneDistribution, ageTwoDistribution, ageThreeDistribution } from "./distributions";
+import { ageOneDistribution, ageTwoDistribution, ageThreeDistribution, ageFourDistribution } from "./distributions";
 import { BigNumber } from "ethers";
 import { AgeConfig, EpochConfig, ProtocolDistribution } from "./ages.types";
 import { parseUnits } from "ethers/lib/utils";
@@ -13,6 +13,7 @@ const distributions = {
   age1: ageOneDistribution,
   age2: ageTwoDistribution,
   age3: ageThreeDistribution,
+  age4: ageFourDistribution,
 };
 
 const computeProtocolDistribution = (

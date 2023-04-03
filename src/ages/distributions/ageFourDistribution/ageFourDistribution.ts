@@ -1,42 +1,36 @@
+import { EpochConfig } from "../../ages.types";
+import { AgeDistribution } from "../distributions.types";
 import { providers } from "ethers";
-import { EpochConfig } from "../ages.types";
-import { AgeDistribution } from "./distributions.types";
+import getMarketsData from "../../../utils/markets/fetchMarketsData";
 import { parseUnits } from "ethers/lib/utils";
-import fetchMarketsData from "../../utils/markets/fetchMarketsData";
-import fetchProposal from "../../utils/snapshot/fetchProposal";
-import { MarketEmission } from "../../utils";
-import MARKETS from "./markets";
+import MARKETS from "../markets";
+import { MarketEmission } from "../../../utils";
+import marketsRepartition from "./marketsRepartition";
+import { PercentMath } from "@morpho-labs/ethers-utils/lib/maths";
 
-export const ageThreeDistribution = async (
+export const ageFourDistribution = async (
   ageConfig: AgeDistribution,
-  { finalTimestamp, initialTimestamp, number, snapshotBlock, snapshotProposal, totalEmission }: EpochConfig,
+  { finalTimestamp, initialTimestamp, number, snapshotBlock, totalEmission }: EpochConfig,
   provider?: providers.Provider
 ) => {
   if (!snapshotBlock) throw Error(`Cannot distribute tokens for epoch ${number}: no snapshotBlock`);
-  if (!snapshotProposal) throw Error(`Cannot distribute tokens for epoch ${number}: no snapshotProposal`);
-  const proposal = await fetchProposal(snapshotProposal);
 
-  if (proposal.state !== "closed")
-    throw Error(`Cannot distribute tokens for epoch ${number}: proposal ${snapshotProposal} is not closed`);
   const duration = finalTimestamp.sub(initialTimestamp);
 
-  const { markets } = await fetchMarketsData(snapshotBlock, provider!);
-
-  const totalScoreBn = parseUnits(proposal.scores_total.toString());
+  const { markets } = await getMarketsData(snapshotBlock, provider!);
 
   const marketsEmissions = Object.fromEntries(
-    proposal.scores.map((score, index) => {
-      const symbol = proposal.choices[index];
+    Object.entries(marketsRepartition).map(([symbol, { weight }]) => {
       const address = MARKETS[symbol as keyof typeof MARKETS];
-
       if (!address) throw Error(`Cannot distribute tokens for epoch ${number}: unknown market ${symbol}`);
       const marketData = markets.find((market) => market.address.toLowerCase() === address.toLowerCase());
       if (!marketData) throw Error(`Cannot distribute tokens for epoch ${number}: no market data for ${symbol}`);
 
       const { morphoSupplyMarketSize, morphoBorrowMarketSize, p2pIndexCursor } = marketData;
 
-      const scoreBn = parseUnits(score.toString());
-      const distribution = totalEmission.mul(scoreBn).div(totalScoreBn);
+      const weightBN = parseUnits((weight / 100).toString(), 4);
+      const distribution = PercentMath.percentMul(totalEmission, weightBN);
+
       const total = morphoSupplyMarketSize.add(marketData.morphoBorrowMarketSize);
       const supply = morphoSupplyMarketSize.mul(distribution).div(total);
       const supplyRate = supply.div(duration);
