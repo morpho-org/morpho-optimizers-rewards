@@ -5,7 +5,7 @@ import { finishedEpochs } from "../ages/ages";
 import { SUBGRAPH_URL } from "../config";
 import { StorageService } from "./StorageService";
 import { getEpochFromNumber } from "./timestampToEpoch";
-import { epochNumberToAgeEpochString } from "./helpers";
+import { epochNumberToAgeEpochString } from "../helpers";
 
 export enum DataProvider {
   Subgraph = "subgraph",

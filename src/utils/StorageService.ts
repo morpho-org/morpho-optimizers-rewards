@@ -4,7 +4,7 @@ import { MarketsEmissionFs } from "../ages/distributions/MarketsEmissionFs";
 import { Proof, Proofs } from "../ages/distributions/Proofs";
 import { numberOfEpochs } from "../ages/ages";
 import { UsersDistribution } from "../ages/distributions/UsersDistribution";
-import { epochNumberToAgeEpochString } from "./helpers";
+import { epochNumberToAgeEpochString } from "../helpers";
 
 export interface StorageService {
   readMarketDistribution: (epochNumber: number) => Promise<MarketsEmissionFs | void>;

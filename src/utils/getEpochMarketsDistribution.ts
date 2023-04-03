@@ -2,9 +2,8 @@ import { providers } from "ethers";
 import { getEpochFromNumber, timestampToEpoch } from "./timestampToEpoch";
 import { MarketsEmissionFs } from "../ages/distributions/MarketsEmissionFs";
 import { formatUnits } from "ethers/lib/utils";
-import { now } from "../helpers";
+import { epochNumberToAgeEpochString, now } from "../helpers";
 import { StorageService } from "./StorageService";
-import { epochNumberToAgeEpochString } from "./helpers";
 
 export const getMarketsDistribution = async (
   storageService: StorageService,
