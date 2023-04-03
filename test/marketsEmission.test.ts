@@ -32,21 +32,20 @@ describe.each(ages)("Test Ages Distributions", (age) => {
   });
 
   describe.each(age.epochs)(`Test each epochs of ${age.ageName}`, (epochConfig) => {
-    const { epochName, initialTimestamp, finalTimestamp, initialBlock, finalBlock, snapshotBlock, number } =
-      epochConfig;
+    const { initialTimestamp, finalTimestamp, initialBlock, finalBlock, snapshotBlock, number } = epochConfig;
 
     if (initialTimestamp.lt(ts)) {
-      it(`Should have a snapshot block for ${number}`, () => {
+      it(`Should have a snapshot block for epoch ${number}`, () => {
         expect(snapshotBlock).not.toBeUndefined();
       });
-      it(`Should have an initial block for ${number}`, () => {
+      it(`Should have an initial block for epoch ${number}`, () => {
         expect(initialBlock).not.toBeUndefined();
       });
 
-      it(`Should have a distribution computed for ${number}`, () => {
+      it(`Should have a distribution computed for epoch ${number}`, async () => {
         let file: object | undefined = undefined;
         try {
-          file = require(`../distribution/${age.ageName}/${epochName}/marketsEmission.json`);
+          file = (await storageService.readMarketDistribution(number))!;
         } catch (e) {
           console.error(e);
         }
@@ -60,18 +59,18 @@ describe.each(ages)("Test Ages Distributions", (age) => {
           file = (await storageService.readMarketDistribution(number))!;
           ({ marketsEmissions } = await age.distribution(age, epochConfig, provider));
         });
-        it(`Should have a correct number of markets computed for ${number}`, async () => {
+        it(`Should have a correct number of markets computed for epoch ${number}`, async () => {
           expect(Object.values(marketsEmissions).length).toEqual(Object.values(file.markets).length);
         });
-        it(`Should have the correct markets computed for ${number}`, async () => {
+        it(`Should have the correct markets computed for epoch ${number}`, async () => {
           expect(Object.keys(marketsEmissions)).toEqual(Object.keys(file.markets));
         });
-        it(`Should have the correct supply rates computed for ${number}`, async () => {
+        it(`Should have the correct supply rates computed for epoch ${number}`, async () => {
           Object.entries(marketsEmissions).forEach(([market, emission]) =>
             expect(emission!.supplyRate.toString()).toEqual(file.markets[market].supplyRate)
           );
         });
-        it(`Should have the correct borrow rates computed for ${number}`, async () => {
+        it(`Should have the correct borrow rates computed for epoch ${number}`, async () => {
           Object.entries(marketsEmissions).forEach(([market, emission]) =>
             expect(emission!.borrowRate.toString()).toEqual(file.markets[market].borrowRate)
           );
@@ -89,7 +88,7 @@ describe.each(ages)("Test Ages Distributions", (age) => {
       });
     }
     if (finalTimestamp.lt(ts)) {
-      it(`Should have a final block for ${number}`, () => {
+      it(`Should have a final block for epoch ${number}`, () => {
         expect(finalBlock).not.toBeUndefined();
       });
     }

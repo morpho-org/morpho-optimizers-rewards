@@ -4,6 +4,7 @@ import { MarketsEmissionFs } from "../ages/distributions/MarketsEmissionFs";
 import { formatUnits } from "ethers/lib/utils";
 import { now } from "../helpers";
 import { StorageService } from "./StorageService";
+import { epochNumberToAgeEpochString } from "./helpers";
 
 export const getMarketsDistribution = async (
   storageService: StorageService,
@@ -59,9 +60,10 @@ export const computeEpochMarketsDistribution = async (
       },
     ])
   );
+  const { epoch: epochName, age: ageName } = epochNumberToAgeEpochString(epochNumber);
   const result: MarketsEmissionFs = {
-    age: age.ageName,
-    epoch: epoch.epochName,
+    age: ageName,
+    epoch: epochName,
     epochNumber: epoch.number,
     totalEmission: epoch.totalEmission.toString(),
     snapshotProposal: epoch.snapshotProposal?.toString(),

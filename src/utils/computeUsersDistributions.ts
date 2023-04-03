@@ -5,6 +5,7 @@ import { finishedEpochs } from "../ages/ages";
 import { SUBGRAPH_URL } from "../config";
 import { StorageService } from "./StorageService";
 import { getEpochFromNumber } from "./timestampToEpoch";
+import { epochNumberToAgeEpochString } from "./helpers";
 
 export enum DataProvider {
   Subgraph = "subgraph",
@@ -22,16 +23,13 @@ export const computeUsersDistributions = async (
 
   const provider = new ethers.providers.JsonRpcProvider(process.env.RPC_URL);
 
-  const agesEpochs = epochNumber ? [getEpochFromNumber(epochNumber)!] : finishedEpochs;
-  if (!epochNumber)
-    console.log(`${agesEpochs.length} epochs to compute, to epoch ${agesEpochs[agesEpochs.length - 1].epoch.number}`);
+  const epochs = epochNumber ? [getEpochFromNumber(epochNumber)!.epoch] : finishedEpochs.map(({ epoch }) => epoch);
+  if (!epochNumber) console.log(`${epochs.length} epochs to compute, to epoch ${epochs[epochs.length - 1].number}`);
 
   const recap: any[] = []; // used to log the recap of the distribution
 
   // Compute emissions for each epoch synchronously for throughput reasons
-  for (const ageEpoch of agesEpochs) {
-    const { age, epoch } = ageEpoch;
-
+  for (const epoch of epochs) {
     console.log(`Compute users distribution for epoch ${epoch.number}`);
 
     const usersBalances = await fetchUsers(SUBGRAPH_URL, epoch.finalBlock ?? undefined);
@@ -51,11 +49,14 @@ export const computeUsersDistributions = async (
 
     const totalEmission = getAccumulatedEmission(epoch.number);
 
+    const { age: ageName, epoch: epochName } = epochNumberToAgeEpochString(epoch.number);
+
     await storageService.writeUsersDistribution(
       epoch.number,
       {
-        age: age.ageName,
-        epoch: epoch.epochName,
+        age: ageName,
+        epoch: epochName,
+        epochNumber: epoch.number,
         totalEmissionInitial: formatUnits(totalEmission),
         totalDistributed: formatUnits(merkleTree.total),
         distribution: usersAccumulatedRewards,
@@ -65,8 +66,9 @@ export const computeUsersDistributions = async (
 
     await storageService.writeProofs(epoch.number, { epochNumber: epoch.number, ...merkleTree }, force);
     recap.push({
-      age: age.ageName,
-      epoch: epoch.epochName,
+      age: ageName,
+      epoch: epochName,
+      epochNumber: epoch.number,
       users: usersAccumulatedRewards.length,
       root: merkleTree.root,
       totalEmission: commify(formatUnits(totalEmission)),
@@ -74,5 +76,5 @@ export const computeUsersDistributions = async (
     });
   }
   console.table(recap);
-  return agesEpochs.map(({ epoch }) => epoch.number);
+  return epochs.map((epoch) => epoch.number);
 };

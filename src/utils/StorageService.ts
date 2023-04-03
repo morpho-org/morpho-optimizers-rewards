@@ -4,6 +4,7 @@ import { MarketsEmissionFs } from "../ages/distributions/MarketsEmissionFs";
 import { Proof, Proofs } from "../ages/distributions/Proofs";
 import { numberOfEpochs } from "../ages/ages";
 import { UsersDistribution } from "../ages/distributions/UsersDistribution";
+import { epochNumberToAgeEpochString } from "./helpers";
 
 export interface StorageService {
   readMarketDistribution: (epochNumber: number) => Promise<MarketsEmissionFs | void>;
@@ -150,13 +151,6 @@ export class FileSystemStorageService implements StorageService {
   }
 
   #getAgeEpochPaths(epochId: number) {
-    // age1 - age3: 3 epochs per age
-    // after the end of age3, there is one epoch per age
-    if (epochId > 9) return { age: `age${epochId - 9}`, epoch: `epoch${epochId - 9}` };
-
-    return {
-      age: `age${Math.floor((epochId - 1) / 3) + 1}`,
-      epoch: `epoch${((epochId - 1) % 3) + 1}`,
-    };
+    return epochNumberToAgeEpochString(epochId);
   }
 }

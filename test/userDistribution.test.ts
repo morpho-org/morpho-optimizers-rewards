@@ -23,7 +23,7 @@ describe.each([...ages])("Age Users Distribution", (age) => {
 
   const now = Math.floor(Date.now() / 1000);
 
-  describe.each(age.epochs)(`Epochs distribution for ${age.ageName}`, ({ finalTimestamp, finalBlock, number }) => {
+  describe.each(age.epochs)("Epochs distribution for age", ({ finalTimestamp, finalBlock, number }) => {
     if (finalTimestamp.gt(now)) return;
     let usersBalances: UserBalances[];
     let usersAccumulatedRewards: { address: string; accumulatedRewards: string; rewards: MarketRewards[] }[];

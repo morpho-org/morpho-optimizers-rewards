@@ -12,7 +12,6 @@ export interface EpochConfig {
   initialBlock?: number | null;
   finalBlock?: number | null;
   totalEmission: BigNumber;
-  epochName: string;
   protocolDistribution?: ProtocolDistribution | null;
 }
 
