@@ -10,7 +10,7 @@ import { MarketsEmissionFs } from "../src/ages/distributions/MarketsEmissionFs";
 const storageService = new FileSystemStorageService();
 
 describe.each(ages)("Test Ages Distributions", (age) => {
-  const EPOCHS_PER_AGE = 3;
+  const EPOCHS_PER_AGE = ages.indexOf(age) < 3 ? 3 : 1;
   const ts = Math.floor(Date.now() / 1000);
   const provider = new providers.JsonRpcProvider(process.env.RPC_URL);
   it(`Should have the correct configuration for ${age.ageName}`, () => {
@@ -21,15 +21,17 @@ describe.each(ages)("Test Ages Distributions", (age) => {
   });
   it(`Should have consistent timestamps for ${age.ageName}`, () => {
     const firstEpoch = age.epochs[0];
-    const lastEpoch = age.epochs[2];
+    const lastEpoch = age.epochs[age.epochs.length - 1];
     expect(age.startTimestamp).toBnEq(firstEpoch.initialTimestamp);
     expect(age.endTimestamp).toBnEq(lastEpoch.finalTimestamp);
   });
 
-  it(`Should return a market configuration for ${age.ageName}`, async () => {
-    const marketEmission = await getMarketsDistribution(storageService, age.startTimestamp.toNumber());
-    expect(marketEmission).not.toBeUndefined();
-  });
+  if (age.startTimestamp.lt(ts)) {
+    it(`Should return a market configuration for ${age.ageName}`, async () => {
+      const marketEmission = await getMarketsDistribution(storageService, age.startTimestamp.toNumber());
+      expect(marketEmission).not.toBeUndefined();
+    });
+  }
 
   describe.each(age.epochs)(`Test each epochs of ${age.ageName}`, (epochConfig) => {
     const { initialTimestamp, finalTimestamp, initialBlock, finalBlock, snapshotBlock, number } = epochConfig;

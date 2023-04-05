@@ -17,7 +17,7 @@ import addresses from "@morpho-labs/morpho-ethers-contract/lib/addresses";
 import { MarketMinimal } from "../graph/getGraphMarkets/markets.types";
 import { cFei, pow10BN, WAD } from "../../helpers";
 
-const getMarketsData = async (snapshotBlock: providers.BlockTag, provider: providers.Provider) => {
+const fetchMarketsData = async (snapshotBlock: providers.BlockTag, provider: providers.Provider) => {
   const [compoundParameters, aaveParameters] = await Promise.all([
     getCompoundMarketsParameters(snapshotBlock, provider),
     getAaveMarketsParameters(snapshotBlock, provider),
@@ -120,4 +120,4 @@ const getCompoundMarketsParameters = async (snapshotBlock: providers.BlockTag, p
   );
 };
 
-export default getMarketsData;
+export default fetchMarketsData;
