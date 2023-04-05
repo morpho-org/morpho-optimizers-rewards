@@ -34,8 +34,12 @@ export const getAccumulatedEmissionPerMarket = (
         const distribution = await storageService.readMarketDistribution(epoch.epochNumber);
         const marketContent = distribution?.markets[market];
         return {
-          supply: marketContent?.supply ? parseUnits(marketContent.supply) : constants.Zero,
-          borrow: marketContent?.borrow ? parseUnits(marketContent.borrow) : constants.Zero,
+          supply: marketContent?.morphoEmittedSupplySide
+            ? parseUnits(marketContent.morphoEmittedSupplySide)
+            : constants.Zero,
+          borrow: marketContent?.morphoEmittedBorrowSide
+            ? parseUnits(marketContent.morphoEmittedBorrowSide)
+            : constants.Zero,
         };
       })
   ).then((r) =>

@@ -69,12 +69,16 @@ describe.each(ages)("Test Ages Distributions", (age) => {
         });
         it(`Should have the correct supply rates computed for epoch ${epochNumber}`, async () => {
           Object.entries(marketsEmissions).forEach(([market, emission]) =>
-            expect(emission!.supplyRate.toString()).toEqual(file.markets[market].supplyRate)
+            expect(emission!.morphoRatePerSecondSupplySide.toString()).toEqual(
+              file.markets[market].morphoRatePerSecondSupplySide
+            )
           );
         });
         it(`Should have the correct borrow rates computed for epoch ${epochNumber}`, async () => {
           Object.entries(marketsEmissions).forEach(([market, emission]) =>
-            expect(emission!.borrowRate.toString()).toEqual(file.markets[market].borrowRate)
+            expect(emission!.morphoRatePerSecondBorrowSide.toString()).toEqual(
+              file.markets[market].morphoRatePerSecondBorrowSide
+            )
           );
         });
         if (epochNumber >= 4) {
@@ -83,8 +87,8 @@ describe.each(ages)("Test Ages Distributions", (age) => {
           });
 
           it(`Should not distribute tokens to StEth borrowers on Aave for epoch ${epochNumber}`, async () => {
-            expect(marketsEmissions[aStEth]?.borrowRate.isZero()).toEqual(true); // no borrowers of steth on aave
-            expect(marketsEmissions[aStEth]?.borrow.isZero()).toEqual(true); // no borrowers of steth on aave
+            expect(marketsEmissions[aStEth]?.morphoRatePerSecondBorrowSide.isZero()).toEqual(true); // no borrowers of steth on aave
+            expect(marketsEmissions[aStEth]?.morphoEmittedBorrowSide.isZero()).toEqual(true); // no borrowers of steth on aave
           });
         }
       });

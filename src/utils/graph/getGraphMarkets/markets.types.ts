@@ -56,4 +56,6 @@ export interface MarketMinimal {
   p2pIndexCursor: BigNumber;
   morphoSupplyMarketSize: BigNumber;
   morphoBorrowMarketSize: BigNumber;
+
+  decimals: number;
 }

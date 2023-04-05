@@ -23,8 +23,10 @@ const generateGraphEmissions = async () => {
   const formattedEmissions: Record<string, string> = {};
   distributions.forEach(({ epoch, distribution }) => {
     Object.entries(distribution.marketsEmissions).forEach(([market, distribution]) => {
-      formattedEmissions[`epoch-${epoch.epochNumber}-Supply-${market}`] = distribution!.supplyRate.toString();
-      formattedEmissions[`epoch-${epoch.epochNumber}-Borrow-${market}`] = distribution!.borrowRate.toString();
+      formattedEmissions[`epoch-${epoch.epochNumber}-Supply-${market}`] =
+        distribution!.morphoRatePerSecondSupplySide.toString();
+      formattedEmissions[`epoch-${epoch.epochNumber}-Borrow-${market}`] =
+        distribution!.morphoRatePerSecondBorrowSide.toString();
     });
   });
   const startTimestamps = Object.fromEntries(

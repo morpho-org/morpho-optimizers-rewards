@@ -1,8 +1,6 @@
-import { BigNumber } from "ethers";
-import { MarketEmission } from "./markets.types";
+import { BigNumber, constants } from "ethers";
 import { BASIS_POINTS, WAD } from "../../helpers";
 import { MarketMinimal } from "../graph/getGraphMarkets/markets.types";
-import { Optional } from "../../helpers/types";
 
 export const computeMarketsEmissions = (
   ageOneMarketsParameters: {
@@ -12,41 +10,50 @@ export const computeMarketsEmissions = (
   duration: BigNumber
 ) => {
   const totalSupplyUSD = Object.values(ageOneMarketsParameters)
-    .map((market) => market.totalPoolSupplyUSD.mul(market.price))
-    .reduce((a, b) => a.add(b), BigNumber.from(0));
+    .map(({ totalPoolSupplyUSD, price }) => totalPoolSupplyUSD.mul(price))
+    .reduce((a, b) => a.add(b), constants.Zero);
 
   const totalBorrowUSD = Object.values(ageOneMarketsParameters)
-    .map((market) => market.totalPoolBorrowUSD.mul(market.price))
-    .reduce((a, b) => a.add(b), BigNumber.from(0));
+    .map(({ totalPoolBorrowUSD, price }) => totalPoolBorrowUSD.mul(price))
+    .reduce((a, b) => a.add(b), constants.Zero);
 
   const total = totalBorrowUSD.add(totalSupplyUSD).div(WAD);
 
-  const marketsEmissions: {
-    [market: string]: Optional<MarketEmission>;
-  } = {};
-  let marketEmissionTotal = BigNumber.from(0);
-  Object.keys(ageOneMarketsParameters).forEach((marketAddress) => {
-    const market: MarketMinimal = ageOneMarketsParameters[marketAddress];
-    // total market value at the beginning of the age
-    const totalMarketUSD = market.totalPoolBorrowUSD.add(market.totalPoolSupplyUSD).mul(market.price); // 18 * 2 units
-    const marketEmission = totalMarketUSD.mul(totalEmission.div(WAD)).div(total); // in WEI units
-    const supplyTokens = marketEmission.mul(market.p2pIndexCursor).div(BASIS_POINTS);
-    const supplyRate = supplyTokens.div(duration);
-    const borrowTokens = marketEmission.sub(supplyTokens);
-    const borrowRate = borrowTokens.div(duration);
-    marketEmissionTotal = marketEmissionTotal.add(marketEmission);
+  const marketsEmissions = Object.values(ageOneMarketsParameters).map(
+    ({
+      decimals,
+      p2pIndexCursor,
+      totalPoolBorrowUSD,
+      totalPoolSupplyUSD,
+      morphoSupplyMarketSize,
+      morphoBorrowMarketSize,
+      price,
+      address,
+    }) => {
+      // total market value at the beginning of the age
+      const totalMarketUSD = totalPoolBorrowUSD.add(totalPoolSupplyUSD).mul(price); // 18 * 2 units
+      const marketEmission = totalMarketUSD.mul(totalEmission.div(WAD)).div(total); // in WEI units
+      const morphoEmittedSupplySide = marketEmission.mul(p2pIndexCursor).div(BASIS_POINTS);
+      const morphoRatePerSecondSupplySide = morphoEmittedSupplySide.div(duration);
+      const morphoEmittedBorrowSide = marketEmission.sub(morphoEmittedSupplySide);
+      const morphoRatePerSecondBorrowSide = morphoEmittedBorrowSide.div(duration);
 
-    marketsEmissions[marketAddress] = {
-      supply: supplyTokens,
-      supplyRate,
-      borrow: borrowTokens,
-      borrowRate,
-      p2pIndexCursor: market.p2pIndexCursor,
-      marketEmission,
-      morphoBorrow: market.morphoBorrowMarketSize,
-      morphoSupply: market.morphoSupplyMarketSize,
-    };
-  });
+      return [
+        address.toLowerCase(),
+        {
+          morphoEmittedSupplySide,
+          morphoRatePerSecondSupplySide,
+          morphoEmittedBorrowSide,
+          morphoRatePerSecondBorrowSide,
+          p2pIndexCursor,
+          marketEmission,
+          totalMarketSizeBorrowSide: morphoBorrowMarketSize,
+          totalMarketSizeSupplySide: morphoSupplyMarketSize,
+          decimals,
+        },
+      ];
+    }
+  );
   const liquidity = {
     totalPoolSupplyUSD: totalSupplyUSD.div(WAD),
     totalBorrow: totalBorrowUSD.div(WAD),
