@@ -5,7 +5,7 @@ import fetchMarketsData from "../../utils/markets/fetchMarketsData";
 
 export const weightedDistribution = async (
   symbols: string[],
-  getWeight: (symbol: string) => BigNumber,
+  getMarketEmissionRate: (symbol: string) => BigNumber,
   duration: BigNumber,
   snapshotBlock: providers.BlockTag,
   provider?: providers.Provider
@@ -22,13 +22,14 @@ export const weightedDistribution = async (
 
       const { morphoSupplyMarketSize, morphoBorrowMarketSize, p2pIndexCursor } = marketData;
 
-      const distribution = getWeight(symbol);
-      const total = morphoSupplyMarketSize.add(marketData.morphoBorrowMarketSize);
-      const supply = morphoSupplyMarketSize.mul(distribution).div(total);
+      const emissionRate = getMarketEmissionRate(symbol);
+      const total = morphoSupplyMarketSize.add(morphoBorrowMarketSize);
+      const supply = morphoSupplyMarketSize.mul(emissionRate).div(total);
       const supplyRate = supply.div(duration);
-      const borrow = morphoBorrowMarketSize.mul(distribution).div(total);
+      const borrow = morphoBorrowMarketSize.mul(emissionRate).div(total);
       const borrowRate = borrow.div(duration);
       const marketEmission = supply.add(borrow);
+
       return [
         address.toLowerCase(),
         {

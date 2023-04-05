@@ -15,7 +15,7 @@ export const ageFourDistribution = async (
 
   const duration = finalTimestamp.sub(initialTimestamp);
 
-  const getWeight = (symbol: string) =>
+  const getMarketEmissionRate = (symbol: string) =>
     PercentMath.percentMul(
       totalEmission,
       parseUnits((marketsRepartition[symbol as keyof typeof marketsRepartition].weight / 100).toString(), 4)
@@ -23,7 +23,7 @@ export const ageFourDistribution = async (
 
   const marketsEmissions = await weightedDistribution(
     Object.keys(marketsRepartition),
-    getWeight,
+    getMarketEmissionRate,
     duration,
     snapshotBlock,
     provider

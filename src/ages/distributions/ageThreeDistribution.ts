@@ -20,7 +20,7 @@ export const ageThreeDistribution = async (
 
   const totalScoreBn = parseUnits(proposal.scores_total.toString());
 
-  const getWeight = (symbol: string) => {
+  const getMarketEmissionRate = (symbol: string) => {
     const index = proposal.choices.indexOf(symbol);
     if (index === -1) return constants.Zero;
     const score = parseUnits(proposal.scores[index].toString());
@@ -29,7 +29,7 @@ export const ageThreeDistribution = async (
 
   const marketsEmissions = await weightedDistribution(
     Object.values(proposal.choices),
-    getWeight,
+    getMarketEmissionRate,
     duration,
     snapshotBlock,
     provider
