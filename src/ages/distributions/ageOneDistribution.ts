@@ -1,8 +1,8 @@
 import { computeMarketsEmissions, getGraphMarkets } from "../../utils";
-import { EpochConfig } from "../ages.types";
+import { DistributionFn, EpochConfig } from "../ages.types";
 import { AgeDistribution } from "./distributions.types";
 
-export const ageOneDistribution = async (
+export const ageOneDistribution: DistributionFn = async (
   age: AgeDistribution,
   { snapshotBlock, totalEmission, finalTimestamp, initialTimestamp, epochNumber }: EpochConfig
 ) => {

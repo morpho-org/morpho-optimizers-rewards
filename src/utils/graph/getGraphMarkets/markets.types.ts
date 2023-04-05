@@ -9,6 +9,9 @@ export interface GraphMarketConfiguration {
     supplyPoolIndex: string;
     borrowPoolIndex: string;
   };
+  token: {
+    decimals: number;
+  };
   metrics: {
     totalBorrowOnPool: string;
     totalSupplyOnPool: string;

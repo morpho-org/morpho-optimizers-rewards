@@ -1,6 +1,7 @@
 import { BigNumber, constants } from "ethers";
 import { BASIS_POINTS, WAD } from "../../helpers";
 import { MarketMinimal } from "../graph/getGraphMarkets/markets.types";
+import _mapValues from "lodash/mapValues";
 
 export const computeMarketsEmissions = (
   ageOneMarketsParameters: {
@@ -19,7 +20,8 @@ export const computeMarketsEmissions = (
 
   const total = totalBorrowUSD.add(totalSupplyUSD).div(WAD);
 
-  const marketsEmissions = Object.values(ageOneMarketsParameters).map(
+  const marketsEmissions = _mapValues(
+    ageOneMarketsParameters,
     ({
       decimals,
       p2pIndexCursor,
@@ -28,7 +30,6 @@ export const computeMarketsEmissions = (
       morphoSupplyMarketSize,
       morphoBorrowMarketSize,
       price,
-      address,
     }) => {
       // total market value at the beginning of the age
       const totalMarketUSD = totalPoolBorrowUSD.add(totalPoolSupplyUSD).mul(price); // 18 * 2 units
@@ -38,20 +39,17 @@ export const computeMarketsEmissions = (
       const morphoEmittedBorrowSide = marketEmission.sub(morphoEmittedSupplySide);
       const morphoRatePerSecondBorrowSide = morphoEmittedBorrowSide.div(duration);
 
-      return [
-        address.toLowerCase(),
-        {
-          morphoEmittedSupplySide,
-          morphoRatePerSecondSupplySide,
-          morphoEmittedBorrowSide,
-          morphoRatePerSecondBorrowSide,
-          p2pIndexCursor,
-          marketEmission,
-          totalMarketSizeBorrowSide: morphoBorrowMarketSize,
-          totalMarketSizeSupplySide: morphoSupplyMarketSize,
-          decimals,
-        },
-      ];
+      return {
+        morphoEmittedSupplySide,
+        morphoRatePerSecondSupplySide,
+        morphoEmittedBorrowSide,
+        morphoRatePerSecondBorrowSide,
+        p2pIndexCursor,
+        marketEmission,
+        totalMarketSizeBorrowSide: morphoBorrowMarketSize,
+        totalMarketSizeSupplySide: morphoSupplyMarketSize,
+        decimals,
+      };
     }
   );
   const liquidity = {

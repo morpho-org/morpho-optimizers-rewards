@@ -23,10 +23,12 @@ export interface AgeConfig {
   ageName: string;
   startTimestamp: BigNumber;
   endTimestamp: BigNumber;
-  distribution: (
-    age: AgeDistribution,
-    epoch: EpochConfig,
-    provider?: providers.Provider
-  ) => Promise<{ marketsEmissions: { [p: string]: Optional<MarketEmission> } }>;
+  distribution: DistributionFn;
   epochs: EpochConfig[];
 }
+
+export type DistributionFn = (
+  age: AgeDistribution,
+  epoch: EpochConfig,
+  provider?: providers.Provider
+) => Promise<{ marketsEmissions: { [p: string]: Optional<MarketEmission> } }>;

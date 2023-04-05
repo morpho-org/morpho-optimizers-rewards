@@ -1,11 +1,11 @@
 import { constants, providers } from "ethers";
-import { EpochConfig } from "../ages.types";
+import { DistributionFn, EpochConfig } from "../ages.types";
 import { AgeDistribution } from "./distributions.types";
 import { parseUnits } from "ethers/lib/utils";
 import fetchProposal from "../../utils/snapshot/fetchProposal";
 import { weightedDistribution } from "./weightedDistribution";
 
-export const ageThreeDistribution = async (
+export const ageThreeDistribution: DistributionFn = async (
   ageConfig: AgeDistribution,
   { finalTimestamp, initialTimestamp, epochNumber, snapshotBlock, snapshotProposal, totalEmission }: EpochConfig,
   provider?: providers.Provider

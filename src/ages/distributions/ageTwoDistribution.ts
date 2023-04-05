@@ -1,11 +1,11 @@
 import { BigNumber, constants, providers } from "ethers";
 import { MarketMinimal } from "../../utils/graph/getGraphMarkets/markets.types";
 import { BASIS_POINTS } from "../../helpers";
-import { EpochConfig } from "../ages.types";
+import { DistributionFn, EpochConfig } from "../ages.types";
 import { AgeDistribution } from "./distributions.types";
 import fetchMarketsData from "../../utils/markets/fetchMarketsData";
 
-export const ageTwoDistribution = async (
+export const ageTwoDistribution: DistributionFn = async (
   epoch: AgeDistribution,
   { protocolDistribution, totalEmission, finalTimestamp, initialTimestamp, snapshotBlock, epochNumber }: EpochConfig,
   provider?: providers.Provider
