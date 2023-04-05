@@ -8,10 +8,10 @@ import { PercentMath } from "@morpho-labs/ethers-utils/lib/maths";
 
 export const ageFourDistribution = async (
   ageConfig: AgeDistribution,
-  { finalTimestamp, initialTimestamp, number, snapshotBlock, totalEmission }: EpochConfig,
+  { finalTimestamp, initialTimestamp, epochNumber, snapshotBlock, totalEmission }: EpochConfig,
   provider?: providers.Provider
 ) => {
-  if (!snapshotBlock) throw Error(`Cannot distribute tokens for epoch ${number}: no snapshotBlock`);
+  if (!snapshotBlock) throw Error(`Cannot distribute tokens for epoch ${epochNumber}: no snapshotBlock`);
 
   const duration = finalTimestamp.sub(initialTimestamp);
 

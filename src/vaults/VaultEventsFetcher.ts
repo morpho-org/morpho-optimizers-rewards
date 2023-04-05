@@ -27,7 +27,7 @@ export default class VaultEventsFetcher implements EventsFetcherInterface {
   }
 
   async fetchSortedEventsForEpoch({
-    number,
+    epochNumber,
     finalBlock,
     initialBlock,
     initialTimestamp,
@@ -36,11 +36,11 @@ export default class VaultEventsFetcher implements EventsFetcherInterface {
     const blockFromCurrentEpoch = maxBN(initialBlock!, this.deploymentBlock);
     const depositEvents = await this._fetchDepositEvents(blockFromCurrentEpoch, finalBlock!);
 
-    console.log(number, depositEvents.length, "Deposit events");
+    console.log(epochNumber, depositEvents.length, "Deposit events");
     const withdrawEvents = await this._fetchWithdrawEvents(blockFromCurrentEpoch, finalBlock!);
-    console.log(number, withdrawEvents.length, "Withdraw events");
+    console.log(epochNumber, withdrawEvents.length, "Withdraw events");
     const transferEvents = await this._fetchTransferEvents(blockFromCurrentEpoch, finalBlock!);
-    console.log(number, transferEvents.length, "Transfer events");
+    console.log(epochNumber, transferEvents.length, "Transfer events");
 
     // we assume that, after the first deposit event, the vaults is never empty
     // TODO: handle the case if there is an empty vault after starting distribution
@@ -50,7 +50,7 @@ export default class VaultEventsFetcher implements EventsFetcherInterface {
       );
       if (!firstDeposit)
         throw Error(
-          `Inconsistent config: some MORPHO tokens are distributed while there is no deposit in epoch ${number}`
+          `Inconsistent config: some MORPHO tokens are distributed while there is no deposit in epoch ${epochNumber}`
         );
       const firstDepositBlock = await this.provider.getBlock(firstDeposit.event.blockNumber);
       timeFrom = BigNumber.from(firstDepositBlock.timestamp);

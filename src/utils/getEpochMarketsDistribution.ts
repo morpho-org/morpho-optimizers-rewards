@@ -13,7 +13,7 @@ export const getMarketsDistribution = async (
 ) => {
   const epochConfig = timestampToEpoch(timestamp ?? now());
   if (!epochConfig) throw Error(`No epoch found at timestamp ${timestamp}`);
-  return getEpochMarketsDistribution(epochConfig.epoch.number, provider, storageService, force);
+  return getEpochMarketsDistribution(epochConfig.epoch.epochNumber, provider, storageService, force);
 };
 
 export const getEpochMarketsDistribution = async (
@@ -63,7 +63,7 @@ export const computeEpochMarketsDistribution = async (
   const result: MarketsEmissionFs = {
     age: ageName,
     epoch: epochName,
-    epochNumber: epoch.number,
+    epochNumber: epoch.epochNumber,
     totalEmission: epoch.totalEmission.toString(),
     snapshotProposal: epoch.snapshotProposal?.toString(),
     parameters: {

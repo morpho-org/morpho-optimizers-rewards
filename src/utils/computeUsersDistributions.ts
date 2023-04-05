@@ -24,13 +24,14 @@ export const computeUsersDistributions = async (
   const provider = new ethers.providers.JsonRpcProvider(process.env.RPC_URL);
 
   const epochs = epochNumber ? [getEpochFromNumber(epochNumber)!.epoch] : finishedEpochs.map(({ epoch }) => epoch);
-  if (!epochNumber) console.log(`${epochs.length} epochs to compute, to epoch ${epochs[epochs.length - 1].number}`);
+  if (!epochNumber)
+    console.log(`${epochs.length} epochs to compute, to epoch ${epochs[epochs.length - 1].epochNumber}`);
 
   const recap: any[] = []; // used to log the recap of the distribution
 
   // Compute emissions for each epoch synchronously for throughput reasons
   for (const epoch of epochs) {
-    console.log(`Compute users distribution for epoch ${epoch.number}`);
+    console.log(`Compute users distribution for epoch ${epoch.epochNumber}`);
 
     const usersBalances = await fetchUsers(SUBGRAPH_URL, epoch.finalBlock ?? undefined);
     const usersAccumulatedRewards = (
@@ -47,16 +48,16 @@ export const computeUsersDistributions = async (
     // eslint-disable-next-line
     const { leaves, ...merkleTree } = computeMerkleTree(usersAccumulatedRewards);
 
-    const totalEmission = getAccumulatedEmission(epoch.number);
+    const totalEmission = getAccumulatedEmission(epoch.epochNumber);
 
-    const { age: ageName, epoch: epochName } = epochNumberToAgeEpochString(epoch.number);
+    const { age: ageName, epoch: epochName } = epochNumberToAgeEpochString(epoch.epochNumber);
 
     await storageService.writeUsersDistribution(
-      epoch.number,
+      epoch.epochNumber,
       {
         age: ageName,
         epoch: epochName,
-        epochNumber: epoch.number,
+        epochNumber: epoch.epochNumber,
         totalEmissionInitial: formatUnits(totalEmission),
         totalDistributed: formatUnits(merkleTree.total),
         distribution: usersAccumulatedRewards,
@@ -64,11 +65,11 @@ export const computeUsersDistributions = async (
       force
     );
 
-    await storageService.writeProofs(epoch.number, { epochNumber: epoch.number, ...merkleTree }, force);
+    await storageService.writeProofs(epoch.epochNumber, { epochNumber: epoch.epochNumber, ...merkleTree }, force);
     recap.push({
       age: ageName,
       epoch: epochName,
-      epochNumber: epoch.number,
+      epochNumber: epoch.epochNumber,
       users: usersAccumulatedRewards.length,
       root: merkleTree.root,
       totalEmission: commify(formatUnits(totalEmission)),
@@ -76,5 +77,5 @@ export const computeUsersDistributions = async (
     });
   }
   console.table(recap);
-  return epochs.map((epoch) => epoch.number);
+  return epochs.map((epoch) => epoch.epochNumber);
 };

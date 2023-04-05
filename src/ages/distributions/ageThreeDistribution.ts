@@ -7,15 +7,15 @@ import { weightedDistribution } from "./weightedDistribution";
 
 export const ageThreeDistribution = async (
   ageConfig: AgeDistribution,
-  { finalTimestamp, initialTimestamp, number, snapshotBlock, snapshotProposal, totalEmission }: EpochConfig,
+  { finalTimestamp, initialTimestamp, epochNumber, snapshotBlock, snapshotProposal, totalEmission }: EpochConfig,
   provider?: providers.Provider
 ) => {
-  if (!snapshotBlock) throw Error(`Cannot distribute tokens for epoch ${number}: no snapshotBlock`);
-  if (!snapshotProposal) throw Error(`Cannot distribute tokens for epoch ${number}: no snapshotProposal`);
+  if (!snapshotBlock) throw Error(`Cannot distribute tokens for epoch ${epochNumber}: no snapshotBlock`);
+  if (!snapshotProposal) throw Error(`Cannot distribute tokens for epoch ${epochNumber}: no snapshotProposal`);
   const proposal = await fetchProposal(snapshotProposal);
 
   if (proposal.state !== "closed")
-    throw Error(`Cannot distribute tokens for epoch ${number}: proposal ${snapshotProposal} is not closed`);
+    throw Error(`Cannot distribute tokens for epoch ${epochNumber}: proposal ${snapshotProposal} is not closed`);
   const duration = finalTimestamp.sub(initialTimestamp);
 
   const totalScoreBn = parseUnits(proposal.scores_total.toString());

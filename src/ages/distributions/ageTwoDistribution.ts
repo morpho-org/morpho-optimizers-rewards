@@ -9,12 +9,12 @@ import fetchMarketsData from "../../utils/markets/fetchMarketsData";
 
 export const ageTwoDistribution = async (
   epoch: AgeDistribution,
-  { protocolDistribution, totalEmission, finalTimestamp, initialTimestamp, snapshotBlock, number }: EpochConfig,
+  { protocolDistribution, totalEmission, finalTimestamp, initialTimestamp, snapshotBlock, epochNumber }: EpochConfig,
   provider?: providers.Provider
 ) => {
-  if (!snapshotBlock) throw Error(`Cannot distribute tokens for ${number}: no snapshotBlock`);
+  if (!snapshotBlock) throw Error(`Cannot distribute tokens for ${epochNumber}: no snapshotBlock`);
   provider ??= new providers.InfuraProvider("mainnet");
-  if (!protocolDistribution) throw Error(`Cannot distribute tokens for ${number}: no protocolDistribution`);
+  if (!protocolDistribution) throw Error(`Cannot distribute tokens for ${epochNumber}: no protocolDistribution`);
 
   const { aave, compound } = await fetchMarketsData(snapshotBlock, provider);
 

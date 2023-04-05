@@ -65,17 +65,17 @@ export default class Distributor {
       // timeFrom is the timestamp of the first block with a transaction during the current epoch.
       const [allEvents, timeFrom] = await this.eventsFetcher.fetchSortedEventsForEpoch(epochConfig);
 
-      if (timeFrom.gt(this._lastTimestamp) && firstEpochNumber === epochConfig.number)
+      if (timeFrom.gt(this._lastTimestamp) && firstEpochNumber === epochConfig.epochNumber)
         // initiate the lastTimestamp to the first event timestamp
         this._lastTimestamp = timeFrom;
 
       const duration = epochConfig.finalTimestamp.sub(this._lastTimestamp);
       if (duration.lte(constants.Zero)) {
         // throw an error
-        throw Error(`The duration of the epoch n ${epochConfig.number} is not positive`);
+        throw Error(`The duration of the epoch n ${epochConfig.epochNumber} is not positive`);
       }
       const rate = totalMorphoDistributed.mul(Distributor.SCALING_FACTOR).div(duration);
-      console.log(`${allEvents.length} events to process for epoch ${epochConfig.number}...`);
+      console.log(`${allEvents.length} events to process for epoch ${epochConfig.epochNumber}...`);
       for (const transaction of allEvents) await this._handleTransaction(transaction, rate);
 
       // Process the end of the epoch
@@ -84,7 +84,7 @@ export default class Distributor {
       this._processEndOfEpoch(rate, epochConfig);
 
       // process of the distribution and the merkle tree
-      trees[epochConfig.number] = this._computeCurrentMerkleTree();
+      trees[epochConfig.epochNumber] = this._computeCurrentMerkleTree();
     }
     const totalTokenEmitted = Object.values(this._usersConfigs).reduce((acc, user) => {
       if (!user) return acc;

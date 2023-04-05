@@ -40,7 +40,7 @@ describe("Vaults Distributor", () => {
         },
       },
     ]);
-    const { lastMerkleTree: merkleTree } = await distributor.distributeMorpho(epochConfig.number);
+    const { lastMerkleTree: merkleTree } = await distributor.distributeMorpho(epochConfig.epochNumber);
     expect(merkleTree.proofs[user1]?.amount).toBeDefined();
     expect(merkleTree.proofs[user0]?.amount).toBeUndefined();
   });
@@ -90,7 +90,7 @@ describe("Vaults Distributor", () => {
         },
       },
     ]);
-    const { lastMerkleTree: merkleTree } = await distributor.distributeMorpho(epochConfig.number);
+    const { lastMerkleTree: merkleTree } = await distributor.distributeMorpho(epochConfig.epochNumber);
     expect(merkleTree.proofs[user1]?.amount).toBeDefined();
     expect(merkleTree.proofs[user4]?.amount).toBeDefined();
     expect(merkleTree.proofs[user0]?.amount).toBeUndefined();
@@ -127,7 +127,7 @@ describe("Vaults Distributor", () => {
         },
       },
     ]);
-    const { lastMerkleTree: merkleTree } = await distributor.distributeMorpho(epochConfig.number);
+    const { lastMerkleTree: merkleTree } = await distributor.distributeMorpho(epochConfig.epochNumber);
     expect(merkleTree.proofs[user1]?.amount).toBeUndefined();
     expect(merkleTree.proofs[user2]?.amount).toBeDefined();
   });
@@ -148,13 +148,13 @@ describe("Vaults Distributor", () => {
         },
       },
     ]);
-    await expect(distributor.distributeMorpho(epochConfig.number)).rejects.toThrowError(
+    await expect(distributor.distributeMorpho(epochConfig.epochNumber)).rejects.toThrowError(
       "No MORPHO distributed for the vault 0x0000000000000000000000000000000000000000 in epoch 1"
     );
   });
   it("Should throw an error if there is no Events", async () => {
     const distributor = distributorFromEvents(vaultAddress, []);
-    await expect(distributor.distributeMorpho(epochConfig.number)).rejects.toThrowError(
+    await expect(distributor.distributeMorpho(epochConfig.epochNumber)).rejects.toThrowError(
       "Number of MORPHO remaining in the vault exceeds the threshold of 0.0001 for the Vault 0x6abfd6139c7c3cc270ee2ce132e309f59caaf6a2 in epoch 1"
     );
   });
