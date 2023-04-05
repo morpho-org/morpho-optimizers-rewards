@@ -162,10 +162,10 @@ describe("Vaults Distributor", () => {
   describe.each(allEpochs.filter(({ epoch }) => epoch.finalTimestamp.lt(Math.floor(Date.now() / 1000))))(
     "Vaults Epochs",
     ({ epoch }) => {
-      describe(`Epoch ${epoch.number}`, () => {
+      describe(`Epoch ${epoch.epochNumber}`, () => {
         let currentProof: Proofs;
 
-        beforeAll(() => (currentProof = allProofs[allProofs.length - epoch.number]));
+        beforeAll(() => (currentProof = allProofs[allProofs.length - epoch.epochNumber]));
 
         it("Should distribute tokens to vaults users with only one user", async () => {
           const distributor = distributorFromEvents(vaultAddress, [
@@ -184,7 +184,7 @@ describe("Vaults Distributor", () => {
               },
             },
           ]);
-          const { lastMerkleTree: merkleTree } = await distributor.distributeMorpho(epoch.number);
+          const { lastMerkleTree: merkleTree } = await distributor.distributeMorpho(epoch.epochNumber);
           expect(merkleTree).toBeDefined();
           expect(merkleTree).toHaveProperty("proofs");
           expect(merkleTree).toHaveProperty("root");
@@ -222,7 +222,7 @@ describe("Vaults Distributor", () => {
               },
             },
           ]);
-          const { lastMerkleTree: merkleTree } = await distributor.distributeMorpho(epoch.number);
+          const { lastMerkleTree: merkleTree } = await distributor.distributeMorpho(epoch.epochNumber);
           expect(merkleTree).toBeDefined();
           expect(merkleTree).toHaveProperty("proofs");
           expect(merkleTree).toHaveProperty("root");
@@ -269,7 +269,7 @@ describe("Vaults Distributor", () => {
               },
             },
           ]);
-          const { lastMerkleTree: merkleTree } = await distributor.distributeMorpho(epoch.number);
+          const { lastMerkleTree: merkleTree } = await distributor.distributeMorpho(epoch.epochNumber);
           expect(merkleTree).toBeDefined();
           expect(merkleTree).toHaveProperty("proofs");
           expect(merkleTree).toHaveProperty("root");
@@ -331,7 +331,7 @@ describe("Vaults Distributor", () => {
               },
             },
           ]);
-          const { lastMerkleTree: merkleTree } = await distributor.distributeMorpho(epoch.number);
+          const { lastMerkleTree: merkleTree } = await distributor.distributeMorpho(epoch.epochNumber);
           expect(merkleTree).toBeDefined();
           expect(merkleTree.proofs[user1]?.amount).toBeUndefined();
 
@@ -390,7 +390,7 @@ describe("Vaults Distributor", () => {
               },
             },
           ]);
-          const { lastMerkleTree: merkleTree } = await distributor.distributeMorpho(epoch.number);
+          const { lastMerkleTree: merkleTree } = await distributor.distributeMorpho(epoch.epochNumber);
           expect(merkleTree).toBeDefined();
           expect(merkleTree.proofs[user0].amount).toBeDefined();
           expect(merkleTree.proofs[user1].amount).toBeDefined();
@@ -434,7 +434,7 @@ describe("Vaults Distributor", () => {
             },
           ]);
           const { lastMerkleTree: merkleTreeWithoutWithdrawal } = await distributorWithoutWithdrawal.distributeMorpho(
-            epoch.number
+            epoch.epochNumber
           );
           const withoutWithdrawalAmount = merkleTreeWithoutWithdrawal.proofs[user1]!.amount;
           expect(withoutWithdrawalAmount).toBnGt(merkleTree.proofs[user1]!.amount);
@@ -484,7 +484,7 @@ describe("Vaults Distributor", () => {
               },
             },
           ]);
-          const { lastMerkleTree: merkleTree } = await distributor.distributeMorpho(epoch.number);
+          const { lastMerkleTree: merkleTree } = await distributor.distributeMorpho(epoch.epochNumber);
           expect(merkleTree).toBeDefined();
           expect(merkleTree.proofs[user0].amount).toBeDefined();
           expect(merkleTree.proofs[user1].amount).toBeDefined();
@@ -499,7 +499,7 @@ describe("Vaults Distributor", () => {
           expect(totalDistributed).toBnLte(totalVaultRewards);
           expect(totalDistributed).toBnApproxEq(totalVaultRewards, 16);
         });
-        if (epoch.number > 1) {
+        if (epoch.epochNumber > 1) {
           it("Should handle transaction on multiple epochs", async () => {
             const distributor = distributorFromEvents(vaultAddress, [
               {
@@ -573,7 +573,7 @@ describe("Vaults Distributor", () => {
                 },
               },
             ]);
-            const { lastMerkleTree: merkleTree } = await distributor.distributeMorpho(epoch.number);
+            const { lastMerkleTree: merkleTree } = await distributor.distributeMorpho(epoch.epochNumber);
             expect(merkleTree).toBeDefined();
             expect(merkleTree.proofs[user0].amount).toBeDefined();
             expect(merkleTree.proofs[user1].amount).toBeDefined();

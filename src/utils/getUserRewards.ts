@@ -14,7 +14,7 @@ import { cloneDeep } from "lodash";
 import { getUserBalances } from "./getUserBalances";
 import { MARKETS_UPGRADE_SNAPSHOTS, VERSION_2_TIMESTAMP } from "../constants/mechanismUpgrade";
 import { StorageService } from "./StorageService";
-import { getAddress } from "ethers/lib/utils";
+import { getAddress, parseUnits } from "ethers/lib/utils";
 
 export const getUserRewards = async (
   address: string,
@@ -305,7 +305,7 @@ const computeSupplyIndex = async (
     market.supplyIndex,
     market.supplyUpdateBlockTimestampV1,
     currentTimestamp,
-    "supplyRate",
+    "morphoRatePerSecondSupplySide",
     market.lastTotalSupply,
     provider
   );
@@ -328,7 +328,7 @@ const computeSupplyIndexes = async (
   provider: providers.Provider,
   storageService: StorageService
 ) => {
-  const rateType = "supplyRate";
+  const rateType = "morphoRatePerSecondSupplySide";
   const marketAddress = market.address;
 
   // even if the index is in RAY for Morpho-Aave markets, this is not a big deal since we are using the proportion
@@ -381,7 +381,7 @@ const computeBorrowIndex = async (
     market.borrowIndex,
     market.borrowUpdateBlockTimestampV1,
     currentTimestamp,
-    "borrowRate",
+    "morphoRatePerSecondBorrowSide",
     market.lastTotalBorrow,
     provider
   );
@@ -392,7 +392,7 @@ const computeBorrowIndexes = async (
   provider: providers.Provider,
   storageService: StorageService
 ) => {
-  const rateType = "borrowRate";
+  const rateType = "morphoRatePerSecondBorrowSide";
   const marketAddress = market.address;
 
   const totalBorrowP2P = WadRayMath.wadMul(market.scaledBorrowInP2P, market.lastP2PBorrowIndex);
@@ -433,7 +433,7 @@ const computeIndex = async (
   lastIndex: BigNumber,
   lastUpdateTimestamp: BigNumberish,
   currentTimestamp: BigNumberish,
-  rateType: "borrowRate" | "supplyRate",
+  rateType: "morphoRatePerSecondBorrowSide" | "morphoRatePerSecondSupplySide",
   totalUnderlying: BigNumber,
   provider: providers.Provider,
   speed: (emission: BigNumber) => BigNumber = (e) => e
@@ -453,9 +453,9 @@ const computeIndex = async (
     const finalTimestamp = minBN(epoch.finalTimestamp, BigNumber.from(currentTimestamp));
     const deltaTimestamp = finalTimestamp.sub(initialTimestamp);
     const marketsEmission = distributions[epoch.epochNumber];
-    const emission = BigNumber.from(marketsEmission.markets[marketAddress]?.[rateType] ?? 0);
+    const emission = parseUnits(marketsEmission.markets[marketAddress]?.[rateType] ?? "0");
     const morphoAccrued = deltaTimestamp.mul(speed(emission)); // in WEI units;
-    const ratio = totalUnderlying.eq(0) ? BigNumber.from(0) : morphoAccrued.mul(WAD).div(totalUnderlying); // in 18*2 - decimals units;
+    const ratio = totalUnderlying.isZero() ? constants.Zero : morphoAccrued.mul(WAD).div(totalUnderlying); // in 18*2 - decimals units;
     return currentIndex.add(ratio);
   }, lastIndex);
 };

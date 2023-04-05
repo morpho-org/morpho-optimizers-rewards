@@ -21,6 +21,7 @@ const generateGraphEmissions = async () => {
       }))
   );
   const formattedEmissions: Record<string, string> = {};
+
   distributions.forEach(({ epoch, distribution }) => {
     Object.entries(distribution.marketsEmissions).forEach(([market, distribution]) => {
       const generateKey = (side: "Supply" | "Borrow") => ["epoch", epoch.epochNumber, side, market].join("-");
@@ -29,6 +30,7 @@ const generateGraphEmissions = async () => {
       formattedEmissions[generateKey("Borrow")] = distribution!.morphoRatePerSecondBorrowSide.toString();
     });
   });
+
   const epochKey = (epoch: number) => `epoch-${epoch}`;
   const startTimestamps = Object.fromEntries(
     allEpochs.map(({ epoch: { epochNumber, initialTimestamp } }) => [

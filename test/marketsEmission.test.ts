@@ -6,6 +6,7 @@ import { Optional } from "../src/helpers/types";
 import { aStEth, cFei } from "../src/helpers";
 import { FileSystemStorageService } from "../src/utils/StorageService";
 import { MarketsEmissionFs } from "../src/ages/distributions/MarketsEmissionFs";
+import { formatUnits } from "ethers/lib/utils";
 
 const storageService = new FileSystemStorageService();
 
@@ -69,14 +70,14 @@ describe.each(ages)("Test Ages Distributions", (age) => {
         });
         it(`Should have the correct supply rates computed for epoch ${epochNumber}`, async () => {
           Object.entries(marketsEmissions).forEach(([market, emission]) =>
-            expect(emission!.morphoRatePerSecondSupplySide.toString()).toEqual(
+            expect(formatUnits(emission!.morphoRatePerSecondSupplySide)).toEqual(
               file.markets[market].morphoRatePerSecondSupplySide
             )
           );
         });
         it(`Should have the correct borrow rates computed for epoch ${epochNumber}`, async () => {
           Object.entries(marketsEmissions).forEach(([market, emission]) =>
-            expect(emission!.morphoRatePerSecondBorrowSide.toString()).toEqual(
+            expect(formatUnits(emission!.morphoRatePerSecondBorrowSide)).toEqual(
               file.markets[market].morphoRatePerSecondBorrowSide
             )
           );
