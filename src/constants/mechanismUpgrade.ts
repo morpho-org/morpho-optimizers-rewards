@@ -1,5 +1,5 @@
-import { BigNumber } from "ethers";
+import { constants } from "ethers";
 
-export const VERSION_2_TIMESTAMP = BigNumber.from(1680879600);
+export const VERSION_2_TIMESTAMP = constants.MaxUint256;
 
 export const MARKETS_UPGRADE_SNAPSHOTS = [];
