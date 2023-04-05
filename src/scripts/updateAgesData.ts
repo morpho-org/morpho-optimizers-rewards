@@ -11,7 +11,7 @@ const updateAgesData = async () => {
 
   const resulting = ages.map((age) => {
     const epochs = age.epochs.map((epoch) => {
-      const epochChanges = changes.filter((c) => c.epochNumber === epoch.number);
+      const epochChanges = changes.filter((c) => c.epochNumber === epoch.epochNumber);
 
       const allValues = epochChanges.reduce((acc, change) => {
         const parsed = +change.value;
@@ -19,7 +19,7 @@ const updateAgesData = async () => {
         return { ...acc, [change.variable]: value };
       }, {});
 
-      if (epochChanges.length > 0) console.log(`Updating ${epoch.id}, ${JSON.stringify(allValues)}`);
+      if (epochChanges.length > 0) console.log(`Updating epoch ${epoch.epochNumber}, ${JSON.stringify(allValues)}`);
       return { ...epoch, ...allValues };
     });
     return { ...age, epochs };
