@@ -23,24 +23,32 @@ const generateGraphEmissions = async () => {
   const formattedEmissions: Record<string, string> = {};
   distributions.forEach(({ epoch, distribution }) => {
     Object.entries(distribution.marketsEmissions).forEach(([market, distribution]) => {
-      formattedEmissions[`epoch-${epoch.epochNumber}-Supply-${market}`] =
-        distribution!.morphoRatePerSecondSupplySide.toString();
-      formattedEmissions[`epoch-${epoch.epochNumber}-Borrow-${market}`] =
-        distribution!.morphoRatePerSecondBorrowSide.toString();
+      const generateKey = (side: "Supply" | "Borrow") => ["epoch", epoch.epochNumber, side, market].join("-");
+
+      formattedEmissions[generateKey("Supply")] = distribution!.morphoRatePerSecondSupplySide.toString();
+      formattedEmissions[generateKey("Borrow")] = distribution!.morphoRatePerSecondBorrowSide.toString();
     });
   });
+  const epochKey = (epoch: number) => `epoch-${epoch}`;
   const startTimestamps = Object.fromEntries(
-    allEpochs.map(({ epoch }) => [`epoch-${epoch.epochNumber}`, epoch.initialTimestamp.toString()])
+    allEpochs.map(({ epoch: { epochNumber, initialTimestamp } }) => [
+      epochKey(epochNumber),
+      initialTimestamp.toString(),
+    ])
   );
   const endTimestamps = Object.fromEntries(
-    allEpochs.map(({ epoch }) => [`epoch-${epoch.epochNumber}`, epoch.finalTimestamp.toString()])
+    allEpochs.map(({ epoch: { epochNumber, finalTimestamp } }) => [epochKey(epochNumber), finalTimestamp.toString()])
   );
+
   const hash = await uploadToIPFS({
     name: "subgraph-distribution.json",
     body: { startTimestamps, endTimestamps, formattedEmissions },
   });
+
   if (!hash) throw Error("Cannot upload to IPFS");
+
   console.log("Override IPFS hash on the subgraph with", hash);
+
   await fs.promises.writeFile(
     "subgraph/src/ipfs.ts",
     `export const IPFS_HASH = "${hash}";
