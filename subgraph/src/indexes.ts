@@ -1,4 +1,4 @@
-import { Address, BigInt, Bytes, log } from "@graphprotocol/graph-ts";
+import { Address, BigInt, log } from "@graphprotocol/graph-ts";
 
 import {
   epochNumberToEndTimestamp,
@@ -10,6 +10,9 @@ import {
 } from "./distributions";
 import { getOrInitMarket, getOrInitMarketEpoch } from "./initializer";
 import { BASIS_POINTS, WAD } from "./constants";
+
+const getEpochMarketEmissionKey = (marketAddress: Address, epochNumber: i32, marketSide: string): string =>
+  "epoch-" + epochNumber.toString() + "-" + marketSide + "-" + marketAddress.toHexString();
 
 /**
  * The emission between timestamp from and timestamp to is linear, and the two timestamps has
@@ -57,12 +60,7 @@ const computeUpdatedMorphoIndex = (
     );
     return lastMorphoIndex.plus(accrualIndex);
   }
-  if (
-    prevEpochNumber &&
-    currentEpochNumber &&
-    // string comparison is not working when compiled with WASM, we have to pass through bytes comparison
-    !Bytes.fromUTF8(prevEpochNumber.toString()).equals(Bytes.fromUTF8(currentEpochNumber.toString()))
-  ) {
+  if (prevEpochNumber && currentEpochNumber && prevEpochNumber !== currentEpochNumber) {
     // need to tackle multiple speeds
     log.warning("Prev epoch: {}, current epoch: {}", [prevEpochNumber.toString(), currentEpochNumber.toString()]);
     const end = epochNumberToEndTimestamp(obj, prevEpochNumber);
@@ -76,10 +74,7 @@ const computeUpdatedMorphoIndex = (
         lastUpdateBlockTimestamp,
         end,
         lastTotalUnderlying,
-        fetchDistributionFromDistributionId(
-          obj,
-          prevEpochNumber.toString() + "-" + marketSide + "-" + marketAddress.toHexString()
-        )
+        fetchDistributionFromDistributionId(obj, getEpochMarketEmissionKey(marketAddress, prevEpochNumber, marketSide))
       )
     );
     const snapshot = getOrInitMarketEpoch(marketAddress, prevEpochNumber, marketSide, end);
@@ -97,7 +92,7 @@ const computeUpdatedMorphoIndex = (
     if (startTimestamp.ge(blockTimestamp)) return lastMorphoIndex;
     // stop the distribution if it is the beginning of the current epoch, else start distribution
   }
-  const id = "epoch-" + currentEpochNumber.toString() + "-" + marketSide + "-" + marketAddress.toHexString();
+  const id = getEpochMarketEmissionKey(marketAddress, currentEpochNumber, marketSide);
   const accrualIndex = computeOneEpochDistribuedRewards(
     lastUpdateBlockTimestamp,
     blockTimestamp,
@@ -156,7 +151,7 @@ const computeUpdatedMorphoIndexV2 = (
     }
     const distribution = fetchDistributionFromDistributionId(
       obj,
-      prevEpochNumber.toString() + "-" + marketSide + "-" + marketAddress.toHexString()
+      getEpochMarketEmissionKey(marketAddress, prevEpochNumber, marketSide)
     );
     const speed = distribution.times(lastPercentSpeed).div(BASIS_POINTS);
 
@@ -173,7 +168,7 @@ const computeUpdatedMorphoIndexV2 = (
     if (startTimestamp.ge(blockTimestamp)) return lastMorphoIndex;
     // stop the distribution if it is the beginning of the current epoch, else start distribution
   }
-  const id = "epoch-" + currentEpochNumber.toString() + "-" + marketSide + "-" + marketAddress.toHexString();
+  const id = getEpochMarketEmissionKey(marketAddress, currentEpochNumber, marketSide);
 
   const distribution = fetchDistributionFromDistributionId(obj, id);
   const speed = distribution.times(lastPercentSpeed).div(BASIS_POINTS);
