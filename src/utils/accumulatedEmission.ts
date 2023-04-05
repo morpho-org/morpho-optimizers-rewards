@@ -9,7 +9,7 @@ import { StorageService } from "./StorageService";
  */
 export const getAccumulatedEmission = (epochNumber: number) => {
   const epochEmissions = ages
-    .map((a) => a.epochs.map((epoch) => ({ number: epoch.number, distributed: epoch.totalEmission })))
+    .map((a) => a.epochs.map((epoch) => ({ number: epoch.epochNumber, distributed: epoch.totalEmission })))
     .flat();
   const currentEpoch = epochEmissions.find((e) => e.number === epochNumber);
   if (!currentEpoch) throw Error(`Unknown epoch number ${epochNumber}`);
@@ -29,13 +29,17 @@ export const getAccumulatedEmissionPerMarket = (
 ): Promise<{ supply: BigNumber; borrow: BigNumber }> =>
   Promise.all(
     allEpochs
-      .filter(({ epoch }) => epoch.number <= epochNumber)
+      .filter(({ epoch }) => epoch.epochNumber <= epochNumber)
       .map(async ({ epoch }) => {
-        const distribution = await storageService.readMarketDistribution(epoch.number);
+        const distribution = await storageService.readMarketDistribution(epoch.epochNumber);
         const marketContent = distribution?.markets[market];
         return {
-          supply: marketContent?.supply ? parseUnits(marketContent.supply) : constants.Zero,
-          borrow: marketContent?.borrow ? parseUnits(marketContent.borrow) : constants.Zero,
+          supply: marketContent?.morphoEmittedSupplySide
+            ? parseUnits(marketContent.morphoEmittedSupplySide)
+            : constants.Zero,
+          borrow: marketContent?.morphoEmittedBorrowSide
+            ? parseUnits(marketContent.morphoEmittedBorrowSide)
+            : constants.Zero,
         };
       })
   ).then((r) =>

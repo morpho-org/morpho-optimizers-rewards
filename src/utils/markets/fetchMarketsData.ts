@@ -5,6 +5,7 @@ import {
   CompoundOracle__factory,
   Comptroller__factory,
   CToken__factory,
+  ERC20__factory,
   LendingPool__factory,
   LendingPoolAddressesProvider__factory,
   MorphoAaveV2__factory,
@@ -16,6 +17,8 @@ import {
 import addresses from "@morpho-labs/morpho-ethers-contract/lib/addresses";
 import { MarketMinimal } from "../graph/getGraphMarkets/markets.types";
 import { cFei, pow10BN, WAD } from "../../helpers";
+import tokens from "@morpho-labs/morpho-ethers-contract/lib/tokens";
+import { getAddress } from "ethers/lib/utils";
 
 const fetchMarketsData = async (snapshotBlock: providers.BlockTag, provider: providers.Provider) => {
   const [compoundParameters, aaveParameters] = await Promise.all([
@@ -71,6 +74,7 @@ const getAaveMarketsParameters = async (snapshotBlock: providers.BlockTag, provi
         morphoBorrowMarketSize: p2pBorrowAmount.add(poolBorrowAmount),
         price,
         p2pIndexCursor: BigNumber.from(p2pIndexCursor),
+        decimals,
       };
       return marketParameters;
     })
@@ -97,6 +101,7 @@ const getCompoundMarketsParameters = async (snapshotBlock: providers.BlockTag, p
         price,
         { p2pIndexCursor },
         { p2pBorrowAmount, poolBorrowAmount, p2pSupplyAmount, poolSupplyAmount },
+        underlying,
       ] = await Promise.all([
         cToken.totalSupply(overrides),
         cToken.exchangeRateStored(overrides),
@@ -104,7 +109,10 @@ const getCompoundMarketsParameters = async (snapshotBlock: providers.BlockTag, p
         oracle.getUnderlyingPrice(market, overrides),
         morpho.marketParameters(market, overrides),
         lens.getMainMarketData(market, overrides),
+        getAddress(market) === getAddress(tokens.wEth.cToken!) ? tokens.wEth.address : cToken.underlying(),
       ]);
+
+      const decimals = await ERC20__factory.connect(underlying, provider).decimals(overrides);
       const totalPoolSupply = totalSupplyRaw.mul(supplyIndex).div(WAD);
       const marketParameters: MarketMinimal = {
         address: market,
@@ -114,6 +122,7 @@ const getCompoundMarketsParameters = async (snapshotBlock: providers.BlockTag, p
         morphoSupplyMarketSize: p2pSupplyAmount.add(poolSupplyAmount),
         morphoBorrowMarketSize: p2pBorrowAmount.add(poolBorrowAmount),
         p2pIndexCursor: BigNumber.from(p2pIndexCursor),
+        decimals,
       };
       return marketParameters;
     })

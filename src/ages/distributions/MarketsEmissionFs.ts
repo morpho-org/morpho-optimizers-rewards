@@ -12,12 +12,12 @@ export interface MarketsEmissionFs {
   };
   markets: {
     [market: string]: {
-      supply: string;
-      supplyRate: string;
-      borrowRate: string;
-      borrow: string;
-      totalMarketSupply: string;
-      totalMarketBorrow: string;
+      morphoEmittedSupplySide: string;
+      morphoRatePerSecondSupplySide: string;
+      morphoRatePerSecondBorrowSide: string;
+      morphoEmittedBorrowSide: string;
+      totalMarketSizeSupplySide: string;
+      totalMarketSizeBorrowSide: string;
     };
   };
 }

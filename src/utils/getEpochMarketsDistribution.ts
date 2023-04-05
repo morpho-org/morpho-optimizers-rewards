@@ -4,6 +4,7 @@ import { MarketsEmissionFs } from "../ages/distributions/MarketsEmissionFs";
 import { formatUnits } from "ethers/lib/utils";
 import { epochNumberToAgeEpochString, now } from "../helpers";
 import { StorageService } from "./StorageService";
+import _mapValues from "lodash/mapValues";
 
 export const getMarketsDistribution = async (
   storageService: StorageService,
@@ -13,7 +14,7 @@ export const getMarketsDistribution = async (
 ) => {
   const epochConfig = timestampToEpoch(timestamp ?? now());
   if (!epochConfig) throw Error(`No epoch found at timestamp ${timestamp}`);
-  return getEpochMarketsDistribution(epochConfig.epoch.number, provider, storageService, force);
+  return getEpochMarketsDistribution(epochConfig.epoch.epochNumber, provider, storageService, force);
 };
 
 export const getEpochMarketsDistribution = async (
@@ -46,24 +47,21 @@ export const computeEpochMarketsDistribution = async (
   // Will revert if snapshotBlock is not defined
   const { marketsEmissions } = await age.distribution(age, epoch, provider);
 
-  const formattedMarketsEmissions = Object.fromEntries(
-    Object.entries(marketsEmissions).map(([key, marketConfig]) => [
-      key,
-      {
-        supply: formatUnits(marketConfig!.supply),
-        supplyRate: marketConfig!.supplyRate.toString(),
-        borrowRate: marketConfig!.borrowRate.toString(),
-        borrow: formatUnits(marketConfig!.borrow),
-        totalMarketSupply: marketConfig!.morphoSupply.toString(),
-        totalMarketBorrow: marketConfig!.morphoBorrow.toString(),
-      },
-    ])
-  );
+  const formattedMarketsEmissions = _mapValues(marketsEmissions, (market) => ({
+    morphoEmittedSupplySide: formatUnits(market!.morphoEmittedSupplySide),
+    morphoRatePerSecondSupplySide: formatUnits(market!.morphoRatePerSecondSupplySide),
+    morphoRatePerSecondBorrowSide: formatUnits(market!.morphoRatePerSecondBorrowSide),
+    morphoEmittedBorrowSide: formatUnits(market!.morphoEmittedBorrowSide),
+    totalMarketSizeSupplySide: formatUnits(market!.totalMarketSizeSupplySide, market!.decimals),
+    totalMarketSizeBorrowSide: formatUnits(market!.totalMarketSizeBorrowSide, market!.decimals),
+  }));
+
   const { epoch: epochName, age: ageName } = epochNumberToAgeEpochString(epochNumber);
+
   const result: MarketsEmissionFs = {
     age: ageName,
     epoch: epochName,
-    epochNumber: epoch.number,
+    epochNumber: epoch.epochNumber,
     totalEmission: epoch.totalEmission.toString(),
     snapshotProposal: epoch.snapshotProposal?.toString(),
     parameters: {

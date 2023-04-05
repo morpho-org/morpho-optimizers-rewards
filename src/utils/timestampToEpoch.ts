@@ -16,8 +16,8 @@ export const getEpochsBetweenTimestamps = (tFrom: BigNumberish, tTo: BigNumberis
     age: Omit<AgeConfig, "epochs">;
     epoch: EpochConfig;
   }> = epochFrom;
-  while (newEpoch?.epoch && newEpoch.epoch.number !== epochTo.epoch.number) {
-    newEpoch = newEpoch.epoch.number ? getNextEpoch(newEpoch.epoch.number) : undefined;
+  while (newEpoch?.epoch && newEpoch.epoch.epochNumber !== epochTo.epoch.epochNumber) {
+    newEpoch = newEpoch.epoch.epochNumber ? getNextEpoch(newEpoch.epoch.epochNumber) : undefined;
 
     if (newEpoch && newEpoch?.epoch?.initialTimestamp.lt(tTo)) epochs.push(newEpoch);
     else break;
@@ -37,10 +37,11 @@ export const getNextEpoch = (epochNumber: number) => {
 
 export const getPrevEpoch = (epochNumber?: number) => {
   if (!epochNumber) return;
-  const currentEpochIndex = allEpochs.findIndex(({ epoch }) => epoch.number === epochNumber);
+  const currentEpochIndex = allEpochs.findIndex(({ epoch }) => epoch.epochNumber === epochNumber);
   if (currentEpochIndex === -1) throw Error(`Unknown epoch: ${epochNumber}`);
   if (currentEpochIndex === 0) return; // This is the first epoch;
   return allEpochs[currentEpochIndex - 1];
 };
 
-export const getEpochFromNumber = (epochNumber: number) => allEpochs.find(({ epoch }) => epoch.number === epochNumber);
+export const getEpochFromNumber = (epochNumber: number) =>
+  allEpochs.find(({ epoch }) => epoch.epochNumber === epochNumber);

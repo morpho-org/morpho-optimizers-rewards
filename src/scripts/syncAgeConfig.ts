@@ -26,30 +26,30 @@ export const syncAgeConfig = async () => {
             if (!epoch.initialBlock) {
               const block = await blockFromTimestamp(epoch.initialTimestamp, "after", apiKey);
               changes.push({
-                epochNumber: epoch.number,
+                epochNumber: epoch.epochNumber,
                 variable: "initialBlock",
                 value: block,
               });
-              console.log("Initial block of epoch", epoch.number, "is", block);
+              console.log("Initial block of epoch", epoch.epochNumber, "is", block);
             }
             if (!epoch.snapshotBlock) {
               const block = await blockFromTimestamp(epoch.initialTimestamp.sub(3600), "after", apiKey);
               changes.push({
-                epochNumber: epoch.number,
+                epochNumber: epoch.epochNumber,
                 variable: "snapshotBlock",
                 value: block,
               });
-              console.log("Snapshot block of epoch", epoch.number, "must be", block);
+              console.log("Snapshot block of epoch", epoch.epochNumber, "must be", block);
             }
           }
           if (!epoch.finalBlock && epoch.finalTimestamp.lt(currentTimestamp)) {
             const block = await blockFromTimestamp(epoch.finalTimestamp, "before", apiKey);
             changes.push({
-              epochNumber: epoch.number,
+              epochNumber: epoch.epochNumber,
               variable: "finalBlock",
               value: block,
             });
-            console.log("Final block of epoch", epoch.number, "is", block);
+            console.log("Final block of epoch", epoch.epochNumber, "is", block);
           }
         })
       ),

@@ -14,7 +14,7 @@ import { cloneDeep } from "lodash";
 import { getUserBalances } from "./getUserBalances";
 import { MARKETS_UPGRADE_SNAPSHOTS, VERSION_2_TIMESTAMP } from "../constants/mechanismUpgrade";
 import { StorageService } from "./StorageService";
-import { getAddress } from "ethers/lib/utils";
+import { getAddress, parseUnits } from "ethers/lib/utils";
 
 export const getUserRewards = async (
   address: string,
@@ -32,7 +32,7 @@ export const getUserRewards = async (
   );
   const currentEpoch = timestampToEpoch(timestampEnd);
   // preload to cache the current epoch configuration
-  await getEpochMarketsDistribution(currentEpoch!.epoch.number, provider, storageService);
+  await getEpochMarketsDistribution(currentEpoch!.epoch.epochNumber, provider, storageService);
 
   // to prevent parallel fetching of the same data
   const marketsRewards = await userBalancesToUnclaimedTokens(userBalances, timestampEnd, provider, storageService);
@@ -40,14 +40,14 @@ export const getUserRewards = async (
   const onChainDistribution = await getCurrentOnChainDistribution(provider, storageService, blockNumber);
   const claimableRaw = onChainDistribution.proofs[address.toLowerCase()];
   const claimable = claimableRaw ? BigNumber.from(claimableRaw.amount) : BigNumber.from(0);
-  const prevEpoch = getPrevEpoch(currentEpoch?.epoch.number);
+  const prevEpoch = getPrevEpoch(currentEpoch?.epoch.epochNumber);
   let claimableSoon = BigNumber.from(0);
 
-  if (prevEpoch && prevEpoch.epoch.number !== onChainDistribution.epochNumber) {
+  if (prevEpoch && prevEpoch.epoch.epochNumber !== onChainDistribution.epochNumber) {
     // The previous epoch is done, but the root is not yet modified on chain
     // So The difference between the amùount of the previous epoch and the amount claimable on chain will be claimable soon,
     // When the root will be updated by DAO
-    const prevId = prevEpoch.epoch.number;
+    const prevId = prevEpoch.epoch.epochNumber;
     const prevDistribution = require(`../../distribution/proofs/proofs-${prevId}.json`);
     const claimableSoonRaw = prevDistribution.proofs[address.toLowerCase()];
     if (claimableSoonRaw) {
@@ -305,7 +305,7 @@ const computeSupplyIndex = async (
     market.supplyIndex,
     market.supplyUpdateBlockTimestampV1,
     currentTimestamp,
-    "supplyRate",
+    "morphoRatePerSecondSupplySide",
     market.lastTotalSupply,
     provider
   );
@@ -328,7 +328,7 @@ const computeSupplyIndexes = async (
   provider: providers.Provider,
   storageService: StorageService
 ) => {
-  const rateType = "supplyRate";
+  const rateType = "morphoRatePerSecondSupplySide";
   const marketAddress = market.address;
 
   // even if the index is in RAY for Morpho-Aave markets, this is not a big deal since we are using the proportion
@@ -381,7 +381,7 @@ const computeBorrowIndex = async (
     market.borrowIndex,
     market.borrowUpdateBlockTimestampV1,
     currentTimestamp,
-    "borrowRate",
+    "morphoRatePerSecondBorrowSide",
     market.lastTotalBorrow,
     provider
   );
@@ -392,7 +392,7 @@ const computeBorrowIndexes = async (
   provider: providers.Provider,
   storageService: StorageService
 ) => {
-  const rateType = "borrowRate";
+  const rateType = "morphoRatePerSecondBorrowSide";
   const marketAddress = market.address;
 
   const totalBorrowP2P = WadRayMath.wadMul(market.scaledBorrowInP2P, market.lastP2PBorrowIndex);
@@ -433,7 +433,7 @@ const computeIndex = async (
   lastIndex: BigNumber,
   lastUpdateTimestamp: BigNumberish,
   currentTimestamp: BigNumberish,
-  rateType: "borrowRate" | "supplyRate",
+  rateType: "morphoRatePerSecondBorrowSide" | "morphoRatePerSecondSupplySide",
   totalUnderlying: BigNumber,
   provider: providers.Provider,
   speed: (emission: BigNumber) => BigNumber = (e) => e
@@ -443,8 +443,8 @@ const computeIndex = async (
   const distributions = Object.fromEntries(
     await Promise.all(
       epochs.map(async (epoch) => [
-        epoch.epoch.number,
-        await getEpochMarketsDistribution(epoch.epoch.number, provider, storageService),
+        epoch.epoch.epochNumber,
+        await getEpochMarketsDistribution(epoch.epoch.epochNumber, provider, storageService),
       ])
     )
   );
@@ -452,10 +452,10 @@ const computeIndex = async (
     const initialTimestamp = maxBN(epoch.initialTimestamp, BigNumber.from(lastUpdateTimestamp));
     const finalTimestamp = minBN(epoch.finalTimestamp, BigNumber.from(currentTimestamp));
     const deltaTimestamp = finalTimestamp.sub(initialTimestamp);
-    const marketsEmission = distributions[epoch.number];
-    const emission = BigNumber.from(marketsEmission.markets[marketAddress]?.[rateType] ?? 0);
+    const marketsEmission = distributions[epoch.epochNumber];
+    const emission = parseUnits(marketsEmission.markets[marketAddress]?.[rateType] ?? "0");
     const morphoAccrued = deltaTimestamp.mul(speed(emission)); // in WEI units;
-    const ratio = totalUnderlying.eq(0) ? BigNumber.from(0) : morphoAccrued.mul(WAD).div(totalUnderlying); // in 18*2 - decimals units;
+    const ratio = totalUnderlying.isZero() ? constants.Zero : morphoAccrued.mul(WAD).div(totalUnderlying); // in 18*2 - decimals units;
     return currentIndex.add(ratio);
   }, lastIndex);
 };

@@ -20,12 +20,12 @@ const computeMarketsEmissions = async (epochNumber?: number) => {
 
   const epochs = epochNumber ? [getEpochFromNumber(epochNumber)!] : startedEpochs;
   if (!epochNumber)
-    console.log(`${epochs.length} epochs to compute, to epoch ${epochs[epochs.length - 1].epoch.number}`);
+    console.log(`${epochs.length} epochs to compute, to epoch ${epochs[epochs.length - 1].epoch.epochNumber}`);
 
   // Compute emissions for each epoch
   const emissions = await Promise.all(
     epochs.map(async ({ epoch }) => {
-      return computeEpochMarketsDistribution(epoch.number, provider, storageService, true);
+      return computeEpochMarketsDistribution(epoch.epochNumber, provider, storageService, true);
     })
   );
 

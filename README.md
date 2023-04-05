@@ -53,7 +53,7 @@ this will output the per-market emissions in the [distribution](./distribution) 
 If you want to compute the emissions for a specific epoch, you can use the `--epoch` flag:
 
 ```bash
-yarn markets:emissions --epoch age2-epoch1
+yarn markets:emissions --epoch 6
 ```
 
 ## **Subgraph**
@@ -120,7 +120,7 @@ this will output the users distribution in the [distribution](./distribution) di
 If you want to compute the users distribution for a specific epoch, you can use the `--epoch` flag:
 
 ```bash
-yarn users:distribute --epoch age2-epoch1
+yarn users:distribute --epoch 6
 ```
 
 You can also choose the data provider for the users balances between `rpc` or `subgraph`.

@@ -10,6 +10,9 @@ markets(first: 128 block: {number: $blockTag}) {
       supplyPoolIndex
       borrowPoolIndex
     }
+    token {
+      decimals
+    }
     metrics {
       totalBorrowOnPool
       totalSupplyOnPool

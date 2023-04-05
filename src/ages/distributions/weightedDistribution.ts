@@ -24,22 +24,22 @@ export const weightedDistribution = async (
 
       const emissionRate = getMarketEmissionRate(symbol);
       const total = morphoSupplyMarketSize.add(morphoBorrowMarketSize);
-      const supply = morphoSupplyMarketSize.mul(emissionRate).div(total);
-      const supplyRate = supply.div(duration);
-      const borrow = morphoBorrowMarketSize.mul(emissionRate).div(total);
-      const borrowRate = borrow.div(duration);
-      const marketEmission = supply.add(borrow);
+      const morphoEmittedSupplySide = morphoSupplyMarketSize.mul(emissionRate).div(total);
+      const morphoRatePerSecondSupplySide = morphoEmittedSupplySide.div(duration);
+      const morphoEmittedBorrowSide = morphoBorrowMarketSize.mul(emissionRate).div(total);
+      const morphoRatePerSecondBorrowSide = morphoEmittedBorrowSide.div(duration);
+      const marketEmission = morphoEmittedSupplySide.add(morphoEmittedBorrowSide);
 
       return [
         address.toLowerCase(),
         {
-          supply,
-          supplyRate,
-          borrow,
-          borrowRate,
+          morphoEmittedSupplySide,
+          morphoRatePerSecondSupplySide,
+          morphoEmittedBorrowSide,
+          morphoRatePerSecondBorrowSide,
           marketEmission,
-          morphoBorrow: morphoBorrowMarketSize,
-          morphoSupply: morphoSupplyMarketSize,
+          totalMarketSizeBorrowSide: morphoBorrowMarketSize,
+          totalMarketSizeSupplySide: morphoSupplyMarketSize,
           p2pIndexCursor,
         } as MarketEmission,
       ];
