@@ -4,13 +4,14 @@ import { AgeDistribution } from "./distributions.types";
 import { parseUnits } from "ethers/lib/utils";
 import fetchProposal from "../../utils/snapshot/fetchProposal";
 import { weightedDistribution } from "./weightedDistribution";
+import { blockFromTimestamp } from "../../utils";
 
 export const ageThreeDistribution: DistributionFn = async (
   ageConfig: AgeDistribution,
   { finalTimestamp, initialTimestamp, epochNumber, snapshotBlock, snapshotProposal, totalEmission }: EpochConfig,
   provider?: providers.Provider
 ) => {
-  if (!snapshotBlock) throw Error(`Cannot distribute tokens for epoch ${epochNumber}: no snapshotBlock`);
+  if (!snapshotBlock) snapshotBlock = +(await blockFromTimestamp(initialTimestamp, "after"));
   if (!snapshotProposal) throw Error(`Cannot distribute tokens for epoch ${epochNumber}: no snapshotProposal`);
   const proposal = await fetchProposal(snapshotProposal);
 

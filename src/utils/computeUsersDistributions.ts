@@ -1,5 +1,12 @@
 import { ethers, providers } from "ethers";
-import { computeMerkleTree, fetchUsers, getAccumulatedEmission, userBalancesToUnclaimedTokens, sumRewards } from ".";
+import {
+  computeMerkleTree,
+  fetchUsers,
+  getAccumulatedEmission,
+  userBalancesToUnclaimedTokens,
+  sumRewards,
+  blockFromTimestamp,
+} from ".";
 import { commify, formatUnits } from "ethers/lib/utils";
 import { finishedEpochs } from "../ages/ages";
 import { SUBGRAPH_URL } from "../config";
@@ -20,6 +27,8 @@ export const computeUsersDistributionsForEpoch = async (
   force?: boolean
 ) => {
   console.log(`Compute users distribution for epoch ${epoch.epochNumber}`);
+  if (!epoch.finalBlock && epoch.finalTimestamp.lte(Math.floor(Date.now() / 1000)))
+    epoch.finalBlock = +(await blockFromTimestamp(epoch.finalTimestamp, "before"));
 
   const usersBalances = await fetchUsers(SUBGRAPH_URL, epoch.finalBlock ?? undefined);
   const usersAccumulatedRewards = (

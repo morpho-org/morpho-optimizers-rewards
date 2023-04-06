@@ -5,13 +5,16 @@ import { parseUnits } from "ethers/lib/utils";
 import marketsRepartition from "./marketsRepartition";
 import { weightedDistribution } from "../weightedDistribution";
 import { PercentMath } from "@morpho-labs/ethers-utils/lib/maths";
+import { blockFromTimestamp } from "../../../utils";
 
 export const ageFourDistribution: DistributionFn = async (
   ageConfig: AgeDistribution,
-  { finalTimestamp, initialTimestamp, epochNumber, snapshotBlock, totalEmission }: EpochConfig,
+  { finalTimestamp, initialTimestamp, snapshotBlock, totalEmission }: EpochConfig,
   provider?: providers.Provider
 ) => {
-  if (!snapshotBlock) throw Error(`Cannot distribute tokens for epoch ${epochNumber}: no snapshotBlock`);
+  if (!snapshotBlock) {
+    snapshotBlock = +(await blockFromTimestamp(initialTimestamp, "after"));
+  }
 
   const duration = finalTimestamp.sub(initialTimestamp);
 
