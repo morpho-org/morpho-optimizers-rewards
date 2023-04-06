@@ -28,7 +28,6 @@ export const weightedDistribution = async (
       const morphoRatePerSecondSupplySide = morphoEmittedSupplySide.div(duration);
       const morphoEmittedBorrowSide = morphoBorrowMarketSize.mul(emissionRate).div(total);
       const morphoRatePerSecondBorrowSide = morphoEmittedBorrowSide.div(duration);
-      const marketEmission = morphoEmittedSupplySide.add(morphoEmittedBorrowSide);
 
       return [
         address.toLowerCase(),
@@ -37,7 +36,7 @@ export const weightedDistribution = async (
           morphoRatePerSecondSupplySide,
           morphoEmittedBorrowSide,
           morphoRatePerSecondBorrowSide,
-          marketEmission,
+          marketEmission: emissionRate,
           totalMarketSizeBorrowSide: morphoBorrowMarketSize,
           totalMarketSizeSupplySide: morphoSupplyMarketSize,
           p2pIndexCursor,
