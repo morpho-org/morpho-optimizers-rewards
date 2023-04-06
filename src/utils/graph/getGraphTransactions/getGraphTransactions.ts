@@ -1,5 +1,4 @@
 import { BigNumber, BigNumberish } from "ethers";
-import axios from "axios";
 import { GraphTransaction } from "./graphTransactions.types";
 
 export const getGraphTransactions = async (
@@ -17,18 +16,24 @@ export const getGraphTransactions = async (
   let hasMore = true;
   let nextId = "";
   while (hasMore) {
-    const newTxs = await axios
-      .post(graphUrl, {
+    const newTxs = await fetch(graphUrl, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
         query,
         variables: {
           ...variables,
           nextId,
         },
-      })
+      }),
+    })
       .then((result) => {
-        if (result.data.errors) throw new Error(result.data.errors[0].message);
-
-        return result.data.data.transactions as GraphTransaction[];
+        if (!result.ok) return Promise.reject(result);
+        return result.json();
+      })
+      .then((result: { data: { transactions: GraphTransaction[] } | { error: any } }) => {
+        if (!("transactions" in result.data)) throw Error(result.data.toString());
+        return result.data.transactions;
       });
     txs = [...txs, ...newTxs];
     hasMore = newTxs.length === 1000;

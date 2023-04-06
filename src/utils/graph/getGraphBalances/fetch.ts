@@ -1,4 +1,3 @@
-import axios from "axios";
 import balancesQuery from "./balances.query";
 import { formatGraphBalances } from "./graphBalances.formatter";
 import { providers } from "ethers";
@@ -12,14 +11,23 @@ export const fetchUsers = async (graphUrl: string, block?: providers.BlockTag) =
   let offset = "";
 
   while (hasMore) {
-    const newBalances = await axios
-      .post<any, GraphResult<{ users: GraphUserBalances[] }>>(graphUrl, {
+    const newBalances = await fetch(graphUrl, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
         query: block ? balancesQuery.balancesQueryWithBlockPaginated : balancesQuery.balancesQueryPaginated,
         variables: { size: batchSize, lastUser: offset, block },
+      }),
+    })
+      .then((result) => {
+        console.log("result", result);
+        if (!result.ok) return Promise.reject(result);
+        return result.json();
       })
-      .then((r) => {
-        if (!r.data.data) throw Error(JSON.stringify(r.data));
-        return r.data.data.users.map(formatGraphBalances);
+      .then((result: { data: { users: GraphUserBalances[] } | { error: any } }) => {
+        console.log(result);
+        if (!("users" in result.data)) throw Error(result.data.toString());
+        return result.data.users.map(formatGraphBalances);
       });
 
     hasMore = newBalances.length === batchSize;
@@ -29,7 +37,3 @@ export const fetchUsers = async (graphUrl: string, block?: providers.BlockTag) =
 
   return usersBalances;
 };
-
-interface GraphResult<T> {
-  data: { data: T };
-}

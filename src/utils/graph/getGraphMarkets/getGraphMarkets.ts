@@ -1,4 +1,3 @@
-import axios from "axios";
 import { GraphMarketConfiguration, MarketMinimal } from "./markets.types";
 import { query, subgraphUrl } from "./markets.query";
 import { graphToMarketConfig } from "./markets.formatter";
@@ -9,17 +8,21 @@ import { graphToMarketConfig } from "./markets.formatter";
  */
 export const getGraphMarkets = async (blockTag: number) => {
   const marketsConfiguration: { [market: string]: MarketMinimal } = {};
-
-  await axios
-    .post<{ blockTag: number }, { data?: { data: { markets: GraphMarketConfiguration[] } } }>(subgraphUrl, {
-      query,
-      variables: { blockTag },
-    })
+  await fetch(subgraphUrl, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ query, variables: { blockTag } }),
+  })
     .then((result) => {
-      if (!result.data?.data) {
-        throw Error(result.data!.toString());
-      }
-      result.data.data.markets.forEach((graphMarket) => {
+      console.log("result", result);
+      if (!result.ok) return Promise.reject(result);
+      return result.json();
+    })
+    .then((result: { data: { markets: GraphMarketConfiguration[] } | { error: any } }) => {
+      console.log(result);
+      if (!("markets" in result.data)) throw Error(result.data.toString());
+
+      result.data.markets.forEach((graphMarket) => {
         marketsConfiguration[graphMarket.address] = graphToMarketConfig(graphMarket);
       });
     });
