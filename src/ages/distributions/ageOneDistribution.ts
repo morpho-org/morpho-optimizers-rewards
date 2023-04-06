@@ -1,12 +1,12 @@
-import { computeMarketsEmissions, getGraphMarkets } from "../../utils";
+import { blockFromTimestamp, computeMarketsEmissions, getGraphMarkets } from "../../utils";
 import { DistributionFn, EpochConfig } from "../ages.types";
 import { AgeDistribution } from "./distributions.types";
 
 export const ageOneDistribution: DistributionFn = async (
   age: AgeDistribution,
-  { snapshotBlock, totalEmission, finalTimestamp, initialTimestamp, epochNumber }: EpochConfig
+  { snapshotBlock, totalEmission, finalTimestamp, initialTimestamp }: EpochConfig
 ) => {
-  if (!snapshotBlock) throw Error(`Cannot compute distribution for epoch ${epochNumber}: snapshotBlock is missing`);
+  if (!snapshotBlock) snapshotBlock = +(await blockFromTimestamp(initialTimestamp, "after"));
   const duration = finalTimestamp.sub(initialTimestamp);
   const ageOneMarketsParameters = await getGraphMarkets(snapshotBlock);
 

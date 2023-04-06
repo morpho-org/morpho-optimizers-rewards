@@ -4,13 +4,14 @@ import { BASIS_POINTS } from "../../helpers";
 import { DistributionFn, EpochConfig } from "../ages.types";
 import { AgeDistribution } from "./distributions.types";
 import fetchMarketsData from "../../utils/markets/fetchMarketsData";
+import { blockFromTimestamp } from "../../utils";
 
 export const ageTwoDistribution: DistributionFn = async (
   epoch: AgeDistribution,
   { protocolDistribution, totalEmission, finalTimestamp, initialTimestamp, snapshotBlock, epochNumber }: EpochConfig,
   provider?: providers.Provider
 ) => {
-  if (!snapshotBlock) throw Error(`Cannot distribute tokens for ${epochNumber}: no snapshotBlock`);
+  if (!snapshotBlock) snapshotBlock = +(await blockFromTimestamp(initialTimestamp, "after"));
   provider ??= new providers.InfuraProvider("mainnet");
   if (!protocolDistribution) throw Error(`Cannot distribute tokens for ${epochNumber}: no protocolDistribution`);
 
