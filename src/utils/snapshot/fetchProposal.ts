@@ -1,5 +1,3 @@
-import axios from "axios";
-
 const SNAPSHOT_ENDPOINT = "https://hub.snapshot.org/graphql";
 
 const query = `query Proposal($id: String!) {
@@ -23,8 +21,12 @@ export interface SnapshotProposal {
   scores_total: string;
 }
 const fetchProposal = (proposalId: string) =>
-  axios
-    .post(SNAPSHOT_ENDPOINT, { query, variables: { id: proposalId } })
-    .then((r) => r.data.data.proposal as SnapshotProposal);
+  fetch(SNAPSHOT_ENDPOINT, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ query, variables: { id: proposalId } }),
+  })
+    .then((r) => r.json())
+    .then((r) => r.data.proposal as SnapshotProposal);
 
 export default fetchProposal;
