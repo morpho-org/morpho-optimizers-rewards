@@ -1,26 +1,5 @@
 import { Address, BigInt, ipfs, json, JSONValue, JSONValueKind, log, TypedMap } from "@graphprotocol/graph-ts";
-import { one } from "./constants";
 import { IPFS_HASH } from "./ipfs";
-
-export const getNextId = (id: string): string => {
-  const ageEpoch = id.split("-");
-  const age = ageEpoch[0];
-  const epoch = ageEpoch[1];
-  const ageId = BigInt.fromString(age.replace("age", ""));
-  const epochId = BigInt.fromString(epoch.replace("epoch", ""));
-  if (epochId.equals(BigInt.fromString("3"))) return `age${ageId.plus(one).toString()}-epoch1`;
-  return ("age" + ageId.toString() + "-epoch" + epochId.plus(one).toString()) as string;
-};
-export const getPrevId = (id: string): string | null => {
-  if (id === "age1-epoch1") return null;
-  const ageEpoch = id.split("-");
-  const age = ageEpoch[0];
-  const epoch = ageEpoch[1];
-  const ageId = BigInt.fromString(age.replace("age", ""));
-  const epochId = BigInt.fromString(epoch.replace("epoch", ""));
-  if (epochId.equals(one)) return `age${ageId.minus(one).toString()}-epoch3`;
-  return `age${ageId.toString()}-epoch${epochId.minus(one).toString()}` as string;
-};
 
 export const ipfsJson = (): TypedMap<string, JSONValue> => {
   const data = ipfs.cat(IPFS_HASH);
@@ -40,47 +19,47 @@ export const ipfsJson = (): TypedMap<string, JSONValue> => {
   }
   return obj;
 };
-export const epochIdToStartTimestamp = (obj: TypedMap<string, JSONValue>, epochId: string): BigInt | null => {
+export const epochNumberToStartTimestamp = (obj: TypedMap<string, JSONValue>, epochNumber: i32): BigInt | null => {
   if (!obj) return null;
   const startTimestamps = obj.get("startTimestamps");
   if (!startTimestamps) {
     log.critical("No startTimestamps", []);
     return null;
   }
-  const ts = startTimestamps.toObject().get(epochId);
+  const ts = startTimestamps.toObject().get(`epoch-${epochNumber}`);
   if (!ts) return null;
   return BigInt.fromString(ts.toString());
 };
-export const epochIdToEndTimestamp = (obj: TypedMap<string, JSONValue>, epochId: string): BigInt | null => {
+export const epochNumberToEndTimestamp = (obj: TypedMap<string, JSONValue>, epochNumber: i32): BigInt | null => {
   if (!obj) return null;
   const endTimestamps = obj.get("endTimestamps");
   if (!endTimestamps) {
     log.critical("No endTimestamps", []);
     return null;
   }
-  const ts = endTimestamps.toObject().get(epochId as string);
+  const ts = endTimestamps.toObject().get(`epoch-${epochNumber}`);
   if (!ts) return null;
   return BigInt.fromString(ts.toString());
 };
-export const timestampToEpochId = (obj: TypedMap<string, JSONValue>, timestamp: BigInt): string | null => {
-  if (!obj) return null;
+export const timestampToEpochId = (obj: TypedMap<string, JSONValue>, timestamp: BigInt): i32 => {
+  if (!obj) return 0;
   let ts = obj.get("startTimestamps");
   if (!ts) {
     log.critical("No startTimestamps", []);
-    return null;
+    return 0;
   }
   const tsRaws = ts.toObject();
   if (!tsRaws) {
     log.critical("No timestamps", []);
-    return null;
+    return 0;
   }
-  if (timestamp.le(BigInt.fromI32(1654707606))) return null;
-  let epoch = "age1-epoch1";
+  if (timestamp.le(BigInt.fromI32(1654707606))) return 0;
+  let epoch = 1;
   while (true) {
-    let endTimestamp = epochIdToEndTimestamp(obj, epoch);
+    let endTimestamp = epochNumberToEndTimestamp(obj, epoch);
     if (!endTimestamp) return epoch;
     if (timestamp.le(endTimestamp)) return epoch;
-    epoch = getNextId(epoch);
+    epoch++;
   }
 };
 export const fetchDistribution = (
@@ -90,12 +69,12 @@ export const fetchDistribution = (
   market: Address
 ): BigInt => {
   if (timestamp.lt(BigInt.fromI32(1654707606))) return BigInt.zero();
-  const epochId = timestampToEpochId(obj, timestamp);
-  if (!epochId) {
+  const epochNumber = timestampToEpochId(obj, timestamp);
+  if (!epochNumber) {
     log.debug("IPFS file: no epoch id at ts {}", [timestamp.toString()]);
     return BigInt.zero();
   }
-  const id = `${epochId as string}-${side}-${market.toHexString()}`;
+  const id = `epoch-${epochNumber}-${side}-${market.toHexString()}`;
   const formattedEmissions = obj.get("formattedEmissions");
   if (!formattedEmissions) {
     log.critical("No formattedEmissions", []);

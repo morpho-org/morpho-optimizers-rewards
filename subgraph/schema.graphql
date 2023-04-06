@@ -147,7 +147,7 @@ type MarketEpochDistribution @entity {
   id: ID!
   timestamp: BigInt!
   market: Market!
-  epoch: String!
+  epoch: Int!
   marketSide: String!
   index: BigInt!
   speed: BigInt!

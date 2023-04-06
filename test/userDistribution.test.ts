@@ -20,21 +20,19 @@ const storageService = new FileSystemStorageService();
 
 describe.each([...ages])("Age Users Distribution", (age) => {
   const provider = new providers.JsonRpcProvider(process.env.RPC_URL);
+
   const now = Math.floor(Date.now() / 1000);
-  describe.each(age.epochs)(`Epochs distribution for ${age.ageName}`, (epochConfig) => {
-    if (epochConfig.finalTimestamp.gt(now)) return;
+
+  describe.each(age.epochs)("Epochs distribution for age", ({ finalTimestamp, finalBlock, epochNumber }) => {
+    if (finalTimestamp.gt(now)) return;
     let usersBalances: UserBalances[];
     let usersAccumulatedRewards: { address: string; accumulatedRewards: string; rewards: MarketRewards[] }[];
+
     beforeAll(async () => {
-      usersBalances = await fetchUsers(SUBGRAPH_URL, epochConfig.finalBlock ?? undefined);
+      usersBalances = await fetchUsers(SUBGRAPH_URL, finalBlock ?? undefined);
       usersAccumulatedRewards = await Promise.all(
         usersBalances.map(async ({ address, balances }) => {
-          const rewards = await userBalancesToUnclaimedTokens(
-            balances,
-            epochConfig.finalTimestamp,
-            provider,
-            storageService
-          );
+          const rewards = await userBalancesToUnclaimedTokens(balances, finalTimestamp, provider, storageService);
           return {
             address,
             rewards,
@@ -44,18 +42,17 @@ describe.each([...ages])("Age Users Distribution", (age) => {
       );
     });
 
-    it(`Should distribute the correct number of tokens over Morpho users for epoch ${epochConfig.id}`, async () => {
+    it(`Should distribute the correct number of tokens over Morpho users for epoch ${epochNumber}`, async () => {
       const totalEmitted = usersAccumulatedRewards.reduce((a, b) => a.add(b.accumulatedRewards), BigNumber.from(0));
-      const accumulatedEmission = getAccumulatedEmission(epochConfig.id); // we sum the emissions
-      expect(totalEmitted).toBnApproxEq(accumulatedEmission, linearPrecision(epochConfig.number));
+      const accumulatedEmission = getAccumulatedEmission(epochNumber); // we sum the emissions
+      expect(totalEmitted).toBnApproxEq(accumulatedEmission, linearPrecision(epochNumber));
     });
 
-    it(`Should distribute the correct number of tokens per market for epoch ${epochConfig.id}`, async () => {
+    it(`Should distribute the correct number of tokens per market for epoch ${epochNumber}`, async () => {
       const markets = [...new Set(usersBalances.map((ub) => ub.balances.map((b) => b.market.address)).flat())];
-      console.log(markets.length, "markets");
       await Promise.all(
         markets.map(async (marketAddress) => {
-          const emissions = await getAccumulatedEmissionPerMarket(marketAddress, epochConfig.number, storageService);
+          const emissions = await getAccumulatedEmissionPerMarket(marketAddress, epochNumber, storageService);
           const rewardsPerMarket = usersAccumulatedRewards.reduce(
             (acc, b) => {
               const marketRewards = b.rewards.find((r) => r.market.address === marketAddress);
@@ -67,8 +64,8 @@ describe.each([...ages])("Age Users Distribution", (age) => {
             },
             { supply: constants.Zero, borrow: constants.Zero }
           );
-          expect(emissions.supply).toBnApproxEq(rewardsPerMarket.supply, linearPrecision(epochConfig.number));
-          expect(emissions.borrow).toBnApproxEq(rewardsPerMarket.borrow, linearPrecision(epochConfig.number));
+          expect(emissions.supply).toBnApproxEq(rewardsPerMarket.supply, linearPrecision(epochNumber));
+          expect(emissions.borrow).toBnApproxEq(rewardsPerMarket.borrow, linearPrecision(epochNumber));
         })
       );
     });
@@ -90,10 +87,10 @@ describe("On chain roots update", () => {
     await Promise.all(
       rootUpdates.map(async (rootEvent) => {
         const block = await rootEvent.getBlock();
-        const epochConfig = getPrevEpoch(timestampToEpoch(block.timestamp)!.epoch.id);
+        const epochConfig = getPrevEpoch(timestampToEpoch(block.timestamp)!.epoch.epochNumber);
         expect(epochConfig).not.toBeUndefined();
 
-        if (epochConfig!.epoch.id === "age1-epoch2") return; // not check for root 2
+        if (epochConfig!.epoch.epochNumber === 2) return; // not check for root 2
         const usersBalances = await fetchUsers(SUBGRAPH_URL, epochConfig!.epoch.finalBlock ?? undefined);
         const usersAccumulatedRewards = await Promise.all(
           usersBalances.map(async ({ address, balances }) => ({

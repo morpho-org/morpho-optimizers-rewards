@@ -4,7 +4,7 @@ export interface Proof {
 }
 
 export interface Proofs {
-  epoch: string;
+  epochNumber: number;
   root: string;
   total: string;
   proofs: { [address: string]: Proof | undefined };

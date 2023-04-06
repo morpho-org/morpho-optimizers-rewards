@@ -1,5 +1,5 @@
 {
-  "epoch": "age1-epoch2",
+  "epochNumber": 2,
   "root": "0x7510de9d121824eeb7beee216e1b17e93634c493f23b931dbecd9c7489490237",
   "total": "2049999999999995047580557",
   "proofs": {

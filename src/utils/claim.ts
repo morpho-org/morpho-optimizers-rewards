@@ -18,11 +18,11 @@ export const claim = async (userAddresses: string[], storageService: StorageServ
 
   const rewardsDistributor = RewardsDistributor__factory.connect("0x3b14e5c73e0a56d607a8688098326fd4b4292135", signer);
 
-  const [merkleRoot, epochConfigs] = await Promise.all([rewardsDistributor.currRoot(), storageService.readAllProofs()]);
-  const epochConfig = epochConfigs.find((epochConfig) => epochConfig.root.toLowerCase() === merkleRoot.toLowerCase());
+  const [merkleRoot, allProofs] = await Promise.all([rewardsDistributor.currRoot(), storageService.readAllProofs()]);
+  const epochConfig = allProofs.find((epochConfig) => epochConfig.root.toLowerCase() === merkleRoot.toLowerCase());
 
   if (!epochConfig) throw Error("No epoch config found for the current merkle root");
-  console.log("Claiming rewards for epoch", epochConfig.epoch);
+  console.log("Claiming rewards for epoch", epochConfig.epochNumber);
 
   const txs = await Promise.all(
     userAddresses

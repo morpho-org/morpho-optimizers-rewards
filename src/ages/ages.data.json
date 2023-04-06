@@ -7,7 +7,7 @@
     "epochs": [
       {
         "id": "age1-epoch1",
-        "number": 1,
+        "epochNumber": 1,
         "epochName": "epoch1",
         "snapshotBlock": 14927832,
         "initialTimestamp": "2022-06-08T17:00:06.000Z",
@@ -21,7 +21,7 @@
       },
       {
         "id": "age1-epoch2",
-        "number": 2,
+        "epochNumber": 2,
         "epochName": "epoch2",
         "snapshotBlock": 15134933,
         "initialTimestamp": "2022-07-13T17:00:06.000Z",
@@ -35,7 +35,7 @@
       },
       {
         "id": "age1-epoch3",
-        "number": 3,
+        "epochNumber": 3,
         "epochName": "epoch3",
         "snapshotBlock": 15353032,
         "initialTimestamp": "2022-08-16T17:00:06.000Z",
@@ -57,7 +57,7 @@
     "epochs": [
       {
         "id": "age2-epoch1",
-        "number": 4,
+        "epochNumber": 4,
         "epochName": "epoch1",
         "snapshotBlock": 15575331,
         "initialTimestamp": "2022-09-20T15:00:00.000Z",
@@ -72,7 +72,7 @@
       },
       {
         "id": "age2-epoch2",
-        "number": 5,
+        "epochNumber": 5,
         "epochName": "epoch2",
         "snapshotBlock": 15818122,
         "initialBlock": 15818712,
@@ -87,7 +87,7 @@
       },
       {
         "id": "age2-epoch3",
-        "number": 6,
+        "epochNumber": 6,
         "epochName": "epoch3",
         "snapshotBlock": 16061781,
         "initialBlock": 16062078,
@@ -110,7 +110,7 @@
     "epochs": [
       {
         "id": "age3-epoch1",
-        "number": 7,
+        "epochNumber": 7,
         "epochName": "epoch1",
         "snapshotProposal": "0xf402161143c42ac5edf6589b7833eb760cbe556e18451a232e6be3d34d06f287",
         "snapshotBlock": 16290872,
@@ -123,7 +123,7 @@
       },
       {
         "id": "age3-epoch2",
-        "number": 8,
+        "epochNumber": 8,
         "epochName": "epoch2",
         "snapshotProposal": "0xa33106ba7eacd9ed97f1a5a5da6b5a9e7bec0085b0472ea0e8222c226c7acdca",
         "snapshotBlock": 16534421,
@@ -136,7 +136,7 @@
       },
       {
         "id": "age3-epoch3",
-        "number": 9,
+        "epochNumber": 9,
         "snapshotProposal": "0x2c10391797a45353092ed220f41411d18a1a1cf82ded0a8d68452619e46b273e",
         "epochName": "epoch3",
         "snapshotBlock": 16755531,
@@ -145,6 +145,25 @@
         "finalTimestamp": "2023-04-07T15:00:00.000Z",
         "finalBlock": null,
         "totalEmission": "3333334",
+        "protocolDistribution": null
+      }
+    ]
+  },
+  {
+    "ageName": "age4",
+    "startTimestamp": "2023-04-07T15:00:00.000Z",
+    "endTimestamp": "2023-05-22T15:00:00.000Z",
+    "distribution": "ageFourDistribution",
+    "epochs": [
+      {
+        "id": "age4",
+        "epochNumber": 10,
+        "snapshotBlock": null,
+        "initialTimestamp": "2023-04-07T15:00:00.000Z",
+        "initialBlock": null,
+        "finalTimestamp": "2023-05-22T15:00:00.000Z",
+        "finalBlock": null,
+        "totalEmission": "2000000",
         "protocolDistribution": null
       }
     ]

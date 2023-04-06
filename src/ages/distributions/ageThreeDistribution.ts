@@ -1,75 +1,39 @@
-import { providers } from "ethers";
-import { EpochConfig } from "../ages.types";
+import { constants, providers } from "ethers";
+import { DistributionFn, EpochConfig } from "../ages.types";
 import { AgeDistribution } from "./distributions.types";
-import tokens from "@morpho-labs/morpho-ethers-contract/lib/tokens";
 import { parseUnits } from "ethers/lib/utils";
-import getMarketsData from "../../utils/markets/getMarketsData";
 import fetchProposal from "../../utils/snapshot/fetchProposal";
-import { MarketEmission } from "../../utils";
+import { weightedDistribution } from "./weightedDistribution";
 
-const MARKETS = {
-  cDAI: tokens.dai.cToken!,
-  cUSDC: tokens.usdc.cToken!,
-  cUSDT: tokens.usdt.cToken!,
-  cWBTC: tokens.wBtc.cToken!,
-  cETH: tokens.wEth.cToken!,
-  cCOMP: tokens.comp.cToken!,
-  cUNI: tokens.uni.cToken!,
-  aDAI: tokens.dai.aToken!,
-  aUSDC: tokens.usdc.aToken!,
-  aUSDT: tokens.usdt.aToken!,
-  aWBTC: tokens.wBtc.aToken!,
-  aWETH: tokens.wEth.aToken!,
-  aCRV: tokens.crv.aToken!,
-  aSTETH: tokens.stEth.aToken!,
-};
-
-export const ageThreeDistribution = async (
+export const ageThreeDistribution: DistributionFn = async (
   ageConfig: AgeDistribution,
-  epochConfig: EpochConfig,
+  { finalTimestamp, initialTimestamp, epochNumber, snapshotBlock, snapshotProposal, totalEmission }: EpochConfig,
   provider?: providers.Provider
 ) => {
-  if (!epochConfig.snapshotBlock) throw Error(`Cannot distribute tokens for epoch ${epochConfig.id}: no snapshotBlock`);
-  if (!epochConfig.snapshotProposal)
-    throw Error(`Cannot distribute tokens for epoch ${epochConfig.id}: no snapshotProposal`);
-  const proposal = await fetchProposal(epochConfig.snapshotProposal);
+  if (!snapshotBlock) throw Error(`Cannot distribute tokens for epoch ${epochNumber}: no snapshotBlock`);
+  if (!snapshotProposal) throw Error(`Cannot distribute tokens for epoch ${epochNumber}: no snapshotProposal`);
+  const proposal = await fetchProposal(snapshotProposal);
+
   if (proposal.state !== "closed")
-    throw Error(
-      `Cannot distribute tokens for epoch ${epochConfig.id}: proposal ${epochConfig.snapshotProposal} is not closed`
-    );
-  const duration = epochConfig.finalTimestamp.sub(epochConfig.initialTimestamp);
-  const { markets } = await getMarketsData(epochConfig.snapshotBlock, provider!);
+    throw Error(`Cannot distribute tokens for epoch ${epochNumber}: proposal ${snapshotProposal} is not closed`);
+  const duration = finalTimestamp.sub(initialTimestamp);
+
   const totalScoreBn = parseUnits(proposal.scores_total.toString());
-  const marketsEmissions = Object.fromEntries(
-    proposal.scores.map((score, index) => {
-      const symbol = proposal.choices[index];
-      const address = MARKETS[symbol as keyof typeof MARKETS];
-      if (!address) throw Error(`Cannot distribute tokens for epoch ${epochConfig.id}: unknown market ${symbol}`);
-      const marketData = markets.find((market) => market.address.toLowerCase() === address.toLowerCase());
-      if (!marketData)
-        throw Error(`Cannot distribute tokens for epoch ${epochConfig.id}: no market data for ${symbol}`);
-      const scoreBn = parseUnits(score.toString());
-      const distribution = epochConfig.totalEmission.mul(scoreBn).div(totalScoreBn);
-      const total = marketData.morphoSupplyMarketSize.add(marketData.morphoBorrowMarketSize);
-      const supply = marketData.morphoSupplyMarketSize.mul(distribution).div(total);
-      const supplyRate = supply.div(duration);
-      const borrow = marketData.morphoBorrowMarketSize.mul(distribution).div(total);
-      const borrowRate = borrow.div(duration);
-      const marketEmission = supply.add(borrow);
-      return [
-        address.toLowerCase(),
-        {
-          supply,
-          supplyRate,
-          borrow,
-          borrowRate,
-          marketEmission,
-          morphoBorrow: marketData.morphoBorrowMarketSize,
-          morphoSupply: marketData.morphoSupplyMarketSize,
-          p2pIndexCursor: marketData.p2pIndexCursor,
-        } as MarketEmission,
-      ];
-    })
+
+  const getMarketEmissionRate = (symbol: string) => {
+    const index = proposal.choices.indexOf(symbol);
+    if (index === -1) return constants.Zero;
+    const score = parseUnits(proposal.scores[index].toString());
+    return score.mul(totalEmission).div(totalScoreBn);
+  };
+
+  const marketsEmissions = await weightedDistribution(
+    Object.values(proposal.choices),
+    getMarketEmissionRate,
+    duration,
+    snapshotBlock,
+    provider
   );
+
   return { marketsEmissions };
 };

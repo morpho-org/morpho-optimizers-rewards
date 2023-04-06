@@ -5,11 +5,13 @@ import { MarketEmission } from "../src/utils";
 import { Optional } from "../src/helpers/types";
 import { aStEth, cFei } from "../src/helpers";
 import { FileSystemStorageService } from "../src/utils/StorageService";
+import { MarketsEmissionFs } from "../src/ages/distributions/MarketsEmissionFs";
+import { formatUnits } from "ethers/lib/utils";
 
 const storageService = new FileSystemStorageService();
 
 describe.each(ages)("Test Ages Distributions", (age) => {
-  const EPOCHS_PER_AGE = 3;
+  const EPOCHS_PER_AGE = ages.indexOf(age) < 3 ? 3 : 1;
   const ts = Math.floor(Date.now() / 1000);
   const provider = new providers.JsonRpcProvider(process.env.RPC_URL);
   it(`Should have the correct configuration for ${age.ageName}`, () => {
@@ -20,74 +22,81 @@ describe.each(ages)("Test Ages Distributions", (age) => {
   });
   it(`Should have consistent timestamps for ${age.ageName}`, () => {
     const firstEpoch = age.epochs[0];
-    const lastEpoch = age.epochs[2];
+    const lastEpoch = age.epochs[age.epochs.length - 1];
     expect(age.startTimestamp).toBnEq(firstEpoch.initialTimestamp);
     expect(age.endTimestamp).toBnEq(lastEpoch.finalTimestamp);
   });
 
-  it(`Should return a market configuration for ${age.ageName}`, async () => {
-    const marketEmission = await getMarketsDistribution(storageService, age.startTimestamp.toNumber());
-    expect(marketEmission).not.toBeUndefined();
-  });
+  if (age.startTimestamp.lt(ts)) {
+    it(`Should return a market configuration for ${age.ageName}`, async () => {
+      const marketEmission = await getMarketsDistribution(storageService, age.startTimestamp.toNumber());
+      expect(marketEmission).not.toBeUndefined();
+    });
+  }
 
   describe.each(age.epochs)(`Test each epochs of ${age.ageName}`, (epochConfig) => {
-    if (epochConfig.initialTimestamp.lt(ts)) {
-      it(`Should have a snapshot block for ${epochConfig.id}`, () => {
-        expect(epochConfig.snapshotBlock).not.toBeUndefined();
+    const { initialTimestamp, finalTimestamp, initialBlock, finalBlock, snapshotBlock, epochNumber } = epochConfig;
+
+    if (initialTimestamp.lt(ts)) {
+      it(`Should have a snapshot block for epoch ${epochNumber}`, () => {
+        expect(snapshotBlock).not.toBeUndefined();
       });
-      it(`Should have an initial block for ${epochConfig.id}`, () => {
-        expect(epochConfig.initialBlock).not.toBeUndefined();
+      it(`Should have an initial block for epoch ${epochNumber}`, () => {
+        expect(initialBlock).not.toBeUndefined();
       });
 
-      it(`Should have a distribution computed for ${epochConfig.id}`, () => {
+      it(`Should have a distribution computed for epoch ${epochNumber}`, async () => {
         let file: object | undefined = undefined;
         try {
-          file = require(`../distribution/${age.ageName}/${epochConfig.epochName}/marketsEmission.json`);
+          file = (await storageService.readMarketDistribution(epochNumber))!;
         } catch (e) {
           console.error(e);
         }
         expect(file).not.toBeUndefined();
       });
 
-      describe(`Distribution for ${epochConfig.id}`, () => {
+      describe(`Distribution for epoch ${epochNumber}`, () => {
         let marketsEmissions: { [p: string]: Optional<MarketEmission> } = {};
-        let file: any = {};
+        let file: MarketsEmissionFs;
         beforeAll(async () => {
-          file = require(`../distribution/${age.ageName}/${epochConfig.epochName}/marketsEmission.json`);
-
+          file = (await storageService.readMarketDistribution(epochNumber))!;
           ({ marketsEmissions } = await age.distribution(age, epochConfig, provider));
         });
-        it(`Should have a correct number of markets computed for ${epochConfig.id}`, async () => {
+        it(`Should have a correct number of markets computed for epoch ${epochNumber}`, async () => {
           expect(Object.values(marketsEmissions).length).toEqual(Object.values(file.markets).length);
         });
-        it(`Should have the correct markets computed for ${epochConfig.id}`, async () => {
+        it(`Should have the correct markets computed for epoch ${epochNumber}`, async () => {
           expect(Object.keys(marketsEmissions)).toEqual(Object.keys(file.markets));
         });
-        it(`Should have the correct supply rates computed for ${epochConfig.id}`, async () => {
+        it(`Should have the correct supply rates computed for epoch ${epochNumber}`, async () => {
           Object.entries(marketsEmissions).forEach(([market, emission]) =>
-            expect(emission!.supplyRate.toString()).toEqual(file.markets[market].supplyRate)
+            expect(formatUnits(emission!.morphoRatePerSecondSupplySide)).toEqual(
+              file.markets[market].morphoRatePerSecondSupplySide
+            )
           );
         });
-        it(`Should have the correct borrow rates computed for ${epochConfig.id}`, async () => {
+        it(`Should have the correct borrow rates computed for epoch ${epochNumber}`, async () => {
           Object.entries(marketsEmissions).forEach(([market, emission]) =>
-            expect(emission!.borrowRate.toString()).toEqual(file.markets[market].borrowRate)
+            expect(formatUnits(emission!.morphoRatePerSecondBorrowSide)).toEqual(
+              file.markets[market].morphoRatePerSecondBorrowSide
+            )
           );
         });
-        if (epochConfig.number >= 4) {
-          it(`Should not distribute tokens on Compound FEI deprecated market for epoch ${epochConfig.id}`, async () => {
+        if (epochNumber >= 4) {
+          it(`Should not distribute tokens on Compound FEI deprecated market for epoch ${epochNumber}`, async () => {
             expect(marketsEmissions[cFei]).toBeUndefined(); // no distribution for the fei token
           });
 
-          it(`Should not distribute tokens to StEth borrowers on Aave for epoch ${epochConfig.id}`, async () => {
-            expect(marketsEmissions[aStEth]?.borrowRate.isZero()).toEqual(true); // no borrowers of steth on aave
-            expect(marketsEmissions[aStEth]?.borrow.isZero()).toEqual(true); // no borrowers of steth on aave
+          it(`Should not distribute tokens to StEth borrowers on Aave for epoch ${epochNumber}`, async () => {
+            expect(marketsEmissions[aStEth]?.morphoRatePerSecondBorrowSide.isZero()).toEqual(true); // no borrowers of steth on aave
+            expect(marketsEmissions[aStEth]?.morphoEmittedBorrowSide.isZero()).toEqual(true); // no borrowers of steth on aave
           });
         }
       });
     }
-    if (epochConfig.finalTimestamp.lt(ts)) {
-      it(`Should have a final block for ${epochConfig.id}`, () => {
-        expect(epochConfig.finalBlock).not.toBeUndefined();
+    if (finalTimestamp.lt(ts)) {
+      it(`Should have a final block for epoch ${epochNumber}`, () => {
+        expect(finalBlock).not.toBeUndefined();
       });
     }
   });

@@ -16,4 +16,5 @@ export const graphToMarketConfig = (graphMarket: GraphMarketConfiguration): Mark
     graphMarket.metrics.borrowBalanceInP2P,
     graphMarket.p2pData.p2pBorrowIndex
   ).add(CompoundMath.mul(graphMarket.metrics.borrowBalanceOnPool, graphMarket.reserveData.borrowPoolIndex)),
+  decimals: graphMarket.token.decimals,
 });

@@ -4,8 +4,7 @@ import { MarketEmission } from "../utils";
 import { AgeDistribution } from "./distributions/distributions.types";
 
 export interface EpochConfig {
-  id: string;
-  number: number;
+  epochNumber: number;
   snapshotProposal?: string;
   snapshotBlock?: number | null;
   initialTimestamp: BigNumber;
@@ -13,7 +12,6 @@ export interface EpochConfig {
   initialBlock?: number | null;
   finalBlock?: number | null;
   totalEmission: BigNumber;
-  epochName: string;
   protocolDistribution?: ProtocolDistribution | null;
 }
 
@@ -25,10 +23,12 @@ export interface AgeConfig {
   ageName: string;
   startTimestamp: BigNumber;
   endTimestamp: BigNumber;
-  distribution: (
-    age: AgeDistribution,
-    epoch: EpochConfig,
-    provider?: providers.Provider
-  ) => Promise<{ marketsEmissions: { [p: string]: Optional<MarketEmission> } }>;
+  distribution: DistributionFn;
   epochs: EpochConfig[];
 }
+
+export type DistributionFn = (
+  age: AgeDistribution,
+  epoch: EpochConfig,
+  provider?: providers.Provider
+) => Promise<{ marketsEmissions: { [p: string]: Optional<MarketEmission> } }>;

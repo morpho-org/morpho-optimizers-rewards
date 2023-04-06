@@ -1,30 +1,26 @@
 import * as path from "path";
 import * as fs from "fs";
-import { MarketsEmission } from "../ages/distributions/MarketsEmission";
+import { MarketsEmissionFs } from "../ages/distributions/MarketsEmissionFs";
 import { Proof, Proofs } from "../ages/distributions/Proofs";
 import { numberOfEpochs } from "../ages/ages";
 import { UsersDistribution } from "../ages/distributions/UsersDistribution";
+import { epochNumberToAgeEpochString } from "../helpers";
 
 export interface StorageService {
-  readMarketDistribution: (age: string, epoch: string) => Promise<MarketsEmission | void>;
-  writeMarketEmission: (age: string, epoch: string, emission: MarketsEmission, force?: boolean) => Promise<void>;
-  readUsersDistribution: (age: string, epoch: string) => Promise<UsersDistribution | void>;
-  writeUsersDistribution: (
-    age: string,
-    epoch: string,
-    distribution: UsersDistribution,
-    force?: boolean
-  ) => Promise<void>;
-  readProofs: (epoch: number) => Promise<Proofs | void>;
+  readMarketDistribution: (epochNumber: number) => Promise<MarketsEmissionFs | void>;
+  writeMarketEmission: (epochNumber: number, emission: MarketsEmissionFs, force?: boolean) => Promise<void>;
+  readUsersDistribution: (epochNumber: number) => Promise<UsersDistribution | void>;
+  writeUsersDistribution: (epochNumber: number, distribution: UsersDistribution, force?: boolean) => Promise<void>;
+  readProofs: (epochNumber: number) => Promise<Proofs | void>;
   readAllProofs: () => Promise<Proofs[]>;
-  readUserProof: (epoch: number, address: string) => Promise<Proof | void>;
-  writeProofs: (epoch: number, proofs: Proofs, force?: boolean) => Promise<void>;
+  readUserProof: (epochNumber: number, address: string) => Promise<Proof | void>;
+  writeProofs: (epochNumber: number, proofs: Proofs, force?: boolean) => Promise<void>;
 }
 
 export type ProofsCache = { [epoch: number]: Proofs | undefined };
 export type MarketsEmissionCache = {
   [age: string]: {
-    [epoch: string]: MarketsEmission | undefined;
+    [epoch: string]: MarketsEmissionFs | undefined;
   };
 };
 export type UsersDistributionCache = {
@@ -39,12 +35,14 @@ export class FileSystemStorageService implements StorageService {
   #proofsCache: ProofsCache = {};
   #distributionRoot = "../../distribution";
 
-  async readMarketDistribution(age: string, epoch: string) {
+  async readMarketDistribution(epochNumber: number) {
     try {
+      const { age, epoch } = this.#getAgeEpochPaths(epochNumber);
+
       const inCache = this.#emissionsCache[age]?.[epoch];
       if (inCache) return inCache;
       const { file } = this.#generateDistributionPath(age, epoch);
-      const distribution = require(file) as MarketsEmission;
+      const distribution = require(file) as MarketsEmissionFs;
       this.#emissionsCache[age] = { ...this.#emissionsCache[age], [epoch]: distribution };
       return distribution;
     } catch (error) {
@@ -52,7 +50,9 @@ export class FileSystemStorageService implements StorageService {
     }
   }
 
-  async writeMarketEmission(age: string, epoch: string, emission: MarketsEmission, force?: boolean) {
+  async writeMarketEmission(epochNumber: number, emission: MarketsEmissionFs, force?: boolean) {
+    const { age, epoch } = this.#getAgeEpochPaths(epochNumber);
+
     const { folder, file } = this.#generateDistributionPath(age, epoch);
     const fileExists = await fs.promises
       .access(file, fs.constants.R_OK | fs.constants.W_OK)
@@ -63,8 +63,10 @@ export class FileSystemStorageService implements StorageService {
     await fs.promises.writeFile(file, JSON.stringify(emission, null, 2));
   }
 
-  async readUsersDistribution(age: string, epoch: string) {
+  async readUsersDistribution(epochNumber: number) {
     try {
+      const { age, epoch } = this.#getAgeEpochPaths(epochNumber);
+
       const inCache = this.#distributionsCache[age]?.[epoch];
       if (inCache) return inCache;
       const { file } = this.#generateUsersDistributionPath(age, epoch);
@@ -76,8 +78,10 @@ export class FileSystemStorageService implements StorageService {
     }
   }
 
-  async writeUsersDistribution(age: string, epoch: string, distribution: UsersDistribution, force?: boolean) {
+  async writeUsersDistribution(epochNumber: number, distribution: UsersDistribution, force?: boolean) {
+    const { age, epoch } = this.#getAgeEpochPaths(epochNumber);
     const { folder, file } = this.#generateUsersDistributionPath(age, epoch);
+
     const fileExists = await fs.promises
       .access(file, fs.constants.R_OK | fs.constants.W_OK)
       .then(() => true)
@@ -144,5 +148,9 @@ export class FileSystemStorageService implements StorageService {
     const folder = path.resolve(__dirname, this.#distributionRoot, age, epoch);
     const file = path.resolve(folder, "usersDistribution.json");
     return { folder, file };
+  }
+
+  #getAgeEpochPaths(epochId: number) {
+    return epochNumberToAgeEpochString(epochId);
   }
 }

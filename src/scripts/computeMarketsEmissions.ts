@@ -1,4 +1,4 @@
-import { getEpochFromId } from "../utils/timestampToEpoch";
+import { getEpochFromNumber } from "../utils/timestampToEpoch";
 import { providers } from "ethers";
 import { commify, formatUnits } from "ethers/lib/utils";
 import * as dotenv from "dotenv";
@@ -10,21 +10,22 @@ dotenv.config();
 
 const storageService = new FileSystemStorageService();
 
-const computeMarketsEmissions = async (epochId?: string) => {
-  if (epochId) console.log(`Compute markets emissions for ${epochId}`);
+const computeMarketsEmissions = async (epochNumber?: number) => {
+  if (epochNumber) console.log(`Compute markets emissions for ${epochNumber}`);
   else console.log("Compute markets emissions for all epochs");
 
   const provider = new providers.JsonRpcProvider(process.env.RPC_URL);
 
-  if (epochId && !getEpochFromId(epochId)) throw new Error("Invalid epoch id");
+  if (epochNumber && !getEpochFromNumber(epochNumber)) throw new Error("Invalid epoch id");
 
-  const epochs = epochId ? [getEpochFromId(epochId)!] : startedEpochs;
-  if (!epochId) console.log(`${epochs.length} epochs to compute, to ${epochs[epochs.length - 1].id}`);
+  const epochs = epochNumber ? [getEpochFromNumber(epochNumber)!] : startedEpochs;
+  if (!epochNumber)
+    console.log(`${epochs.length} epochs to compute, to epoch ${epochs[epochs.length - 1].epoch.epochNumber}`);
 
   // Compute emissions for each epoch
   const emissions = await Promise.all(
-    epochs.map(async (epoch) => {
-      return computeEpochMarketsDistribution(epoch.ageConfig.ageName, epoch.epochName, provider, storageService, true);
+    epochs.map(async ({ epoch }) => {
+      return computeEpochMarketsDistribution(epoch.epochNumber, provider, storageService, true);
     })
   );
 
@@ -43,10 +44,13 @@ const computeMarketsEmissions = async (epochId?: string) => {
 };
 
 const epochIdIndex = process.argv.indexOf("--epoch");
-let epochId = undefined;
-if (epochIdIndex !== -1) epochId = process.argv[epochIdIndex + 1];
+let epochNumber = undefined;
+if (epochIdIndex !== -1) {
+  epochNumber = parseFloat(process.argv[epochIdIndex + 1]);
+  if (isNaN(epochNumber)) throw new Error("Invalid epoch id");
+}
 
-computeMarketsEmissions(epochId)
+computeMarketsEmissions(epochNumber)
   .catch((e) => {
     console.error(e);
     process.exit(1);

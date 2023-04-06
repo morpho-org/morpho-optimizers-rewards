@@ -9,6 +9,9 @@ export interface GraphMarketConfiguration {
     supplyPoolIndex: string;
     borrowPoolIndex: string;
   };
+  token: {
+    decimals: number;
+  };
   metrics: {
     totalBorrowOnPool: string;
     totalSupplyOnPool: string;
@@ -56,4 +59,6 @@ export interface MarketMinimal {
   p2pIndexCursor: BigNumber;
   morphoSupplyMarketSize: BigNumber;
   morphoBorrowMarketSize: BigNumber;
+
+  decimals: number;
 }

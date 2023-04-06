@@ -26,26 +26,31 @@ export default class VaultEventsFetcher implements EventsFetcherInterface {
     this.vault = MorphoAaveV2SupplyVault__factory.connect(vaultAddress, provider);
   }
 
-  async fetchSortedEventsForEpoch(epochConfig: EpochConfig): Promise<[TransactionEvents[], BigNumber]> {
-    let timeFrom = epochConfig.initialTimestamp;
-    const blockFromCurrentEpoch = maxBN(epochConfig.initialBlock!, this.deploymentBlock);
-    const depositEvents = await this._fetchDepositEvents(blockFromCurrentEpoch, epochConfig.finalBlock!);
+  async fetchSortedEventsForEpoch({
+    epochNumber,
+    finalBlock,
+    initialBlock,
+    initialTimestamp,
+  }: EpochConfig): Promise<[TransactionEvents[], BigNumber]> {
+    let timeFrom = initialTimestamp;
+    const blockFromCurrentEpoch = maxBN(initialBlock!, this.deploymentBlock);
+    const depositEvents = await this._fetchDepositEvents(blockFromCurrentEpoch, finalBlock!);
 
-    console.log(epochConfig.id, depositEvents.length, "Deposit events");
-    const withdrawEvents = await this._fetchWithdrawEvents(blockFromCurrentEpoch, epochConfig.finalBlock!);
-    console.log(epochConfig.id, withdrawEvents.length, "Withdraw events");
-    const transferEvents = await this._fetchTransferEvents(blockFromCurrentEpoch, epochConfig.finalBlock!);
-    console.log(epochConfig.id, transferEvents.length, "Transfer events");
+    console.log(epochNumber, depositEvents.length, "Deposit events");
+    const withdrawEvents = await this._fetchWithdrawEvents(blockFromCurrentEpoch, finalBlock!);
+    console.log(epochNumber, withdrawEvents.length, "Withdraw events");
+    const transferEvents = await this._fetchTransferEvents(blockFromCurrentEpoch, finalBlock!);
+    console.log(epochNumber, transferEvents.length, "Transfer events");
 
     // we assume that, after the first deposit event, the vaults is never empty
     // TODO: handle the case if there is an empty vault after starting distribution
-    if (!blockFromCurrentEpoch.eq(epochConfig.initialBlock!)) {
+    if (!blockFromCurrentEpoch.eq(initialBlock!)) {
       const [firstDeposit] = depositEvents.sort((event1, event2) =>
         event1.event.blockNumber > event2.event.blockNumber ? 1 : -1
       );
       if (!firstDeposit)
         throw Error(
-          `Inconsistent config: some MORPHO tokens are distributed while there is no deposit in epoch ${epochConfig.id}`
+          `Inconsistent config: some MORPHO tokens are distributed while there is no deposit in epoch ${epochNumber}`
         );
       const firstDepositBlock = await this.provider.getBlock(firstDeposit.event.blockNumber);
       timeFrom = BigNumber.from(firstDepositBlock.timestamp);

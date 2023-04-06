@@ -41,37 +41,41 @@ export default class Distributor {
     this.vaultAddress = vaultAddress.toLowerCase();
   }
 
-  async distributeMorpho(epochToId?: string) {
+  async distributeMorpho(epochToNumber?: number) {
     this._clean();
-    const epochsProofs = await this.proofsFetcher.fetchProofs(this.vaultAddress, epochToId);
+    const epochsProofs = await this.proofsFetcher.fetchProofs(this.vaultAddress, epochToNumber);
     if (!epochsProofs.length)
-      throw Error(`No MORPHO distributed for the vault ${this.vaultAddress} in epoch ${epochToId}`);
+      throw Error(`No MORPHO distributed for the vault ${this.vaultAddress} in epoch ${epochToNumber}`);
 
-    const firstEpochId = epochsProofs[0].epoch;
+    const firstEpochNumber = epochsProofs[0].epochNumber;
 
     const trees: Record<string, MerkleTree> = {};
 
     for (const epochProofs of epochsProofs) {
-      console.log(`Distributing MORPHO for ${epochProofs.epoch}...`);
-      const epochConfig = this.proofsFetcher.getEpochFromId(epochProofs.epoch);
+      console.log(`Distributing MORPHO for epoch ${epochProofs.epochNumber}...`);
+      const epochConfig = this.proofsFetcher.getEpochFromNumber(epochProofs.epochNumber);
+
       const totalMorphoDistributed = BigNumber.from(epochProofs.proofs[this.vaultAddress]!.amount).sub(
         this._morphoAccumulatedFromMainDistribution
       );
+
       console.log(`Total MORPHO distributed: ${formatUnits(totalMorphoDistributed, 18)}`);
       this._morphoAccumulatedFromMainDistribution = BigNumber.from(epochProofs.proofs[this.vaultAddress]!.amount);
+
       // timeFrom is the timestamp of the first block with a transaction during the current epoch.
       const [allEvents, timeFrom] = await this.eventsFetcher.fetchSortedEventsForEpoch(epochConfig);
-      if (timeFrom.gt(this._lastTimestamp) && firstEpochId === epochConfig.id)
+
+      if (timeFrom.gt(this._lastTimestamp) && firstEpochNumber === epochConfig.epochNumber)
         // initiate the lastTimestamp to the first event timestamp
         this._lastTimestamp = timeFrom;
 
       const duration = epochConfig.finalTimestamp.sub(this._lastTimestamp);
       if (duration.lte(constants.Zero)) {
         // throw an error
-        throw Error(`The duration of the epoch ${epochConfig.id} is not positive`);
+        throw Error(`The duration of the epoch n ${epochConfig.epochNumber} is not positive`);
       }
       const rate = totalMorphoDistributed.mul(Distributor.SCALING_FACTOR).div(duration);
-      console.log(`${allEvents.length} events to process for ${epochConfig.id}...`);
+      console.log(`${allEvents.length} events to process for epoch ${epochConfig.epochNumber}...`);
       for (const transaction of allEvents) await this._handleTransaction(transaction, rate);
 
       // Process the end of the epoch
@@ -80,7 +84,7 @@ export default class Distributor {
       this._processEndOfEpoch(rate, epochConfig);
 
       // process of the distribution and the merkle tree
-      trees[epochConfig.id] = this._computeCurrentMerkleTree();
+      trees[epochConfig.epochNumber] = this._computeCurrentMerkleTree();
     }
     const totalTokenEmitted = Object.values(this._usersConfigs).reduce((acc, user) => {
       if (!user) return acc;
@@ -91,10 +95,10 @@ export default class Distributor {
       throw Error(
         `Number of MORPHO remaining in the vault exceeds the threshold of ${formatUnits(
           Distributor.MORPHO_DUST
-        )} for the Vault ${this.vaultAddress} in ${epochToId}`
+        )} for the Vault ${this.vaultAddress} in epoch ${epochToNumber}`
       );
 
-    const lastEpochId = epochsProofs[epochsProofs.length - 1].epoch;
+    const lastEpochId = epochsProofs[epochsProofs.length - 1].epochNumber;
     return {
       lastMerkleTree: trees[lastEpochId],
       history: trees,
