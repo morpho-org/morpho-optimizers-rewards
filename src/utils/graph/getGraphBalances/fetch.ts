@@ -20,12 +20,10 @@ export const fetchUsers = async (graphUrl: string, block?: providers.BlockTag) =
       }),
     })
       .then((result) => {
-        console.log("result", result);
         if (!result.ok) return Promise.reject(result);
         return result.json();
       })
       .then((result: { data: { users: GraphUserBalances[] } | { error: any } }) => {
-        console.log(result);
         if (!("users" in result.data)) throw Error(result.data.toString());
         return result.data.users.map(formatGraphBalances);
       });
