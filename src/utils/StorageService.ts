@@ -17,17 +17,9 @@ export interface StorageService {
   writeProofs: (epochNumber: number, proofs: Proofs, force?: boolean) => Promise<void>;
 }
 
-export type ProofsCache = { [epoch: number]: Proofs | undefined };
-export type MarketsEmissionCache = {
-  [age: string]: {
-    [epoch: string]: MarketsEmissionFs | undefined;
-  };
-};
-export type UsersDistributionCache = {
-  [age: string]: {
-    [epoch: string]: UsersDistribution | undefined;
-  };
-};
+export type ProofsCache = { [epochNumber: number]: Proofs | undefined };
+export type MarketsEmissionCache = { [epochNumber: number]: MarketsEmissionFs | undefined };
+export type UsersDistributionCache = { [epochNumber: number]: UsersDistribution | undefined };
 
 export class FileSystemStorageService implements StorageService {
   #emissionsCache: MarketsEmissionCache = {};
@@ -37,13 +29,11 @@ export class FileSystemStorageService implements StorageService {
 
   async readMarketDistribution(epochNumber: number) {
     try {
-      const { age, epoch } = this.#getAgeEpochPaths(epochNumber);
-
-      const inCache = this.#emissionsCache[age]?.[epoch];
+      const inCache = this.#emissionsCache[epochNumber];
       if (inCache) return inCache;
-      const { file } = this.#generateDistributionPath(age, epoch);
+      const { file } = this.#generateDistributionPath(epochNumber);
       const distribution = require(file) as MarketsEmissionFs;
-      this.#emissionsCache[age] = { ...this.#emissionsCache[age], [epoch]: distribution };
+      this.#emissionsCache[epochNumber] = distribution;
       return distribution;
     } catch (error) {
       return;
@@ -51,9 +41,7 @@ export class FileSystemStorageService implements StorageService {
   }
 
   async writeMarketEmission(epochNumber: number, emission: MarketsEmissionFs, force?: boolean) {
-    const { age, epoch } = this.#getAgeEpochPaths(epochNumber);
-
-    const { folder, file } = this.#generateDistributionPath(age, epoch);
+    const { folder, file } = this.#generateDistributionPath(epochNumber);
     const fileExists = await fs.promises
       .access(file, fs.constants.R_OK | fs.constants.W_OK)
       .then(() => true)
@@ -65,13 +53,11 @@ export class FileSystemStorageService implements StorageService {
 
   async readUsersDistribution(epochNumber: number) {
     try {
-      const { age, epoch } = this.#getAgeEpochPaths(epochNumber);
-
-      const inCache = this.#distributionsCache[age]?.[epoch];
+      const inCache = this.#distributionsCache[epochNumber];
       if (inCache) return inCache;
-      const { file } = this.#generateUsersDistributionPath(age, epoch);
+      const { file } = this.#generateUsersDistributionPath(epochNumber);
       const distribution = require(file) as UsersDistribution;
-      this.#distributionsCache[age] = { ...this.#distributionsCache[age], [epoch]: distribution };
+      this.#distributionsCache[epochNumber] = distribution;
       return distribution;
     } catch (error) {
       return;
@@ -79,9 +65,7 @@ export class FileSystemStorageService implements StorageService {
   }
 
   async writeUsersDistribution(epochNumber: number, distribution: UsersDistribution, force?: boolean) {
-    const { age, epoch } = this.#getAgeEpochPaths(epochNumber);
-    const { folder, file } = this.#generateUsersDistributionPath(age, epoch);
-
+    const { folder, file } = this.#generateUsersDistributionPath(epochNumber);
     const fileExists = await fs.promises
       .access(file, fs.constants.R_OK | fs.constants.W_OK)
       .then(() => true)
@@ -131,20 +115,22 @@ export class FileSystemStorageService implements StorageService {
     await fs.promises.writeFile(file, JSON.stringify(proofs, null, 2));
   }
 
-  #generateDistributionPath(age: string, epoch: string) {
+  #generateDistributionPath(epochNumber: number) {
+    const { age, epoch } = this.#getAgeEpochPaths(epochNumber);
     const folder = path.resolve(__dirname, this.#distributionRoot, age, epoch);
     const file = path.resolve(folder, "marketsEmission.json");
     return { folder, file };
   }
 
-  #generateProofsPath(epoch: number) {
+  #generateProofsPath(epochNumber: number) {
     const folder = path.resolve(__dirname, this.#distributionRoot, "proofs");
-    const filename = `proofs-${epoch}.json`;
+    const filename = `proofs-${epochNumber}.json`;
     const file = path.resolve(folder, filename);
     return { folder, file };
   }
 
-  #generateUsersDistributionPath(age: string, epoch: string) {
+  #generateUsersDistributionPath(epochNumber: number) {
+    const { age, epoch } = this.#getAgeEpochPaths(epochNumber);
     const folder = path.resolve(__dirname, this.#distributionRoot, age, epoch);
     const file = path.resolve(folder, "usersDistribution.json");
     return { folder, file };
