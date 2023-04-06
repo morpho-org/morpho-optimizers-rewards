@@ -20,7 +20,7 @@ export const weightedDistribution = async (
       const marketData = markets.find((market) => market.address.toLowerCase() === address.toLowerCase());
       if (!marketData) throw Error(`Cannot distribute MORPHO: no market data for ${symbol}`);
 
-      const { morphoSupplyMarketSize, morphoBorrowMarketSize, p2pIndexCursor } = marketData;
+      const { morphoSupplyMarketSize, morphoBorrowMarketSize, p2pIndexCursor, decimals } = marketData;
 
       const emissionRatePerEpoch = getMarketEmissionRate(symbol);
       const total = morphoSupplyMarketSize.add(morphoBorrowMarketSize);
@@ -29,19 +29,19 @@ export const weightedDistribution = async (
       const morphoEmittedBorrowSide = morphoBorrowMarketSize.mul(emissionRatePerEpoch).div(total);
       const morphoRatePerSecondBorrowSide = morphoEmittedBorrowSide.div(duration);
 
-      return [
-        address.toLowerCase(),
-        {
-          morphoEmittedSupplySide,
-          morphoRatePerSecondSupplySide,
-          morphoEmittedBorrowSide,
-          morphoRatePerSecondBorrowSide,
-          marketEmission: emissionRatePerEpoch,
-          totalMarketSizeBorrowSide: morphoBorrowMarketSize,
-          totalMarketSizeSupplySide: morphoSupplyMarketSize,
-          p2pIndexCursor,
-        } as MarketEmission,
-      ];
+      const marketEmission: MarketEmission = {
+        morphoEmittedSupplySide,
+        morphoRatePerSecondSupplySide,
+        morphoEmittedBorrowSide,
+        morphoRatePerSecondBorrowSide,
+        marketEmission: emissionRatePerEpoch,
+        totalMarketSizeBorrowSide: morphoBorrowMarketSize,
+        totalMarketSizeSupplySide: morphoSupplyMarketSize,
+        p2pIndexCursor,
+        decimals,
+      };
+
+      return [address.toLowerCase(), marketEmission];
     })
   );
 };

@@ -14,12 +14,10 @@ export const getGraphMarkets = async (blockTag: number) => {
     body: JSON.stringify({ query, variables: { blockTag } }),
   })
     .then((result) => {
-      console.log("result", result);
       if (!result.ok) return Promise.reject(result);
       return result.json();
     })
     .then((result: { data: { markets: GraphMarketConfiguration[] } | { error: any } }) => {
-      console.log(result);
       if (!("markets" in result.data)) throw Error(result.data.toString());
 
       result.data.markets.forEach((graphMarket) => {
