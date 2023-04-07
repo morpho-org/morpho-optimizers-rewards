@@ -143,7 +143,7 @@
         "initialTimestamp": "2023-03-04T15:00:00.000Z",
         "initialBlock": 16755828,
         "finalTimestamp": "2023-04-07T15:00:00.000Z",
-        "finalBlock": null,
+        "finalBlock": 16997354,
         "totalEmission": "3333334",
         "protocolDistribution": null
       }
@@ -160,7 +160,7 @@
         "epochNumber": 10,
         "snapshotBlock": 16997062,
         "initialTimestamp": "2023-04-07T15:00:00.000Z",
-        "initialBlock": null,
+        "initialBlock": 16997355,
         "finalTimestamp": "2023-05-22T15:00:00.000Z",
         "finalBlock": null,
         "totalEmission": "2000000",
