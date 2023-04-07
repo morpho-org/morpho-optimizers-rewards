@@ -13,6 +13,7 @@ export const ageFourDistribution: DistributionFn = async (
   provider?: providers.Provider
 ) => {
   if (!snapshotBlock) {
+    console.log("No snapshot block for age4 distribution. Fetching from Etherscan.");
     snapshotBlock = +(await blockFromTimestamp(initialTimestamp, "after"));
   }
 
