@@ -5,6 +5,7 @@ import { formatUnits } from "ethers/lib/utils";
 import { epochNumberToAgeEpochString, now } from "../helpers";
 import { StorageService } from "./StorageService";
 import _mapValues from "lodash/mapValues";
+import { blockFromTimestamp } from "./etherscan";
 
 export const getMarketsDistribution = async (
   storageService: StorageService,
@@ -57,7 +58,7 @@ export const computeEpochMarketsDistribution = async (
   }));
 
   const { epoch: epochName, age: ageName } = epochNumberToAgeEpochString(epochNumber);
-
+  const snapshotBlock = epoch.snapshotBlock ?? +(await blockFromTimestamp(epoch.initialTimestamp.sub(3600), "after"));
   const result: MarketsEmissionFs = {
     age: ageName,
     epoch: epochName,
@@ -65,7 +66,7 @@ export const computeEpochMarketsDistribution = async (
     totalEmission: epoch.totalEmission.toString(),
     snapshotProposal: epoch.snapshotProposal?.toString(),
     parameters: {
-      snapshotBlock: epoch.snapshotBlock!.toString(),
+      snapshotBlock: snapshotBlock.toString(),
       initialTimestamp: epoch.initialTimestamp.toString(),
       finalTimestamp: epoch.finalTimestamp.toString(),
       duration: epoch.finalTimestamp.sub(epoch.initialTimestamp).toString(),
