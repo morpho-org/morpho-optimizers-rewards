@@ -27,11 +27,6 @@ describe("Markets distribution", () => {
     const marketDistribution = await getMarketsDistribution(storageService, 1672326000);
     expect(marketDistribution.snapshotProposal).toBeTruthy();
   });
-  // delete this test if snapshot has been deprecated
-  it("Should now include the snapshotProposal field (true until deprecation)", async () => {
-    const marketDistribution = await getMarketsDistribution(storageService);
-    expect(marketDistribution.snapshotProposal).toBeTruthy();
-  });
 });
 
 describe("Age 1 Epoch 2 approximation", () => {
