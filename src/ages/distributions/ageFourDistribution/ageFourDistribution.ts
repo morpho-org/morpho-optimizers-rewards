@@ -1,7 +1,6 @@
 import { DistributionFn, EpochConfig } from "../../ages.types";
 import { AgeDistribution } from "../distributions.types";
 import { providers } from "ethers";
-import { parseUnits } from "ethers/lib/utils";
 import marketsRepartition from "./marketsRepartition";
 import { weightedDistribution } from "../weightedDistribution";
 import { PercentMath } from "@morpho-labs/ethers-utils/lib/maths";
