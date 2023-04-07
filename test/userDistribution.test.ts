@@ -167,4 +167,4 @@ describe.skip("Version 2 rewards distribution mechanism", () => {
   });
 });
 
-const linearPrecision = (epochNumber: number) => (epochNumber >= 6 ? 2e18 : 1e18).toString();
+const linearPrecision = (epochNumber: number) => (Math.ceil(epochNumber / 4) * 1e18).toString();
