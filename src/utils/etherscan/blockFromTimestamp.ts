@@ -15,10 +15,9 @@ export const blockFromTimestamp = async (
   apiKey = process.env.ETHERSCAN_API_KEY
 ) => {
   if (!apiKey) throw new Error("No Etherscan API key provided");
-  return fetch(
-    `https://api.etherscan.io/api?module=block&action=getblocknobytime&timestamp=${BigNumber.from(
-      timestamp
-    ).toString()}&closest=${closest}&apikey=${apiKey}`,
+  const fromTS = BigNumber.from(timestamp).toString();
+  const response = await fetch(
+    `https://api.etherscan.io/api?module=block&action=getblocknobytime&timestamp=${fromTS}&closest=${closest}&apikey=${apiKey}`,
     {
       method: "GET",
       headers: { "Content-Type": "application/json" },
@@ -26,4 +25,6 @@ export const blockFromTimestamp = async (
   )
     .then((r) => r.json())
     .then((r) => r.result as string);
+  if (response.includes("Error")) throw new Error(`No snapshot block yet for timestamp ${timestamp}`);
+  return response;
 };
