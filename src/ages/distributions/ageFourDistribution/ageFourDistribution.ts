@@ -20,10 +20,7 @@ export const ageFourDistribution: DistributionFn = async (
   const duration = finalTimestamp.sub(initialTimestamp);
 
   const getMarketEmissionRate = (symbol: string) =>
-    PercentMath.percentMul(
-      totalEmission,
-      parseUnits((marketsRepartition[symbol as keyof typeof marketsRepartition].weight / 100).toString(), 4)
-    );
+    PercentMath.percentMul(totalEmission, marketsRepartition[symbol as keyof typeof marketsRepartition].weight);
 
   const marketsEmissions = await weightedDistribution(
     Object.keys(marketsRepartition),
