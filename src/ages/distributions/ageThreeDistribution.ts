@@ -11,7 +11,7 @@ export const ageThreeDistribution: DistributionFn = async (
   { finalTimestamp, initialTimestamp, epochNumber, snapshotBlock, snapshotProposal, totalEmission }: EpochConfig,
   provider?: providers.Provider
 ) => {
-  if (!snapshotBlock) snapshotBlock = +(await blockFromTimestamp(initialTimestamp, "after"));
+  if (!snapshotBlock) snapshotBlock = +(await blockFromTimestamp(initialTimestamp.sub(3600), "after"));
   if (!snapshotProposal) throw Error(`Cannot distribute tokens for epoch ${epochNumber}: no snapshotProposal`);
   const proposal = await fetchProposal(snapshotProposal);
 

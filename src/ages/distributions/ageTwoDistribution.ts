@@ -11,7 +11,7 @@ export const ageTwoDistribution: DistributionFn = async (
   { protocolDistribution, totalEmission, finalTimestamp, initialTimestamp, snapshotBlock, epochNumber }: EpochConfig,
   provider?: providers.Provider
 ) => {
-  if (!snapshotBlock) snapshotBlock = +(await blockFromTimestamp(initialTimestamp, "after"));
+  if (!snapshotBlock) snapshotBlock = +(await blockFromTimestamp(initialTimestamp.sub(3600), "after"));
   provider ??= new providers.InfuraProvider("mainnet");
   if (!protocolDistribution) throw Error(`Cannot distribute tokens for ${epochNumber}: no protocolDistribution`);
 

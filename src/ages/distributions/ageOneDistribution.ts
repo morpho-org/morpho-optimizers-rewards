@@ -6,7 +6,7 @@ export const ageOneDistribution: DistributionFn = async (
   age: AgeDistribution,
   { snapshotBlock, totalEmission, finalTimestamp, initialTimestamp }: EpochConfig
 ) => {
-  if (!snapshotBlock) snapshotBlock = +(await blockFromTimestamp(initialTimestamp, "after"));
+  if (!snapshotBlock) snapshotBlock = +(await blockFromTimestamp(initialTimestamp.sub(3600), "after"));
   const duration = finalTimestamp.sub(initialTimestamp);
   const ageOneMarketsParameters = await getGraphMarkets(snapshotBlock);
 
