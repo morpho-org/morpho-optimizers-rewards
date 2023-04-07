@@ -14,7 +14,7 @@ const generateGraphEmissions = async () => {
   const provider = new providers.JsonRpcProvider(process.env.RPC_URL);
   const distributions = await Promise.all(
     allEpochs
-      .filter(({ epoch }) => !!epoch.snapshotBlock)
+      .filter(({ epoch }) => epoch.initialTimestamp.sub(3600).lt(Math.floor(Date.now() / 1000)))
       .map(async ({ epoch, age }) => ({
         epoch,
         distribution: await age.distribution(age, epoch, provider),
