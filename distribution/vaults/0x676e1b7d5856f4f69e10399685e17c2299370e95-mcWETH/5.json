@@ -1,0 +1,14 @@
+{
+  "epochId": "5",
+  "root": "0x4832dc43c8fc1781fc637bddee1dbfa3b237ad2d9eda0e062bc9cad69a037fbf",
+  "total": "72775885214783790",
+  "proofs": {
+    "0x676e1b7d5856f4f69e10399685e17c2299370e95": {
+      "amount": "72775885214783790",
+      "proof": []
+    }
+  },
+  "leaves": [
+    "0x4832dc43c8fc1781fc637bddee1dbfa3b237ad2d9eda0e062bc9cad69a037fbf"
+  ]
+}
