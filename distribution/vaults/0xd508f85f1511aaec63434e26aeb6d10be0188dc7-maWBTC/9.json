@@ -1,0 +1,23 @@
+{
+  "epochId": "9",
+  "root": "0x6afa047ee38839d092ffb20c46cc4d6e986b5ef0eb59f7838144a1307be5d9ad",
+  "total": "17821322126174378627",
+  "proofs": {
+    "0xd508f85f1511aaec63434e26aeb6d10be0188dc7": {
+      "amount": "17078589447182581971",
+      "proof": [
+        "0x1163da09462c3a4f3c884e6983181855239d30058ba589560683a476376edfa1"
+      ]
+    },
+    "0xc8884ede1ae44bdff60da4b9c542c34a69648a87": {
+      "amount": "742732678991796656",
+      "proof": [
+        "0x55018a7e4dc204516f2a733058e8c374c8b4c8cacc3f03431f3567ba79bc39f0"
+      ]
+    }
+  },
+  "leaves": [
+    "0x55018a7e4dc204516f2a733058e8c374c8b4c8cacc3f03431f3567ba79bc39f0",
+    "0x1163da09462c3a4f3c884e6983181855239d30058ba589560683a476376edfa1"
+  ]
+}
