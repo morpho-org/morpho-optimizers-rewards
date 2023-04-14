@@ -63,7 +63,7 @@ export const computeEpochMarketsDistribution = async (
     age: ageName,
     epoch: epochName,
     epochNumber: epoch.epochNumber,
-    totalEmission: epoch.totalEmission.toString(),
+    totalEmission: formatUnits(epoch.totalEmission),
     snapshotProposal: epoch.snapshotProposal?.toString(),
     parameters: {
       snapshotBlock: snapshotBlock.toString(),
