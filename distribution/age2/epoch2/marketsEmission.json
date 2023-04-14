@@ -2,7 +2,7 @@
   "age": "age2",
   "epoch": "epoch2",
   "epochNumber": 5,
-  "totalEmission": "3400000000000000000000000",
+  "totalEmission": "3400000.0",
   "parameters": {
     "snapshotBlock": "15818122",
     "initialTimestamp": "1666623600",

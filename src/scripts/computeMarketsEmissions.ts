@@ -35,7 +35,7 @@ const computeMarketsEmissions = async (epochNumber?: number) => {
       age: marketsEmissions.age,
       epoch: marketsEmissions.epoch,
       markets: Object.keys(marketsEmissions.markets).length,
-      totalEmission: commify(formatUnits(marketsEmissions.totalEmission)),
+      totalEmission: commify(marketsEmissions.totalEmission),
       start: new Date(+marketsEmissions.parameters.initialTimestamp.toString() * 1000).toISOString(),
       end: new Date(+marketsEmissions.parameters.finalTimestamp.toString() * 1000).toISOString(),
     };

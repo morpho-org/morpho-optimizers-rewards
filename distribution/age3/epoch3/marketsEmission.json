@@ -2,7 +2,7 @@
   "age": "age3",
   "epoch": "epoch3",
   "epochNumber": 9,
-  "totalEmission": "3333334000000000000000000",
+  "totalEmission": "3333334.0",
   "snapshotProposal": "0x2c10391797a45353092ed220f41411d18a1a1cf82ded0a8d68452619e46b273e",
   "parameters": {
     "snapshotBlock": "16755531",
