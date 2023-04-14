@@ -1,6 +1,6 @@
 import { getEpochFromNumber } from "../utils/timestampToEpoch";
 import { providers } from "ethers";
-import { commify, formatUnits } from "ethers/lib/utils";
+import { commify } from "ethers/lib/utils";
 import * as dotenv from "dotenv";
 import { startedEpochs } from "../ages/ages";
 import { FileSystemStorageService } from "../utils/StorageService";
