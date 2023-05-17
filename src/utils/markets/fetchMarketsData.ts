@@ -47,7 +47,6 @@ export const getAaveV3MarketsParameters = async (snapshotBlock: providers.BlockT
   }
   const overrides = { blockTag: snapshotBlock };
   const morpho = MorphoAaveV3__factory.connect(addresses.morphoAaveV3.morpho, provider);
-  const lendingPool = AaveV3Pool__factory.connect(await morpho.pool(overrides), provider);
   const addressesProvider = AaveV3AddressesProvider__factory.connect(
     await morpho.addressesProvider(overrides),
     provider
@@ -59,13 +58,16 @@ export const getAaveV3MarketsParameters = async (snapshotBlock: providers.BlockT
 
   return Promise.all(
     allMarkets.map(async (underlying) => {
-      const aToken = AToken__factory.connect(underlying, provider);
+      const { aToken: aTokenAddress, variableDebtToken: variableDebtTokenAddress } = await morpho.market(
+        underlying,
+        overrides
+      );
+      const aToken = AToken__factory.connect(aTokenAddress, provider);
       const [decimals, totalPoolSupply, poolSupplyAmount] = await Promise.all([
         aToken.decimals(overrides),
         aToken.totalSupply(overrides),
         aToken.balanceOf(morpho.address, overrides),
       ]);
-      const { variableDebtTokenAddress } = await lendingPool.getReserveData(underlying, overrides);
       const debtToken = VariableDebtToken__factory.connect(variableDebtTokenAddress, provider);
       const [
         totalPoolBorrow,
