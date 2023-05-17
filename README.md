@@ -8,7 +8,13 @@ Morpho Rewards can only be run on Node 18 and higher, notably due to its depende
 
 ## **Get Started**
 
-- Install node dependencies using `yarn`:
+- make sure you are using the correct node version (>= 18)
+```bash
+nvm use
+```
+
+- Install node dependencies using `yarn`:
+
 
 ```bash
 yarn install --frozen-lockfile
@@ -24,10 +30,7 @@ yarn test
 
 # Distribution
 
-You can check the documentation for a precise rule at each age:
-
-- [Age 1 (08/06/2022 -> 20/09/2022)](https://docs.morpho.xyz/usdmorpho/ages-and-epochs/age-1)
-- [Age 2 (20/09/2022 -> 29/12/2022)](https://docs.morpho.xyz/usdmorpho/ages-and-epochs/age-2)
+You can check [the documentation](https://docs.morpho.xyz/usdmorpho/ages-and-epochs) for a precise rule at each age:
 
 ## **Per-user, per-market distribution rule**
 
@@ -71,6 +74,10 @@ You need to reindex the subgraph from scratch in order to fully rsync the subgra
 ## **Epochs**
 
 Morpho rewards are distributed through epochs (~3 weeks), with each epoch's per-market distribution ultimately being voted by the Morpho protocol's governance at the beginning of the Epoch. For now and until governance is set up, each epoch's per-market distribution is computed based on a given total emission distributed over open markets, based on their underlying TVL.
+
+> **Note**: 
+> After the end of the age 3, the future ages are no longer splitted in epochs, but in one period of 45 days long.
+> The distribution will be computed at the end of the age, and the rewards will be claimable once the age is over.
 
 ## **Claim Rewards**
 
