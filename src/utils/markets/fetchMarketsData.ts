@@ -3,7 +3,6 @@ import {
   AavePriceOracle__factory,
   AaveV3AddressesProvider__factory,
   AaveV3Oracle__factory,
-  AaveV3Pool__factory,
   AToken__factory,
   CompoundOracle__factory,
   Comptroller__factory,
@@ -86,7 +85,7 @@ export const getAaveV3MarketsParameters = async (snapshotBlock: providers.BlockT
         poolBorrowAmount,
       ] = await Promise.all([
         debtToken.totalSupply(overrides),
-        oracle.getAssetPrice(underlying, overrides),
+        oracle.getAssetPrice(underlying, overrides).then((price) => price.mul(10 ** 10)), // from 8 to 18 decimals,
         morpho.market(underlying, overrides),
         morpho.updatedIndexes(underlying, overrides),
         debtToken.balanceOf(morpho.address, overrides),
@@ -137,7 +136,7 @@ export const getAaveMarketsParameters = async (snapshotBlock: providers.BlockTag
         { p2pBorrowAmount, poolBorrowAmount, p2pSupplyAmount, poolSupplyAmount },
       ] = await Promise.all([
         debtToken.totalSupply(overrides),
-        oracle.getAssetPrice(underlying, overrides).then((price) => price.mul(10 ** 10)), // from 8 to 18 decimals
+        oracle.getAssetPrice(underlying, overrides),
         lens.getMarketConfiguration(market, overrides),
         lens.getMainMarketData(market, overrides),
       ]);

@@ -18,15 +18,15 @@ exports[`Test Market data fetching Aave Should fetch Aave v2 data 1`] = `
       "type": "BigNumber",
     },
     "price": {
-      "hex": "0x047544d44f381772c33400",
+      "hex": "0x01ea2bd6b53d75",
       "type": "BigNumber",
     },
     "totalPoolBorrowUSD": {
-      "hex": "0x239a10791a4bff4337b230f4195b",
+      "hex": "0x0f4a75f90183ef5a62a2",
       "type": "BigNumber",
     },
     "totalPoolSupplyUSD": {
-      "hex": "0x53911624954b40ddfdcc212d5cce",
+      "hex": "0x23e442bc50a6b00dbb73",
       "type": "BigNumber",
     },
   },
@@ -46,15 +46,15 @@ exports[`Test Market data fetching Aave Should fetch Aave v2 data 1`] = `
       "type": "BigNumber",
     },
     "price": {
-      "hex": "0x204fce5e3e25026110000000",
+      "hex": "0x0de0b6b3a7640000",
       "type": "BigNumber",
     },
     "totalPoolBorrowUSD": {
-      "hex": "0xa9003d1e68fc0a6f1f7e14de1800",
+      "hex": "0x4895d95b52acbcba0f36",
       "type": "BigNumber",
     },
     "totalPoolSupplyUSD": {
-      "hex": "0x0148f2afac387cd51d9ba30934d400",
+      "hex": "0x8d4836de4d58470f6f1d",
       "type": "BigNumber",
     },
   },
@@ -74,15 +74,15 @@ exports[`Test Market data fetching Aave Should fetch Aave v2 data 1`] = `
       "type": "BigNumber",
     },
     "price": {
-      "hex": "0x046bd4b9295eae8c9f2c00",
+      "hex": "0x01e61e2109ede3",
       "type": "BigNumber",
     },
     "totalPoolBorrowUSD": {
-      "hex": "0x714d6a2ec020382c4777ab0506c0",
+      "hex": "0x30a9bb14da08b5f44668",
       "type": "BigNumber",
     },
     "totalPoolSupplyUSD": {
-      "hex": "0xa68e0b5e390bc7eaa8c6fba38b70",
+      "hex": "0x4788e68fa14d48fe2629",
       "type": "BigNumber",
     },
   },
@@ -102,15 +102,15 @@ exports[`Test Market data fetching Aave Should fetch Aave v2 data 1`] = `
       "type": "BigNumber",
     },
     "price": {
-      "hex": "0x0475786b747930c14a2800",
+      "hex": "0x01ea41ff223f5a",
       "type": "BigNumber",
     },
     "totalPoolBorrowUSD": {
-      "hex": "0x51247bcbff5e89abfb589598f500",
+      "hex": "0x22d9b6b93b9053149018",
       "type": "BigNumber",
     },
     "totalPoolSupplyUSD": {
-      "hex": "0x8e9ac80d0dd6ac8b818aff1454c0",
+      "hex": "0x3d3f8b11d1b3e2622d66",
       "type": "BigNumber",
     },
   },
@@ -130,15 +130,15 @@ exports[`Test Market data fetching Aave Should fetch Aave v2 data 1`] = `
       "type": "BigNumber",
     },
     "price": {
-      "hex": "0x01e62c6ac6a50b81f713780000",
+      "hex": "0xd0cf579448054e00",
       "type": "BigNumber",
     },
     "totalPoolBorrowUSD": {
-      "hex": "0x1913c66fd627cce8f10b88c1e800",
+      "hex": "0x0ac545bdea0aff234d03",
       "type": "BigNumber",
     },
     "totalPoolSupplyUSD": {
-      "hex": "0xce8caf06ef5029c7829b89fa9800",
+      "hex": "0x58b65cdb4988085a333d",
       "type": "BigNumber",
     },
   },
@@ -158,7 +158,7 @@ exports[`Test Market data fetching Aave Should fetch Aave v2 data 1`] = `
       "type": "BigNumber",
     },
     "price": {
-      "hex": "0x203297650d0beb39dc5e6000",
+      "hex": "0x0dd42a81d4e12258",
       "type": "BigNumber",
     },
     "totalPoolBorrowUSD": {
@@ -166,7 +166,7 @@ exports[`Test Market data fetching Aave Should fetch Aave v2 data 1`] = `
       "type": "BigNumber",
     },
     "totalPoolSupplyUSD": {
-      "hex": "0x01bc232c981aeed7b2f4581252dd12",
+      "hex": "0xbec16c68e1e0f4c59edc",
       "type": "BigNumber",
     },
   },
@@ -186,15 +186,15 @@ exports[`Test Market data fetching Aave Should fetch Aave v2 data 1`] = `
       "type": "BigNumber",
     },
     "price": {
-      "hex": "0x0486ca6c6a97dfe599dc00",
+      "hex": "0x01f1b26300a0ef",
       "type": "BigNumber",
     },
     "totalPoolBorrowUSD": {
-      "hex": "0x0a5911acdb38343e6c1ceeec2a04",
+      "hex": "0x0471c438bddc917826d3",
       "type": "BigNumber",
     },
     "totalPoolSupplyUSD": {
-      "hex": "0x3a0deb621481b6004d718d5d55e8",
+      "hex": "0x18ef255389bd2952105f",
       "type": "BigNumber",
     },
   },
