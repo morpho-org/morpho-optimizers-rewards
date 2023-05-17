@@ -84,3 +84,51 @@ dataSources:
         - event: Repaid(indexed address,indexed address,indexed address,uint256,uint256,uint256)
           handler: handleRepaid
       file: ./src/mapping/morpho-aave.ts
+  - kind: ethereum
+    name: MorphoAaveV3
+    network: mainnet
+    source:
+      address: "0x33333aea097c193e66081e930c33020272b33333"
+      abi: MorphoAaveV3
+      startBlock: 17161283
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - Initialized
+        - Supplied
+#        - CollateralSupplied
+        - Borrowed
+        - IndexesUpdated
+        - Repaid
+        - Withdrawn
+#        - CollateralWithdrawn
+        - Liquidated
+        - SupplyPositionUpdated
+        - BorrowPositionUpdated
+      abis:
+        - name: MorphoAaveV3
+          file: ./abis/MorphoAaveV3.json
+      eventHandlers:
+        - event: Supplied(indexed address,indexed address,indexed address,uint256,uint256,uint256)
+          handler: handleSupplied
+        - event: SupplyPositionUpdated(indexed address,indexed address,uint256,uint256)
+          handler: handleSupplyPositionUpdated
+        - event: BorrowPositionUpdated(indexed address,indexed address,uint256,uint256)
+          handler: handleBorrowPositionUpdated
+#        - event: CollateralSupplied(indexed address,indexed address,indexed address,uint256,uint256)
+#          handler: handleCollateralSupplied
+        - event: Borrowed(address,indexed address,indexed address,indexed address,uint256,uint256,uint256)
+          handler: handleBorrowed
+        - event: IndexesUpdated(indexed address,uint256,uint256,uint256,uint256)
+          handler: handleIndexesUpdated
+        - event: Repaid(indexed address,indexed address,indexed address,uint256,uint256,uint256)
+          handler: handleRepaid
+        - event: Withdrawn(address,indexed address,indexed address,indexed address,uint256,uint256,uint256)
+          handler: handleWithdrawn
+#        - event: CollateralWithdrawn(address,indexed address,indexed address,indexed address,uint256,uint256)
+#          handler: handleCollateralWithdrawn
+
+
+      file: ./src/mapping/morpho-aave-v3.ts
