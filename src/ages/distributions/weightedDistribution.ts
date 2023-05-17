@@ -3,12 +3,33 @@ import MARKETS from "./markets";
 import { MarketEmission } from "../../utils";
 import fetchMarketsData from "../../utils/markets/fetchMarketsData";
 
+export const computeDefaultMarketSidesRates = (
+  address: string,
+  morphoSupplyMarketSize: BigNumber,
+  morphoBorrowMarketSize: BigNumber,
+  emissionRatePerEpoch: BigNumber,
+  duration: BigNumber
+) => {
+  const total = morphoSupplyMarketSize.add(morphoBorrowMarketSize);
+  const morphoEmittedSupplySide = morphoSupplyMarketSize.mul(emissionRatePerEpoch).div(total);
+  const morphoRatePerSecondSupplySide = morphoEmittedSupplySide.div(duration);
+  const morphoEmittedBorrowSide = morphoBorrowMarketSize.mul(emissionRatePerEpoch).div(total);
+  const morphoRatePerSecondBorrowSide = morphoEmittedBorrowSide.div(duration);
+  return {
+    morphoEmittedSupplySide,
+    morphoRatePerSecondSupplySide,
+    morphoEmittedBorrowSide,
+    morphoRatePerSecondBorrowSide,
+  };
+};
+
 export const weightedDistribution = async (
   symbols: string[],
   getMarketEmissionRate: (symbol: string) => BigNumber,
   duration: BigNumber,
   snapshotBlock: providers.BlockTag,
-  provider?: providers.Provider
+  provider?: providers.Provider,
+  computeMarketSidesRates = computeDefaultMarketSidesRates
 ) => {
   const { markets } = await fetchMarketsData(snapshotBlock, provider!);
 
@@ -23,11 +44,18 @@ export const weightedDistribution = async (
       const { morphoSupplyMarketSize, morphoBorrowMarketSize, p2pIndexCursor, decimals } = marketData;
 
       const emissionRatePerEpoch = getMarketEmissionRate(symbol);
-      const total = morphoSupplyMarketSize.add(morphoBorrowMarketSize);
-      const morphoEmittedSupplySide = morphoSupplyMarketSize.mul(emissionRatePerEpoch).div(total);
-      const morphoRatePerSecondSupplySide = morphoEmittedSupplySide.div(duration);
-      const morphoEmittedBorrowSide = morphoBorrowMarketSize.mul(emissionRatePerEpoch).div(total);
-      const morphoRatePerSecondBorrowSide = morphoEmittedBorrowSide.div(duration);
+      const {
+        morphoEmittedSupplySide,
+        morphoRatePerSecondSupplySide,
+        morphoEmittedBorrowSide,
+        morphoRatePerSecondBorrowSide,
+      } = computeMarketSidesRates(
+        address,
+        morphoSupplyMarketSize,
+        morphoBorrowMarketSize,
+        emissionRatePerEpoch,
+        duration
+      );
 
       const marketEmission: MarketEmission = {
         morphoEmittedSupplySide,
