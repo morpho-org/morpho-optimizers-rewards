@@ -33,7 +33,7 @@ const marketsRepartition = {
   },
   // Morpho AaveV3 markets
   aWETHV3: {
-    market: "0x030bA81f1c18d280636F32af80b9AAd02Cf0854e",
+    market: "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2", // use WETH (underlying token) address as identifier
     weight: BigNumber.from(697),
   },
 };
