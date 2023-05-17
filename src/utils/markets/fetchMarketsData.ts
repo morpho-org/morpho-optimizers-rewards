@@ -39,7 +39,7 @@ const fetchMarketsData = async (snapshotBlock: providers.BlockTag, provider: pro
     markets: [...compoundParameters, ...aaveParameters, ...aaveV3Parameters],
   };
 };
-const getAaveV3MarketsParameters = async (snapshotBlock: providers.BlockTag, provider: providers.Provider) => {
+export const getAaveV3MarketsParameters = async (snapshotBlock: providers.BlockTag, provider: providers.Provider) => {
   const MA3_DEPLOYMENT_BLOCK = 17161283;
   if (parseInt(snapshotBlock.toString()) < MA3_DEPLOYMENT_BLOCK) {
     console.warn("Snapshot block is before Morpho Aave V3 deployment block. No Aave V3 markets data.");
@@ -105,7 +105,7 @@ const getAaveV3MarketsParameters = async (snapshotBlock: providers.BlockTag, pro
     })
   );
 };
-const getAaveMarketsParameters = async (snapshotBlock: providers.BlockTag, provider: providers.Provider) => {
+export const getAaveMarketsParameters = async (snapshotBlock: providers.BlockTag, provider: providers.Provider) => {
   const overrides = { blockTag: snapshotBlock };
   const morpho = MorphoAaveV2__factory.connect(addresses.morphoAave.morpho, provider);
   const lens = MorphoAaveV2Lens__factory.connect(addresses.morphoAave.lens, provider);
@@ -154,7 +154,7 @@ const getAaveMarketsParameters = async (snapshotBlock: providers.BlockTag, provi
     })
   );
 };
-const getCompoundMarketsParameters = async (snapshotBlock: providers.BlockTag, provider: providers.Provider) => {
+export const getCompoundMarketsParameters = async (snapshotBlock: providers.BlockTag, provider: providers.Provider) => {
   const morpho = MorphoCompound__factory.connect(addresses.morphoCompound.morpho, provider);
   const overrides = { blockTag: snapshotBlock };
   const allMarkets = await morpho
