@@ -1046,10 +1046,10 @@
   dependencies:
     ethers "^5.7.0"
 
-"@morpho-labs/morpho-ethers-contract@^1.16.1":
-  version "1.16.1"
-  resolved "https://registry.yarnpkg.com/@morpho-labs/morpho-ethers-contract/-/morpho-ethers-contract-1.16.1.tgz#846823385c17390e46c3f9c19386e8ba488611b9"
-  integrity sha512-URYEYWnMSPSvhNUi7WNp3d56mn9KSf7zLzufT4iMMUcozBHcKrULNtJnI5XXXwJpqkg4QHtK6P0BlgA7U68HJg==
+"@morpho-labs/morpho-ethers-contract@^1.18.0":
+  version "1.18.0"
+  resolved "https://registry.yarnpkg.com/@morpho-labs/morpho-ethers-contract/-/morpho-ethers-contract-1.18.0.tgz#84641a355726ba5a6236155f4d3ef71f356bc1a3"
+  integrity sha512-ZYQPI5a55ENyEPNUftm3sHlPe/ana+ll4pS+ffCOMdosKoF11w94BwhJOqXS6YAoRLZdhCSL6kB4ogC5dbknXg==
   dependencies:
     "@ethersproject/abi" "^5.7.0"
     "@ethersproject/providers" "^5.7.2"

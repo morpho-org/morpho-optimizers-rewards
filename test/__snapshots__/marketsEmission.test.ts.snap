@@ -1,0 +1,405 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Test Market data fetching Aave Should fetch Aave v2 data 1`] = `
+[
+  {
+    "address": "0x028171bCA77440897B824Ca71D1c56caC55b68A3",
+    "decimals": 18,
+    "morphoBorrowMarketSize": {
+      "hex": "0x070f308ea664908b45889e",
+      "type": "BigNumber",
+    },
+    "morphoSupplyMarketSize": {
+      "hex": "0x0c8899f7fed78085d6c810",
+      "type": "BigNumber",
+    },
+    "p2pIndexCursor": {
+      "hex": "0x0c4e",
+      "type": "BigNumber",
+    },
+    "price": {
+      "hex": "0x01ea2bd6b53d75",
+      "type": "BigNumber",
+    },
+    "totalPoolBorrowUSD": {
+      "hex": "0x0f4a75f90183ef5a62a2",
+      "type": "BigNumber",
+    },
+    "totalPoolSupplyUSD": {
+      "hex": "0x23e442bc50a6b00dbb73",
+      "type": "BigNumber",
+    },
+  },
+  {
+    "address": "0x030bA81f1c18d280636F32af80b9AAd02Cf0854e",
+    "decimals": 18,
+    "morphoBorrowMarketSize": {
+      "hex": "0x1523895829aff5c80ed3",
+      "type": "BigNumber",
+    },
+    "morphoSupplyMarketSize": {
+      "hex": "0x10d7d72af5f9308cc140",
+      "type": "BigNumber",
+    },
+    "p2pIndexCursor": {
+      "hex": "0x1284",
+      "type": "BigNumber",
+    },
+    "price": {
+      "hex": "0x0de0b6b3a7640000",
+      "type": "BigNumber",
+    },
+    "totalPoolBorrowUSD": {
+      "hex": "0x4895d95b52acbcba0f36",
+      "type": "BigNumber",
+    },
+    "totalPoolSupplyUSD": {
+      "hex": "0x8d4836de4d58470f6f1d",
+      "type": "BigNumber",
+    },
+  },
+  {
+    "address": "0xBcca60bB61934080951369a648Fb03DF4F96263C",
+    "decimals": 6,
+    "morphoBorrowMarketSize": {
+      "hex": "0x110ab7316378",
+      "type": "BigNumber",
+    },
+    "morphoSupplyMarketSize": {
+      "hex": "0x37b0dad82def",
+      "type": "BigNumber",
+    },
+    "p2pIndexCursor": {
+      "hex": "0x1036",
+      "type": "BigNumber",
+    },
+    "price": {
+      "hex": "0x01e61e2109ede3",
+      "type": "BigNumber",
+    },
+    "totalPoolBorrowUSD": {
+      "hex": "0x30a9bb14da08b5f44668",
+      "type": "BigNumber",
+    },
+    "totalPoolSupplyUSD": {
+      "hex": "0x4788e68fa14d48fe2629",
+      "type": "BigNumber",
+    },
+  },
+  {
+    "address": "0x3Ed3B47Dd13EC9a98b44e6204A523E766B225811",
+    "decimals": 6,
+    "morphoBorrowMarketSize": {
+      "hex": "0x135d0c5cc31d",
+      "type": "BigNumber",
+    },
+    "morphoSupplyMarketSize": {
+      "hex": "0x0be9be175671",
+      "type": "BigNumber",
+    },
+    "p2pIndexCursor": {
+      "hex": "0x1bb2",
+      "type": "BigNumber",
+    },
+    "price": {
+      "hex": "0x01ea41ff223f5a",
+      "type": "BigNumber",
+    },
+    "totalPoolBorrowUSD": {
+      "hex": "0x22d9b6b93b9053149018",
+      "type": "BigNumber",
+    },
+    "totalPoolSupplyUSD": {
+      "hex": "0x3d3f8b11d1b3e2622d66",
+      "type": "BigNumber",
+    },
+  },
+  {
+    "address": "0x9ff58f4fFB29fA2266Ab25e75e2A8b3503311656",
+    "decimals": 8,
+    "morphoBorrowMarketSize": {
+      "hex": "0x0f6f404c0d",
+      "type": "BigNumber",
+    },
+    "morphoSupplyMarketSize": {
+      "hex": "0x2b3fb1d179",
+      "type": "BigNumber",
+    },
+    "p2pIndexCursor": {
+      "hex": "0x11bc",
+      "type": "BigNumber",
+    },
+    "price": {
+      "hex": "0xd0cf579448054e00",
+      "type": "BigNumber",
+    },
+    "totalPoolBorrowUSD": {
+      "hex": "0x0ac545bdea0aff234d03",
+      "type": "BigNumber",
+    },
+    "totalPoolSupplyUSD": {
+      "hex": "0x58b65cdb4988085a333d",
+      "type": "BigNumber",
+    },
+  },
+  {
+    "address": "0x1982b2F5814301d4e9a8b0201555376e62F82428",
+    "decimals": 18,
+    "morphoBorrowMarketSize": {
+      "hex": "0x00",
+      "type": "BigNumber",
+    },
+    "morphoSupplyMarketSize": {
+      "hex": "0x1a5a17ff3e1298b722a4",
+      "type": "BigNumber",
+    },
+    "p2pIndexCursor": {
+      "hex": "0x00",
+      "type": "BigNumber",
+    },
+    "price": {
+      "hex": "0x0dd42a81d4e12258",
+      "type": "BigNumber",
+    },
+    "totalPoolBorrowUSD": {
+      "hex": "0x00",
+      "type": "BigNumber",
+    },
+    "totalPoolSupplyUSD": {
+      "hex": "0xbec16c68e1e0f4c59edc",
+      "type": "BigNumber",
+    },
+  },
+  {
+    "address": "0x8dAE6Cb04688C62d939ed9B68d32Bc62e49970b1",
+    "decimals": 18,
+    "morphoBorrowMarketSize": {
+      "hex": "0xc64365b8594b38cc276a",
+      "type": "BigNumber",
+    },
+    "morphoSupplyMarketSize": {
+      "hex": "0x0177a8eb4a7e9f4b364313",
+      "type": "BigNumber",
+    },
+    "p2pIndexCursor": {
+      "hex": "0x1388",
+      "type": "BigNumber",
+    },
+    "price": {
+      "hex": "0x01f1b26300a0ef",
+      "type": "BigNumber",
+    },
+    "totalPoolBorrowUSD": {
+      "hex": "0x0471c438bddc917826d3",
+      "type": "BigNumber",
+    },
+    "totalPoolSupplyUSD": {
+      "hex": "0x18ef255389bd2952105f",
+      "type": "BigNumber",
+    },
+  },
+]
+`;
+
+exports[`Test Market data fetching Aave Should fetch Aave v3 data 1`] = `[]`;
+
+exports[`Test Market data fetching Compound Should fetch Compound data 1`] = `
+[
+  {
+    "address": "0x5d3a536e4d6dbd6114cc1ead35777bab948e3643",
+    "decimals": 18,
+    "morphoBorrowMarketSize": {
+      "hex": "0x04bb493fb9c7ce3aa876a9",
+      "type": "BigNumber",
+    },
+    "morphoSupplyMarketSize": {
+      "hex": "0x0a7daf707c624f67cd5816",
+      "type": "BigNumber",
+    },
+    "p2pIndexCursor": {
+      "hex": "0x0d05",
+      "type": "BigNumber",
+    },
+    "price": {
+      "hex": "0x0de012fe2354c000",
+      "type": "BigNumber",
+    },
+    "totalPoolBorrowUSD": {
+      "hex": "0xa19c460f4b1608f6dc0c4b",
+      "type": "BigNumber",
+    },
+    "totalPoolSupplyUSD": {
+      "hex": "0x0133b74469a355b9e75ae7a8",
+      "type": "BigNumber",
+    },
+  },
+  {
+    "address": "0x70e36f6bf80a52b3b46b3af8e106cc0ed743e8e4",
+    "decimals": 18,
+    "morphoBorrowMarketSize": {
+      "hex": "0x0113caea74b083ec0f1d",
+      "type": "BigNumber",
+    },
+    "morphoSupplyMarketSize": {
+      "hex": "0x011bfcd8f1e7d3b583ac",
+      "type": "BigNumber",
+    },
+    "p2pIndexCursor": {
+      "hex": "0x1715",
+      "type": "BigNumber",
+    },
+    "price": {
+      "hex": "0x025076135b2b9f3000",
+      "type": "BigNumber",
+    },
+    "totalPoolBorrowUSD": {
+      "hex": "0x752f3b18ce18eb1a9542",
+      "type": "BigNumber",
+    },
+    "totalPoolSupplyUSD": {
+      "hex": "0x06a0976ff54cca455a955b",
+      "type": "BigNumber",
+    },
+  },
+  {
+    "address": "0x4ddc2d193948926d02f9b1fe9e1daa0718270ed5",
+    "decimals": 18,
+    "morphoBorrowMarketSize": {
+      "hex": "0x539611ed75d70fd529",
+      "type": "BigNumber",
+    },
+    "morphoSupplyMarketSize": {
+      "hex": "0xfdfbe9e361beb60108",
+      "type": "BigNumber",
+    },
+    "p2pIndexCursor": {
+      "hex": "0x0320",
+      "type": "BigNumber",
+    },
+    "price": {
+      "hex": "0x6525837a31b96c2000",
+      "type": "BigNumber",
+    },
+    "totalPoolBorrowUSD": {
+      "hex": "0x0e40b31fd86e872c51c54e",
+      "type": "BigNumber",
+    },
+    "totalPoolSupplyUSD": {
+      "hex": "0x01c31d43eb2ed1026659f323",
+      "type": "BigNumber",
+    },
+  },
+  {
+    "address": "0x35a18000230da775cac24873d00ff85bccded550",
+    "decimals": 18,
+    "morphoBorrowMarketSize": {
+      "hex": "0x10e83f306ca2f983ba84",
+      "type": "BigNumber",
+    },
+    "morphoSupplyMarketSize": {
+      "hex": "0x222bd0cb3e91f8b31d53",
+      "type": "BigNumber",
+    },
+    "p2pIndexCursor": {
+      "hex": "0x0bc9",
+      "type": "BigNumber",
+    },
+    "price": {
+      "hex": "0x537c6cf495bab000",
+      "type": "BigNumber",
+    },
+    "totalPoolBorrowUSD": {
+      "hex": "0x02f6c4fc310e9048d93ea6",
+      "type": "BigNumber",
+    },
+    "totalPoolSupplyUSD": {
+      "hex": "0x16c7c5b0a910c6410bb1bf",
+      "type": "BigNumber",
+    },
+  },
+  {
+    "address": "0x39aa39c021dfbae8fac545936693ac917d5e7563",
+    "decimals": 6,
+    "morphoBorrowMarketSize": {
+      "hex": "0x044e0809313a",
+      "type": "BigNumber",
+    },
+    "morphoSupplyMarketSize": {
+      "hex": "0x0da8cad839bb",
+      "type": "BigNumber",
+    },
+    "p2pIndexCursor": {
+      "hex": "0x0bca",
+      "type": "BigNumber",
+    },
+    "price": {
+      "hex": "0x0c9f2c9cd04674edea40000000",
+      "type": "BigNumber",
+    },
+    "totalPoolBorrowUSD": {
+      "hex": "0xb5fa9e0eaa4f201ff69000",
+      "type": "BigNumber",
+    },
+    "totalPoolSupplyUSD": {
+      "hex": "0x0189c08ffa2d7a2e221fe000",
+      "type": "BigNumber",
+    },
+  },
+  {
+    "address": "0xf650c3d88d12db855b8bf7d11be6c55a4e07dcc9",
+    "decimals": 6,
+    "morphoBorrowMarketSize": {
+      "hex": "0x041d8e1883e8",
+      "type": "BigNumber",
+    },
+    "morphoSupplyMarketSize": {
+      "hex": "0x038ed149face",
+      "type": "BigNumber",
+    },
+    "p2pIndexCursor": {
+      "hex": "0x16d0",
+      "type": "BigNumber",
+    },
+    "price": {
+      "hex": "0x0c9f2c9cd04674edea40000000",
+      "type": "BigNumber",
+    },
+    "totalPoolBorrowUSD": {
+      "hex": "0x686193b7ed304a7f2f1000",
+      "type": "BigNumber",
+    },
+    "totalPoolSupplyUSD": {
+      "hex": "0x9fb7f2ce9d812e2a5fb000",
+      "type": "BigNumber",
+    },
+  },
+  {
+    "address": "0xccf4429db6322d5c611ee964527d42e5d685dd6a",
+    "decimals": 8,
+    "morphoBorrowMarketSize": {
+      "hex": "0x01b30c42c3",
+      "type": "BigNumber",
+    },
+    "morphoSupplyMarketSize": {
+      "hex": "0x052e4a4eaf",
+      "type": "BigNumber",
+    },
+    "p2pIndexCursor": {
+      "hex": "0x0d05",
+      "type": "BigNumber",
+    },
+    "price": {
+      "hex": "0x0dc4175821ad4673d6695f000000",
+      "type": "BigNumber",
+    },
+    "totalPoolBorrowUSD": {
+      "hex": "0x02ec69dabacb352db24780",
+      "type": "BigNumber",
+    },
+    "totalPoolSupplyUSD": {
+      "hex": "0x0136a0cc23917a791948ee80",
+      "type": "BigNumber",
+    },
+  },
+]
+`;

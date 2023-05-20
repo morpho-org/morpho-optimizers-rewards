@@ -1,14 +1,41 @@
 import { ages } from "../src";
 import { getMarketsDistribution } from "../src/utils/getEpochMarketsDistribution";
-import { providers } from "ethers";
+import { getDefaultProvider, providers } from "ethers";
 import { MarketEmission } from "../src/utils";
 import { Optional } from "../src/helpers/types";
 import { aStEth, cFei } from "../src/helpers";
 import { FileSystemStorageService } from "../src/utils/StorageService";
 import { MarketsEmissionFs } from "../src/ages/distributions/MarketsEmissionFs";
 import { formatUnits } from "ethers/lib/utils";
+import {
+  getAaveMarketsParameters,
+  getAaveV3MarketsParameters,
+  getCompoundMarketsParameters,
+} from "../src/utils/markets/fetchMarketsData";
 
 const storageService = new FileSystemStorageService();
+
+describe("Test Market data fetching", () => {
+  const provider = getDefaultProvider(process.env.RPC_URL);
+  const blockTag = 17_000_000;
+  describe("Compound", () => {
+    it("Should fetch Compound data", async () => {
+      const marketParamers = await getCompoundMarketsParameters(blockTag, provider);
+      expect(marketParamers).toMatchSnapshot();
+    });
+  });
+  describe("Aave", () => {
+    it("Should fetch Aave v2 data", async () => {
+      const marketParamers = await getAaveMarketsParameters(blockTag, provider);
+      expect(marketParamers).toMatchSnapshot();
+    });
+    it("Should fetch Aave v3 data", async () => {
+      const MA3_DEPLOYMENT_BLOCK = 17161283;
+      const marketParamers = await getAaveV3MarketsParameters(MA3_DEPLOYMENT_BLOCK + 1, provider);
+      expect(marketParamers).toMatchSnapshot();
+    });
+  });
+});
 
 describe.each(ages)("Test Ages Distributions", (age) => {
   const EPOCHS_PER_AGE = ages.indexOf(age) < 3 ? 3 : 1;

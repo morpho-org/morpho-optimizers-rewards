@@ -1,4 +1,10 @@
-import { ageOneDistribution, ageTwoDistribution, ageThreeDistribution, ageFourDistribution } from "./distributions";
+import {
+  ageOneDistribution,
+  ageTwoDistribution,
+  ageThreeDistribution,
+  ageFourDistribution,
+  ageFiveDistribution,
+} from "./distributions";
 import { BigNumber } from "ethers";
 import { AgeConfig, EpochConfig, ProtocolDistribution } from "./ages.types";
 import { parseUnits } from "ethers/lib/utils";
@@ -14,10 +20,11 @@ const distributions = {
   age2: ageTwoDistribution,
   age3: ageThreeDistribution,
   age4: ageFourDistribution,
+  age5: ageFiveDistribution,
 };
 
 const computeProtocolDistribution = (
-  distribution: typeof agesData[0]["epochs"][0]["protocolDistribution"]
+  distribution: (typeof agesData)[0]["epochs"][0]["protocolDistribution"]
 ): ProtocolDistribution | undefined => {
   if (!distribution) return;
   const protocolDistribution: ProtocolDistribution = { morphoCompound: BigNumber.from(distribution.morphoCompound) };

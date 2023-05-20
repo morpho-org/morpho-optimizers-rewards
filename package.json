@@ -82,7 +82,7 @@
   "dependencies": {
     "@morpho-labs/ethers-utils": "^1.1.1",
     "@morpho-labs/gnosis-tx-builder": "^1.3.1",
-    "@morpho-labs/morpho-ethers-contract": "^1.16.1",
+    "@morpho-labs/morpho-ethers-contract": "^1.18.0",
     "@pinata/sdk": "^2.1.0",
     "dotenv": "^16.0.3",
     "ethers": "^5.7.2",
