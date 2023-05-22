@@ -189,7 +189,7 @@ describe("Vaults Distributor", () => {
           expect(merkleTree).toHaveProperty("proofs");
           expect(merkleTree).toHaveProperty("root");
 
-          expect(merkleTree.proofs[user0].amount).toBnApproxEq(currentProof.proofs[vaultAddress]!.amount, 10);
+          expect(merkleTree.proofs[user0].amount).toBnApproxEq(currentProof.proofs[vaultAddress]!.amount, 12);
         });
         it("Should distribute tokens to vaults users with two users", async () => {
           const distributor = distributorFromEvents(vaultAddress, [
@@ -236,7 +236,7 @@ describe("Vaults Distributor", () => {
           const totalVaultRewards = currentProof.proofs[vaultAddress]!.amount;
 
           expect(totalDistributed).toBnLte(totalVaultRewards);
-          expect(totalDistributed).toBnApproxEq(totalVaultRewards, 12);
+          expect(totalDistributed).toBnApproxEq(totalVaultRewards, 14);
         });
         it("Should distribute all tokens when vaults has started being used during the epoch", async () => {
           const distributor = distributorFromEvents(vaultAddress, [
@@ -283,7 +283,7 @@ describe("Vaults Distributor", () => {
           const totalVaultRewards = BigNumber.from(currentProof.proofs[vaultAddress]!.amount);
 
           expect(totalDistributed).toBnLte(totalVaultRewards);
-          expect(totalDistributed).toBnApproxEq(totalVaultRewards, 12);
+          expect(totalDistributed).toBnApproxEq(totalVaultRewards, 14);
         });
         it("Should not distribute MORPHO to a user that has deposit/withdraw in the same transaction", async () => {
           const distributor = distributorFromEvents(vaultAddress, [
@@ -497,7 +497,7 @@ describe("Vaults Distributor", () => {
 
           expect(totalDistributed.lte(totalVaultRewards)).toBeTruthy();
           expect(totalDistributed).toBnLte(totalVaultRewards);
-          expect(totalDistributed).toBnApproxEq(totalVaultRewards, 16);
+          expect(totalDistributed).toBnApproxEq(totalVaultRewards, 17);
         });
         if (epoch.epochNumber > 1) {
           it("Should handle transaction on multiple epochs", async () => {
