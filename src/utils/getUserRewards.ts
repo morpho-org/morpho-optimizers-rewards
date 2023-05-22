@@ -48,7 +48,8 @@ export const getUserRewards = async (
     // So The difference between the amùount of the previous epoch and the amount claimable on chain will be claimable soon,
     // When the root will be updated by DAO
     const prevId = prevEpoch.epoch.epochNumber;
-    const prevDistribution = require(`../../distribution/proofs/proofs-${prevId}.json`);
+    const prevDistribution = await storageService.readProofs(prevId);
+    if (!prevDistribution) throw new Error("Previous Distribution not found");
     const claimableSoonRaw = prevDistribution.proofs[address.toLowerCase()];
     if (claimableSoonRaw) {
       claimableSoon = BigNumber.from(claimableSoonRaw.amount).sub(claimable);

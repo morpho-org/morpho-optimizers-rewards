@@ -3,7 +3,7 @@ import { getMarketsDistribution } from "../src/utils/getEpochMarketsDistribution
 import { getDefaultProvider, providers } from "ethers";
 import { MarketEmission } from "../src/utils";
 import { Optional } from "../src/helpers/types";
-import { aStEth, cFei } from "../src/helpers";
+import { aStEth, cFei, wEth } from "../src/helpers";
 import { FileSystemStorageService } from "../src/utils/StorageService";
 import { MarketsEmissionFs } from "../src/ages/distributions/MarketsEmissionFs";
 import { formatUnits } from "ethers/lib/utils";
@@ -113,11 +113,18 @@ describe.each(ages)("Test Ages Distributions", (age) => {
           it(`Should not distribute tokens on Compound FEI deprecated market for epoch ${epochNumber}`, async () => {
             expect(marketsEmissions[cFei]).toBeUndefined(); // no distribution for the fei token
           });
-
-          it(`Should not distribute tokens to StEth borrowers on Aave for epoch ${epochNumber}`, async () => {
-            expect(marketsEmissions[aStEth]?.morphoRatePerSecondBorrowSide.isZero()).toEqual(true); // no borrowers of steth on aave
-            expect(marketsEmissions[aStEth]?.morphoEmittedBorrowSide.isZero()).toEqual(true); // no borrowers of steth on aave
-          });
+          if (marketsEmissions[aStEth]) {
+            it(`Should not distribute tokens to StEth borrowers on Aave for epoch ${epochNumber}`, async () => {
+              expect(marketsEmissions[aStEth]!.morphoRatePerSecondBorrowSide.isZero()).toEqual(true); // no borrowers of steth on aave
+              expect(marketsEmissions[aStEth]!.morphoEmittedBorrowSide.isZero()).toEqual(true); // no borrowers of steth on aave
+            });
+          }
+          if (marketsEmissions[wEth]) {
+            it(`Should not distribute tokens to WETH borrowers on Aave V3 for epoch ${epochNumber}`, async () => {
+              expect(marketsEmissions[wEth]!.morphoRatePerSecondBorrowSide.isZero()).toEqual(true); // no borrowers of steth on aave
+              expect(marketsEmissions[wEth]!.morphoEmittedBorrowSide.isZero()).toEqual(true); // no borrowers of steth on aave
+            });
+          }
         }
       });
     }

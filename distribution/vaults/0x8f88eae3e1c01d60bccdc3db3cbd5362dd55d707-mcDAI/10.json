@@ -1,0 +1,52 @@
+{
+  "epochId": "10",
+  "root": "0xd1e5964876c8aab11091a0dbeb64b99eba2b2975d1f160992ac2fc0ac89fb767",
+  "total": "1580678419972541940",
+  "proofs": {
+    "0x8f88eae3e1c01d60bccdc3db3cbd5362dd55d707": {
+      "amount": "33800432016302907",
+      "proof": [
+        "0xd57b044e2a56253d0fc430a2679603d2979a75ccfccefe2855449654dd0c5b19",
+        "0xfd1ef745427dcd9643e5b42a3afeaf4e54d37da4a5b37cfc738172d690fe6cc6",
+        "0xdadaab0b013f8f91f4f9dfc13df48ecd90d4d52bff10ca610d0c0aa4bbf610c0"
+      ]
+    },
+    "0xc8884ede1ae44bdff60da4b9c542c34a69648a87": {
+      "amount": "503995634197351242",
+      "proof": [
+        "0x2ea97f5da147d55ab0cf51327e042503f121b3ee99793a34f590df4ccaf7b35f",
+        "0xfd1ef745427dcd9643e5b42a3afeaf4e54d37da4a5b37cfc738172d690fe6cc6",
+        "0xdadaab0b013f8f91f4f9dfc13df48ecd90d4d52bff10ca610d0c0aa4bbf610c0"
+      ]
+    },
+    "0x5c0d0a9a0c3a0a5b591496ff894686893b69faa2": {
+      "amount": "1672591154968712",
+      "proof": [
+        "0x20a9fd586c3623d3958cf81d787ec1b65b9c6893070ed790e4df549e16afe262",
+        "0xbbd492f2ba018b2e4f0913362225b96ca64f86043136733be738821c9c1223cf",
+        "0xdadaab0b013f8f91f4f9dfc13df48ecd90d4d52bff10ca610d0c0aa4bbf610c0"
+      ]
+    },
+    "0xb396c717105f2f9ba81007c7fb774fb06d0fb937": {
+      "amount": "1040471066238559235",
+      "proof": [
+        "0x81fa348ca1f3f8367a67f89f3c6840eb6f1a5bc38506e583ac50b815c6bd1912",
+        "0xbbd492f2ba018b2e4f0913362225b96ca64f86043136733be738821c9c1223cf",
+        "0xdadaab0b013f8f91f4f9dfc13df48ecd90d4d52bff10ca610d0c0aa4bbf610c0"
+      ]
+    },
+    "0x3222d0ab7626f4f9bc9f1070ce1de322b481bda5": {
+      "amount": "738696365359844",
+      "proof": [
+        "0x5ec60c8c138874ea76191fd971db6a9f5cca4a90f512ec10a5727ba8f4b9fc5e"
+      ]
+    }
+  },
+  "leaves": [
+    "0x2ea97f5da147d55ab0cf51327e042503f121b3ee99793a34f590df4ccaf7b35f",
+    "0xd57b044e2a56253d0fc430a2679603d2979a75ccfccefe2855449654dd0c5b19",
+    "0x81fa348ca1f3f8367a67f89f3c6840eb6f1a5bc38506e583ac50b815c6bd1912",
+    "0x20a9fd586c3623d3958cf81d787ec1b65b9c6893070ed790e4df549e16afe262",
+    "0xdadaab0b013f8f91f4f9dfc13df48ecd90d4d52bff10ca610d0c0aa4bbf610c0"
+  ]
+}
