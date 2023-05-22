@@ -15,6 +15,7 @@ const MARKETS = {
   aWETH: tokens.wEth.aToken!,
   aCRV: tokens.crv.aToken!,
   aSTETH: tokens.stEth.aToken!,
+  aWETHV3: tokens.wEth.address, // we use the underlying as identifier on ma3
 };
 
 export default MARKETS;
