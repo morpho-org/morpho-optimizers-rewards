@@ -14,7 +14,7 @@ dataSources:
       startBlock: 14860866
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.6
+      apiVersion: 0.0.7
       language: wasm/assemblyscript
       entities:
         - Borrowed
@@ -57,7 +57,7 @@ dataSources:
       abi: MorphoAave
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.6
+      apiVersion: 0.0.7
       language: wasm/assemblyscript
       entities:
         - Borrowed
