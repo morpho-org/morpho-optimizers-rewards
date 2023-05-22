@@ -100,7 +100,7 @@ export function handleBorrowPositionUpdated(event: BorrowPositionUpdated): void 
     RAY_UNITS
   );
 }
-export function handleSupplierPositionUpdated(event: SupplyPositionUpdated): void {
+export function handleSupplyPositionUpdated(event: SupplyPositionUpdated): void {
   handleSupplierPositionUpdatedInternal(
     event,
     event.params.underlying,
