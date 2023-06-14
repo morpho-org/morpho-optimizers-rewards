@@ -17,8 +17,10 @@ export const getGraphMarkets = async (blockTag: number) => {
       if (!result.ok) return Promise.reject(result);
       return result.json();
     })
-    .then((result: { data: { markets: GraphMarketConfiguration[] } | { error: any } }) => {
-      if (!("markets" in result.data)) throw Error(result.data.toString());
+    .then((result: { data: { markets: GraphMarketConfiguration[] } } | { errors: any }) => {
+      if ("errors" in result) throw Error(JSON.stringify(result.errors));
+      if (!("data" in result)) throw Error(JSON.stringify(result));
+      if (!("markets" in result.data)) throw Error(JSON.stringify(result.data));
 
       result.data.markets.forEach((graphMarket) => {
         marketsConfiguration[graphMarket.address] = graphToMarketConfig(graphMarket);
