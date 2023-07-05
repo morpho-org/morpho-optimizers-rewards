@@ -19,7 +19,7 @@ const marketsRepartition = {
     weight: BigNumber.from(846),
   },
   aWBTC: {
-    market: "0xFC4B8ED459e00e5400be803A9BB3954234FD50e3",
+    market: "0x028171bca77440897b824ca71d1c56cac55b68a3",
     weight: BigNumber.from(1001),
   },
   aSTETH: {
