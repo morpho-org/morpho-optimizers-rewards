@@ -78,5 +78,36 @@
         "morphoAaveV2": 5000
       }
     }
+  },
+  {
+    "id": "age3-epoch1",
+    "initialTimestamp": "2022-12-29T15:00:00.000Z",
+    "finalTimestamp": "2023-02-01T15:00:00.000Z",
+    "distributionScript": "ageThree",
+    "distributionParameters": {
+      "totalEmission": "3333333",
+      "snapshotProposal": "0xf402161143c42ac5edf6589b7833eb760cbe556e18451a232e6be3d34d06f287"
+    }
+  },
+
+  {
+    "id": "age3-epoch2",
+    "initialTimestamp": "2023-02-01T15:00:00.000Z",
+    "finalTimestamp": "2023-03-04T15:00:00.000Z",
+    "distributionScript": "ageThree",
+    "distributionParameters": {
+      "totalEmission": "3333333",
+      "snapshotProposal": "0xa33106ba7eacd9ed97f1a5a5da6b5a9e7bec0085b0472ea0e8222c226c7acdca"
+    }
+  },
+  {
+    "id": "age3-epoch3",
+    "initialTimestamp": "2023-03-04T15:00:00.000Z",
+    "finalTimestamp": "2023-04-07T15:00:00.000Z",
+    "distributionScript": "ageThree",
+    "distributionParameters": {
+      "totalEmission": "3333334",
+      "snapshotProposal": "0x2c10391797a45353092ed220f41411d18a1a1cf82ded0a8d68452619e46b273e"
+    }
   }
 ]
