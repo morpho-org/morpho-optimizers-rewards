@@ -1,6 +1,7 @@
 import { BigNumber, constants } from "ethers";
 import { WadRayMath } from "@morpho-labs/ethers-utils/lib/maths";
 import { cloneDeep } from "lodash";
+import { computeMerkleTree } from "../utils";
 
 export interface BlockTimestamp {
   readonly block: number;
@@ -13,7 +14,7 @@ export interface RangeRate {
   readonly rate: BigNumber;
 }
 export interface IRatesProvider {
-  getRangeRates(from: BlockTimestamp, to: BlockTimestamp): readonly RangeRate[];
+  getRangeRates(marketSide: string, from: BlockTimestamp, to: BlockTimestamp): readonly RangeRate[];
 }
 export interface BaseEvent {
   readonly block: BlockTimestamp;
@@ -85,16 +86,21 @@ export interface ILogger {
   log: (...data: any) => void;
 }
 export class DistributorV1 {
-  static #computeMorphoAccrued(lastIndex: BigNumber, newIndex: BigNumber, totalUnderlying: BigNumber): BigNumber {
-    if (lastIndex.gt(newIndex)) throw new Error("lastIndex must be lower than newIndex");
+  static #initialMorphoBlock = {
+    block: 14927832,
+    timestamp: Math.floor(new Date("2022-06-08T17:00:06.000Z").getTime() / 1000),
+  };
+  static #computeMorphoAccrued(lastIndex: BigNumber, newIndex: BigNumber, totalUnderlying: BigNumber) {
+    if (lastIndex.gt(newIndex))
+      throw new Error(`lastIndex must be lower than newIndex: ${JSON.stringify({ lastIndex, newIndex }, null, 2)}`);
     return newIndex.sub(lastIndex).mul(totalUnderlying).div(WadRayMath.WAD);
   }
   static #computeNewMorphoIndex(rates: readonly RangeRate[], market: Market, toTs: number) {
-    if (toTs < market.lastUpdate.timestamp) throw new Error("negative delta timestamp");
     const morphoAccrued = rates.reduce((acc, { from, to, rate }) => {
       const tsFrom = Math.max(from.timestamp, market.lastUpdate.timestamp);
       const tsTo = Math.min(to.timestamp, toTs);
       const deltaT = tsTo - tsFrom;
+      if (deltaT <= 0) return acc; // No overlap
       return acc.add(rate.mul(deltaT));
     }, constants.Zero);
     if (market.totalUnderlying.isZero() && morphoAccrued.gt(0)) throw new Error("totalUnderlying is zero");
@@ -120,6 +126,9 @@ export class DistributorV1 {
   async run(from: BlockTimestamp, to: BlockTimestamp): Promise<void> {
     if (from.block > to.block) throw Error("Invalid range");
     if (to.block < this.#fetchedTo.block) throw Error("Invalid range, already fetched");
+    if (to.block === this.#fetchedTo.block) {
+      return;
+    }
     from = {
       block: Math.max(from.block, this.#fetchedTo.block),
       timestamp: Math.max(from.timestamp, this.#fetchedTo.timestamp),
@@ -147,7 +156,7 @@ export class DistributorV1 {
   }
 
   #processTxEvent(event: TxEvent): void {
-    const market = this.updateMarketIndex(event);
+    const market = this.#updateMarketIndex(event);
 
     const balance = this.#getUserBalance(event.user, event.marketSide);
 
@@ -177,12 +186,12 @@ export class DistributorV1 {
     });
   }
 
-  private updateMarketIndex(event: TxEvent) {
+  #updateMarketIndex(event: TxEvent) {
     const market = this.#getMarket(event.marketSide);
 
     const deltaT = event.block.timestamp - market.lastUpdate.timestamp;
-    if (deltaT <= 0) throw Error("Invalid deltaT");
-    const rates = this.#ratesProvider.getRangeRates(market.lastUpdate, event.block);
+    if (deltaT < 0) throw Error("Invalid deltaT");
+    const rates = this.#ratesProvider.getRangeRates(event.marketSide, market.lastUpdate, event.block);
     const hasDistribution = rates.some(({ rate }) => rate.gt(0));
     const morphoIndex = hasDistribution
       ? DistributorV1.#computeNewMorphoIndex(rates, market, event.block.timestamp)
@@ -219,11 +228,11 @@ export class DistributorV1 {
       this.#users[user] = { balances: {} };
     }
     if (!this.#users[user]!.balances[marketSide]) {
-      const market = this.#getMarket(marketSide);
+      const { morphoIndex } = this.#getMarket(marketSide);
       this.#users[user]!.balances[marketSide] = {
         market: marketSide,
         totalUnderlying: constants.Zero,
-        morphoIndex: market.morphoIndex,
+        morphoIndex,
         morphoAccrued: constants.Zero,
       };
     }
@@ -275,14 +284,17 @@ export class DistributorV1 {
     if (!this.#fetchedTo) throw Error("Not initialized");
     if (ts.block < this.#fetchedTo.block) throw Error("Invalid timestamp, must be greater than last fetched block");
 
-    const rates = this.#ratesProvider.getRangeRates(this.#fetchedTo, ts);
     return Object.fromEntries(
       Object.entries(this.#markets).map(([id, market]) => [
         id,
         {
           ...market!,
           lastUpdate: ts,
-          morphoIndex: DistributorV1.#computeNewMorphoIndex(rates, market!, ts.timestamp),
+          morphoIndex: DistributorV1.#computeNewMorphoIndex(
+            this.#ratesProvider.getRangeRates(id, this.#fetchedTo, ts),
+            market!,
+            ts.timestamp
+          ),
         },
       ])
     );
@@ -317,6 +329,32 @@ export class DistributorV1 {
       totalDistributed,
     };
   }
+  async generateMerkleTree(ts: BlockTimestamp) {
+    const from = DistributorV1.#initialMorphoBlock;
+    await this.run(from, ts);
+    const { users } = this.getDistributionSnapshot(ts);
+
+    // Format users for merkle tree
+    const usersForMerkle = Object.entries(users)
+      .map(([address, { balances }]) => {
+        const accumulatedRewards = Object.values(balances).reduce(
+          (acc, balance) => acc.add(balance!.morphoAccrued),
+          constants.Zero
+        );
+        if (accumulatedRewards.isZero()) return;
+
+        return {
+          address,
+          accumulatedRewards: accumulatedRewards.toString(),
+        };
+      })
+      .filter(isDefined)
+      .sort((a, b) => a.address.localeCompare(b.address));
+
+    return computeMerkleTree(usersForMerkle);
+  }
 }
 
 const isTxEvent = (event: TxEvent | IndexesEvent): event is TxEvent => "onPool" in event;
+
+const isDefined = <T>(x: T | undefined): x is T => x !== undefined;
