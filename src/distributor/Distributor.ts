@@ -357,4 +357,4 @@ export class DistributorV1 {
 
 const isTxEvent = (event: TxEvent | IndexesEvent): event is TxEvent => "onPool" in event;
 
-const isDefined = <T>(x: T | undefined): x is T => x !== undefined;
+export const isDefined = <T>(x: T | undefined): x is T => x !== undefined;

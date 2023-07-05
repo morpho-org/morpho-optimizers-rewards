@@ -38,18 +38,15 @@ export class InMemoryConfigurationFetcher implements IConfigurationFetcher {
 
 export class MarketDistributor {
   #provider: providers.Provider;
-  #storage: IMarketStorage;
   #blockFetcher: IBlockFetcher;
   #configFetcher: IConfigurationFetcher;
 
   constructor(
     _provider: providers.Provider,
-    _storage: IMarketStorage,
     _blockFetcher: IBlockFetcher = new EtherscanBlockFetcher(process.env.ETHERSCAN_API_KEY!),
     _configFetcher: IConfigurationFetcher = new InMemoryConfigurationFetcher()
   ) {
     this.#provider = _provider;
-    this.#storage = _storage;
     this.#blockFetcher = _blockFetcher;
     this.#configFetcher = _configFetcher;
   }
@@ -57,6 +54,7 @@ export class MarketDistributor {
   public async distribute(ids: string[] = []) {
     const configurations =
       ids.length > 0 ? this.#configFetcher.getConfigurations(ids) : this.#configFetcher.getAllConfigurations();
+    const results: Record<string, Awaited<ReturnType<DistributionFn>>> = {};
     for (const ageEpoch of configurations) {
       if (!isCorrectConfig(ageEpoch)) throw new Error(`Invalid age epoch config: ${ageEpoch}`);
       console.log("Distributing", ageEpoch.id);
@@ -84,14 +82,41 @@ export class MarketDistributor {
         ...ageEpoch.distributionParameters,
         totalEmission: parseUnits(ageEpoch.distributionParameters.totalEmission),
       };
-      const result = await distributionFn(params);
-      await this.#storage.storeMarketsEmissions(ageEpoch, result);
+      results[ageEpoch.id] = await distributionFn(params);
     }
+    return results;
+  }
+
+  async fetchConfigTimestampsBlocks() {
+    const configs = this.#configFetcher.getAllConfigurations();
+    const configBlocks: Record<
+      any,
+      {
+        initialBlock: number;
+        finalBlock: number;
+      }
+    > = {};
+    for (const config of configs) {
+      const { initialTimestamp, finalTimestamp } = config;
+      const [initialBlock, finalBlock] = await Promise.all([
+        this.#blockFetcher.blockFromTimestamp(parseDate(initialTimestamp), "before"),
+        this.#blockFetcher.blockFromTimestamp(parseDate(finalTimestamp), "after"),
+      ]);
+      configBlocks[config.id] = {
+        initialBlock,
+        finalBlock,
+      };
+    }
+    return configBlocks;
   }
   #getSnapshotBlock(ts: number) {
     const snapshotTs = ts - 3600;
     if (snapshotTs > now()) return;
     return this.#blockFetcher.blockFromTimestamp(snapshotTs, "after");
+  }
+
+  get configFetcher() {
+    return this.#configFetcher;
   }
 }
 
@@ -109,3 +134,5 @@ export const isCorrectConfig = (config: any): config is AgeEpoch =>
   );
 
 const now = () => Date.now() / 1000;
+
+export const parseDate = (date: string) => Math.floor(new Date(date).getTime() / 1000);

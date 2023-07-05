@@ -1,28 +1,9 @@
-import { AgeEpoch, IMarketStorage, isCorrectConfig, MarketDistributor } from "../../src/distributor/MarketDistributor";
-import { DistributionFn } from "../../src/distributor/distributionScripts/common";
+import { isCorrectConfig, MarketDistributor } from "../../src/distributor/MarketDistributor";
 import { getDefaultProvider } from "ethers";
 import _mapValues from "lodash/mapValues";
 import { formatUnits } from "ethers/lib/utils";
 import ageEpochConfigs from "../../src/distributor/configuration/age-epochs.json";
 import { EtherscanBlockFetcher } from "../../src/distributor/blockFetcher/EtherscanBlockFetcher";
-
-class InMemoryStorage implements IMarketStorage {
-  public marketsEmissions: any;
-  async storeMarketsEmissions(config: AgeEpoch, { marketsEmissions }: Awaited<ReturnType<DistributionFn>>) {
-    this.marketsEmissions = {
-      ...this.marketsEmissions,
-      [config.id]: _mapValues(marketsEmissions, (m) => ({
-        morphoEmittedSupplySide: formatUnits(m.morphoEmittedSupplySide),
-        morphoRatePerSecondSupplySide: formatUnits(m.morphoRatePerSecondSupplySide),
-
-        morphoEmittedBorrowSide: formatUnits(m.morphoEmittedBorrowSide),
-        morphoRatePerSecondBorrowSide: formatUnits(m.morphoRatePerSecondBorrowSide),
-        totalMarketSizeBorrowSide: formatUnits(m.totalMarketSizeBorrowSide, m.decimals),
-        totalMarketSizeSupplySide: formatUnits(m.totalMarketSizeSupplySide, m.decimals),
-      })),
-    };
-  }
-}
 
 describe("Market Distributor e2e", () => {
   const provider = getDefaultProvider("http://localhost:8545");
@@ -37,16 +18,26 @@ describe("Market Distributor e2e", () => {
     });
 
     it(`Should fetch data correctly for ${config.id}`, async () => {
-      const store = new InMemoryStorage();
       const marketDistributor = new MarketDistributor(
         provider,
-        store,
         new EtherscanBlockFetcher(process.env.ETHERSCAN_API_KEY!)
       );
-      await marketDistributor.distribute([config.id]);
+      const ageEpochResults = await marketDistributor.distribute([config.id]);
 
-      console.log(JSON.stringify(store.marketsEmissions, null, 2));
-      expect(store.marketsEmissions).toMatchSnapshot();
+      console.log(JSON.stringify(ageEpochResults, null, 2));
+      const store = _mapValues(ageEpochResults, ({ marketsEmissions }) =>
+        _mapValues(marketsEmissions, (m) => ({
+          morphoEmittedSupplySide: formatUnits(m.morphoEmittedSupplySide),
+          morphoRatePerSecondSupplySide: formatUnits(m.morphoRatePerSecondSupplySide),
+
+          morphoEmittedBorrowSide: formatUnits(m.morphoEmittedBorrowSide),
+          morphoRatePerSecondBorrowSide: formatUnits(m.morphoRatePerSecondBorrowSide),
+          totalMarketSizeBorrowSide: formatUnits(m.totalMarketSizeBorrowSide, m.decimals),
+          totalMarketSizeSupplySide: formatUnits(m.totalMarketSizeSupplySide, m.decimals),
+        }))
+      );
+
+      expect(store).toMatchSnapshot();
     });
   });
 });
