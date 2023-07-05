@@ -4,7 +4,7 @@
     "snapshotBlock": 14927832,
     "initialTimestamp": "2022-06-08T17:00:06.000Z",
     "finalTimestamp": "2022-07-13T17:00:00.000Z",
-    "distributionScript": "ageOne",
+    "distributionScript": "poolWeightedDistribution",
     "distributionParameters": {
       "totalEmission": "350000",
       "protocolDistribution": {
@@ -17,7 +17,7 @@
     "snapshotBlock": 15134933,
     "initialTimestamp": "2022-07-13T17:00:06.000Z",
     "finalTimestamp": "2022-08-16T17:00:00.000Z",
-    "distributionScript": "ageOne",
+    "distributionScript": "poolWeightedDistribution",
     "distributionParameters": {
       "totalEmission": "1700000",
       "protocolDistribution": {
@@ -30,7 +30,7 @@
     "snapshotBlock": 15353032,
     "initialTimestamp": "2022-08-16T17:00:06.000Z",
     "finalTimestamp": "2022-09-20T15:00:00.000Z",
-    "distributionScript": "ageOne",
+    "distributionScript": "poolWeightedDistribution",
     "distributionParameters": {
       "totalEmission": "2950000",
       "protocolDistribution": {
@@ -43,7 +43,7 @@
     "snapshotBlock": 15575331,
     "initialTimestamp": "2022-09-20T15:00:00.000Z",
     "finalTimestamp": "2022-10-24T15:00:00.000Z",
-    "distributionScript": "ageTwo",
+    "distributionScript": "morphoWeightedDistribution",
     "distributionParameters": {
       "totalEmission": "3000000",
       "protocolDistribution": {
@@ -57,7 +57,7 @@
     "snapshotBlock": 15818122,
     "initialTimestamp": "2022-10-24T15:00:00.000Z",
     "finalTimestamp": "2022-11-27T15:00:00.000Z",
-    "distributionScript": "ageTwo",
+    "distributionScript": "morphoWeightedDistribution",
     "distributionParameters": {
       "totalEmission": "3400000",
       "protocolDistribution": {
@@ -70,7 +70,7 @@
     "id": "age2-epoch3",
     "initialTimestamp": "2022-11-27T15:00:00.000Z",
     "finalTimestamp": "2022-12-29T15:00:00.000Z",
-    "distributionScript": "ageTwo",
+    "distributionScript": "morphoWeightedDistribution",
     "distributionParameters": {
       "totalEmission": "3600000",
       "protocolDistribution": {
@@ -83,7 +83,7 @@
     "id": "age3-epoch1",
     "initialTimestamp": "2022-12-29T15:00:00.000Z",
     "finalTimestamp": "2023-02-01T15:00:00.000Z",
-    "distributionScript": "ageThree",
+    "distributionScript": "snapshotVoteDistribution",
     "distributionParameters": {
       "totalEmission": "3333333",
       "snapshotProposal": "0xf402161143c42ac5edf6589b7833eb760cbe556e18451a232e6be3d34d06f287"
@@ -94,7 +94,7 @@
     "id": "age3-epoch2",
     "initialTimestamp": "2023-02-01T15:00:00.000Z",
     "finalTimestamp": "2023-03-04T15:00:00.000Z",
-    "distributionScript": "ageThree",
+    "distributionScript": "snapshotVoteDistribution",
     "distributionParameters": {
       "totalEmission": "3333333",
       "snapshotProposal": "0xa33106ba7eacd9ed97f1a5a5da6b5a9e7bec0085b0472ea0e8222c226c7acdca"
@@ -104,7 +104,7 @@
     "id": "age3-epoch3",
     "initialTimestamp": "2023-03-04T15:00:00.000Z",
     "finalTimestamp": "2023-04-07T15:00:00.000Z",
-    "distributionScript": "ageThree",
+    "distributionScript": "snapshotVoteDistribution",
     "distributionParameters": {
       "totalEmission": "3333334",
       "snapshotProposal": "0x2c10391797a45353092ed220f41411d18a1a1cf82ded0a8d68452619e46b273e"

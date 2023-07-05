@@ -1,10 +1,10 @@
 import { DistributionParams } from "./common";
-import { BigNumber, constants, providers } from "ethers";
+import { BigNumber, constants } from "ethers";
 import fetchMarketsData from "../../utils/markets/fetchMarketsData";
 import { BASIS_POINTS } from "../../helpers";
 import { MarketMinimal } from "../../utils/graph/getGraphMarkets/markets.types";
 
-export interface AgeTwoParams extends DistributionParams {
+export interface morphoWeightedDistributionParams extends DistributionParams {
   protocolDistribution: {
     morphoCompound: number;
     morphoAaveV2: number;
@@ -16,7 +16,7 @@ const validateParams = (p: any) => {
   if (p.morphoCompound + p.morphoAaveV2 !== 100_00) throw Error("Protocols distributions dont sum to 1");
 };
 
-const ageTwo = async ({
+const morphoWeightedDistribution = async ({
   protocolDistribution,
   totalEmission,
   finalTimestamp,
@@ -24,7 +24,7 @@ const ageTwo = async ({
   snapshotBlock,
   provider,
   id,
-}: AgeTwoParams) => {
+}: morphoWeightedDistributionParams) => {
   if (!protocolDistribution) throw Error(`Cannot distribute tokens for ${id}: no protocolDistribution`);
   validateParams(protocolDistribution);
 
@@ -88,4 +88,4 @@ const distributeTokens = (marketsData: MarketMinimal[], distribution: BigNumber,
   );
 };
 
-export default ageTwo;
+export default morphoWeightedDistribution;

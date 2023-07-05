@@ -4,11 +4,11 @@ import fetchProposal from "../../utils/snapshot/fetchProposal";
 import { parseUnits } from "ethers/lib/utils";
 import { weightedDistribution } from "../../ages/distributions/weightedDistribution";
 
-export interface AgeThreeParams extends DistributionParams {
+export interface SnapshotVoteParams extends DistributionParams {
   snapshotProposal: string;
 }
 
-const ageThree = async ({
+const snapshotVoteDistribution = async ({
   finalTimestamp,
   initialTimestamp,
   snapshotBlock,
@@ -16,7 +16,7 @@ const ageThree = async ({
   totalEmission,
   provider,
   id,
-}: AgeThreeParams) => {
+}: SnapshotVoteParams) => {
   if (!snapshotProposal) throw Error(`Cannot distribute tokens for ${id}: no snapshotProposal`);
   const proposal = await fetchProposal(snapshotProposal);
 
@@ -44,4 +44,4 @@ const ageThree = async ({
   return { marketsEmissions };
 };
 
-export default ageThree;
+export default snapshotVoteDistribution;

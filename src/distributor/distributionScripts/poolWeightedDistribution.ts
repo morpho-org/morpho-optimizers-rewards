@@ -2,14 +2,19 @@ import { DistributionParams } from "./common";
 import { computeMarketsEmissions, getGraphMarkets } from "../../utils";
 import { BigNumber } from "ethers";
 
-export interface AgeOneParams extends DistributionParams {
+export interface PoolWeightedDistributionParams extends DistributionParams {
   protocolDistribution: {
     morphoCompound: number;
     morphoAaveV2?: number;
   };
 }
 
-const ageOne = async ({ initialTimestamp, finalTimestamp, snapshotBlock, totalEmission }: AgeOneParams) => {
+const poolWeightedDistribution = async ({
+  initialTimestamp,
+  finalTimestamp,
+  snapshotBlock,
+  totalEmission,
+}: PoolWeightedDistributionParams) => {
   const duration = finalTimestamp - initialTimestamp;
   const ageOneMarketsParameters = await getGraphMarkets(snapshotBlock);
 
@@ -21,4 +26,4 @@ const ageOne = async ({ initialTimestamp, finalTimestamp, snapshotBlock, totalEm
   return { marketsEmissions, marketsParameters: ageOneMarketsParameters, liquidity };
 };
 
-export default ageOne;
+export default poolWeightedDistribution;
