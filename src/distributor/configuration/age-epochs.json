@@ -37,5 +37,46 @@
         "morphoCompound": 10000
       }
     }
+  },
+  {
+    "id": "age2-epoch1",
+    "snapshotBlock": 15575331,
+    "initialTimestamp": "2022-09-20T15:00:00.000Z",
+    "finalTimestamp": "2022-10-24T15:00:00.000Z",
+    "distributionScript": "ageTwo",
+    "distributionParameters": {
+      "totalEmission": "3000000",
+      "protocolDistribution": {
+        "morphoCompound": 9000,
+        "morphoAaveV2": 1000
+      }
+    }
+  },
+  {
+    "id": "age2-epoch2",
+    "snapshotBlock": 15818122,
+    "initialTimestamp": "2022-10-24T15:00:00.000Z",
+    "finalTimestamp": "2022-11-27T15:00:00.000Z",
+    "distributionScript": "ageTwo",
+    "distributionParameters": {
+      "totalEmission": "3400000",
+      "protocolDistribution": {
+        "morphoCompound": 6500,
+        "morphoAaveV2": 3500
+      }
+    }
+  },
+  {
+    "id": "age2-epoch3",
+    "initialTimestamp": "2022-11-27T15:00:00.000Z",
+    "finalTimestamp": "2022-12-29T15:00:00.000Z",
+    "distributionScript": "ageTwo",
+    "distributionParameters": {
+      "totalEmission": "3600000",
+      "protocolDistribution": {
+        "morphoCompound": 5000,
+        "morphoAaveV2": 5000
+      }
+    }
   }
 ]

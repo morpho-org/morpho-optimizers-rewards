@@ -1,6 +1,7 @@
 import { BigNumber, providers } from "ethers";
 
 export interface DistributionParams {
+  id: string;
   initialTimestamp: number;
   finalTimestamp: number;
   provider: providers.Provider;

@@ -4,6 +4,7 @@ import { getDefaultProvider } from "ethers";
 import _mapValues from "lodash/mapValues";
 import { formatUnits } from "ethers/lib/utils";
 import ageEpochConfigs from "../../src/distributor/configuration/age-epochs.json";
+import { EtherscanBlockFetcher } from "../../src/distributor/blockFetcher/EtherscanBlockFetcher";
 
 class InMemoryStorage implements IMarketStorage {
   public marketsEmissions: any;
@@ -35,12 +36,13 @@ describe("Market Distributor e2e", () => {
       expect(tsTo - tsFrom).toBeGreaterThan(oneMonthInMs);
     });
 
-    it(`Should fetch data corectly for ${config.id}`, async () => {
+    it(`Should fetch data correctly for ${config.id}`, async () => {
       const store = new InMemoryStorage();
-      const marketDistributor = new MarketDistributor(provider, store, {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        blockFromTimestamp: (ts: number, direction: "before" | "after") => Promise.resolve(0),
-      });
+      const marketDistributor = new MarketDistributor(
+        provider,
+        store,
+        new EtherscanBlockFetcher(process.env.ETHERSCAN_API_KEY!)
+      );
       await marketDistributor.distribute([config.id]);
 
       console.log(JSON.stringify(store.marketsEmissions, null, 2));
