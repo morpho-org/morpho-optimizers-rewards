@@ -23,7 +23,7 @@ const marketsRepartition = {
     weight: BigNumber.from(945),
   },
   aWBTC: {
-    market: "0xFC4B8ED459e00e5400be803A9BB3954234FD50e3",
+    market: "0x9ff58f4fFB29fA2266Ab25e75e2A8b3503311656",
     weight: BigNumber.from(1014),
   },
   // Morpho Compound markets
