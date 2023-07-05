@@ -206,4 +206,12 @@ export class ChainEventFetcher implements IEventFetcher {
       .then((e) => e.flat());
     return [...supplyEvents, ...borrowEvents, ...withdrawEvents, ...repayEvents, ...indexesUpdatedEvents];
   }
+
+  async getLatestBlock() {
+    const lastBlock = await this.#provider.getBlock("latest");
+    return {
+      block: lastBlock.number,
+      timestamp: lastBlock.timestamp,
+    };
+  }
 }

@@ -8,7 +8,7 @@ export class RatesProvider implements IRatesProvider {
     any,
     {
       initialBlock: number;
-      finalBlock: number;
+      finalBlock?: number;
     }
   > = {};
 
@@ -36,7 +36,7 @@ export class RatesProvider implements IRatesProvider {
         // find an overlap between the requested range and the market emission range
         const overlap = {
           from: Math.max(from.block, block.initialBlock),
-          to: Math.min(to.block, block.finalBlock),
+          to: Math.min(to.block, block.finalBlock ?? to.block),
         };
         if (overlap.from > overlap.to) return undefined;
 
@@ -51,6 +51,7 @@ export class RatesProvider implements IRatesProvider {
           ? marketEmission.morphoRatePerSecondSupplySide
           : marketEmission.morphoRatePerSecondBorrowSide;
 
+        if (!block.finalBlock) throw Error("No final block found, cannot calculate rate");
         return {
           from: {
             block: block.initialBlock,
@@ -64,5 +65,26 @@ export class RatesProvider implements IRatesProvider {
         };
       })
       .filter(isDefined);
+  }
+  idToBlockTimestamp(id: string) {
+    if (!this.#configBlocks[id]) throw new Error(`No config found for ${id}`);
+    const config = this.#marketDistributor.configFetcher.getConfigurations([id])[0];
+
+    if (!config) throw new Error(`No config found for ${id}`);
+
+    return {
+      from: {
+        block: this.#configBlocks[id].initialBlock,
+        timestamp: parseDate(config.initialTimestamp),
+      },
+      to: {
+        block: this.#configBlocks[id].finalBlock,
+        timestamp: parseDate(config.finalTimestamp),
+      },
+    };
+  }
+
+  get marketDistributor() {
+    return this.#marketDistributor;
   }
 }

@@ -1,4 +1,4 @@
-import { providers } from "ethers";
+import { BigNumber, constants, providers } from "ethers";
 import ageEpochs from "./configuration/age-epochs.json";
 import { parseUnits } from "ethers/lib/utils";
 import { DistributionFn } from "./distributionScripts/common";
@@ -26,6 +26,8 @@ interface DistributionParameters extends Record<string, any> {
 export interface IConfigurationFetcher {
   getConfigurations: (ids: string[]) => AgeEpoch[];
   getAllConfigurations: () => AgeEpoch[];
+  getEndedConfigurations: (ts: number) => AgeEpoch[];
+  getAccumulatedRewardsEmitted: (id: string) => BigNumber;
 }
 export class InMemoryConfigurationFetcher implements IConfigurationFetcher {
   getConfigurations(ids: string[]) {
@@ -33,6 +35,24 @@ export class InMemoryConfigurationFetcher implements IConfigurationFetcher {
   }
   getAllConfigurations() {
     return ageEpochs;
+  }
+  static getEndedConfigurations(ts: number) {
+    return ageEpochs.filter(({ finalTimestamp }) => ts > parseDate(finalTimestamp));
+  }
+  getEndedConfigurations(ts: number) {
+    return InMemoryConfigurationFetcher.getEndedConfigurations(ts);
+  }
+
+  getAccumulatedRewardsEmitted(id: string) {
+    const lastEpoch = ageEpochs.find(({ id: _id }) => _id === id);
+    if (!lastEpoch) throw new Error(`No epoch found for id ${id}`);
+    const allEmitted = ageEpochs.filter(
+      ({ initialTimestamp }) => parseDate(initialTimestamp) < parseDate(lastEpoch.finalTimestamp)
+    );
+
+    return allEmitted.reduce((acc, { distributionParameters: { totalEmission } }) => {
+      return acc.add(parseUnits(totalEmission));
+    }, constants.Zero);
   }
 }
 
@@ -93,15 +113,22 @@ export class MarketDistributor {
       any,
       {
         initialBlock: number;
-        finalBlock: number;
+        finalBlock?: number;
       }
     > = {};
+    const currentTs = now();
     for (const config of configs) {
       const { initialTimestamp, finalTimestamp } = config;
       const [initialBlock, finalBlock] = await Promise.all([
-        this.#blockFetcher.blockFromTimestamp(parseDate(initialTimestamp), "before"),
-        this.#blockFetcher.blockFromTimestamp(parseDate(finalTimestamp), "after"),
+        parseDate(initialTimestamp) < currentTs
+          ? this.#blockFetcher.blockFromTimestamp(parseDate(initialTimestamp), "before")
+          : undefined,
+        parseDate(finalTimestamp) < currentTs
+          ? this.#blockFetcher.blockFromTimestamp(parseDate(finalTimestamp), "after")
+          : undefined,
       ]);
+      if (!initialBlock) continue;
+
       configBlocks[config.id] = {
         initialBlock,
         finalBlock,
@@ -133,6 +160,6 @@ export const isCorrectConfig = (config: any): config is AgeEpoch =>
     config.distributionParameters.totalEmission
   );
 
-const now = () => Date.now() / 1000;
+export const now = () => Date.now() / 1000;
 
 export const parseDate = (date: string) => Math.floor(new Date(date).getTime() / 1000);

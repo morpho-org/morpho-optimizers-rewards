@@ -1,7 +1,10 @@
-import { BigNumber, constants } from "ethers";
+import { BigNumber, constants, providers } from "ethers";
 import { WadRayMath } from "@morpho-labs/ethers-utils/lib/maths";
 import { cloneDeep } from "lodash";
 import { computeMerkleTree } from "../utils";
+import { MarketDistributor, parseDate } from "./MarketDistributor";
+import { RatesProvider } from "./RatesProvider";
+import { ChainEventFetcher } from "./eventFetcher/ChainEventFetcher";
 
 export interface BlockTimestamp {
   readonly block: number;
@@ -15,6 +18,8 @@ export interface RangeRate {
 }
 export interface IRatesProvider {
   getRangeRates(marketSide: string, from: BlockTimestamp, to: BlockTimestamp): readonly RangeRate[];
+  marketDistributor: MarketDistributor;
+  idToBlockTimestamp: (id: string) => { from: BlockTimestamp; to: { block?: number; timestamp: number } };
 }
 export interface BaseEvent {
   readonly block: BlockTimestamp;
@@ -62,6 +67,8 @@ export interface IEventFetcher {
    * @param to The timestamp to which to end
    */
   getEvents: (from: BlockTimestamp, to: BlockTimestamp) => Promise<(TxEvent | IndexesEvent)[]>;
+
+  getLatestBlock: () => Promise<BlockTimestamp>;
 }
 
 export interface Market {
@@ -86,9 +93,34 @@ export interface ILogger {
   log: (...data: any) => void;
 }
 export class DistributorV1 {
+  static async fromChain(provider: providers.Provider) {
+    const marketDistributor = new MarketDistributor(provider);
+    const ratesFetcher = new RatesProvider(marketDistributor);
+
+    await ratesFetcher.init();
+    console.log("Rates initialized");
+
+    const eventsFetcher = new ChainEventFetcher(provider);
+
+    const distributor = new DistributorV1(ratesFetcher, eventsFetcher);
+    const firstEpoch = marketDistributor.configFetcher.getConfigurations(["age1-epoch1"])?.[0];
+    if (!firstEpoch || firstEpoch.id !== "age1-epoch1") throw new Error("Invalid initial epoch provided");
+
+    const firstEpochBlock = 14927832;
+
+    // Fetch all users that was coming before the first epoch
+    await distributor.run(undefined, {
+      block: firstEpochBlock,
+      timestamp: parseDate(firstEpoch.initialTimestamp),
+    });
+    console.log("All events before first epoch fetched");
+
+    return distributor;
+  }
+
   static #initialMorphoBlock = {
-    block: 14927832,
-    timestamp: Math.floor(new Date("2022-06-08T17:00:06.000Z").getTime() / 1000),
+    block: 14860866,
+    timestamp: Math.floor(new Date("2022-05-28T02:44:49.000Z").getTime() / 1000),
   };
   static #computeMorphoAccrued(lastIndex: BigNumber, newIndex: BigNumber, totalUnderlying: BigNumber) {
     if (lastIndex.gt(newIndex))
@@ -123,16 +155,26 @@ export class DistributorV1 {
     this.#eventsFetcher = _eventsFetcher;
   }
 
-  async run(from: BlockTimestamp, to: BlockTimestamp): Promise<void> {
+  async runTo(id: string) {
+    const { to } = this.#ratesProvider.idToBlockTimestamp(id);
+    if (!to.block) throw Error("Invalid range");
+    await this.run(undefined, to as BlockTimestamp);
+  }
+  async run(from?: BlockTimestamp, to?: BlockTimestamp): Promise<void> {
+    if (!from) from = DistributorV1.#initialMorphoBlock;
+    if (!to) to = await this.#eventsFetcher.getLatestBlock();
+
     if (from.block > to.block) throw Error("Invalid range");
     if (to.block < this.#fetchedTo.block) throw Error("Invalid range, already fetched");
     if (to.block === this.#fetchedTo.block) {
+      console.log("Already fetched to block", to.block);
       return;
     }
     from = {
       block: Math.max(from.block, this.#fetchedTo.block),
       timestamp: Math.max(from.timestamp, this.#fetchedTo.timestamp),
     };
+    console.log("Fetching from", from, "to", to);
 
     const events = await this.#eventsFetcher.getEvents(from, to);
     for (const event of events) {
@@ -330,8 +372,7 @@ export class DistributorV1 {
     };
   }
   async generateMerkleTree(ts: BlockTimestamp) {
-    const from = DistributorV1.#initialMorphoBlock;
-    await this.run(from, ts);
+    await this.run(undefined, ts);
     const { users } = this.getDistributionSnapshot(ts);
 
     // Format users for merkle tree
@@ -352,6 +393,13 @@ export class DistributorV1 {
       .sort((a, b) => a.address.localeCompare(b.address));
 
     return computeMerkleTree(usersForMerkle);
+  }
+
+  get ratesProvider() {
+    return this.#ratesProvider;
+  }
+  get eventsFetcher() {
+    return this.#eventsFetcher;
   }
 }
 
