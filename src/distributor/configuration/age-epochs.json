@@ -1,0 +1,41 @@
+[
+  {
+    "id": "age1-epoch1",
+    "snapshotBlock": 14927832,
+    "initialTimestamp": "2022-06-08T17:00:06.000Z",
+    "finalTimestamp": "2022-07-13T17:00:00.000Z",
+    "distributionScript": "ageOne",
+    "distributionParameters": {
+      "totalEmission": "350000",
+      "protocolDistribution": {
+        "morphoCompound": 10000
+      }
+    }
+  },
+  {
+    "id": "age1-epoch2",
+    "snapshotBlock": 15134933,
+    "initialTimestamp": "2022-07-13T17:00:06.000Z",
+    "finalTimestamp": "2022-08-16T17:00:00.000Z",
+    "distributionScript": "ageOne",
+    "distributionParameters": {
+      "totalEmission": "1700000",
+      "protocolDistribution": {
+        "morphoCompound": 10000
+      }
+    }
+  },
+  {
+    "id": "age1-epoch3",
+    "snapshotBlock": 15353032,
+    "initialTimestamp": "2022-08-16T17:00:06.000Z",
+    "finalTimestamp": "2022-09-20T15:00:00.000Z",
+    "distributionScript": "ageOne",
+    "distributionParameters": {
+      "totalEmission": "2950000",
+      "protocolDistribution": {
+        "morphoCompound": 10000
+      }
+    }
+  }
+]
