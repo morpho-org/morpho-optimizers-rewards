@@ -84,7 +84,9 @@ const distribute = async (
   if (mergeTrees) {
     const mergedTree = mergeMerkleTrees(trees);
 
-    const [lastProof] = await storageService.readAllProofs();
+    const proofs = await storageService.readAllProofs();
+
+    const lastProof = proofs[proofs.length - 1];
 
     const epoch = lastProof.epochId;
 
