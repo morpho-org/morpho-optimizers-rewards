@@ -4,6 +4,7 @@ import {
   ageThreeDistribution,
   ageFourDistribution,
   ageFiveDistribution,
+  ageSixDistribution,
 } from "./distributions";
 import { BigNumber } from "ethers";
 import { AgeConfig, EpochConfig, ProtocolDistribution } from "./ages.types";
@@ -21,6 +22,7 @@ const distributions = {
   age3: ageThreeDistribution,
   age4: ageFourDistribution,
   age5: ageFiveDistribution,
+  age6: ageSixDistribution,
 };
 
 const computeProtocolDistribution = (
