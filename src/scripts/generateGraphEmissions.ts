@@ -26,21 +26,22 @@ const generateGraphEmissions = async () => {
   );
   const formattedEmissions: Record<string, string> = {};
 
+  const allEpochsDefined = await allEpochs();
+  const getKey = (epochId: string) => allEpochsDefined.findIndex(({ id }) => id === epochId) + 1;
+
   distributions.forEach(({ epoch, distribution }) => {
     Object.entries(distribution.marketsEmissions).forEach(([market, distribution]) => {
-      const generateKey = (side: "Supply" | "Borrow") => [epoch.id, side, market].join("-");
+      const generateKey = (side: "Supply" | "Borrow") => [getKey(epoch.id), side, market].join("-");
 
       formattedEmissions[generateKey("Supply")] = distribution!.morphoRatePerSecondSupplySide.toString();
       formattedEmissions[generateKey("Borrow")] = distribution!.morphoRatePerSecondBorrowSide.toString();
     });
   });
-
-  const allEpochsDefined = await allEpochs();
   const startTimestamps = Object.fromEntries(
-    allEpochsDefined.map(({ id, initialTimestamp }) => [id, initialTimestamp.toString()])
+    allEpochsDefined.map(({ id, initialTimestamp }) => [getKey(id), initialTimestamp.toString()])
   );
   const endTimestamps = Object.fromEntries(
-    allEpochsDefined.map(({ id, finalTimestamp }) => [id, finalTimestamp.toString()])
+    allEpochsDefined.map(({ id, finalTimestamp }) => [getKey(id), finalTimestamp.toString()])
   );
 
   const hash = await uploadToIPFS({

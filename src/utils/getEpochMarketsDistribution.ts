@@ -4,7 +4,6 @@ import { formatUnits } from "ethers/lib/utils";
 import { now } from "../helpers";
 import { StorageService } from "./StorageService";
 import _mapValues from "lodash/mapValues";
-import { blockFromTimestamp } from "./etherscan";
 import { getEpoch, timestampToEpoch } from "../ages";
 
 export const getMarketsDistribution = async (
@@ -65,6 +64,7 @@ export const computeEpochMarketsDistribution = async (
     totalEmission: formatUnits(epoch.distributionParameters.totalEmission),
     snapshotProposal: epoch.distributionParameters.snapshotProposal?.toString(),
     parameters: {
+      ...epoch.distributionParameters,
       snapshotBlock: epoch.snapshotBlock,
       initialTimestamp: epoch.initialTimestamp,
       finalTimestamp: epoch.finalTimestamp,
