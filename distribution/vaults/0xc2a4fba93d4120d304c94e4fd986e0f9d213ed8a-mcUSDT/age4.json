@@ -1,0 +1,52 @@
+{
+  "epochId": "age4",
+  "root": "0x5ca181c97e575cbe1d4fce302bfac900dac1d55d63f6a1b5703aab655160d1e2",
+  "total": "14573435313925584189",
+  "proofs": {
+    "0xc2a4fba93d4120d304c94e4fd986e0f9d213ed8a": {
+      "amount": "11182001453274656430",
+      "proof": [
+        "0xa29de6b9e7ba7d63576b5bcbc8d1378a419617a564ea25cff22dee413e5bf994",
+        "0x66e7a2a0fef25c6e5818ae7bf1f84ca7ebff872c6d33a75e0eb560d11bde3d17",
+        "0x867c0fc89459d02e6e1b5bbb5268a61ee4089b84a5f048ad3f5ab0e9b273629b"
+      ]
+    },
+    "0xc8884ede1ae44bdff60da4b9c542c34a69648a87": {
+      "amount": "1954912165364841242",
+      "proof": [
+        "0xc569c8fde47d17dad8ab1f03bccb0dc567eb078216903b6c5a634f9d899c459b",
+        "0x66e7a2a0fef25c6e5818ae7bf1f84ca7ebff872c6d33a75e0eb560d11bde3d17",
+        "0x867c0fc89459d02e6e1b5bbb5268a61ee4089b84a5f048ad3f5ab0e9b273629b"
+      ]
+    },
+    "0x5c0d0a9a0c3a0a5b591496ff894686893b69faa2": {
+      "amount": "2000526891695972",
+      "proof": [
+        "0x8f07966e4bcd7386555c840791d1dcccb2d4a114f7d4fa4a8f1446e709bb1661",
+        "0xbd4d85f3923468a00b530bfe191ca2fccfaea641f4195aadedef246f0f1e929e",
+        "0x867c0fc89459d02e6e1b5bbb5268a61ee4089b84a5f048ad3f5ab0e9b273629b"
+      ]
+    },
+    "0xb396c717105f2f9ba81007c7fb774fb06d0fb937": {
+      "amount": "1244783962037841918",
+      "proof": [
+        "0x7e2acfb2f730b7a9971251c6b410dcb2ec28f23d02f5afac62fe70f41e4ff567",
+        "0xbd4d85f3923468a00b530bfe191ca2fccfaea641f4195aadedef246f0f1e929e",
+        "0x867c0fc89459d02e6e1b5bbb5268a61ee4089b84a5f048ad3f5ab0e9b273629b"
+      ]
+    },
+    "0xc30fba978743a43e736fc32fbeed364b8a2039cd": {
+      "amount": "189737206356548627",
+      "proof": [
+        "0xf847fa499dc2ee71b24f2dd1b999e69c4c02c5bc77e563123c150cf83976c50b"
+      ]
+    }
+  },
+  "leaves": [
+    "0xc569c8fde47d17dad8ab1f03bccb0dc567eb078216903b6c5a634f9d899c459b",
+    "0xa29de6b9e7ba7d63576b5bcbc8d1378a419617a564ea25cff22dee413e5bf994",
+    "0x7e2acfb2f730b7a9971251c6b410dcb2ec28f23d02f5afac62fe70f41e4ff567",
+    "0x8f07966e4bcd7386555c840791d1dcccb2d4a114f7d4fa4a8f1446e709bb1661",
+    "0x867c0fc89459d02e6e1b5bbb5268a61ee4089b84a5f048ad3f5ab0e9b273629b"
+  ]
+}
