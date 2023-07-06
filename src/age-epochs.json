@@ -237,6 +237,51 @@
         }
       ]
     }
-}
-
+  },
+  {
+  "id": "age6",
+  "initialTimestamp": "2023-07-06T15:00:00.000Z",
+  "finalTimestamp": "2023-08-20T15:00:00.000Z",
+    "distributionScript": "simpleVoteDistribution",
+    "distributionParameters": {
+      "totalEmission": "1000000",
+      "marketsRepartition": [
+        {
+          "symbol": "aDAI",
+          "market": "0x028171bCA77440897B824Ca71D1c56caC55b68A3",
+          "weight": 376
+        },
+        {
+          "symbol": "aWETH",
+          "market": "0x030bA81f1c18d280636F32af80b9AAd02Cf0854e",
+          "weight": 4610
+        },
+        {
+          "symbol": "aUSDC",
+          "market": "0xBcca60bB61934080951369a648Fb03DF4F96263C",
+          "weight": 1743
+        },
+        {
+          "symbol": "aUSDT",
+          "market": "0x3Ed3B47Dd13EC9a98b44e6204A523E766B225811",
+          "weight": 1059
+        },
+        {
+          "symbol": "aWBTC",
+          "market": "0x9ff58f4fFB29fA2266Ab25e75e2A8b3503311656",
+          "weight": 1108
+        },
+        {
+          "symbol": "cUSDT",
+          "market": "0xf650C3d88D12dB855b8bf7D11Be6C55A4e07dCC9",
+          "weight": 317
+        },
+        {
+          "symbol": "aWETHV3",
+          "market": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+          "weight": 788
+        }
+      ]
+    }
+  }
 ]
