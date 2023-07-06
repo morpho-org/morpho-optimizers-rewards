@@ -72,7 +72,9 @@ export default class Distributor {
       const duration = BigNumber.from(epochConfig.finalTimestamp).sub(this._lastTimestamp);
       if (duration.lte(constants.Zero)) {
         // throw an error
-        throw Error(`The duration of the ${epochConfig.id} is not positive`);
+        throw Error(
+          `The duration of the ${epochConfig.id} is not positive, from ${this._lastTimestamp} to ${epochConfig.finalTimestamp}`
+        );
       }
       const rate = totalMorphoDistributed.mul(Distributor.SCALING_FACTOR).div(duration);
       console.log(`${allEvents.length} events to process for ${epochConfig.id}...`);

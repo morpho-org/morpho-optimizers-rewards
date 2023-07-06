@@ -70,7 +70,7 @@ export const allEpochs: () => Promise<ParsedAgeEpochConfig[]> = () =>
 
 export const timestampToEpoch = async (timestamp: number) => {
   const epochs = await allEpochs();
-  const current = epochs.find((epoch) => epoch.initialTimestamp <= timestamp && epoch.finalTimestamp >= timestamp);
+  const current = epochs.find((epoch) => epoch.initialTimestamp <= timestamp && epoch.finalTimestamp > timestamp);
   if (!current) throw new Error(`No epoch found for timestamp ${timestamp}`);
   return current;
 };

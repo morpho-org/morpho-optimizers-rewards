@@ -77,7 +77,7 @@ describe.each(rawEpochs)("Test Epochs Configuration", (rawEpoch) => {
     let file: MarketsEmissionFs;
     beforeAll(async () => {
       const _file = await storageService.readMarketDistribution(epoch.id);
-      expect(file).not.toBeUndefined();
+      expect(_file).not.toBeUndefined();
       file = _file!;
       ({ marketsEmissions } = await epoch.distributionScript({
         ...epoch,

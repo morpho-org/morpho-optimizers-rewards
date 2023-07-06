@@ -24,7 +24,7 @@ describe("Markets distribution", () => {
     expect(marketDistribution).not.toBeUndefined();
   });
   it("Should include the snapshotProposal field for age3", async () => {
-    const marketDistribution = await getMarketsDistribution(storageService, 1672326001);
+    const marketDistribution = await getMarketsDistribution(storageService, 1672326000);
     console.log(marketDistribution);
     expect(marketDistribution.snapshotProposal).toBeTruthy();
   });
