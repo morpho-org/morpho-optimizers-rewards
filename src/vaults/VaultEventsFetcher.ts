@@ -1,16 +1,16 @@
 import { BigNumber, BigNumberish, constants, providers } from "ethers";
 import { TransactionEvents, VaultDepositEvent, VaultTransferEvent, VaultWithdrawEvent } from "./types";
 import { maxBN } from "@morpho-labs/ethers-utils/lib/utils";
-import { EpochConfig } from "../ages";
 import { VaultEventType } from "./Distributor";
 import {
   MorphoAaveV2SupplyVault,
   MorphoAaveV2SupplyVault__factory,
   MorphoCompoundSupplyVault,
 } from "@morpho-labs/morpho-ethers-contract";
+import { ParsedAgeEpochConfig } from "../ages";
 
 export interface EventsFetcherInterface {
-  fetchSortedEventsForEpoch: (epochConfig: EpochConfig) => Promise<[TransactionEvents[], BigNumber]>;
+  fetchSortedEventsForEpoch: (epochConfig: ParsedAgeEpochConfig) => Promise<[TransactionEvents[], BigNumber]>;
   getBlock: (blockNumber: number) => Promise<providers.Block>;
 }
 
@@ -27,20 +27,20 @@ export default class VaultEventsFetcher implements EventsFetcherInterface {
   }
 
   async fetchSortedEventsForEpoch({
-    epochNumber,
+    id,
     finalBlock,
     initialBlock,
     initialTimestamp,
-  }: EpochConfig): Promise<[TransactionEvents[], BigNumber]> {
-    let timeFrom = initialTimestamp;
+  }: ParsedAgeEpochConfig): Promise<[TransactionEvents[], BigNumber]> {
+    let timeFrom = BigNumber.from(initialTimestamp);
     const blockFromCurrentEpoch = maxBN(initialBlock!, this.deploymentBlock);
     const depositEvents = await this._fetchDepositEvents(blockFromCurrentEpoch, finalBlock!);
 
-    console.log(epochNumber, depositEvents.length, "Deposit events");
+    console.log(id, depositEvents.length, "Deposit events");
     const withdrawEvents = await this._fetchWithdrawEvents(blockFromCurrentEpoch, finalBlock!);
-    console.log(epochNumber, withdrawEvents.length, "Withdraw events");
+    console.log(id, withdrawEvents.length, "Withdraw events");
     const transferEvents = await this._fetchTransferEvents(blockFromCurrentEpoch, finalBlock!);
-    console.log(epochNumber, transferEvents.length, "Transfer events");
+    console.log(id, transferEvents.length, "Transfer events");
 
     // we assume that, after the first deposit event, the vaults is never empty
     // TODO: handle the case if there is an empty vault after starting distribution
@@ -49,9 +49,7 @@ export default class VaultEventsFetcher implements EventsFetcherInterface {
         event1.event.blockNumber > event2.event.blockNumber ? 1 : -1
       );
       if (!firstDeposit)
-        throw Error(
-          `Inconsistent config: some MORPHO tokens are distributed while there is no deposit in epoch ${epochNumber}`
-        );
+        throw Error(`Inconsistent config: some MORPHO tokens are distributed while there is no deposit in ${id}`);
       const firstDepositBlock = await this.provider.getBlock(firstDeposit.event.blockNumber);
       timeFrom = BigNumber.from(firstDepositBlock.timestamp);
     }

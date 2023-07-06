@@ -1,53 +1,91 @@
-import { getEpochFromNumber } from "../utils/timestampToEpoch";
 import { providers } from "ethers";
-import { commify } from "ethers/lib/utils";
+import { formatUnits } from "ethers/lib/utils";
 import * as dotenv from "dotenv";
-import { startedEpochs } from "../ages/ages";
+import { epochNames, getEpoch, snapshotableEpochs } from "../ages";
 import { FileSystemStorageService } from "../utils/StorageService";
-import { computeEpochMarketsDistribution } from "../utils/getEpochMarketsDistribution";
+import { mapValues } from "lodash";
+import { MarketsEmissionFs } from "../ages/distributions/MarketsEmissionFs";
 
 dotenv.config();
 
 const storageService = new FileSystemStorageService();
 
-const computeMarketsEmissions = async (epochNumber?: number) => {
-  if (epochNumber) console.log(`Compute markets emissions for ${epochNumber}`);
+const computeMarketsEmissions = async (epochId?: string) => {
+  if (epochId && !epochNames.includes(epochId)) throw new Error("Invalid epoch id");
+  if (epochId) console.log(`Compute markets emissions for ${epochId}`);
   else console.log("Compute markets emissions for all epochs");
 
   const provider = new providers.JsonRpcProvider(process.env.RPC_URL);
 
-  if (epochNumber && !getEpochFromNumber(epochNumber)) throw new Error("Invalid epoch id");
-
-  const epochs = epochNumber ? [getEpochFromNumber(epochNumber)!] : startedEpochs;
-  if (!epochNumber)
-    console.log(`${epochs.length} epochs to compute, to epoch ${epochs[epochs.length - 1].epoch.epochNumber}`);
+  const epochs = epochId ? [await getEpoch(epochId)] : await snapshotableEpochs();
+  if (!epochId) console.log(`${epochs.length} epochs to compute, to ${epochs[epochs.length - 1].id}`);
 
   // Compute emissions for each epoch
   const emissions = await Promise.all(
-    epochs.map(async ({ epoch }) => {
-      return computeEpochMarketsDistribution(epoch.epochNumber, provider, storageService, true);
+    epochs.map(async (epoch) => {
+      if (!epoch.snapshotBlock) throw new Error(`Epoch ${epoch.id} has no snapshot block`);
+      const { marketsEmissions } = await epoch.distributionScript({
+        ...epoch,
+        ...epoch.distributionParameters,
+        provider,
+        snapshotBlock: epoch.snapshotBlock!,
+      });
+
+      const markets = mapValues(
+        marketsEmissions,
+        ({
+          morphoEmittedSupplySide,
+          morphoEmittedBorrowSide,
+          morphoRatePerSecondBorrowSide,
+          morphoRatePerSecondSupplySide,
+          totalMarketSizeSupplySide,
+          totalMarketSizeBorrowSide,
+          decimals,
+        }) => ({
+          morphoEmittedSupplySide: formatUnits(morphoEmittedSupplySide),
+          morphoRatePerSecondSupplySide: formatUnits(morphoRatePerSecondSupplySide),
+          morphoRatePerSecondBorrowSide: formatUnits(morphoRatePerSecondBorrowSide),
+          morphoEmittedBorrowSide: formatUnits(morphoEmittedBorrowSide),
+          totalMarketSizeSupplySide: formatUnits(totalMarketSizeSupplySide, decimals),
+          totalMarketSizeBorrowSide: formatUnits(totalMarketSizeBorrowSide, decimals),
+        })
+      );
+      const marketsEmissionFs: MarketsEmissionFs = {
+        epochId: epoch.id,
+        totalEmission: formatUnits(epoch.distributionParameters.totalEmission),
+        snapshotProposal: epoch.distributionParameters.snapshotProposal,
+        parameters: {
+          snapshotBlock: epoch.snapshotBlock!,
+          initialTimestamp: epoch.initialTimestamp,
+          finalTimestamp: epoch.finalTimestamp,
+          duration: epoch.finalTimestamp - epoch.initialTimestamp,
+        },
+        markets,
+      };
+
+      await storageService.writeMarketEmission(epoch.id, marketsEmissionFs, true);
+
+      return marketsEmissionFs;
     })
   );
 
   // Log a recap to the console
-  const recap = emissions.map((marketsEmissions) => {
-    return {
-      age: marketsEmissions.age,
-      epoch: marketsEmissions.epoch,
-      markets: Object.keys(marketsEmissions.markets).length,
-      totalEmission: commify(marketsEmissions.totalEmission),
-      start: new Date(+marketsEmissions.parameters.initialTimestamp.toString() * 1000).toISOString(),
-      end: new Date(+marketsEmissions.parameters.finalTimestamp.toString() * 1000).toISOString(),
-    };
-  });
+  const recap = emissions.map((e) => ({
+    epochId: e.epochId,
+    totalEmission: e.totalEmission,
+    initialTimestamp: e.parameters.initialTimestamp,
+    finalTimestamp: e.parameters.finalTimestamp,
+    duration: e.parameters.duration,
+    snapshotBlock: e.parameters.snapshotBlock,
+  }));
+
   console.table(recap);
 };
 
-const epochIdIndex = process.argv.indexOf("--epoch");
+const epochIdIndex = process.argv.indexOf("--id");
 let epochNumber = undefined;
 if (epochIdIndex !== -1) {
-  epochNumber = parseFloat(process.argv[epochIdIndex + 1]);
-  if (isNaN(epochNumber)) throw new Error("Invalid epoch id");
+  epochNumber = process.argv[epochIdIndex + 1];
 }
 
 computeMarketsEmissions(epochNumber)

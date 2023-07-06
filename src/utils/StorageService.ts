@@ -2,24 +2,24 @@ import * as path from "path";
 import * as fs from "fs";
 import { MarketsEmissionFs } from "../ages/distributions/MarketsEmissionFs";
 import { Proof, Proofs } from "../ages/distributions/Proofs";
-import { numberOfEpochs } from "../ages/ages";
+import { finishedEpochs } from "../ages";
 import { UsersDistribution } from "../ages/distributions/UsersDistribution";
-import { epochNumberToAgeEpochString } from "../helpers";
+import { isDefined } from "../helpers";
 
 export interface StorageService {
-  readMarketDistribution: (epochNumber: number) => Promise<MarketsEmissionFs | void>;
-  writeMarketEmission: (epochNumber: number, emission: MarketsEmissionFs, force?: boolean) => Promise<void>;
-  readUsersDistribution: (epochNumber: number) => Promise<UsersDistribution | void>;
-  writeUsersDistribution: (epochNumber: number, distribution: UsersDistribution, force?: boolean) => Promise<void>;
-  readProofs: (epochNumber: number) => Promise<Proofs | void>;
+  readMarketDistribution: (epochId: string) => Promise<MarketsEmissionFs | void>;
+  writeMarketEmission: (epochId: string, emission: MarketsEmissionFs, force?: boolean) => Promise<void>;
+  readUsersDistribution: (epochId: string) => Promise<UsersDistribution | void>;
+  writeUsersDistribution: (epochId: string, distribution: UsersDistribution, force?: boolean) => Promise<void>;
+  readProofs: (epochId: string) => Promise<Proofs | void>;
   readAllProofs: () => Promise<Proofs[]>;
-  readUserProof: (epochNumber: number, address: string) => Promise<Proof | void>;
-  writeProofs: (epochNumber: number, proofs: Proofs, force?: boolean) => Promise<void>;
+  readUserProof: (epochId: string, address: string) => Promise<Proof | void>;
+  writeProofs: (epochId: string, proofs: Proofs, force?: boolean) => Promise<void>;
 }
 
-export type ProofsCache = { [epochNumber: number]: Proofs | undefined };
-export type MarketsEmissionCache = { [epochNumber: number]: MarketsEmissionFs | undefined };
-export type UsersDistributionCache = { [epochNumber: number]: UsersDistribution | undefined };
+export type ProofsCache = { [epochId: string]: Proofs | undefined };
+export type MarketsEmissionCache = { [epochId: string]: MarketsEmissionFs | undefined };
+export type UsersDistributionCache = { [epochId: string]: UsersDistribution | undefined };
 
 export class FileSystemStorageService implements StorageService {
   #emissionsCache: MarketsEmissionCache = {};
@@ -27,21 +27,21 @@ export class FileSystemStorageService implements StorageService {
   #proofsCache: ProofsCache = {};
   #distributionRoot = "../../distribution";
 
-  async readMarketDistribution(epochNumber: number) {
+  async readMarketDistribution(epochId: string) {
     try {
-      const inCache = this.#emissionsCache[epochNumber];
+      const inCache = this.#emissionsCache[epochId];
       if (inCache) return inCache;
-      const { file } = this.#generateDistributionPath(epochNumber);
+      const { file } = this.#generateDistributionPath(epochId);
       const distribution = require(file) as MarketsEmissionFs;
-      this.#emissionsCache[epochNumber] = distribution;
+      this.#emissionsCache[epochId] = distribution;
       return distribution;
     } catch (error) {
       return;
     }
   }
 
-  async writeMarketEmission(epochNumber: number, emission: MarketsEmissionFs, force?: boolean) {
-    const { folder, file } = this.#generateDistributionPath(epochNumber);
+  async writeMarketEmission(epochId: string, emission: MarketsEmissionFs, force?: boolean) {
+    const { folder, file } = this.#generateDistributionPath(epochId);
     const fileExists = await fs.promises
       .access(file, fs.constants.R_OK | fs.constants.W_OK)
       .then(() => true)
@@ -51,21 +51,21 @@ export class FileSystemStorageService implements StorageService {
     await fs.promises.writeFile(file, JSON.stringify(emission, null, 2));
   }
 
-  async readUsersDistribution(epochNumber: number) {
+  async readUsersDistribution(epochId: string) {
     try {
-      const inCache = this.#distributionsCache[epochNumber];
+      const inCache = this.#distributionsCache[epochId];
       if (inCache) return inCache;
-      const { file } = this.#generateUsersDistributionPath(epochNumber);
+      const { file } = this.#generateUsersDistributionPath(epochId);
       const distribution = require(file) as UsersDistribution;
-      this.#distributionsCache[epochNumber] = distribution;
+      this.#distributionsCache[epochId] = distribution;
       return distribution;
     } catch (error) {
       return;
     }
   }
 
-  async writeUsersDistribution(epochNumber: number, distribution: UsersDistribution, force?: boolean) {
-    const { folder, file } = this.#generateUsersDistributionPath(epochNumber);
+  async writeUsersDistribution(epochId: string, distribution: UsersDistribution, force?: boolean) {
+    const { folder, file } = this.#generateUsersDistributionPath(epochId);
     const fileExists = await fs.promises
       .access(file, fs.constants.R_OK | fs.constants.W_OK)
       .then(() => true)
@@ -75,7 +75,7 @@ export class FileSystemStorageService implements StorageService {
     await fs.promises.writeFile(file, JSON.stringify(distribution, null, 2));
   }
 
-  async readProofs(epoch: number) {
+  async readProofs(epoch: string) {
     try {
       const inCache = this.#proofsCache[epoch];
       if (inCache) return inCache;
@@ -89,22 +89,21 @@ export class FileSystemStorageService implements StorageService {
   }
 
   async readAllProofs() {
+    const allEpochsWithProofs = await finishedEpochs();
     const result = await Promise.all(
-      new Array(numberOfEpochs).fill(0).map(async (_, index) => {
-        const epoch = numberOfEpochs - index;
-        const proofs = await this.readProofs(epoch);
-        return proofs ? [proofs] : [];
+      allEpochsWithProofs.map(async (epoch) => {
+        return this.readProofs(epoch.id);
       })
     );
-    return result.flat();
+    return result.filter(isDefined);
   }
 
-  async readUserProof(epoch: number, address: string) {
+  async readUserProof(epoch: string, address: string) {
     const proof = await this.readProofs(epoch);
     return proof?.proofs?.[address];
   }
 
-  async writeProofs(epoch: number, proofs: Proofs, force?: boolean) {
+  async writeProofs(epoch: string, proofs: Proofs, force?: boolean) {
     const { folder, file } = this.#generateProofsPath(epoch);
     const fileExists = await fs.promises
       .access(file, fs.constants.R_OK | fs.constants.W_OK)
@@ -115,28 +114,25 @@ export class FileSystemStorageService implements StorageService {
     await fs.promises.writeFile(file, JSON.stringify(proofs, null, 2));
   }
 
-  #generateDistributionPath(epochNumber: number) {
-    const { age, epoch } = this.#getAgeEpochPaths(epochNumber);
-    const folder = path.resolve(__dirname, this.#distributionRoot, age, epoch);
+  #generateDistributionPath(epochId: string) {
+    const folder = path.resolve(__dirname, this.#distributionRoot, ...this.#getAgeEpochPaths(epochId));
     const file = path.resolve(folder, "marketsEmission.json");
     return { folder, file };
   }
 
-  #generateProofsPath(epochNumber: number) {
-    const folder = path.resolve(__dirname, this.#distributionRoot, "proofs");
-    const filename = `proofs-${epochNumber}.json`;
-    const file = path.resolve(folder, filename);
+  #generateProofsPath(epochId: string) {
+    const folder = path.resolve(__dirname, this.#distributionRoot, ...this.#getAgeEpochPaths(epochId));
+    const file = path.resolve(folder, "proofs.json");
     return { folder, file };
   }
 
-  #generateUsersDistributionPath(epochNumber: number) {
-    const { age, epoch } = this.#getAgeEpochPaths(epochNumber);
-    const folder = path.resolve(__dirname, this.#distributionRoot, age, epoch);
+  #generateUsersDistributionPath(epochId: string) {
+    const folder = path.resolve(__dirname, this.#distributionRoot, ...this.#getAgeEpochPaths(epochId));
     const file = path.resolve(folder, "usersDistribution.json");
     return { folder, file };
   }
 
-  #getAgeEpochPaths(epochId: number) {
-    return epochNumberToAgeEpochString(epochId);
+  #getAgeEpochPaths(epochId: string) {
+    return epochId.split("-");
   }
 }

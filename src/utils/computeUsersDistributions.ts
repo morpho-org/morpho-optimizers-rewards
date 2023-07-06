@@ -1,19 +1,9 @@
 import { ethers, providers } from "ethers";
-import {
-  computeMerkleTree,
-  fetchUsers,
-  getAccumulatedEmission,
-  userBalancesToUnclaimedTokens,
-  sumRewards,
-  blockFromTimestamp,
-} from ".";
+import { computeMerkleTree, fetchUsers, getAccumulatedEmission, userBalancesToUnclaimedTokens, sumRewards } from ".";
 import { commify, formatUnits } from "ethers/lib/utils";
-import { finishedEpochs } from "../ages/ages";
+import { epochNames, finishedEpochs, getEpoch, ParsedAgeEpochConfig } from "../ages";
 import { SUBGRAPH_URL } from "../config";
 import { StorageService } from "./StorageService";
-import { getEpochFromNumber } from "./timestampToEpoch";
-import { epochNumberToAgeEpochString } from "../helpers";
-import { EpochConfig } from "../ages";
 
 export enum DataProvider {
   Subgraph = "subgraph",
@@ -21,16 +11,15 @@ export enum DataProvider {
 }
 
 export const computeUsersDistributionsForEpoch = async (
-  epoch: EpochConfig,
+  epoch: ParsedAgeEpochConfig,
   provider: providers.BaseProvider,
   storageService: StorageService,
   force?: boolean
 ) => {
-  console.log(`Compute users distribution for epoch ${epoch.epochNumber}`);
-  if (!epoch.finalBlock && epoch.finalTimestamp.lte(Math.floor(Date.now() / 1000)))
-    epoch.finalBlock = +(await blockFromTimestamp(epoch.finalTimestamp, "before"));
+  console.log(`Compute users distribution for ${epoch.id}`);
+  if (!epoch.finalBlock) throw new Error(`Final block not found for ${epoch.id}`);
 
-  const usersBalances = await fetchUsers(SUBGRAPH_URL, epoch.finalBlock ?? undefined);
+  const usersBalances = await fetchUsers(SUBGRAPH_URL, epoch.finalBlock);
   const usersAccumulatedRewards = (
     await Promise.all(
       usersBalances.map(async ({ address, balances }) => ({
@@ -45,16 +34,12 @@ export const computeUsersDistributionsForEpoch = async (
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { leaves, ...merkleTree } = computeMerkleTree(usersAccumulatedRewards);
 
-  const totalEmission = getAccumulatedEmission(epoch.epochNumber);
-
-  const { age: ageName, epoch: epochName } = epochNumberToAgeEpochString(epoch.epochNumber);
+  const totalEmission = getAccumulatedEmission(epoch.id);
 
   await storageService.writeUsersDistribution(
-    epoch.epochNumber,
+    epoch.id,
     {
-      age: ageName,
-      epoch: epochName,
-      epochNumber: epoch.epochNumber,
+      epochId: epoch.id,
       totalEmissionInitial: formatUnits(totalEmission),
       totalDistributed: formatUnits(merkleTree.total),
       distribution: usersAccumulatedRewards,
@@ -62,10 +47,9 @@ export const computeUsersDistributionsForEpoch = async (
     force
   );
 
-  await storageService.writeProofs(epoch.epochNumber, { epochNumber: epoch.epochNumber, ...merkleTree }, force);
+  await storageService.writeProofs(epoch.id, { epochId: epoch.id, ...merkleTree }, force);
   return {
-    ageName,
-    epochName,
+    epochId: epoch.id,
     nbUsers: usersAccumulatedRewards.length,
     totalEmission,
     merkleTree,
@@ -75,23 +59,22 @@ export const computeUsersDistributionsForEpoch = async (
 export const computeUsersDistributions = async (
   dataProvider: DataProvider,
   storageService: StorageService,
-  epochNumber?: number,
+  epochId?: string,
   force?: boolean
 ) => {
   if (dataProvider === DataProvider.RPC) throw new Error("RPC not supported yet");
-  if (epochNumber && !getEpochFromNumber(epochNumber)) throw new Error("Invalid epoch id");
+  if (epochId && !epochNames.includes(epochId)) throw new Error("Invalid epoch id");
 
   const provider = new ethers.providers.JsonRpcProvider(process.env.RPC_URL);
 
-  const epochs = epochNumber ? [getEpochFromNumber(epochNumber)!.epoch] : finishedEpochs.map(({ epoch }) => epoch);
-  if (!epochNumber)
-    console.log(`${epochs.length} epochs to compute, to epoch ${epochs[epochs.length - 1].epochNumber}`);
+  const epochs = epochId ? [await getEpoch(epochId)] : await finishedEpochs();
+  if (!epochId) console.log(`${epochs.length} epochs to compute, to epoch ${epochs[epochs.length - 1].id}`);
 
   const recap: any[] = []; // used to log the recap of the distribution
 
   // Compute emissions for each epoch synchronously for throughput reasons
   for (const epoch of epochs) {
-    const { ageName, epochName, nbUsers, totalEmission, merkleTree } = await computeUsersDistributionsForEpoch(
+    const { epochId, nbUsers, totalEmission, merkleTree } = await computeUsersDistributionsForEpoch(
       epoch,
       provider,
       storageService,
@@ -99,9 +82,7 @@ export const computeUsersDistributions = async (
     );
 
     recap.push({
-      age: ageName,
-      epoch: epochName,
-      epochNumber: epoch.epochNumber,
+      epochId,
       users: nbUsers,
       root: merkleTree.root,
       totalEmission: commify(formatUnits(totalEmission)),
@@ -110,5 +91,5 @@ export const computeUsersDistributions = async (
   }
 
   console.table(recap);
-  return epochs.map((epoch) => epoch.epochNumber);
+  return epochs.map((epoch) => epoch.id);
 };

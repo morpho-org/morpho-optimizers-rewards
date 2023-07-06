@@ -22,7 +22,7 @@ export const claim = async (userAddresses: string[], storageService: StorageServ
   const epochConfig = allProofs.find((epochConfig) => epochConfig.root.toLowerCase() === merkleRoot.toLowerCase());
 
   if (!epochConfig) throw Error("No epoch config found for the current merkle root");
-  console.log("Claiming rewards for epoch", epochConfig.epochNumber);
+  console.log("Claiming rewards for", epochConfig.epochId);
 
   const txs = await Promise.all(
     userAddresses

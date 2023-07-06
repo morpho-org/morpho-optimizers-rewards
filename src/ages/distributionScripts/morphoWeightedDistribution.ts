@@ -1,27 +1,40 @@
-import { BigNumber, constants, providers } from "ethers";
-import { MarketMinimal } from "../../utils/graph/getGraphMarkets/markets.types";
-import { BASIS_POINTS } from "../../helpers";
-import { DistributionFn, EpochConfig } from "../ages.types";
-import { AgeDistribution } from "./distributions.types";
+import { DistributionParams } from "./common";
+import { BigNumber, constants } from "ethers";
 import fetchMarketsData from "../../utils/markets/fetchMarketsData";
-import { blockFromTimestamp } from "../../utils";
+import { BASIS_POINTS } from "../../helpers";
+import { MarketMinimal } from "../../utils/graph/getGraphMarkets/markets.types";
 
-export const ageTwoDistribution: DistributionFn = async (
-  epoch: AgeDistribution,
-  { protocolDistribution, totalEmission, finalTimestamp, initialTimestamp, snapshotBlock, epochNumber }: EpochConfig,
-  provider?: providers.Provider
-) => {
-  if (!snapshotBlock) snapshotBlock = +(await blockFromTimestamp(initialTimestamp.sub(3600), "after"));
-  provider ??= new providers.InfuraProvider("mainnet");
-  if (!protocolDistribution) throw Error(`Cannot distribute tokens for ${epochNumber}: no protocolDistribution`);
+export interface morphoWeightedDistributionParams extends DistributionParams {
+  protocolDistribution: {
+    morphoCompound: number;
+    morphoAaveV2: number;
+  };
+}
+const validateParams = (p: any) => {
+  if (!("morphoCompound" in p)) throw Error("Missing field morphoCompound in protocolDistribution");
+  if (!("morphoAaveV2" in p)) throw Error("Missing field morphoAaveV2 in protocolDistribution");
+  if (p.morphoCompound + p.morphoAaveV2 !== 100_00) throw Error("Protocols distributions dont sum to 1");
+};
+
+const morphoWeightedDistribution = async ({
+  protocolDistribution,
+  totalEmission,
+  finalTimestamp,
+  initialTimestamp,
+  snapshotBlock,
+  provider,
+  id,
+}: morphoWeightedDistributionParams) => {
+  if (!protocolDistribution) throw Error(`Cannot distribute tokens for ${id}: no protocolDistribution`);
+  validateParams(protocolDistribution);
 
   const { aave, compound } = await fetchMarketsData(snapshotBlock, provider);
 
-  const aaveTokens = totalEmission.mul(protocolDistribution.morphoAave).div(BASIS_POINTS);
+  const aaveTokens = totalEmission.mul(protocolDistribution.morphoAaveV2).div(BASIS_POINTS);
 
   const compoundTokens = totalEmission.sub(aaveTokens);
 
-  const duration = finalTimestamp.sub(initialTimestamp);
+  const duration = BigNumber.from(finalTimestamp - initialTimestamp);
 
   const aaveDistribution = distributeTokens(aave, aaveTokens, duration);
 
@@ -74,3 +87,5 @@ const distributeTokens = (marketsData: MarketMinimal[], distribution: BigNumber,
     )
   );
 };
+
+export default morphoWeightedDistribution;

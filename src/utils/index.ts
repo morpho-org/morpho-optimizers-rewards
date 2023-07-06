@@ -1,4 +1,3 @@
-export { timestampToEpoch, getEpochsBetweenTimestamps, getNextEpoch, getPrevEpoch } from "./timestampToEpoch";
 export { userBalancesToUnclaimedTokens, getUserRewards, MarketRewards, sumRewards } from "./getUserRewards";
 export { getAccumulatedEmission, getAccumulatedEmissionPerMarket } from "./accumulatedEmission";
 export { getUserBalances } from "./getUserBalances";

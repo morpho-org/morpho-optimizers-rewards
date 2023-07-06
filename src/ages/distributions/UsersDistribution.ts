@@ -1,7 +1,5 @@
 export interface UsersDistribution {
-  age: string;
-  epoch: string;
-  epochNumber: number;
+  epochId: string;
   totalEmissionInitial: string;
   totalDistributed: string;
   distribution: {

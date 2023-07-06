@@ -21,7 +21,7 @@ const storageService = new FileSystemStorageService();
 
 const distribute = async (
   vaults: VaultConfiguration[],
-  epochToNumber?: number,
+  epochToId?: string,
   uploadHistory = false,
   mergeTrees = false,
   createBatch = false
@@ -48,7 +48,7 @@ const distribute = async (
     const proofsFetcher = new ProofsFetcher(storageService);
     const distributor = new Distributor(address, eventsFetcher, proofsFetcher);
 
-    const { history, lastMerkleTree } = await distributor.distributeMorpho(epochToNumber);
+    const { history, lastMerkleTree } = await distributor.distributeMorpho(epochToId);
 
     console.log(`Distributed ${Object.keys(history).length} epochs`);
 
@@ -86,7 +86,7 @@ const distribute = async (
 
     const [lastProof] = await storageService.readAllProofs();
 
-    const epoch = lastProof.epochNumber;
+    const epoch = lastProof.epochId;
 
     const filename = `${baseDir}/${epoch}-merged.json`;
     console.log(`Saving proof for ${filename}`);

@@ -1,6 +1,6 @@
 import * as dotenv from "dotenv";
 import { providers } from "ethers";
-import { allEpochs } from "../ages";
+import { allEpochs, snapshotableEpochs } from "../ages";
 import * as fs from "fs";
 
 dotenv.config();
@@ -12,34 +12,35 @@ const generateGraphEmissions = async () => {
   if (!canUse.authenticated) throw new Error("Wrong Pinata Key");
 
   const provider = new providers.JsonRpcProvider(process.env.RPC_URL);
+  const epochs = await snapshotableEpochs();
   const distributions = await Promise.all(
-    allEpochs
-      .filter(({ epoch }) => epoch.initialTimestamp.sub(3600).lt(Math.floor(Date.now() / 1000)))
-      .map(async ({ epoch, age }) => ({
-        epoch,
-        distribution: await age.distribution(age, epoch, provider),
-      }))
+    epochs.map(async (epoch) => ({
+      epoch,
+      distribution: await epoch.distributionScript({
+        ...epoch,
+        provider,
+        ...epoch.distributionParameters,
+        snapshotBlock: epoch.snapshotBlock!,
+      }),
+    }))
   );
   const formattedEmissions: Record<string, string> = {};
 
   distributions.forEach(({ epoch, distribution }) => {
     Object.entries(distribution.marketsEmissions).forEach(([market, distribution]) => {
-      const generateKey = (side: "Supply" | "Borrow") => ["epoch", epoch.epochNumber, side, market].join("-");
+      const generateKey = (side: "Supply" | "Borrow") => [epoch.id, side, market].join("-");
 
       formattedEmissions[generateKey("Supply")] = distribution!.morphoRatePerSecondSupplySide.toString();
       formattedEmissions[generateKey("Borrow")] = distribution!.morphoRatePerSecondBorrowSide.toString();
     });
   });
 
-  const epochKey = (epoch: number) => `epoch-${epoch}`;
+  const allEpochsDefined = await allEpochs();
   const startTimestamps = Object.fromEntries(
-    allEpochs.map(({ epoch: { epochNumber, initialTimestamp } }) => [
-      epochKey(epochNumber),
-      initialTimestamp.toString(),
-    ])
+    allEpochsDefined.map(({ id, initialTimestamp }) => [id, initialTimestamp.toString()])
   );
   const endTimestamps = Object.fromEntries(
-    allEpochs.map(({ epoch: { epochNumber, finalTimestamp } }) => [epochKey(epochNumber), finalTimestamp.toString()])
+    allEpochsDefined.map(({ id, finalTimestamp }) => [id, finalTimestamp.toString()])
   );
 
   const hash = await uploadToIPFS({

@@ -1,11 +1,11 @@
 import { providers } from "ethers";
-import { getEpochFromNumber, timestampToEpoch } from "./timestampToEpoch";
 import { MarketsEmissionFs } from "../ages/distributions/MarketsEmissionFs";
 import { formatUnits } from "ethers/lib/utils";
-import { epochNumberToAgeEpochString, now } from "../helpers";
+import { now } from "../helpers";
 import { StorageService } from "./StorageService";
 import _mapValues from "lodash/mapValues";
 import { blockFromTimestamp } from "./etherscan";
+import { getEpoch, timestampToEpoch } from "../ages";
 
 export const getMarketsDistribution = async (
   storageService: StorageService,
@@ -13,40 +13,43 @@ export const getMarketsDistribution = async (
   provider: providers.Provider = new providers.InfuraProvider(1),
   force?: boolean
 ) => {
-  const epochConfig = timestampToEpoch(timestamp ?? now());
-  if (!epochConfig) throw Error(`No epoch found at timestamp ${timestamp}`);
-  return getEpochMarketsDistribution(epochConfig.epoch.epochNumber, provider, storageService, force);
+  const epochConfig = await timestampToEpoch(timestamp ?? now());
+
+  return getEpochMarketsDistribution(epochConfig.id, provider, storageService, force);
 };
 
 export const getEpochMarketsDistribution = async (
-  epochNumber: number,
+  epochId: string,
   provider: providers.Provider,
   storageService: StorageService,
   force?: boolean
 ) => {
-  const distribution = await storageService.readMarketDistribution(epochNumber);
+  const distribution = await storageService.readMarketDistribution(epochId);
   if (distribution && !force) return distribution;
   // need to compute distribution from chain
-  return computeEpochMarketsDistribution(epochNumber, provider, storageService, force);
+  return computeEpochMarketsDistribution(epochId, provider, storageService, force);
 };
 
 export const computeEpochMarketsDistribution = async (
-  epochNumber: number,
+  epochId: string,
   provider: providers.Provider,
   storageService: StorageService,
   force?: boolean
 ) => {
-  const distribution = await storageService.readMarketDistribution(epochNumber);
+  const distribution = await storageService.readMarketDistribution(epochId);
   if (distribution && !force) return distribution;
-  console.warn(`Compute distribution for epoch ${epochNumber}`);
+  console.warn(`Compute distribution for ${epochId}`);
 
-  const ageAndEpoch = getEpochFromNumber(epochNumber);
-  if (!ageAndEpoch) throw Error(`Unknown epoch ${epochNumber}`);
+  const epoch = await getEpoch(epochId);
 
-  const { age, epoch } = ageAndEpoch;
+  if (!epoch.snapshotBlock) throw Error(`No snapshot block found for ${epochId}`);
 
-  // Will revert if snapshotBlock is not defined
-  const { marketsEmissions } = await age.distribution(age, epoch, provider);
+  const { marketsEmissions } = await epoch.distributionScript({
+    ...epoch,
+    ...epoch.distributionParameters,
+    provider,
+    snapshotBlock: epoch.snapshotBlock!,
+  });
 
   const formattedMarketsEmissions = _mapValues(marketsEmissions, (market) => ({
     morphoEmittedSupplySide: formatUnits(market!.morphoEmittedSupplySide),
@@ -57,22 +60,18 @@ export const computeEpochMarketsDistribution = async (
     totalMarketSizeBorrowSide: formatUnits(market!.totalMarketSizeBorrowSide, market!.decimals),
   }));
 
-  const { epoch: epochName, age: ageName } = epochNumberToAgeEpochString(epochNumber);
-  const snapshotBlock = epoch.snapshotBlock ?? +(await blockFromTimestamp(epoch.initialTimestamp.sub(3600), "after"));
   const result: MarketsEmissionFs = {
-    age: ageName,
-    epoch: epochName,
-    epochNumber: epoch.epochNumber,
-    totalEmission: formatUnits(epoch.totalEmission),
-    snapshotProposal: epoch.snapshotProposal?.toString(),
+    epochId: epoch.id,
+    totalEmission: formatUnits(epoch.distributionParameters.totalEmission),
+    snapshotProposal: epoch.distributionParameters.snapshotProposal?.toString(),
     parameters: {
-      snapshotBlock: snapshotBlock.toString(),
-      initialTimestamp: epoch.initialTimestamp.toString(),
-      finalTimestamp: epoch.finalTimestamp.toString(),
-      duration: epoch.finalTimestamp.sub(epoch.initialTimestamp).toString(),
+      snapshotBlock: epoch.snapshotBlock,
+      initialTimestamp: epoch.initialTimestamp,
+      finalTimestamp: epoch.finalTimestamp,
+      duration: epoch.finalTimestamp - epoch.initialTimestamp,
     },
     markets: formattedMarketsEmissions,
   };
-  await storageService.writeMarketEmission(epochNumber, result, force);
+  await storageService.writeMarketEmission(epochId, result, force);
   return result;
 };

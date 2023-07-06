@@ -1,14 +1,12 @@
 export interface MarketsEmissionFs {
-  age: string;
-  epoch: string;
-  epochNumber: number;
+  epochId: string;
   totalEmission: string;
   snapshotProposal?: string;
   parameters: {
-    snapshotBlock: string;
-    initialTimestamp: string;
-    finalTimestamp: string;
-    duration: string;
+    snapshotBlock: number;
+    initialTimestamp: number;
+    finalTimestamp: number;
+    duration: number;
   };
   markets: {
     [market: string]: {
