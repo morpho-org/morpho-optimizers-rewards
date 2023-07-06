@@ -159,54 +159,350 @@ describe("Vaults Distributor", () => {
     );
   });
 
-  describe.each(allEpochs.filter(({ epoch }) => epoch.finalTimestamp.lt(Math.floor(Date.now() / 1000))))(
-    "Vaults Epochs",
-    ({ epoch }) => {
-      describe(`Epoch ${epoch.epochNumber}`, () => {
-        let currentProof: Proofs;
+  describe.each(
+    // after epoch 11, the vaults address used for the tests does not have any MORPHO anymore
+    allEpochs.filter(({ epoch }) => epoch.finalTimestamp.lt(Math.floor(Date.now() / 1000)) && epoch.epochNumber < 11)
+  )("Vaults Epochs", ({ epoch }) => {
+    describe(`Epoch ${epoch.epochNumber}`, () => {
+      let currentProof: Proofs;
 
-        beforeAll(() => (currentProof = allProofs[allProofs.length - epoch.epochNumber]));
+      beforeAll(() => (currentProof = allProofs[allProofs.length - epoch.epochNumber]));
 
-        it("Should distribute tokens to vaults users with only one user", async () => {
-          const distributor = distributorFromEvents(vaultAddress, [
-            {
-              type: VaultEventType.Deposit,
-              event: {
-                blockNumber: epochConfig.initialBlock!,
-                transactionIndex: 1,
-                logIndex: 1,
-                args: {
-                  caller: user0,
-                  owner: user0,
-                  assets: parseUnits("1000"),
-                  shares: parseUnits("1000"),
-                },
+      it("Should distribute tokens to vaults users with only one user", async () => {
+        const distributor = distributorFromEvents(vaultAddress, [
+          {
+            type: VaultEventType.Deposit,
+            event: {
+              blockNumber: epochConfig.initialBlock!,
+              transactionIndex: 1,
+              logIndex: 1,
+              args: {
+                caller: user0,
+                owner: user0,
+                assets: parseUnits("1000"),
+                shares: parseUnits("1000"),
               },
             },
-          ]);
-          const { lastMerkleTree: merkleTree } = await distributor.distributeMorpho(epoch.epochNumber);
-          expect(merkleTree).toBeDefined();
-          expect(merkleTree).toHaveProperty("proofs");
-          expect(merkleTree).toHaveProperty("root");
+          },
+        ]);
+        const { lastMerkleTree: merkleTree } = await distributor.distributeMorpho(epoch.epochNumber);
+        expect(merkleTree).toBeDefined();
+        expect(merkleTree).toHaveProperty("proofs");
+        expect(merkleTree).toHaveProperty("root");
 
-          expect(merkleTree.proofs[user0].amount).toBnApproxEq(currentProof.proofs[vaultAddress]!.amount, 12);
-        });
-        it("Should distribute tokens to vaults users with two users", async () => {
-          const distributor = distributorFromEvents(vaultAddress, [
-            {
-              type: VaultEventType.Deposit,
-              event: {
-                blockNumber: epochConfig.initialBlock!,
-                transactionIndex: 1,
-                logIndex: 1,
-                args: {
-                  caller: user0,
-                  owner: user0,
-                  assets: parseUnits("1000"),
-                  shares: parseUnits("1000"),
-                },
+        expect(merkleTree.proofs[user0].amount).toBnApproxEq(currentProof.proofs[vaultAddress]!.amount, 12);
+      });
+      it("Should distribute tokens to vaults users with two users", async () => {
+        const distributor = distributorFromEvents(vaultAddress, [
+          {
+            type: VaultEventType.Deposit,
+            event: {
+              blockNumber: epochConfig.initialBlock!,
+              transactionIndex: 1,
+              logIndex: 1,
+              args: {
+                caller: user0,
+                owner: user0,
+                assets: parseUnits("1000"),
+                shares: parseUnits("1000"),
               },
             },
+          },
+          {
+            type: VaultEventType.Deposit,
+            event: {
+              blockNumber: epochConfig.initialBlock! + 1000,
+              transactionIndex: 1,
+              logIndex: 1,
+              args: {
+                caller: user1,
+                owner: user1,
+                assets: parseUnits("1000"),
+                shares: parseUnits("1000"),
+              },
+            },
+          },
+        ]);
+        const { lastMerkleTree: merkleTree } = await distributor.distributeMorpho(epoch.epochNumber);
+        expect(merkleTree).toBeDefined();
+        expect(merkleTree).toHaveProperty("proofs");
+        expect(merkleTree).toHaveProperty("root");
+        expect(merkleTree.proofs[user0].amount).toBeDefined();
+        expect(merkleTree.proofs[user1].amount).toBeDefined();
+
+        const totalDistributed = Object.values(merkleTree.proofs).reduce(
+          (acc, proof) => acc.add(proof.amount),
+          BigNumber.from(0)
+        );
+        const totalVaultRewards = currentProof.proofs[vaultAddress]!.amount;
+
+        expect(totalDistributed).toBnLte(totalVaultRewards);
+        expect(totalDistributed).toBnApproxEq(totalVaultRewards, 14);
+      });
+      it("Should distribute all tokens when vaults has started being used during the epoch", async () => {
+        const distributor = distributorFromEvents(vaultAddress, [
+          {
+            type: VaultEventType.Deposit,
+            event: {
+              blockNumber: epochConfig.initialBlock! + 1000,
+              transactionIndex: 1,
+              logIndex: 1,
+              args: {
+                caller: user0,
+                owner: user0,
+                assets: parseUnits("1000"),
+                shares: parseUnits("1000"),
+              },
+            },
+          },
+          {
+            type: VaultEventType.Deposit,
+            event: {
+              blockNumber: epochConfig.initialBlock! + 2000,
+              transactionIndex: 1,
+              logIndex: 1,
+              args: {
+                caller: user1,
+                owner: user1,
+                assets: parseUnits("1000"),
+                shares: parseUnits("1000"),
+              },
+            },
+          },
+        ]);
+        const { lastMerkleTree: merkleTree } = await distributor.distributeMorpho(epoch.epochNumber);
+        expect(merkleTree).toBeDefined();
+        expect(merkleTree).toHaveProperty("proofs");
+        expect(merkleTree).toHaveProperty("root");
+        expect(merkleTree.proofs[user0].amount).toBeDefined();
+        expect(merkleTree.proofs[user1].amount).toBeDefined();
+
+        const totalDistributed = Object.values(merkleTree.proofs).reduce(
+          (acc, proof) => acc.add(proof.amount),
+          BigNumber.from(0)
+        );
+        const totalVaultRewards = BigNumber.from(currentProof.proofs[vaultAddress]!.amount);
+
+        expect(totalDistributed).toBnLte(totalVaultRewards);
+        expect(totalDistributed).toBnApproxEq(totalVaultRewards, 14);
+      });
+      it("Should not distribute MORPHO to a user that has deposit/withdraw in the same transaction", async () => {
+        const distributor = distributorFromEvents(vaultAddress, [
+          {
+            type: VaultEventType.Deposit,
+            event: {
+              blockNumber: epochConfig.initialBlock! + 1000,
+              transactionIndex: 1,
+              logIndex: 1,
+              args: {
+                caller: user0,
+                owner: user0,
+                assets: parseUnits("1000"),
+                shares: parseUnits("1000"),
+              },
+            },
+          },
+          {
+            type: VaultEventType.Deposit,
+            event: {
+              blockNumber: epochConfig.initialBlock! + 2000,
+              transactionIndex: 1,
+              logIndex: 1,
+              args: {
+                caller: user1,
+                owner: user1,
+                assets: parseUnits("1000"),
+                shares: parseUnits("1000"),
+              },
+            },
+          },
+          {
+            type: VaultEventType.Withdraw,
+            event: {
+              blockNumber: epochConfig.initialBlock! + 2000,
+              transactionIndex: 1,
+              logIndex: 2,
+              args: {
+                caller: user1,
+                receiver: user1,
+                owner: user1,
+                assets: parseUnits("1000"),
+                shares: parseUnits("1000"),
+              },
+            },
+          },
+        ]);
+        const { lastMerkleTree: merkleTree } = await distributor.distributeMorpho(epoch.epochNumber);
+        expect(merkleTree).toBeDefined();
+        expect(merkleTree.proofs[user1]?.amount).toBeUndefined();
+
+        const totalDistributed = Object.values(merkleTree.proofs).reduce(
+          (acc, proof) => acc.add(proof.amount),
+          BigNumber.from(0)
+        );
+        const totalVaultRewards = currentProof.proofs[vaultAddress]!.amount;
+
+        expect(totalDistributed).toBnLte(totalVaultRewards);
+        expect(totalDistributed).toBnApproxEq(totalVaultRewards, 12);
+      });
+      it("Should distribute a part of MORPHO when user withdraws", async () => {
+        const distributor = distributorFromEvents(vaultAddress, [
+          {
+            type: VaultEventType.Deposit,
+            event: {
+              blockNumber: epochConfig.initialBlock! + 1000,
+              transactionIndex: 1,
+              logIndex: 1,
+              args: {
+                caller: user0,
+                owner: user0,
+                assets: parseUnits("1000"),
+                shares: parseUnits("1000"),
+              },
+            },
+          },
+          {
+            type: VaultEventType.Deposit,
+            event: {
+              blockNumber: epochConfig.initialBlock! + 2000,
+              transactionIndex: 1,
+              logIndex: 1,
+              args: {
+                caller: user1,
+                owner: user1,
+                assets: parseUnits("1000"),
+                shares: parseUnits("1000"),
+              },
+            },
+          },
+          {
+            type: VaultEventType.Withdraw,
+            event: {
+              blockNumber: epochConfig.initialBlock! + 3000,
+              transactionIndex: 1,
+              logIndex: 2,
+              args: {
+                caller: user1,
+                receiver: user1,
+                owner: user1,
+                assets: parseUnits("1200"),
+                shares: parseUnits("1000"),
+              },
+            },
+          },
+        ]);
+        const { lastMerkleTree: merkleTree } = await distributor.distributeMorpho(epoch.epochNumber);
+        expect(merkleTree).toBeDefined();
+        expect(merkleTree.proofs[user0].amount).toBeDefined();
+        expect(merkleTree.proofs[user1].amount).toBeDefined();
+        const totalDistributed = Object.values(merkleTree.proofs).reduce(
+          (acc, proof) => acc.add(proof.amount),
+          BigNumber.from(0)
+        );
+        const totalVaultRewards = currentProof.proofs[vaultAddress]!.amount;
+
+        expect(totalDistributed).toBnLte(totalVaultRewards);
+        expect(totalDistributed).toBnApproxEq(totalVaultRewards, 12);
+
+        const distributorWithoutWithdrawal = distributorFromEvents(vaultAddress, [
+          {
+            type: VaultEventType.Deposit,
+            event: {
+              blockNumber: epochConfig.initialBlock! + 1000,
+              transactionIndex: 1,
+              logIndex: 1,
+              args: {
+                caller: user0,
+                owner: user0,
+                assets: parseUnits("1000"),
+                shares: parseUnits("1000"),
+              },
+            },
+          },
+          {
+            type: VaultEventType.Deposit,
+            event: {
+              blockNumber: epochConfig.initialBlock! + 2000,
+              transactionIndex: 1,
+              logIndex: 1,
+              args: {
+                caller: user1,
+                owner: user1,
+                assets: parseUnits("1000"),
+                shares: parseUnits("1000"),
+              },
+            },
+          },
+        ]);
+        const { lastMerkleTree: merkleTreeWithoutWithdrawal } = await distributorWithoutWithdrawal.distributeMorpho(
+          epoch.epochNumber
+        );
+        const withoutWithdrawalAmount = merkleTreeWithoutWithdrawal.proofs[user1]!.amount;
+        expect(withoutWithdrawalAmount).toBnGt(merkleTree.proofs[user1]!.amount);
+      });
+
+      it("Should distribute MORPHO when a transfer occurs for the receiver", async () => {
+        const distributor = distributorFromEvents(vaultAddress, [
+          {
+            type: VaultEventType.Deposit,
+            event: {
+              blockNumber: epochConfig.initialBlock! + 1000,
+              transactionIndex: 1,
+              logIndex: 1,
+              args: {
+                caller: user0,
+                owner: user0,
+                assets: parseUnits("1000"),
+                shares: parseUnits("1000"),
+              },
+            },
+          },
+          {
+            type: VaultEventType.Deposit,
+            event: {
+              blockNumber: epochConfig.initialBlock! + 2000,
+              transactionIndex: 1,
+              logIndex: 1,
+              args: {
+                caller: user1,
+                owner: user1,
+                assets: parseUnits("1000"),
+                shares: parseUnits("1000"),
+              },
+            },
+          },
+          {
+            type: VaultEventType.Transfer,
+            event: {
+              blockNumber: epochConfig.initialBlock! + 3000,
+              transactionIndex: 1,
+              logIndex: 1,
+              args: {
+                from: user1,
+                to: user2,
+                value: parseUnits("100"),
+              },
+            },
+          },
+        ]);
+        const { lastMerkleTree: merkleTree } = await distributor.distributeMorpho(epoch.epochNumber);
+        expect(merkleTree).toBeDefined();
+        expect(merkleTree.proofs[user0].amount).toBeDefined();
+        expect(merkleTree.proofs[user1].amount).toBeDefined();
+        expect(merkleTree.proofs[user2].amount).toBeDefined();
+        const totalDistributed = Object.values(merkleTree.proofs).reduce(
+          (acc, proof) => acc.add(proof.amount),
+          BigNumber.from(0)
+        );
+        const totalVaultRewards = BigNumber.from(currentProof.proofs[vaultAddress]!.amount);
+
+        expect(totalDistributed.lte(totalVaultRewards)).toBeTruthy();
+        expect(totalDistributed).toBnLte(totalVaultRewards);
+        expect(totalDistributed).toBnApproxEq(totalVaultRewards, 17);
+      });
+      if (epoch.epochNumber > 1 && epoch.epochNumber < allEpochs.length) {
+        it("Should handle transaction on multiple epochs", async () => {
+          const distributor = distributorFromEvents(vaultAddress, [
             {
               type: VaultEventType.Deposit,
               event: {
@@ -214,36 +510,17 @@ describe("Vaults Distributor", () => {
                 transactionIndex: 1,
                 logIndex: 1,
                 args: {
-                  caller: user1,
-                  owner: user1,
+                  caller: user0,
+                  owner: user0,
                   assets: parseUnits("1000"),
                   shares: parseUnits("1000"),
                 },
               },
             },
-          ]);
-          const { lastMerkleTree: merkleTree } = await distributor.distributeMorpho(epoch.epochNumber);
-          expect(merkleTree).toBeDefined();
-          expect(merkleTree).toHaveProperty("proofs");
-          expect(merkleTree).toHaveProperty("root");
-          expect(merkleTree.proofs[user0].amount).toBeDefined();
-          expect(merkleTree.proofs[user1].amount).toBeDefined();
-
-          const totalDistributed = Object.values(merkleTree.proofs).reduce(
-            (acc, proof) => acc.add(proof.amount),
-            BigNumber.from(0)
-          );
-          const totalVaultRewards = currentProof.proofs[vaultAddress]!.amount;
-
-          expect(totalDistributed).toBnLte(totalVaultRewards);
-          expect(totalDistributed).toBnApproxEq(totalVaultRewards, 14);
-        });
-        it("Should distribute all tokens when vaults has started being used during the epoch", async () => {
-          const distributor = distributorFromEvents(vaultAddress, [
             {
               type: VaultEventType.Deposit,
               event: {
-                blockNumber: epochConfig.initialBlock! + 1000,
+                blockNumber: epoch.initialBlock! - 10_000,
                 transactionIndex: 1,
                 logIndex: 1,
                 args: {
@@ -257,54 +534,7 @@ describe("Vaults Distributor", () => {
             {
               type: VaultEventType.Deposit,
               event: {
-                blockNumber: epochConfig.initialBlock! + 2000,
-                transactionIndex: 1,
-                logIndex: 1,
-                args: {
-                  caller: user1,
-                  owner: user1,
-                  assets: parseUnits("1000"),
-                  shares: parseUnits("1000"),
-                },
-              },
-            },
-          ]);
-          const { lastMerkleTree: merkleTree } = await distributor.distributeMorpho(epoch.epochNumber);
-          expect(merkleTree).toBeDefined();
-          expect(merkleTree).toHaveProperty("proofs");
-          expect(merkleTree).toHaveProperty("root");
-          expect(merkleTree.proofs[user0].amount).toBeDefined();
-          expect(merkleTree.proofs[user1].amount).toBeDefined();
-
-          const totalDistributed = Object.values(merkleTree.proofs).reduce(
-            (acc, proof) => acc.add(proof.amount),
-            BigNumber.from(0)
-          );
-          const totalVaultRewards = BigNumber.from(currentProof.proofs[vaultAddress]!.amount);
-
-          expect(totalDistributed).toBnLte(totalVaultRewards);
-          expect(totalDistributed).toBnApproxEq(totalVaultRewards, 14);
-        });
-        it("Should not distribute MORPHO to a user that has deposit/withdraw in the same transaction", async () => {
-          const distributor = distributorFromEvents(vaultAddress, [
-            {
-              type: VaultEventType.Deposit,
-              event: {
-                blockNumber: epochConfig.initialBlock! + 1000,
-                transactionIndex: 1,
-                logIndex: 1,
-                args: {
-                  caller: user0,
-                  owner: user0,
-                  assets: parseUnits("1000"),
-                  shares: parseUnits("1000"),
-                },
-              },
-            },
-            {
-              type: VaultEventType.Deposit,
-              event: {
-                blockNumber: epochConfig.initialBlock! + 2000,
+                blockNumber: epoch.initialBlock! - 1000,
                 transactionIndex: 1,
                 logIndex: 1,
                 args: {
@@ -316,54 +546,9 @@ describe("Vaults Distributor", () => {
               },
             },
             {
-              type: VaultEventType.Withdraw,
-              event: {
-                blockNumber: epochConfig.initialBlock! + 2000,
-                transactionIndex: 1,
-                logIndex: 2,
-                args: {
-                  caller: user1,
-                  receiver: user1,
-                  owner: user1,
-                  assets: parseUnits("1000"),
-                  shares: parseUnits("1000"),
-                },
-              },
-            },
-          ]);
-          const { lastMerkleTree: merkleTree } = await distributor.distributeMorpho(epoch.epochNumber);
-          expect(merkleTree).toBeDefined();
-          expect(merkleTree.proofs[user1]?.amount).toBeUndefined();
-
-          const totalDistributed = Object.values(merkleTree.proofs).reduce(
-            (acc, proof) => acc.add(proof.amount),
-            BigNumber.from(0)
-          );
-          const totalVaultRewards = currentProof.proofs[vaultAddress]!.amount;
-
-          expect(totalDistributed).toBnLte(totalVaultRewards);
-          expect(totalDistributed).toBnApproxEq(totalVaultRewards, 12);
-        });
-        it("Should distribute a part of MORPHO when user withdraws", async () => {
-          const distributor = distributorFromEvents(vaultAddress, [
-            {
               type: VaultEventType.Deposit,
               event: {
-                blockNumber: epochConfig.initialBlock! + 1000,
-                transactionIndex: 1,
-                logIndex: 1,
-                args: {
-                  caller: user0,
-                  owner: user0,
-                  assets: parseUnits("1000"),
-                  shares: parseUnits("1000"),
-                },
-              },
-            },
-            {
-              type: VaultEventType.Deposit,
-              event: {
-                blockNumber: epochConfig.initialBlock! + 2000,
+                blockNumber: epoch.initialBlock! + 10,
                 transactionIndex: 1,
                 logIndex: 1,
                 args: {
@@ -375,111 +560,16 @@ describe("Vaults Distributor", () => {
               },
             },
             {
-              type: VaultEventType.Withdraw,
-              event: {
-                blockNumber: epochConfig.initialBlock! + 3000,
-                transactionIndex: 1,
-                logIndex: 2,
-                args: {
-                  caller: user1,
-                  receiver: user1,
-                  owner: user1,
-                  assets: parseUnits("1200"),
-                  shares: parseUnits("1000"),
-                },
-              },
-            },
-          ]);
-          const { lastMerkleTree: merkleTree } = await distributor.distributeMorpho(epoch.epochNumber);
-          expect(merkleTree).toBeDefined();
-          expect(merkleTree.proofs[user0].amount).toBeDefined();
-          expect(merkleTree.proofs[user1].amount).toBeDefined();
-          const totalDistributed = Object.values(merkleTree.proofs).reduce(
-            (acc, proof) => acc.add(proof.amount),
-            BigNumber.from(0)
-          );
-          const totalVaultRewards = currentProof.proofs[vaultAddress]!.amount;
-
-          expect(totalDistributed).toBnLte(totalVaultRewards);
-          expect(totalDistributed).toBnApproxEq(totalVaultRewards, 12);
-
-          const distributorWithoutWithdrawal = distributorFromEvents(vaultAddress, [
-            {
               type: VaultEventType.Deposit,
               event: {
-                blockNumber: epochConfig.initialBlock! + 1000,
+                blockNumber: epoch.initialBlock! + 10,
                 transactionIndex: 1,
                 logIndex: 1,
                 args: {
-                  caller: user0,
-                  owner: user0,
+                  caller: user2,
+                  owner: user2,
                   assets: parseUnits("1000"),
                   shares: parseUnits("1000"),
-                },
-              },
-            },
-            {
-              type: VaultEventType.Deposit,
-              event: {
-                blockNumber: epochConfig.initialBlock! + 2000,
-                transactionIndex: 1,
-                logIndex: 1,
-                args: {
-                  caller: user1,
-                  owner: user1,
-                  assets: parseUnits("1000"),
-                  shares: parseUnits("1000"),
-                },
-              },
-            },
-          ]);
-          const { lastMerkleTree: merkleTreeWithoutWithdrawal } = await distributorWithoutWithdrawal.distributeMorpho(
-            epoch.epochNumber
-          );
-          const withoutWithdrawalAmount = merkleTreeWithoutWithdrawal.proofs[user1]!.amount;
-          expect(withoutWithdrawalAmount).toBnGt(merkleTree.proofs[user1]!.amount);
-        });
-
-        it("Should distribute MORPHO when a transfer occurs for the receiver", async () => {
-          const distributor = distributorFromEvents(vaultAddress, [
-            {
-              type: VaultEventType.Deposit,
-              event: {
-                blockNumber: epochConfig.initialBlock! + 1000,
-                transactionIndex: 1,
-                logIndex: 1,
-                args: {
-                  caller: user0,
-                  owner: user0,
-                  assets: parseUnits("1000"),
-                  shares: parseUnits("1000"),
-                },
-              },
-            },
-            {
-              type: VaultEventType.Deposit,
-              event: {
-                blockNumber: epochConfig.initialBlock! + 2000,
-                transactionIndex: 1,
-                logIndex: 1,
-                args: {
-                  caller: user1,
-                  owner: user1,
-                  assets: parseUnits("1000"),
-                  shares: parseUnits("1000"),
-                },
-              },
-            },
-            {
-              type: VaultEventType.Transfer,
-              event: {
-                blockNumber: epochConfig.initialBlock! + 3000,
-                transactionIndex: 1,
-                logIndex: 1,
-                args: {
-                  from: user1,
-                  to: user2,
-                  value: parseUnits("100"),
                 },
               },
             },
@@ -493,101 +583,11 @@ describe("Vaults Distributor", () => {
             (acc, proof) => acc.add(proof.amount),
             BigNumber.from(0)
           );
-          const totalVaultRewards = BigNumber.from(currentProof.proofs[vaultAddress]!.amount);
-
-          expect(totalDistributed.lte(totalVaultRewards)).toBeTruthy();
+          const totalVaultRewards = currentProof.proofs[vaultAddress]!.amount;
           expect(totalDistributed).toBnLte(totalVaultRewards);
-          expect(totalDistributed).toBnApproxEq(totalVaultRewards, 17);
+          expect(totalDistributed).toBnApproxEq(totalVaultRewards, 100);
         });
-        if (epoch.epochNumber > 1) {
-          it("Should handle transaction on multiple epochs", async () => {
-            const distributor = distributorFromEvents(vaultAddress, [
-              {
-                type: VaultEventType.Deposit,
-                event: {
-                  blockNumber: epochConfig.initialBlock! + 1000,
-                  transactionIndex: 1,
-                  logIndex: 1,
-                  args: {
-                    caller: user0,
-                    owner: user0,
-                    assets: parseUnits("1000"),
-                    shares: parseUnits("1000"),
-                  },
-                },
-              },
-              {
-                type: VaultEventType.Deposit,
-                event: {
-                  blockNumber: epoch.initialBlock! - 10_000,
-                  transactionIndex: 1,
-                  logIndex: 1,
-                  args: {
-                    caller: user0,
-                    owner: user0,
-                    assets: parseUnits("1000"),
-                    shares: parseUnits("1000"),
-                  },
-                },
-              },
-              {
-                type: VaultEventType.Deposit,
-                event: {
-                  blockNumber: epoch.initialBlock! - 1000,
-                  transactionIndex: 1,
-                  logIndex: 1,
-                  args: {
-                    caller: user1,
-                    owner: user1,
-                    assets: parseUnits("1000"),
-                    shares: parseUnits("1000"),
-                  },
-                },
-              },
-              {
-                type: VaultEventType.Deposit,
-                event: {
-                  blockNumber: epoch.initialBlock! + 10_000,
-                  transactionIndex: 1,
-                  logIndex: 1,
-                  args: {
-                    caller: user1,
-                    owner: user1,
-                    assets: parseUnits("1000"),
-                    shares: parseUnits("1000"),
-                  },
-                },
-              },
-              {
-                type: VaultEventType.Deposit,
-                event: {
-                  blockNumber: epoch.initialBlock! + 1000,
-                  transactionIndex: 1,
-                  logIndex: 1,
-                  args: {
-                    caller: user2,
-                    owner: user2,
-                    assets: parseUnits("1000"),
-                    shares: parseUnits("1000"),
-                  },
-                },
-              },
-            ]);
-            const { lastMerkleTree: merkleTree } = await distributor.distributeMorpho(epoch.epochNumber);
-            expect(merkleTree).toBeDefined();
-            expect(merkleTree.proofs[user0].amount).toBeDefined();
-            expect(merkleTree.proofs[user1].amount).toBeDefined();
-            expect(merkleTree.proofs[user2].amount).toBeDefined();
-            const totalDistributed = Object.values(merkleTree.proofs).reduce(
-              (acc, proof) => acc.add(proof.amount),
-              BigNumber.from(0)
-            );
-            const totalVaultRewards = currentProof.proofs[vaultAddress]!.amount;
-            expect(totalDistributed).toBnLte(totalVaultRewards);
-            expect(totalDistributed).toBnApproxEq(totalVaultRewards, 100);
-          });
-        }
-      });
-    }
-  );
+      }
+    });
+  });
 });
