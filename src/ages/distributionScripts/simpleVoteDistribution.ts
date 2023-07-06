@@ -47,7 +47,7 @@ const simpleVoteDistribution = async ({
       const morphoRatePerSecondBorrowSide = morphoEmittedBorrowSide.div(duration);
 
       return [
-        market,
+        market.toLowerCase(),
         {
           morphoEmittedSupplySide,
           morphoRatePerSecondSupplySide,
