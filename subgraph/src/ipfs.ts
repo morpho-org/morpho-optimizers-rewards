@@ -1,1 +1,1 @@
-export const IPFS_HASH = "QmP2QNZdN8gSvWvEcmcrbhtenPkmV5Z8NLfWUdLYWJY4iX";
+export const IPFS_HASH = "QmTEwNvQoac5ZgvaSsNY2EXV4yn18DGYNS4R4LEBGcGKjU";

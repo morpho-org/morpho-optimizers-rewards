@@ -195,8 +195,8 @@
     "epochs": [
       {
         "id": "age6",
-        "epochNumber": 11,
-        "snapshotBlock": null,
+        "epochNumber": 12,
+        "snapshotBlock": 17635255,
         "initialTimestamp": "2023-07-06T15:00:00.000Z",
         "initialBlock": null,
         "finalTimestamp": "2023-08-20T15:00:00.000Z",
