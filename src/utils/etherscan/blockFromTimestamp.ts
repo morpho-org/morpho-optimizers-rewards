@@ -41,7 +41,6 @@ export const blockFromTimestampWithRetry = async (
   const res = await blockFromTimestamp(ts, direction, apiKey);
   const blockNumber = parseInt(res);
   if (isNaN(blockNumber)) {
-    console.warn(`Invalid timestamp fetched from etherscan: ${res}, retry number ${retries}`);
     if (retries > 10) throw Error("Too many retries, aborting...");
     await wait(2000);
     return blockFromTimestampWithRetry(ts, direction, apiKey, retries + 1);

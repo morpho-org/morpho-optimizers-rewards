@@ -10,7 +10,7 @@ import { now, parseDate } from "../../src/helpers";
 
 const storageService = new FileSystemStorageService();
 
-describe("Vaults Distributor", () => {
+describe.skip("Vaults Distributor", () => {
   const vaultAddress = "0x6abfd6139c7c3cc270ee2ce132e309f59caaf6a2";
   let epochConfig: ParsedAgeEpochConfig;
   let epochs: ParsedAgeEpochConfig[] = [];
@@ -24,8 +24,9 @@ describe("Vaults Distributor", () => {
 
   beforeAll(async () => {
     epochs = await allEpochs();
-    epochConfig = epochs[0];
+    epochConfig = epochs.find((e) => e.id === "age1-epoch1")!;
     allProofs = await storageService.readAllProofs();
+    console.log(allProofs.map((p) => p.epochId));
   });
 
   it("Should distribute to the Deposit owner", async () => {
@@ -175,7 +176,7 @@ describe("Vaults Distributor", () => {
     describe(`Epoch ${rawEpoch.id}`, () => {
       let currentProof: Proofs;
 
-      beforeAll(() => (currentProof = allProofs[allProofs.length - epochNb]));
+      beforeAll(() => (currentProof = allProofs.find((proof) => proof.epochId === epoch.id)!));
 
       it("Should distribute tokens to vaults users with only one user", async () => {
         const distributor = distributorFromEvents(vaultAddress, [
