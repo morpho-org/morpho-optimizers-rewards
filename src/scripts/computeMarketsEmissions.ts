@@ -1,7 +1,7 @@
 import { providers } from "ethers";
 import { formatUnits } from "ethers/lib/utils";
 import * as dotenv from "dotenv";
-import { epochNames, getEpoch, snapshotableEpochs } from "../ages";
+import { epochNames, getEpoch, rawEpochs, snapshotableEpochs } from "../ages";
 import { FileSystemStorageService } from "../utils/StorageService";
 import { mapValues } from "lodash";
 import { MarketsEmissionFs } from "../ages/distributions/MarketsEmissionFs";
@@ -55,6 +55,7 @@ const computeMarketsEmissions = async (epochId?: string) => {
         totalEmission: formatUnits(epoch.distributionParameters.totalEmission),
         snapshotProposal: epoch.distributionParameters.snapshotProposal,
         parameters: {
+          ...rawEpochs.find((e) => e.id === epoch.id)!.distributionParameters,
           snapshotBlock: epoch.snapshotBlock!,
           initialTimestamp: epoch.initialTimestamp,
           finalTimestamp: epoch.finalTimestamp,

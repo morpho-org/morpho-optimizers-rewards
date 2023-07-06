@@ -2,6 +2,11 @@
   "epochId": "age2-epoch2",
   "totalEmission": "3400000.0",
   "parameters": {
+    "totalEmission": "3400000",
+    "protocolDistribution": {
+      "morphoCompound": 6500,
+      "morphoAaveV2": 3500
+    },
     "snapshotBlock": 15818122,
     "initialTimestamp": 1666623600,
     "finalTimestamp": 1669561200,

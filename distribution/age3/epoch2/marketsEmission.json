@@ -3,6 +3,8 @@
   "totalEmission": "3333333.0",
   "snapshotProposal": "0xa33106ba7eacd9ed97f1a5a5da6b5a9e7bec0085b0472ea0e8222c226c7acdca",
   "parameters": {
+    "totalEmission": "3333333",
+    "snapshotProposal": "0xa33106ba7eacd9ed97f1a5a5da6b5a9e7bec0085b0472ea0e8222c226c7acdca",
     "snapshotBlock": 16534421,
     "initialTimestamp": 1675263600,
     "finalTimestamp": 1677942000,

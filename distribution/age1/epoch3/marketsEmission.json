@@ -2,6 +2,10 @@
   "epochId": "age1-epoch3",
   "totalEmission": "2950000.0",
   "parameters": {
+    "totalEmission": "2950000",
+    "protocolDistribution": {
+      "morphoCompound": 10000
+    },
     "snapshotBlock": 15353032,
     "initialTimestamp": 1660669206,
     "finalTimestamp": 1663686000,
