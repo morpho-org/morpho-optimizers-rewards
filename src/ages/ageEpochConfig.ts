@@ -44,7 +44,7 @@ export const allEpochs: () => Promise<ParsedAgeEpochConfig[]> = () =>
       const snapshotTs = initialTimestamp - 3600;
 
       const snapshotBlockPromise =
-        snapshotTs < now() && !epoch.snapshotBlock ? blockFromTimestampWithRetry(snapshotTs, "before") : undefined;
+        snapshotTs < now() && !epoch.snapshotBlock ? blockFromTimestampWithRetry(snapshotTs, "after") : undefined;
 
       const [initialBlock, finalBlock, snapshotBlock] = await Promise.all([
         initialBlockPromise,
