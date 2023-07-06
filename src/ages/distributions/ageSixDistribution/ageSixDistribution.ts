@@ -1,6 +1,6 @@
 /**
  * Specs are defined in the following forum post:
- * https://forum.morpho.xyz/t/mip-morpho-rewards-age-5/303
+ * https://forum.morpho.org/t/mip-morpho-rewards-age-6/329
  */
 import { DistributionFn, EpochConfig } from "../../ages.types";
 import { AgeDistribution } from "../distributions.types";
@@ -42,6 +42,15 @@ export const ageSixDistribution: DistributionFn = async (
         morphoEmittedBorrowSide: constants.Zero,
         morphoRatePerSecondBorrowSide: constants.Zero,
       };
+    if (address.toLowerCase() === marketsRepartition.aWETH.market.toLowerCase()) {
+      // Morpho Aave v2 eth market has the same rate on supply and borrow side
+      return {
+        morphoEmittedSupplySide: emissionRatePerEpoch.div(2),
+        morphoRatePerSecondSupplySide: emissionRatePerEpoch.div(duration).div(2),
+        morphoEmittedBorrowSide: emissionRatePerEpoch.div(2),
+        morphoRatePerSecondBorrowSide: emissionRatePerEpoch.div(duration).div(2),
+      };
+    }
     return computeDefaultMarketSidesRates(
       address,
       morphoSupplyMarketSize,

@@ -19,10 +19,10 @@
       "totalMarketSizeBorrowSide": "15437566.596261198595716535"
     },
     "0x030ba81f1c18d280636f32af80b9aad02cf0854e": {
-      "morphoEmittedSupplySide": "219094.560412583182673444",
-      "morphoRatePerSecondSupplySide": "0.056351481587598555",
-      "morphoRatePerSecondBorrowSide": "0.06221847726013807",
-      "morphoEmittedBorrowSide": "241905.439587416817326555",
+      "morphoEmittedSupplySide": "230500.0",
+      "morphoRatePerSecondSupplySide": "0.059284979423868312",
+      "morphoRatePerSecondBorrowSide": "0.059284979423868312",
+      "morphoEmittedBorrowSide": "230500.0",
       "totalMarketSizeSupplySide": "124207.420879077677650404",
       "totalMarketSizeBorrowSide": "137139.190910040192386903"
     },
