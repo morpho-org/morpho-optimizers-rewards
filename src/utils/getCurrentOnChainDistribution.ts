@@ -1,7 +1,7 @@
 import { providers } from "ethers";
 import { RewardsDistributor__factory } from "@morpho-labs/morpho-ethers-contract";
 import addresses from "@morpho-labs/morpho-ethers-contract/lib/addresses";
-import { numberOfEpochs, rawEpochs } from "../ages/ageEpochConfig";
+import { rawEpochs } from "../ages";
 import { StorageService } from "./StorageService";
 
 export const getCurrentOnChainDistribution = async (

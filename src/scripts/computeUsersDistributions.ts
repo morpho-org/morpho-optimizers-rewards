@@ -4,7 +4,7 @@ import { DataProvider, computeUsersDistributions } from "../utils/computeUsersDi
 
 dotenv.config();
 
-const epochIdIndex = process.argv.indexOf("--epoch");
+const epochIdIndex = process.argv.indexOf("--id");
 let epochId = undefined;
 if (epochIdIndex !== -1) epochId = process.argv[epochIdIndex + 1];
 

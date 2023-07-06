@@ -53,10 +53,10 @@ yarn markets:emissions
 
 this will output the per-market emissions in the [distribution](./distribution) directory.
 
-If you want to compute the emissions for a specific epoch, you can use the `--epoch` flag:
+If you want to compute the emissions for a specific epoch, you can use the `--id` flag:
 
 ```bash
-yarn markets:emissions --epoch 6
+yarn markets:emissions --id age2-epoch1
 ```
 
 ## **Subgraph**
