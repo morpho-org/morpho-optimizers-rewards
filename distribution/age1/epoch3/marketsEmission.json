@@ -1,13 +1,11 @@
 {
-  "age": "age1",
-  "epoch": "epoch3",
-  "epochNumber": 3,
+  "epochId": "age1-epoch3",
   "totalEmission": "2950000.0",
   "parameters": {
-    "snapshotBlock": "15353032",
-    "initialTimestamp": "1660669206",
-    "finalTimestamp": "1663686000",
-    "duration": "3016794"
+    "snapshotBlock": 15353032,
+    "initialTimestamp": 1660669206,
+    "finalTimestamp": 1663686000,
+    "duration": 3016794
   },
   "markets": {
     "0x35a18000230da775cac24873d00ff85bccded550": {
