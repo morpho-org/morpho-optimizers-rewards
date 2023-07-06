@@ -21,19 +21,6 @@ jobs:
       - name: Install dependencies
         run: yarn install --immutable
 
-      - name: Sync snapshotBlock, initialBlock & finalBlock for epochs
-        run: yarn updateAgesData
-        env:
-          RPC_URL: ${{ secrets.RPC_URL }}
-          ETHERSCAN_API_KEY: ${{ secrets.ETHERSCAN_API_KEY }}
-
-      - name: Commit synced snapshotBlock, initialBlock & finalBlock for epochs if needed
-        uses: stefanzweifel/git-auto-commit-action@v4
-        with:
-          commit_user_name: Morpho GitHub Actions Bot
-          commit_user_email: dev@morpho.xyz
-          commit_message: "feat: Sync snapshotBlock, initialBlock & finalBlock for epochs"
-
       - name: Compute Market Distribution
         run: yarn markets:emissions
         env:
