@@ -18,20 +18,16 @@ import { parseDate, now } from "../src/helpers";
 
 const storageService = new FileSystemStorageService();
 
-describe.only("User distribution", () => {
+describe("User distribution", () => {
   beforeAll(async () => {
     // fill the block cache
     // TODO: find a better way to do this
     await finishedEpochs();
   });
-  describe.each([rawEpochs.filter((e) => parseDate(e.finalTimestamp) < now())])(
+  describe.each(rawEpochs.filter((e) => parseDate(e.finalTimestamp) < now()))(
     "Epoch Users Distribution e2e",
     ({ id: epochId }) => {
       let epoch: ParsedAgeEpochConfig;
-      console.log(
-        epochId,
-        rawEpochs.filter((e) => parseDate(e.finalTimestamp) < now())
-      );
 
       const provider = new providers.JsonRpcProvider(process.env.RPC_URL);
 

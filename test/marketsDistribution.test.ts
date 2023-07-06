@@ -3,13 +3,13 @@ import { BigNumber, providers } from "ethers";
 import { now } from "../src/helpers";
 import { RewardsDistributor__factory } from "@morpho-labs/morpho-ethers-contract";
 import addresses from "@morpho-labs/morpho-ethers-contract/lib/addresses";
-import { ages } from "../src";
 import { FileSystemStorageService } from "../src/utils/StorageService";
 import { SUBGRAPH_URL } from "../src/config";
 import { computeBorrowIndex, computeSupplyIndex } from "../src/utils/getUserRewards";
 import { MARKETS_UPGRADE_SNAPSHOTS, VERSION_2_TIMESTAMP } from "../src/constants/mechanismUpgrade";
 import { Market } from "../src/utils/graph/getGraphMarkets/markets.types";
 import { formatGraphMarket } from "../src/utils/graph/getGraphBalances/graphBalances.formatter";
+import { getEpoch, ParsedAgeEpochConfig } from "../src";
 
 const storageService = new FileSystemStorageService();
 
@@ -24,14 +24,20 @@ describe("Markets distribution", () => {
     expect(marketDistribution).not.toBeUndefined();
   });
   it("Should include the snapshotProposal field for age3", async () => {
-    const marketDistribution = await getMarketsDistribution(storageService, 1672326000);
+    const marketDistribution = await getMarketsDistribution(storageService, 1672326001);
+    console.log(marketDistribution);
     expect(marketDistribution.snapshotProposal).toBeTruthy();
   });
 });
 
 describe("Age 1 Epoch 2 approximation", () => {
+  let epoch: ParsedAgeEpochConfig;
   const onChainDistribution = require("../distribution/fromDeprecatedScript/proofs-2.json");
-  const newDistribution = require("../distribution/proofs/proofs-2.json");
+  const newDistribution = require("../distribution/age1/epoch2/proofs.json");
+
+  beforeAll(async () => {
+    epoch = await getEpoch("age1-epoch2");
+  });
 
   it("Should have the same number of users", () =>
     expect(Object.keys(onChainDistribution.proofs).length).toEqual(Object.keys(newDistribution.proofs).length));
@@ -59,10 +65,9 @@ describe("Age 1 Epoch 2 approximation", () => {
 
   it("Should have the correct root on chain", async () => {
     const provider = new providers.JsonRpcProvider(process.env.RPC_URL);
-    const age1epoch2 = ages[0].epochs[1];
     const root = require("../distribution/fromDeprecatedScript/proofs-2.json").root;
     const rewardsDistributor = RewardsDistributor__factory.connect(addresses.morphoDao.rewardsDistributor, provider);
-    const onchainRoot = await rewardsDistributor.currRoot({ blockTag: age1epoch2.finalBlock! + 10_000 });
+    const onchainRoot = await rewardsDistributor.currRoot({ blockTag: epoch.finalBlock! + 10_000 });
     expect(onchainRoot).toEqual(root);
   });
 });
@@ -105,7 +110,7 @@ describe.skip("Distribution mechanism v2", () => {
           }
           `,
         variables: {
-          block: ages[2].epochs[0].finalBlock!,
+          block: 0,
         },
       }),
     })
