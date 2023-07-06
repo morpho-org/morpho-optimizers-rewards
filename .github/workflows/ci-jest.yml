@@ -89,3 +89,4 @@ jobs:
         env:
           RPC_URL: ${{ secrets.RPC_URL }}
           SUBGRAPH_URL: ${{ vars.SUBGRAPH_URL }}
+          ETHERSCAN_API_KEY: ${{ secrets.ETHERSCAN_API_KEY }}
