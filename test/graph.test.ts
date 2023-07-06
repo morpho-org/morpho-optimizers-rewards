@@ -3,7 +3,6 @@
 import { getChainTransactions, getGraphTransactions } from "../src/utils";
 import { providers } from "ethers";
 import * as dotenv from "dotenv";
-import { ages } from "../src";
 import { now } from "../src/helpers";
 import addresses from "@morpho-labs/morpho-ethers-contract/lib/addresses";
 import { SUBGRAPH_URL } from "../src/config";
