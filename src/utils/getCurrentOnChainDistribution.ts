@@ -1,7 +1,7 @@
 import { providers } from "ethers";
 import { RewardsDistributor__factory } from "@morpho-labs/morpho-ethers-contract";
 import addresses from "@morpho-labs/morpho-ethers-contract/lib/addresses";
-import { rawEpochs } from "../ages";
+import { epochUtils } from "../ages";
 import { StorageService } from "./StorageService";
 
 export const getCurrentOnChainDistribution = async (
@@ -15,7 +15,7 @@ export const getCurrentOnChainDistribution = async (
 };
 
 export const rootToProof = async (root: string, storageService: StorageService) => {
-  for (const rawEpoch of rawEpochs) {
+  for (const rawEpoch of epochUtils.rawEpochs) {
     const proofs = await storageService.readProofs(rawEpoch.id);
     if (proofs?.root.toLowerCase() === root.toLowerCase()) return proofs;
   }

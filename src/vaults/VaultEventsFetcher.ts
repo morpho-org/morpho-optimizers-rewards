@@ -7,10 +7,12 @@ import {
   MorphoAaveV2SupplyVault__factory,
   MorphoCompoundSupplyVault,
 } from "@morpho-labs/morpho-ethers-contract";
-import { ParsedAgeEpochConfig } from "../ages";
+import { epochUtils } from "../ages";
 
 export interface EventsFetcherInterface {
-  fetchSortedEventsForEpoch: (epochConfig: ParsedAgeEpochConfig) => Promise<[TransactionEvents[], BigNumber]>;
+  fetchSortedEventsForEpoch: (
+    epochConfig: epochUtils.ParsedAgeEpochConfig
+  ) => Promise<[TransactionEvents[], BigNumber]>;
   getBlock: (blockNumber: number) => Promise<providers.Block>;
 }
 
@@ -31,7 +33,7 @@ export default class VaultEventsFetcher implements EventsFetcherInterface {
     finalBlock,
     initialBlock,
     initialTimestamp,
-  }: ParsedAgeEpochConfig): Promise<[TransactionEvents[], BigNumber]> {
+  }: epochUtils.ParsedAgeEpochConfig): Promise<[TransactionEvents[], BigNumber]> {
     let timeFrom = BigNumber.from(initialTimestamp);
     const blockFromCurrentEpoch = maxBN(initialBlock!, this.deploymentBlock);
     const depositEvents = await this._fetchDepositEvents(blockFromCurrentEpoch, finalBlock!);

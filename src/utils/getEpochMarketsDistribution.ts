@@ -1,18 +1,18 @@
-import { providers } from "ethers";
+import { getDefaultProvider, providers } from "ethers";
 import { MarketsEmissionFs } from "../ages/distributions/MarketsEmissionFs";
 import { formatUnits } from "ethers/lib/utils";
 import { now } from "../helpers";
 import { StorageService } from "./StorageService";
 import _mapValues from "lodash/mapValues";
-import { getEpoch, timestampToEpoch } from "../ages";
+import { epochUtils } from "../ages";
 
 export const getMarketsDistribution = async (
   storageService: StorageService,
   timestamp?: number,
-  provider: providers.Provider = new providers.InfuraProvider(1),
+  provider: providers.Provider = getDefaultProvider(process.env.RPC_URL),
   force?: boolean
 ) => {
-  const epochConfig = await timestampToEpoch(timestamp ?? now());
+  const epochConfig = await epochUtils.timestampToEpoch(timestamp ?? now());
 
   return getEpochMarketsDistribution(epochConfig.id, provider, storageService, force);
 };
@@ -39,7 +39,7 @@ export const computeEpochMarketsDistribution = async (
   if (distribution && !force) return distribution;
   console.warn(`Compute distribution for ${epochId}`);
 
-  const epoch = await getEpoch(epochId);
+  const epoch = await epochUtils.getEpoch(epochId);
 
   if (!epoch.snapshotBlock) throw Error(`No snapshot block found for ${epochId}`);
 

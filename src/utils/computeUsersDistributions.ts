@@ -1,7 +1,7 @@
 import { ethers, providers } from "ethers";
 import { computeMerkleTree, fetchUsers, getAccumulatedEmission, userBalancesToUnclaimedTokens, sumRewards } from ".";
 import { commify, formatUnits } from "ethers/lib/utils";
-import { epochNames, finishedEpochs, getEpoch, ParsedAgeEpochConfig } from "../ages";
+import { epochUtils } from "../ages";
 import { SUBGRAPH_URL } from "../config";
 import { StorageService } from "./StorageService";
 
@@ -11,7 +11,7 @@ export enum DataProvider {
 }
 
 export const computeUsersDistributionsForEpoch = async (
-  epoch: ParsedAgeEpochConfig,
+  epoch: epochUtils.ParsedAgeEpochConfig,
   provider: providers.BaseProvider,
   storageService: StorageService,
   force?: boolean
@@ -63,11 +63,11 @@ export const computeUsersDistributions = async (
   force?: boolean
 ) => {
   if (dataProvider === DataProvider.RPC) throw new Error("RPC not supported yet");
-  if (epochId && !epochNames.includes(epochId)) throw new Error("Invalid epoch id");
+  if (epochId && !epochUtils.epochNames.includes(epochId)) throw new Error("Invalid epoch id");
 
   const provider = new ethers.providers.JsonRpcProvider(process.env.RPC_URL);
 
-  const epochs = epochId ? [await getEpoch(epochId)] : await finishedEpochs();
+  const epochs = epochId ? [await epochUtils.getEpoch(epochId)] : await epochUtils.finishedEpochs();
   if (!epochId) console.log(`${epochs.length} epochs to compute, to epoch ${epochs[epochs.length - 1].id}`);
 
   const recap: any[] = []; // used to log the recap of the distribution

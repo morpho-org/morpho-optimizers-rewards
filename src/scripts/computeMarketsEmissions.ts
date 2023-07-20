@@ -1,7 +1,7 @@
 import { providers } from "ethers";
 import { formatUnits } from "ethers/lib/utils";
 import * as dotenv from "dotenv";
-import { epochNames, getEpoch, rawEpochs, snapshotableEpochs } from "../ages";
+import { epochUtils } from "../ages";
 import { FileSystemStorageService } from "../utils/StorageService";
 import { mapValues } from "lodash";
 import { MarketsEmissionFs } from "../ages/distributions/MarketsEmissionFs";
@@ -11,13 +11,13 @@ dotenv.config();
 const storageService = new FileSystemStorageService();
 
 const computeMarketsEmissions = async (epochId?: string) => {
-  if (epochId && !epochNames.includes(epochId)) throw new Error("Invalid epoch id");
+  if (epochId && !epochUtils.epochNames.includes(epochId)) throw new Error("Invalid epoch id");
   if (epochId) console.log(`Compute markets emissions for ${epochId}`);
   else console.log("Compute markets emissions for all epochs");
 
   const provider = new providers.JsonRpcProvider(process.env.RPC_URL);
 
-  const epochs = epochId ? [await getEpoch(epochId)] : await snapshotableEpochs();
+  const epochs = epochId ? [await epochUtils.getEpoch(epochId)] : await epochUtils.snapshotableEpochs();
   if (!epochId) console.log(`${epochs.length} epochs to compute, to ${epochs[epochs.length - 1].id}`);
 
   // Compute emissions for each epoch
@@ -55,7 +55,7 @@ const computeMarketsEmissions = async (epochId?: string) => {
         totalEmission: formatUnits(epoch.distributionParameters.totalEmission),
         snapshotProposal: epoch.distributionParameters.snapshotProposal,
         parameters: {
-          ...rawEpochs.find((e) => e.id === epoch.id)!.distributionParameters,
+          ...epochUtils.rawEpochs.find((e) => e.id === epoch.id)!.distributionParameters,
           snapshotBlock: epoch.snapshotBlock!,
           initialTimestamp: epoch.initialTimestamp,
           finalTimestamp: epoch.finalTimestamp,

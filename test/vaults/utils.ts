@@ -5,14 +5,16 @@ import { BigNumber, providers } from "ethers";
 import ProofsFetcher from "../../src/vaults/ProofsFetcher";
 import { maxBN } from "@morpho-labs/ethers-utils/lib/utils";
 import { FileSystemStorageService } from "../../src/utils/StorageService";
-import { ParsedAgeEpochConfig } from "../../src";
+import { epochUtils } from "../../src";
 
 const storageService = new FileSystemStorageService();
 
 export const distributorFromEvents = (vaultAddress: string, events: TransactionEvents[]): Distributor => {
   class LocalEventFetcher implements EventsFetcherInterface {
     private _events = events;
-    async fetchSortedEventsForEpoch(epochConfig: ParsedAgeEpochConfig): Promise<[TransactionEvents[], BigNumber]> {
+    async fetchSortedEventsForEpoch(
+      epochConfig: epochUtils.ParsedAgeEpochConfig
+    ): Promise<[TransactionEvents[], BigNumber]> {
       const epochEvents = this._events.filter(
         (ev) =>
           BigNumber.from(ev.event.blockNumber).gte(epochConfig.initialBlock!) &&

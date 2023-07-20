@@ -11,7 +11,7 @@ import {
   TransferEvent,
   WithdrawEvent,
 } from "@morpho-labs/morpho-ethers-contract/lib/aave-v2/mainnet/MorphoAaveV2SupplyVault";
-import { getEpoch, ParsedAgeEpochConfig } from "../ages";
+import { epochUtils } from "../ages";
 
 export enum VaultEventType {
   Deposit = "DEPOSIT",
@@ -52,7 +52,7 @@ export default class Distributor {
 
     for (const epochProofs of epochsProofs) {
       console.log(`Distributing MORPHO for ${epochProofs.epochId}...`);
-      const epochConfig = await getEpoch(epochProofs.epochId);
+      const epochConfig = await epochUtils.getEpoch(epochProofs.epochId);
 
       const totalMorphoDistributed = BigNumber.from(epochProofs.proofs[this.vaultAddress]!.amount).sub(
         this._morphoAccumulatedFromMainDistribution
@@ -115,7 +115,7 @@ export default class Distributor {
     return morphoAccrued;
   }
 
-  private _processEndOfEpoch(rate: BigNumber, epochConfig: ParsedAgeEpochConfig) {
+  private _processEndOfEpoch(rate: BigNumber, epochConfig: epochUtils.ParsedAgeEpochConfig) {
     if (this._totalSupply.gt(0)) this._updateMarketIndex(rate, BigNumber.from(epochConfig.finalTimestamp));
 
     Object.values(this._usersConfigs).forEach((userConfig) => {

@@ -1,1 +1,1 @@
-export * from "./ageEpochConfig";
+export * as epochUtils from "./ageEpochConfig";

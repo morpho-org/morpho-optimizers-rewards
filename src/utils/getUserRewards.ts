@@ -14,7 +14,7 @@ import { getUserBalances } from "./getUserBalances";
 import { MARKETS_UPGRADE_SNAPSHOTS, VERSION_2_TIMESTAMP } from "../constants/mechanismUpgrade";
 import { StorageService } from "./StorageService";
 import { getAddress, parseUnits } from "ethers/lib/utils";
-import { epochsBefore, epochsBetweenTimestamps, timestampToEpoch } from "../ages";
+import { epochUtils } from "../ages";
 
 export const getUserRewards = async (
   address: string,
@@ -30,8 +30,8 @@ export const getUserRewards = async (
   const userBalances = await getUserBalances(SUBGRAPH_URL, address.toLowerCase(), blockNumber).then(
     (u) => u?.balances ?? []
   );
-  const currentEpoch = await timestampToEpoch(timestampEnd);
-  const prevEpoch = await epochsBefore(currentEpoch.id, false).then((e) => e[e.length - 1]);
+  const currentEpoch = await epochUtils.timestampToEpoch(timestampEnd);
+  const prevEpoch = await epochUtils.epochsBefore(currentEpoch.id, false).then((e) => e[e.length - 1]);
   // preload to cache the current epoch configuration
   await getEpochMarketsDistribution(currentEpoch.id, provider, storageService);
 
@@ -439,7 +439,7 @@ const computeIndex = async (
   provider: providers.Provider,
   speed: (emission: BigNumber) => BigNumber = (e) => e
 ) => {
-  const epochs = await epochsBetweenTimestamps(
+  const epochs = await epochUtils.epochsBetweenTimestamps(
     BigNumber.from(lastUpdateTimestamp).toNumber(),
     BigNumber.from(currentTimestamp).toNumber()
   );

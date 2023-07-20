@@ -1,10 +1,4 @@
-import {
-  computeMerkleTree,
-  fetchUsers,
-  getAccumulatedEmission,
-  UserBalances,
-  userBalancesToUnclaimedTokens,
-} from "../src/utils";
+import { computeMerkleTree, fetchUsers, UserBalances, userBalancesToUnclaimedTokens } from "../src/utils";
 import { SUBGRAPH_URL } from "../src/config";
 import { BigNumber, constants, providers } from "ethers";
 import { RootUpdatedEvent } from "@morpho-labs/morpho-ethers-contract/lib/RewardsDistributor";
@@ -12,31 +6,39 @@ import { RewardsDistributor__factory } from "@morpho-labs/morpho-ethers-contract
 import addresses from "@morpho-labs/morpho-ethers-contract/lib/addresses";
 import { MarketRewards, sumRewards, getAccumulatedEmissionPerMarket } from "../src/utils";
 import { FileSystemStorageService } from "../src/utils/StorageService";
-import { epochsBefore, finishedEpochs, getEpoch, ParsedAgeEpochConfig, timestampToEpoch } from "../src";
+import { epochUtils } from "../src";
 import rawEpochs from "../src/age-epochs.json";
 import { parseDate, now } from "../src/helpers";
+import { parseUnits } from "ethers/lib/utils";
 
 const storageService = new FileSystemStorageService();
 
+const EPOCH_DERIVATION_MAX = parseUnits("2");
+const EPOCH_PERCISION_PER_MARKET = parseUnits("2");
 describe("User distribution", () => {
   beforeAll(async () => {
     // fill the block cache
     // TODO: find a better way to do this
-    await finishedEpochs();
+    await epochUtils.finishedEpochs();
   });
+  const usersAccumulatedRewards: {
+    [epoch: string]: { address: string; accumulatedRewards: string; rewards: MarketRewards[] }[];
+  } = {};
+
   describe.each(rawEpochs.filter((e) => parseDate(e.finalTimestamp) < now()))(
     "Epoch Users Distribution e2e",
-    ({ id: epochId }) => {
-      let epoch: ParsedAgeEpochConfig;
+    (rawEpoch) => {
+      const { id: epochId } = rawEpoch;
+      let epoch: epochUtils.ParsedAgeEpochConfig;
 
       const provider = new providers.JsonRpcProvider(process.env.RPC_URL);
 
       let usersBalances: UserBalances[];
-      let usersAccumulatedRewards: { address: string; accumulatedRewards: string; rewards: MarketRewards[] }[];
+
       beforeAll(async () => {
-        epoch = await getEpoch(epochId);
+        epoch = await epochUtils.getEpoch(epochId);
         usersBalances = await fetchUsers(SUBGRAPH_URL, epoch.finalBlock);
-        usersAccumulatedRewards = await Promise.all(
+        usersAccumulatedRewards[epochId] = await Promise.all(
           usersBalances.map(async ({ address, balances }) => {
             const rewards = await userBalancesToUnclaimedTokens(
               balances,
@@ -54,9 +56,23 @@ describe("User distribution", () => {
       });
 
       it(`Should distribute the correct number of tokens over Morpho users for ${epochId}`, async () => {
-        const totalEmitted = usersAccumulatedRewards.reduce((a, b) => a.add(b.accumulatedRewards), BigNumber.from(0));
-        const accumulatedEmission = getAccumulatedEmission(epochId); // we sum the emissions
-        expect(totalEmitted).toBnApproxEq(accumulatedEmission, linearPrecision(epochId));
+        const totalEmitted = usersAccumulatedRewards[epochId].reduce(
+          (a, b) => a.add(b.accumulatedRewards),
+          BigNumber.from(0)
+        );
+        const epochNumber = rawEpochs.indexOf(rawEpoch);
+        const totalEmittedPrev =
+          epochNumber === 0
+            ? constants.Zero
+            : usersAccumulatedRewards[rawEpochs[epochNumber - 1].id].reduce(
+                (a, b) => a.add(b.accumulatedRewards),
+                constants.Zero
+              );
+        const totalEpochEmitted = totalEmitted.sub(totalEmittedPrev);
+        expect(totalEpochEmitted).toBnApproxEq(
+          parseUnits(rawEpoch.distributionParameters.totalEmission),
+          EPOCH_DERIVATION_MAX
+        );
       });
 
       it(`Should distribute the correct number of tokens per market for epoch ${epochId}`, async () => {
@@ -64,7 +80,7 @@ describe("User distribution", () => {
         await Promise.all(
           markets.map(async (marketAddress) => {
             const emissions = await getAccumulatedEmissionPerMarket(marketAddress, epochId, storageService);
-            const rewardsPerMarket = usersAccumulatedRewards.reduce(
+            const rewardsPerMarket = usersAccumulatedRewards[epochId].reduce(
               (acc, b) => {
                 const marketRewards = b.rewards.find((r) => r.market.address === marketAddress);
                 if (!marketRewards) return acc;
@@ -75,8 +91,8 @@ describe("User distribution", () => {
               },
               { supply: constants.Zero, borrow: constants.Zero }
             );
-            expect(emissions.supply).toBnApproxEq(rewardsPerMarket.supply, linearPrecision(epochId));
-            expect(emissions.borrow).toBnApproxEq(rewardsPerMarket.borrow, linearPrecision(epochId));
+            expect(emissions.supply).toBnApproxEq(rewardsPerMarket.supply, EPOCH_PERCISION_PER_MARKET);
+            expect(emissions.borrow).toBnApproxEq(rewardsPerMarket.borrow, EPOCH_PERCISION_PER_MARKET);
           })
         );
       });
@@ -99,10 +115,10 @@ describe("On chain roots update", () => {
     await Promise.all(
       rootUpdates.map(async (rootEvent) => {
         const block = await rootEvent.getBlock();
-        const currentEpoch = await timestampToEpoch(block.timestamp);
+        const currentEpoch = await epochUtils.timestampToEpoch(block.timestamp);
         expect(currentEpoch).not.toBeUndefined();
 
-        const epochConfig = await epochsBefore(currentEpoch.id, false).then((e) => e[e.length - 1]);
+        const epochConfig = await epochUtils.epochsBefore(currentEpoch.id, false).then((e) => e[e.length - 1]);
         expect(epochConfig).not.toBeUndefined();
 
         if (epochConfig.id === "age1-epoch2") return; // not check for root 2
@@ -121,8 +137,3 @@ describe("On chain roots update", () => {
     );
   });
 });
-
-const linearPrecision = (epochId: string) => {
-  const epochNumber = rawEpochs.findIndex((e) => e.id === epochId) + 1;
-  return (Math.ceil(epochNumber / 3) * 1e18).toString();
-};

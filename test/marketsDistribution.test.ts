@@ -4,12 +4,7 @@ import { now } from "../src/helpers";
 import { RewardsDistributor__factory } from "@morpho-labs/morpho-ethers-contract";
 import addresses from "@morpho-labs/morpho-ethers-contract/lib/addresses";
 import { FileSystemStorageService } from "../src/utils/StorageService";
-import { SUBGRAPH_URL } from "../src/config";
-import { computeBorrowIndex, computeSupplyIndex } from "../src/utils/getUserRewards";
-import { MARKETS_UPGRADE_SNAPSHOTS, VERSION_2_TIMESTAMP } from "../src/constants/mechanismUpgrade";
-import { Market } from "../src/utils/graph/getGraphMarkets/markets.types";
-import { formatGraphMarket } from "../src/utils/graph/getGraphBalances/graphBalances.formatter";
-import { getEpoch, ParsedAgeEpochConfig } from "../src";
+import { epochUtils } from "../src";
 
 const storageService = new FileSystemStorageService();
 
@@ -30,12 +25,12 @@ describe("Markets distribution", () => {
 });
 
 describe("Age 1 Epoch 2 approximation", () => {
-  let epoch: ParsedAgeEpochConfig;
+  let epoch: epochUtils.ParsedAgeEpochConfig;
   const onChainDistribution = require("../distribution/fromDeprecatedScript/proofs-2.json");
   const newDistribution = require("../distribution/age1/epoch2/proofs.json");
 
   beforeAll(async () => {
-    epoch = await getEpoch("age1-epoch2");
+    epoch = await epochUtils.getEpoch("age1-epoch2");
   });
 
   it("Should have the same number of users", () =>
@@ -68,74 +63,5 @@ describe("Age 1 Epoch 2 approximation", () => {
     const rewardsDistributor = RewardsDistributor__factory.connect(addresses.morphoDao.rewardsDistributor, provider);
     const onchainRoot = await rewardsDistributor.currRoot({ blockTag: epoch.finalBlock! + 10_000 });
     expect(onchainRoot).toEqual(root);
-  });
-});
-
-describe.skip("Distribution mechanism v2", () => {
-  const provider = new providers.JsonRpcProvider(process.env.RPC_URL);
-
-  it("Should have the correct snapshot at the switch to the new mechanism", async () => {
-    const markets = await fetch(SUBGRAPH_URL, {
-      method: "POST",
-      body: JSON.stringify({
-        query: `
-        query GetMArkets($block: Int!) {
-            markets(first: 100 block: { number: $block }) {
-              address
-              supplyIndex
-              poolSupplyIndex
-              p2pSupplyIndex
-              supplyUpdateBlockTimestamp
-              supplyUpdateBlockTimestampV1
-                    
-              borrowIndex
-              poolBorrowIndex
-              p2pBorrowIndex
-              borrowUpdateBlockTimestamp
-              borrowUpdateBlockTimestampV1
-            
-              lastPoolSupplyIndex
-              lastP2PSupplyIndex
-              lastPoolBorrowIndex
-              lastP2PBorrowIndex
-              lastTotalSupply
-              lastTotalBorrow
-            
-              scaledSupplyOnPool
-              scaledSupplyInP2P
-              scaledBorrowOnPool
-              scaledBorrowInP2P
-            }
-          }
-          `,
-        variables: {
-          block: 0,
-        },
-      }),
-    })
-      .then((res) => res.json())
-      .then((markets) => markets.data.markets.map(formatGraphMarket) as Market[]);
-    await Promise.all(
-      markets.map(async (market) => {
-        const supplySnapshot = MARKETS_UPGRADE_SNAPSHOTS.find((s: any) => s.id === `${market.address}-supply`)! as any;
-        const supplyIndex = await computeSupplyIndex(market, VERSION_2_TIMESTAMP, provider, storageService);
-        // const { p2pSupplyIndex, poolSupplyIndex } = await computeSupplyIndexes(
-        //   market,
-        //   VERSION_2_TIMESTAMP,
-        //   provider,
-        //   storageService
-        // );
-        expect(BigNumber.from(supplySnapshot.indexV1)).toBnEq(supplyIndex);
-        const borrowSnapshot = MARKETS_UPGRADE_SNAPSHOTS.find((s: any) => s.id === `${market.address}-borrow`)! as any;
-        const borrowIndex = await computeBorrowIndex(market, VERSION_2_TIMESTAMP, provider, storageService);
-        // const { p2pBorrowIndex, poolBorrowIndex } = await computeBorrowIndexes(
-        //   market,
-        //   VERSION_2_TIMESTAMP,
-        //   provider,
-        //   storageService
-        // );
-        expect(BigNumber.from(borrowSnapshot.indexV1)).toBnEq(borrowIndex);
-      })
-    );
   });
 });

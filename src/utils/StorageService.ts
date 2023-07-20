@@ -2,7 +2,7 @@ import * as path from "path";
 import * as fs from "fs";
 import { MarketsEmissionFs } from "../ages/distributions/MarketsEmissionFs";
 import { Proof, Proofs } from "../ages/distributions/Proofs";
-import { finishedEpochs } from "../ages";
+import { epochUtils } from "../ages";
 import { UsersDistribution } from "../ages/distributions/UsersDistribution";
 import { isDefined } from "../helpers";
 
@@ -89,7 +89,7 @@ export class FileSystemStorageService implements StorageService {
   }
 
   async readAllProofs() {
-    const allEpochsWithProofs = await finishedEpochs();
+    const allEpochsWithProofs = await epochUtils.finishedEpochs();
     const result = await Promise.all(
       allEpochsWithProofs.map(async (epoch) => {
         return this.readProofs(epoch.id);

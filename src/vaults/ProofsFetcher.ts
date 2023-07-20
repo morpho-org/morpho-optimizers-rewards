@@ -1,4 +1,4 @@
-import { allEpochs, getEpoch } from "../ages";
+import { epochUtils } from "../ages";
 import { Proofs } from "../ages/distributions/Proofs";
 import { StorageService } from "../utils/StorageService";
 
@@ -10,7 +10,7 @@ export default class ProofsFetcher implements ProofsFetcherInterface {
   constructor(private readonly storageService: StorageService) {}
 
   async fetchProofs(address: string, epochToId?: string): Promise<Proofs[]> {
-    const [allProofs, epochs] = await Promise.all([this.storageService.readAllProofs(), allEpochs()]);
+    const [allProofs, epochs] = await Promise.all([this.storageService.readAllProofs(), epochUtils.allEpochs()]);
     const proofs = allProofs
       .sort((a, b) => {
         const epochA = epochs.find((epoch) => epoch.id === a.epochId);
@@ -21,7 +21,7 @@ export default class ProofsFetcher implements ProofsFetcherInterface {
       .filter((proofs) => !!proofs.proofs[address.toLowerCase()]?.amount);
 
     if (epochToId) {
-      const ageEpoch = await getEpoch(epochToId);
+      const ageEpoch = await epochUtils.getEpoch(epochToId);
       if (!ageEpoch) throw Error(`Invalid epoch id ${epochToId}`);
       const epochIndex = proofs.findIndex((proof) => proof.epochId === ageEpoch.id);
       return proofs.slice(0, epochIndex); // empty array if epochIndex === -1

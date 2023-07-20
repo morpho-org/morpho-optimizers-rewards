@@ -1,6 +1,6 @@
 import * as dotenv from "dotenv";
 import { providers } from "ethers";
-import { allEpochs, snapshotableEpochs } from "../ages";
+import { epochUtils } from "../ages";
 import * as fs from "fs";
 
 dotenv.config();
@@ -12,7 +12,7 @@ const generateGraphEmissions = async () => {
   if (!canUse.authenticated) throw new Error("Wrong Pinata Key");
 
   const provider = new providers.JsonRpcProvider(process.env.RPC_URL);
-  const epochs = await snapshotableEpochs();
+  const epochs = await epochUtils.snapshotableEpochs();
   const distributions = await Promise.all(
     epochs.map(async (epoch) => ({
       epoch,
@@ -26,7 +26,7 @@ const generateGraphEmissions = async () => {
   );
   const formattedEmissions: Record<string, string> = {};
 
-  const allEpochsDefined = await allEpochs();
+  const allEpochsDefined = await epochUtils.allEpochs();
   const getKey = (epochId: string) => allEpochsDefined.findIndex(({ id }) => id === epochId) + 1;
 
   distributions.forEach(({ epoch, distribution }) => {

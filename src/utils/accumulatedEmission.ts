@@ -1,17 +1,17 @@
-import { epochsBefore, rawEpochs } from "../ages";
+import { epochUtils } from "../ages";
 import { BigNumber, constants } from "ethers";
 import { parseUnits } from "ethers/lib/utils";
 import { StorageService } from "./StorageService";
 
 /**
  * Returns the total distributed rewards for the previous epochs including the current one
- * @param epochNumber The number of the epoch
+ * @param epochId The id of the epoch
  */
 export const getAccumulatedEmission = (epochId: string) => {
-  const epochIndex = rawEpochs.findIndex((epoch) => epoch.id === epochId);
+  const epochIndex = epochUtils.rawEpochs.findIndex((epoch) => epoch.id === epochId);
   if (epochIndex === -1) throw Error(`Unknown epoch id ${epochId}`);
 
-  return rawEpochs
+  return epochUtils.rawEpochs
     .slice(0, epochIndex + 1)
     .reduce((acc, epoch) => acc.add(parseUnits(epoch.distributionParameters.totalEmission)), constants.Zero);
 };
@@ -24,7 +24,7 @@ export const getAccumulatedEmissionPerMarket = async (
   epochId: string,
   storageService: StorageService
 ): Promise<{ supply: BigNumber; borrow: BigNumber }> => {
-  const epochs = await epochsBefore(epochId, true);
+  const epochs = await epochUtils.epochsBefore(epochId, true);
   return Promise.all(
     epochs.map(async (epoch) => {
       const distribution = await storageService.readMarketDistribution(epoch.id);

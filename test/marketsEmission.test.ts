@@ -10,7 +10,7 @@ import {
   getAaveV3MarketsParameters,
   getCompoundMarketsParameters,
 } from "../src/utils/markets/fetchMarketsData";
-import { getEpoch, ParsedAgeEpochConfig, rawEpochs } from "../src";
+import { epochUtils } from "../src";
 
 const storageService = new FileSystemStorageService();
 
@@ -36,13 +36,13 @@ describe("Test Market data fetching", () => {
   });
 });
 
-describe.each(rawEpochs.filter((e) => parseDate(e.initialTimestamp) < now()))(
+describe.each(epochUtils.rawEpochs.filter((e) => parseDate(e.initialTimestamp) < now()))(
   "Test Epochs Configuration",
   (rawEpoch) => {
-    let epoch: ParsedAgeEpochConfig;
+    let epoch: epochUtils.ParsedAgeEpochConfig;
 
     beforeAll(async () => {
-      epoch = await getEpoch(rawEpoch.id);
+      epoch = await epochUtils.getEpoch(rawEpoch.id);
     });
     const ts = Math.floor(Date.now() / 1000);
     const provider = new providers.JsonRpcProvider(process.env.RPC_URL);
@@ -55,7 +55,7 @@ describe.each(rawEpochs.filter((e) => parseDate(e.initialTimestamp) < now()))(
     it(`Should have consistent timestamps for ${rawEpoch.id}`, () => {
       expect(epoch.initialTimestamp).toBeLessThan(epoch.finalTimestamp);
       if (epoch.id !== "age1-epoch1") {
-        const rawPreviousEpoch = rawEpochs[rawEpochs.indexOf(rawEpoch) - 1];
+        const rawPreviousEpoch = epochUtils.rawEpochs[epochUtils.rawEpochs.indexOf(rawEpoch) - 1];
         expect(rawPreviousEpoch).not.toBeUndefined();
         expect(parseDate(rawPreviousEpoch.finalTimestamp)).toBeLessThanOrEqual(epoch.initialTimestamp);
       }
@@ -108,7 +108,7 @@ describe.each(rawEpochs.filter((e) => parseDate(e.initialTimestamp) < now()))(
           )
         );
       });
-      const epochNumber = rawEpochs.indexOf(rawEpoch) + 1;
+      const epochNumber = epochUtils.rawEpochs.indexOf(rawEpoch) + 1;
       if (epochNumber >= 4) {
         it(`Should not distribute tokens on Compound FEI deprecated market for epoch ${rawEpoch.id}`, async () => {
           expect(marketsEmissions[cFei]).toBeUndefined(); // no distribution for the fei token
