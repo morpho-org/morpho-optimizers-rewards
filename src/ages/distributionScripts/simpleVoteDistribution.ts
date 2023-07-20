@@ -11,6 +11,13 @@ interface MarketWeight {
   symbol: string;
   market: string;
   weight: number;
+  sizeDistribution?: {
+    type: string;
+    params: {
+      supplySize: number;
+      borrowSize: number;
+    };
+  };
 }
 
 const simpleVoteDistribution = async ({
@@ -34,13 +41,38 @@ const simpleVoteDistribution = async ({
   const { markets } = await fetchMarketsData(snapshotBlock, provider);
 
   const marketsEmissions = Object.fromEntries(
-    marketsRepartition.map(({ market, weight }) => {
+    marketsRepartition.map(({ market, weight, sizeDistribution }) => {
       const marketData = markets.find((m) => m.address.toLowerCase() === market.toLowerCase());
       if (!marketData) throw Error(`Unknown market ${market}`);
       const emissionRatePerEpoch = PercentMath.percentMul(totalEmission, weight);
       const { morphoSupplyMarketSize, morphoBorrowMarketSize, decimals } = marketData;
 
       const total = morphoSupplyMarketSize.add(morphoBorrowMarketSize);
+      const baseMarket = {
+        totalMarketSizeBorrowSide: morphoBorrowMarketSize,
+        totalMarketSizeSupplySide: morphoSupplyMarketSize,
+        decimals,
+      };
+
+      if (sizeDistribution) {
+        if (sizeDistribution.type !== "static") throw Error("Only static size distribution is supported for now");
+        const { supplySize, borrowSize } = sizeDistribution.params;
+        if (!supplySize || !borrowSize) throw Error("Missing supply or borrow size distribution params");
+        const morphoEmittedSupplySide = PercentMath.percentMul(emissionRatePerEpoch, supplySize);
+        const morphoRatePerSecondSupplySide = morphoEmittedSupplySide.div(duration);
+        const morphoEmittedBorrowSide = PercentMath.percentMul(emissionRatePerEpoch, borrowSize);
+        const morphoRatePerSecondBorrowSide = morphoEmittedBorrowSide.div(duration);
+        return [
+          market.toLowerCase(),
+          {
+            ...baseMarket,
+            morphoEmittedSupplySide,
+            morphoRatePerSecondSupplySide,
+            morphoEmittedBorrowSide,
+            morphoRatePerSecondBorrowSide,
+          },
+        ];
+      }
       const morphoEmittedSupplySide = morphoSupplyMarketSize.mul(emissionRatePerEpoch).div(total);
       const morphoRatePerSecondSupplySide = morphoEmittedSupplySide.div(duration);
       const morphoEmittedBorrowSide = morphoBorrowMarketSize.mul(emissionRatePerEpoch).div(total);
@@ -49,13 +81,11 @@ const simpleVoteDistribution = async ({
       return [
         market.toLowerCase(),
         {
+          ...baseMarket,
           morphoEmittedSupplySide,
           morphoRatePerSecondSupplySide,
           morphoEmittedBorrowSide,
           morphoRatePerSecondBorrowSide,
-          totalMarketSizeBorrowSide: morphoBorrowMarketSize,
-          totalMarketSizeSupplySide: morphoSupplyMarketSize,
-          decimals,
         },
       ];
     })

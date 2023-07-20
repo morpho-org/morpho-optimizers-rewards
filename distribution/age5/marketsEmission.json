@@ -37,7 +37,14 @@
       {
         "symbol": "aWETHV3",
         "market": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
-        "weight": 697
+        "weight": 697,
+        "sizeDistribution": {
+          "type": "static",
+          "params": {
+            "supplySize": "10000",
+            "borrowSize": "0"
+          }
+        }
       }
     ],
     "snapshotBlock": 17315284,
@@ -95,10 +102,10 @@
       "totalMarketSizeBorrowSide": "624288.065498"
     },
     "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2": {
-      "morphoEmittedSupplySide": "76666.833762795246376679",
-      "morphoRatePerSecondSupplySide": "0.019718835844340341",
-      "morphoRatePerSecondBorrowSide": "0.000000814361420975",
-      "morphoEmittedBorrowSide": "3.16623720475362332",
+      "morphoEmittedSupplySide": "76670.0",
+      "morphoRatePerSecondSupplySide": "0.019719650205761316",
+      "morphoRatePerSecondBorrowSide": "0.0",
+      "morphoEmittedBorrowSide": "0.0",
       "totalMarketSizeSupplySide": "82.341727365011506598",
       "totalMarketSizeBorrowSide": "0.003400602684250899"
     }

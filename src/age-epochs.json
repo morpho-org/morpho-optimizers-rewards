@@ -233,7 +233,14 @@
         {
           "symbol": "aWETHV3",
           "market": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
-          "weight": 697
+          "weight": 697,
+          "sizeDistribution": {
+            "type": "static",
+            "params": {
+              "supplySize": "10000",
+              "borrowSize": "0"
+            }
+          }
         }
       ]
     }
@@ -254,7 +261,14 @@
         {
           "symbol": "aWETH",
           "market": "0x030bA81f1c18d280636F32af80b9AAd02Cf0854e",
-          "weight": 4610
+          "weight": 4610,
+          "sizeDistribution": {
+            "type": "static",
+            "params": {
+              "supplySize": 5000,
+              "borrowSize": 5000
+            }
+          }
         },
         {
           "symbol": "aUSDC",
@@ -274,12 +288,13 @@
         {
           "symbol": "cUSDT",
           "market": "0xf650C3d88D12dB855b8bf7D11Be6C55A4e07dCC9",
-          "weight": 317
+          "weight": 316
         },
         {
           "symbol": "aWETHV3",
           "market": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
           "weight": 788
+
         }
       ]
     }
