@@ -46,11 +46,11 @@ jobs:
 
       - name: Commit and push if there are changes
         run: |
+          git add distribution
           if [[ -z $(git status -s) ]]
           then
             echo "tree is clean"
           else
-            git add distribution
             git config --global user.name 'Distributor bot'
             git config --global user.email 'bot@morpho.org'
             git commit -am "chore: compute market distribution from CI"
