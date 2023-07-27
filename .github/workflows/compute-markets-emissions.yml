@@ -4,6 +4,9 @@ on:
   workflow_dispatch:
   schedule:
     - cron: '0 14 * * *'
+  push:
+    branches:
+      - feat/revamp-markets-emission
 
 env:
   RPC_URL: ${{ secrets.RPC_URL }}
