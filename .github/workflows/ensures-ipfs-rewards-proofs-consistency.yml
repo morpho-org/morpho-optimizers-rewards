@@ -1,4 +1,4 @@
-name: Ensures IPFS Rewards Proofs Consistency
+name: ensures-ipfs-rewards-proofs-consistency
 
 on:
   workflow_dispatch:

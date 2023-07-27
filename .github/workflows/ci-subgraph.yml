@@ -1,4 +1,4 @@
-name: Subgraph tests
+name: subgraph-test-and-deploy
 
 on:
   push:

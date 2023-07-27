@@ -1,9 +1,9 @@
-name: Create new Morpho Users distribution
+name: compute-users-distributions
 
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 15 * * *'
+    - cron: '1 15 * * *'
 
 env:
   RPC_URL: ${{ secrets.RPC_URL }}

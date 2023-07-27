@@ -1,9 +1,9 @@
-name: Create new Morpho Rewards
+name: compute-markets-emissions
 
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 14 * * *'
+    - cron: '1 14 * * *'
   push:
     branches:
       - feat/revamp-markets-emission

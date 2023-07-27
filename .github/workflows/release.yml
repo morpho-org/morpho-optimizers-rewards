@@ -1,4 +1,4 @@
-name: Publish package release
+name: release
 
 on:
   workflow_call:
@@ -6,7 +6,7 @@ on:
       NPM_TOKEN:
         required: true
   workflow_run:
-    workflows: ["Integration tests"]
+    workflows: ["package-tests"]
     branches: [main]
     types:
       - completed
