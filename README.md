@@ -127,7 +127,7 @@ this will output the users distribution in the [distribution](./distribution) di
 If you want to compute the users distribution for a specific epoch, you can use the `--epoch` flag:
 
 ```bash
-yarn users:distribute --epoch 6
+yarn users:distribute --epoch age3-epoch2
 ```
 
 You can also choose the data provider for the users balances between `rpc` or `subgraph`.
@@ -155,15 +155,17 @@ update of the root on chain (rewards of the previous epoch). You are still able 
 
 ## Rounding errors
 
-Due to rounding errors, the total amount distributed has a precision of more or less 10e-9 MORPHO distributed (over all markets) for age 1, and 10e-2 for the age 2. You have more details when you're running the users distribution script:
+Due to rounding errors, the total amount distributed has a precision of more or less 10e-9 MORPHO distributed (over all markets) for age 1, and 10e-2 for the age 2 etc. The following graph is showing the precision of the distribution for each epoch:
 
-| age  | epoch  | users | root                                                               | totalEmission | total                        |
-| ---- | ------ | ----- | ------------------------------------------------------------------ | ------------- | ---------------------------- |
-| age1 | epoch1 | 226   | 0xca64d60cf02765803feb6298e4c851689fbc896d0e73c00e0c2f678f353f0d19 | 350,000       | 349,999.999999999800531676   |
-| age1 | epoch2 | 836   | 0x7510de9d121824eeb7beee216e1b17e93634c493f23b931dbecd9c7489490237 | 2,050,000     | 2,049,999.999999995047580557 |
-| age1 | epoch3 | 1020  | 0xa033808b8ad6b65291bc542b033f869ed82412707ca7127f4d3564d0b6d8abb3 | 5,000,000     | 4,999,999.999999992368510877 |
-| age2 | epoch1 | 1257  | 0xd455ed17a36422d897d2ec46d738278c1385b5c14468e827e836b2f9988b6feb | 8,000,000     | 7,999,999.937276468309385008 |
-| age2 | epoch2 | 1468  | 0xf7f279235b2273be2560e553122cab5b88d409f2bc6cd8132803daa46462524b | 11,400,000    | 11,399,999.18768007238288912 |
+<div align="center">
+<img src="./docs/resources/derivation.png">
+</div>
+
+The following graph shows the total amount of MORPHO not distributed due to rounding errors:
+
+<div align="center">
+<img src="./docs/resources/derivation-total.png">
+</div>
 
 # Vault distribution
 
@@ -195,17 +197,11 @@ It is useful when you have multiple vaults, and you want to merge all the distri
 yarn vaults:distribute --merge-trees --save-history
 ```
 
-For the DAO transaction, you can generate the transactions in a Safe Transaction Builder format by using the flag `--create-batch`:
+You can also specify an epoch to compute the distribution for a specific epoch:
 
 ```bash
-yarn vaults:distribute  --merge-trees --create-batch
+yarn vaults:distribute  --merge-trees --save-history --epoch age5
 ```
 
-This option is only possible with the `--merge-trees` flag, and is doing:
-
-- claiming on behalf of each vaults
-- transferring the claimed MORPHO to the rewards distributor for each vaults
-- updating the root of the Vaults rewards distributor with the root of the merged Merkle tree
-
-This transaction can only be executed by the owner of the vaults and the owner of the Rewards distributor, which is the Morpho DAO Safe for the defaults vaults.
+It will compute the last epoch by default.
 
