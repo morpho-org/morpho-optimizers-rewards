@@ -96,7 +96,9 @@ export default class Distributor {
       throw Error(
         `Number of MORPHO remaining in the vault exceeds the threshold of ${formatUnits(
           Distributor.MORPHO_DUST
-        )} for the Vault ${this.vaultAddress} in ${epochToId}`
+        )} for the Vault ${this.vaultAddress} in ${epochToId}: ${formatUnits(morphoRemaining)} remaining, ${formatUnits(
+          this._morphoAccumulatedFromMainDistribution
+        )} distributed`
       );
 
     const lastEpochId = epochsProofs[epochsProofs.length - 1].epochId;

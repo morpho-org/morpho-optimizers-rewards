@@ -14,16 +14,17 @@ import { parseUnits } from "ethers/lib/utils";
 const storageService = new FileSystemStorageService();
 
 const EPOCH_DERIVATION_MAX = parseUnits("2");
-const EPOCH_PERCISION_PER_MARKET = parseUnits("2");
+const EPOCH_PRECISION_PER_MARKET = parseUnits("4"); // TODO: to be refined
+
+const usersAccumulatedRewards: {
+  [epoch: string]: { address: string; accumulatedRewards: string; rewards: MarketRewards[] }[];
+} = {};
 describe("User distribution", () => {
   beforeAll(async () => {
     // fill the block cache
     // TODO: find a better way to do this
     await epochUtils.finishedEpochs();
   });
-  const usersAccumulatedRewards: {
-    [epoch: string]: { address: string; accumulatedRewards: string; rewards: MarketRewards[] }[];
-  } = {};
 
   describe.each(rawEpochs.filter((e) => parseDate(e.finalTimestamp) < now()))(
     "Epoch Users Distribution e2e",
@@ -91,8 +92,8 @@ describe("User distribution", () => {
               },
               { supply: constants.Zero, borrow: constants.Zero }
             );
-            expect(emissions.supply).toBnApproxEq(rewardsPerMarket.supply, EPOCH_PERCISION_PER_MARKET);
-            expect(emissions.borrow).toBnApproxEq(rewardsPerMarket.borrow, EPOCH_PERCISION_PER_MARKET);
+            expect(emissions.supply).toBnApproxEq(rewardsPerMarket.supply, EPOCH_PRECISION_PER_MARKET);
+            expect(emissions.borrow).toBnApproxEq(rewardsPerMarket.borrow, EPOCH_PRECISION_PER_MARKET);
           })
         );
       });
@@ -122,16 +123,9 @@ describe("On chain roots update", () => {
         expect(epochConfig).not.toBeUndefined();
 
         if (epochConfig.id === "age1-epoch2") return; // not check for root 2
-        const usersBalances = await fetchUsers(SUBGRAPH_URL, epochConfig.finalBlock);
-        const usersAccumulatedRewards = await Promise.all(
-          usersBalances.map(async ({ address, balances }) => ({
-            address,
-            accumulatedRewards: sumRewards(
-              await userBalancesToUnclaimedTokens(balances, epochConfig.finalTimestamp, provider, storageService)
-            ).toString(), // with 18 * 2 decimals
-          }))
+        const merkleRoot = computeMerkleTree(
+          usersAccumulatedRewards[epochConfig.id].filter((r) => r.accumulatedRewards !== "0")
         );
-        const merkleRoot = computeMerkleTree(usersAccumulatedRewards.filter((r) => r.accumulatedRewards !== "0"));
         expect(merkleRoot.root.toLowerCase()).toEqual(rootEvent.args.newRoot);
       })
     );

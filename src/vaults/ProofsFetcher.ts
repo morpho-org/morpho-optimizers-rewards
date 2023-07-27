@@ -24,7 +24,7 @@ export default class ProofsFetcher implements ProofsFetcherInterface {
       const ageEpoch = await epochUtils.getEpoch(epochToId);
       if (!ageEpoch) throw Error(`Invalid epoch id ${epochToId}`);
       const epochIndex = proofs.findIndex((proof) => proof.epochId === ageEpoch.id);
-      return proofs.slice(0, epochIndex); // empty array if epochIndex === -1
+      return proofs.slice(0, epochIndex + 1); // empty array if epochIndex === -1
     }
     return proofs;
   }

@@ -19,6 +19,8 @@ export interface EventsFetcherInterface {
 export default class VaultEventsFetcher implements EventsFetcherInterface {
   private vault: MorphoAaveV2SupplyVault | MorphoCompoundSupplyVault;
 
+  #blocksCache: Map<number, providers.Block> = new Map();
+
   constructor(
     private vaultAddress: string,
     private provider: providers.Provider,
@@ -71,7 +73,9 @@ export default class VaultEventsFetcher implements EventsFetcherInterface {
   }
 
   async getBlock(blockNumber: number): Promise<providers.Block> {
-    return this.provider.getBlock(blockNumber);
+    if (this.#blocksCache.has(blockNumber)) return this.#blocksCache.get(blockNumber)!;
+    this.#blocksCache.set(blockNumber, await this.provider.getBlock(blockNumber));
+    return this.#blocksCache.get(blockNumber)!;
   }
 
   private async _fetchDepositEvents(

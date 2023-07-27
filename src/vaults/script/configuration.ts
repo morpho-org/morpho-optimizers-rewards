@@ -3,7 +3,6 @@ export interface VaultConfiguration {
   deploymentBlock: number;
 }
 const configuration = {
-  epochTo: undefined, // The epoch id to distribute to. If undefined, will distribute to the last ended epoch. EpochId = ageX-epochX
   vaults: [
     {
       address: "0xd508f85f1511aaec63434e26aeb6d10be0188dc7", // m-aave WBTC SV

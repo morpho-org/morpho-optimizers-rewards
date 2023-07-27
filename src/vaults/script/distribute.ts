@@ -84,7 +84,12 @@ const distribute = async (
   if (mergeTrees) {
     const mergedTree = mergeMerkleTrees(trees);
 
-    const proofs = await storageService.readAllProofs();
+    const proofs = await storageService.readAllProofs().then((p) => {
+      if (!epochToId) return p;
+
+      const lastEpochId = p.findIndex((proof) => proof.epochId === epochToId);
+      return p.slice(0, lastEpochId + 1);
+    });
 
     const lastProof = proofs[proofs.length - 1];
 
@@ -149,7 +154,7 @@ const distribute = async (
 
 distribute(
   configuration.vaults,
-  configuration.epochTo,
+  process.argv.includes("--epoch") ? process.argv[process.argv.indexOf("--epoch") + 1] : undefined,
   process.argv.includes("--save-history"),
   process.argv.includes("--merge-trees"),
   process.argv.includes("--create-batch")

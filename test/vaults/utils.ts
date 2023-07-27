@@ -1,15 +1,21 @@
 import { TransactionEvents } from "../../src/vaults/types";
 import Distributor from "../../src/vaults/Distributor";
 import { EventsFetcherInterface } from "../../src/vaults/VaultEventsFetcher";
-import { BigNumber, providers } from "ethers";
-import ProofsFetcher from "../../src/vaults/ProofsFetcher";
+import { BigNumber, constants, providers } from "ethers";
+import { ProofsFetcherInterface } from "../../src/vaults/ProofsFetcher";
 import { maxBN } from "@morpho-labs/ethers-utils/lib/utils";
-import { FileSystemStorageService } from "../../src/utils/StorageService";
 import { epochUtils } from "../../src";
+import { Proofs } from "../../src/ages/distributions/Proofs";
+import { computeMerkleTree } from "../../src/utils";
+import ProofsFetcher from "../../src/vaults/ProofsFetcher";
+import { FileSystemStorageService } from "../../src/utils/StorageService";
 
-const storageService = new FileSystemStorageService();
-
-export const distributorFromEvents = (vaultAddress: string, events: TransactionEvents[]): Distributor => {
+export const distributorFromEvents = (
+  vaultAddress: string,
+  events: TransactionEvents[],
+  useRealDistribution = true,
+  numberOfEpochs = 1
+): Distributor => {
   class LocalEventFetcher implements EventsFetcherInterface {
     private _events = events;
     async fetchSortedEventsForEpoch(
@@ -31,8 +37,32 @@ export const distributorFromEvents = (vaultAddress: string, events: TransactionE
       return provider.getBlock(blockNumber);
     }
   }
+
+  class StaticProofsFetcher implements ProofsFetcherInterface {
+    async fetchProofs(address: string, epochToId?: string): Promise<Proofs[]> {
+      if (address === constants.AddressZero || !events.length) return [];
+      return Array.from({ length: numberOfEpochs }).map((_, i) => {
+        const epochId = epochToId ?? `age${i}`;
+        const { proofs, root, total } = computeMerkleTree([
+          {
+            address: vaultAddress,
+            accumulatedRewards: (1000 * (i + 1)).toString(),
+          },
+        ]);
+
+        return {
+          epochId,
+          proofs,
+          root,
+          total,
+        };
+      });
+    }
+  }
   const eventsFetcher = new LocalEventFetcher();
-  const proofsFetcher = new ProofsFetcher(storageService);
+  const proofsFetcher = useRealDistribution
+    ? new ProofsFetcher(new FileSystemStorageService())
+    : new StaticProofsFetcher();
 
   return new Distributor(vaultAddress, eventsFetcher, proofsFetcher);
 };
