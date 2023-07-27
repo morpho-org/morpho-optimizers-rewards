@@ -60,6 +60,7 @@ jobs:
       - name: Commit and push if there are changes
         if: ${{ steps.check-distribution.outputs.continue == 'true' }}
         run: |
+            git add distribution
             git config --global user.name 'Distributor bot'
             git config --global user.email 'bot@morpho.org'
             git commit -am "chore: compute users distributions from CI"
