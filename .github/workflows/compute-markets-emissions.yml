@@ -11,6 +11,7 @@ on:
 env:
   RPC_URL: ${{ secrets.RPC_URL }}
   ETHERSCAN_API_KEY: ${{ secrets.ETHERSCAN_API_KEY }}
+  PINATA_JWT_KEY: ${{ secrets.PINATA_JWT_KEY }}
 
 jobs:
   compute-markets-emissions:
