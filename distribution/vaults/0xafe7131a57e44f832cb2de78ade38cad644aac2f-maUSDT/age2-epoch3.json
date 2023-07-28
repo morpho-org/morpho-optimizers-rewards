@@ -1,6 +1,7 @@
 {
   "epochId": "age2-epoch3",
   "root": "0xf7b95a74d5987bf850bf94bbcf4f6c286b3669831452468f56bc2465e367bad5",
+  "total": "87083888482444574762",
   "proofs": {
     "0xafe7131a57e44f832cb2de78ade38cad644aac2f": {
       "amount": "46498659740702242193",
@@ -76,6 +77,5 @@
     "0xaa25c25f4cbe968aeea45f82439ec6b90e8614119fd60db303a77e19eb913cdd",
     "0xae6aff02ed4f61416ddeb692e90ef574e675a2d00b1bde72f72a2faeed8e116c",
     "0xdeba897887314408a432f4c1b28e58539150e9c2959160cd2ad64cc7e45600f1"
-  ],
-  "total": "87083888482444574762"
+  ]
 }

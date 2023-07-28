@@ -1,0 +1,67 @@
+name: compute-users-distributions
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '1 15 * * *'
+
+  push:
+    branches:
+      - feat/revamp-markets-emission
+env:
+  RPC_URL: ${{ secrets.RPC_URL }}
+  ETHERSCAN_API_KEY: ${{ secrets.ETHERSCAN_API_KEY }}
+
+jobs:
+  compute-markets-users-distributions:
+    name: Compute markets users distributions
+    runs-on: ubuntu-latest
+    steps:
+      - name: Generate a token
+        id: generate-token
+        uses: tibdex/github-app-token@b62528385c34dbc9f38e5f4225ac829252d1ea92
+        with:
+          app_id: ${{ secrets.APP_ID }}
+          private_key: ${{ secrets.APP_PRIVATE_KEY }}
+
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          token:  ${{ steps.generate-token.outputs.token }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install dependencies
+        run: yarn install --immutable
+
+      - name: Compute Market Distribution
+        run: yarn users:distribute
+
+      - name: check new distribution
+        id: check-distribution
+        run: |
+          git add distribution
+          if [[ -z $(git status -s) ]]
+          then
+            echo "tree is clean"
+          else
+            echo "continue=true" >> "$GITHUB_OUTPUT"
+          exit
+          fi
+      
+
+      - name: update vaults distribution
+        if: ${{ steps.check-distribution.outputs.continue == 'true' }}
+        run: yarn vaults:distribute --merge-trees --save-history
+
+      - name: Commit and push if there are changes
+        if: ${{ steps.check-distribution.outputs.continue == 'true' }}
+        run: |
+            git add distribution
+            git config --global user.name 'Distributor bot'
+            git config --global user.email 'bot@morpho.org'
+            git commit -am "chore: compute users distributions from CI"
+            git push

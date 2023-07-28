@@ -1,4 +1,5 @@
 import { BigNumber, BigNumberish } from "ethers";
+import { wait } from "../../helpers";
 
 /**
  * Get the block number from a timestamp
@@ -27,4 +28,23 @@ export const blockFromTimestamp = async (
     .then((r) => r.result as string);
   if (response.includes("Error")) throw new Error(`No snapshot block yet for timestamp ${timestamp}`);
   return response;
+};
+
+const cache = new Map<string, number>();
+export const blockFromTimestampWithRetry = async (
+  ts: number,
+  direction: "before" | "after",
+  apiKey = process.env.ETHERSCAN_API_KEY,
+  retries = 0
+): Promise<number> => {
+  if (cache.has(`${ts}-${direction}`)) return Promise.resolve(cache.get(`${ts}-${direction}`)!);
+  const res = await blockFromTimestamp(ts, direction, apiKey);
+  const blockNumber = parseInt(res);
+  if (isNaN(blockNumber)) {
+    if (retries > 10) throw Error("Too many retries, aborting...");
+    await wait(2000);
+    return blockFromTimestampWithRetry(ts, direction, apiKey, retries + 1);
+  }
+  cache.set(`${ts}-${direction}`, blockNumber);
+  return blockNumber;
 };

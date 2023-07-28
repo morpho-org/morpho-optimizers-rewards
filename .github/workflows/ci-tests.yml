@@ -1,0 +1,92 @@
+name: package-tests
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    paths:
+      - "src/**"
+      - "test/**"
+      - "jest.config.js"
+      - "yarn.lock"
+      - "tsconfig.json"
+      - "package.json"
+      - ".github/workflows/ci-jest.yml"
+
+concurrency:
+  group: ci-jest-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Build package
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Node dependencies cache
+        uses: actions/cache@v3
+        with:
+          path: "node_modules"
+          key: yarn-${{ hashFiles('yarn.lock') }}
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Build
+        run: yarn build
+
+  lint:
+    name: Lint code
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Node dependencies cache
+        uses: actions/cache@v3
+        with:
+          path: "node_modules"
+          key: yarn-${{ hashFiles('yarn.lock') }}
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Lint
+        run: yarn lint
+
+  test:
+    needs: build
+    name: Test code
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Node dependencies cache
+        uses: actions/cache@v3
+        with:
+          path: "node_modules"
+          key: yarn-${{ hashFiles('yarn.lock') }}
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Test
+        run: yarn test
+        env:
+          RPC_URL: ${{ secrets.RPC_URL }}
+          SUBGRAPH_URL: ${{ vars.SUBGRAPH_URL }}
+          ETHERSCAN_API_KEY: ${{ secrets.ETHERSCAN_API_KEY }}

@@ -2,7 +2,6 @@ import { BigNumber, BigNumberish, constants, providers } from "ethers";
 import { maxBN, minBN, now, WAD } from "../helpers";
 import { UserBalance } from "./graph";
 import { Market } from "./graph/getGraphMarkets/markets.types";
-import { getEpochsBetweenTimestamps, getPrevEpoch, timestampToEpoch } from "./timestampToEpoch";
 import { RewardsDistributor__factory } from "@morpho-labs/morpho-ethers-contract";
 import addresses from "@morpho-labs/morpho-ethers-contract/lib/addresses";
 import { getCurrentOnChainDistribution } from "./getCurrentOnChainDistribution";
@@ -15,6 +14,7 @@ import { getUserBalances } from "./getUserBalances";
 import { MARKETS_UPGRADE_SNAPSHOTS, VERSION_2_TIMESTAMP } from "../constants/mechanismUpgrade";
 import { StorageService } from "./StorageService";
 import { getAddress, parseUnits } from "ethers/lib/utils";
+import { epochUtils } from "../ages";
 
 export const getUserRewards = async (
   address: string,
@@ -30,9 +30,10 @@ export const getUserRewards = async (
   const userBalances = await getUserBalances(SUBGRAPH_URL, address.toLowerCase(), blockNumber).then(
     (u) => u?.balances ?? []
   );
-  const currentEpoch = timestampToEpoch(timestampEnd);
+  const currentEpoch = await epochUtils.timestampToEpoch(timestampEnd);
+  const prevEpoch = await epochUtils.epochsBefore(currentEpoch.id, false).then((e) => e[e.length - 1]);
   // preload to cache the current epoch configuration
-  await getEpochMarketsDistribution(currentEpoch!.epoch.epochNumber, provider, storageService);
+  await getEpochMarketsDistribution(currentEpoch.id, provider, storageService);
 
   // to prevent parallel fetching of the same data
   const marketsRewards = await userBalancesToUnclaimedTokens(userBalances, timestampEnd, provider, storageService);
@@ -40,14 +41,13 @@ export const getUserRewards = async (
   const onChainDistribution = await getCurrentOnChainDistribution(provider, storageService, blockNumber);
   const claimableRaw = onChainDistribution.proofs[address.toLowerCase()];
   const claimable = claimableRaw ? BigNumber.from(claimableRaw.amount) : BigNumber.from(0);
-  const prevEpoch = getPrevEpoch(currentEpoch?.epoch.epochNumber);
   let claimableSoon = BigNumber.from(0);
 
-  if (prevEpoch && prevEpoch.epoch.epochNumber !== onChainDistribution.epochNumber) {
+  if (prevEpoch && prevEpoch.id !== onChainDistribution.epochId) {
     // The previous epoch is done, but the root is not yet modified on chain
     // So The difference between the amùount of the previous epoch and the amount claimable on chain will be claimable soon,
     // When the root will be updated by DAO
-    const prevId = prevEpoch.epoch.epochNumber;
+    const prevId = prevEpoch.id;
     const prevDistribution = await storageService.readProofs(prevId);
     if (!prevDistribution) throw new Error("Previous Distribution not found");
     const claimableSoonRaw = prevDistribution.proofs[address.toLowerCase()];
@@ -58,9 +58,9 @@ export const getUserRewards = async (
   const currentEpochRewards = currentRewards.sub(claimable).sub(claimableSoon);
 
   let currentEpochProjectedRewards = currentRewards;
-  if (currentEpoch?.epoch.finalTimestamp)
+  if (currentEpoch?.finalTimestamp)
     currentEpochProjectedRewards = sumRewards(
-      await userBalancesToUnclaimedTokens(userBalances, currentEpoch.epoch.finalTimestamp, provider, storageService)
+      await userBalancesToUnclaimedTokens(userBalances, currentEpoch.finalTimestamp, provider, storageService)
     )
       .sub(claimable)
       .sub(claimableSoon);
@@ -439,21 +439,21 @@ const computeIndex = async (
   provider: providers.Provider,
   speed: (emission: BigNumber) => BigNumber = (e) => e
 ) => {
-  const epochs = getEpochsBetweenTimestamps(lastUpdateTimestamp, currentTimestamp) ?? [];
+  const epochs = await epochUtils.epochsBetweenTimestamps(
+    BigNumber.from(lastUpdateTimestamp).toNumber(),
+    BigNumber.from(currentTimestamp).toNumber()
+  );
   // we first compute distribution of each epoch
   const distributions = Object.fromEntries(
     await Promise.all(
-      epochs.map(async (epoch) => [
-        epoch.epoch.epochNumber,
-        await getEpochMarketsDistribution(epoch.epoch.epochNumber, provider, storageService),
-      ])
+      epochs.map(async (epoch) => [epoch.id, await getEpochMarketsDistribution(epoch.id, provider, storageService)])
     )
   );
-  return epochs.reduce((currentIndex, { epoch }) => {
-    const initialTimestamp = maxBN(epoch.initialTimestamp, BigNumber.from(lastUpdateTimestamp));
-    const finalTimestamp = minBN(epoch.finalTimestamp, BigNumber.from(currentTimestamp));
+  return epochs.reduce((currentIndex, epoch) => {
+    const initialTimestamp = maxBN(BigNumber.from(epoch.initialTimestamp), BigNumber.from(lastUpdateTimestamp));
+    const finalTimestamp = minBN(BigNumber.from(epoch.finalTimestamp), BigNumber.from(currentTimestamp));
     const deltaTimestamp = finalTimestamp.sub(initialTimestamp);
-    const marketsEmission = distributions[epoch.epochNumber];
+    const marketsEmission = distributions[epoch.id];
     const emission = parseUnits(marketsEmission.markets[marketAddress]?.[rateType] ?? "0");
     const morphoAccrued = deltaTimestamp.mul(speed(emission)); // in WEI units;
     const ratio = totalUnderlying.isZero() ? constants.Zero : morphoAccrued.mul(WAD).div(totalUnderlying); // in 18*2 - decimals units;

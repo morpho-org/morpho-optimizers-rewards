@@ -41,7 +41,6 @@ const fetchMarketsData = async (snapshotBlock: providers.BlockTag, provider: pro
 export const getAaveV3MarketsParameters = async (snapshotBlock: providers.BlockTag, provider: providers.Provider) => {
   const MA3_DEPLOYMENT_BLOCK = 17161283;
   if (parseInt(snapshotBlock.toString()) < MA3_DEPLOYMENT_BLOCK) {
-    console.warn("Snapshot block is before Morpho Aave V3 deployment block. No Aave V3 markets data.");
     return [];
   }
   const overrides = { blockTag: snapshotBlock };

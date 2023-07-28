@@ -1,0 +1,23 @@
+{
+  "epochId": "age4",
+  "root": "0x3f85ad9ad9c41df40102ff74a230f3787de1ff97e341478ea604d4eae82490ad",
+  "total": "18455553490090967085",
+  "proofs": {
+    "0xd508f85f1511aaec63434e26aeb6d10be0188dc7": {
+      "amount": "17649082653379349889",
+      "proof": [
+        "0xed88fdb8e010afa1651d10803b7485b9a1b2cc3676f7eaf0c791de367936334d"
+      ]
+    },
+    "0xc8884ede1ae44bdff60da4b9c542c34a69648a87": {
+      "amount": "806470836711617196",
+      "proof": [
+        "0xb264c3fabcf2df3c5c5c087dcecc8aa26de026762bd8209616c51fa311f42951"
+      ]
+    }
+  },
+  "leaves": [
+    "0xb264c3fabcf2df3c5c5c087dcecc8aa26de026762bd8209616c51fa311f42951",
+    "0xed88fdb8e010afa1651d10803b7485b9a1b2cc3676f7eaf0c791de367936334d"
+  ]
+}

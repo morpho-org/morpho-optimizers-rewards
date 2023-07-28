@@ -1,7 +1,5 @@
 {
-  "age": "age3",
-  "epoch": "epoch3",
-  "epochNumber": 9,
+  "epochId": "age3-epoch3",
   "totalEmissionInitial": "25000000.0",
   "totalDistributed": "24999997.03640794942933245",
   "distribution": [

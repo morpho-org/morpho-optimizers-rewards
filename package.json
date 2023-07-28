@@ -31,7 +31,7 @@
   ],
   "license": "MIT",
   "scripts": {
-    "build": "tsc --build ./tsconfig.build.json",
+    "build": "tsc --build ./tsconfig.build.json && cp package.json lib/package.json && cp README.md lib/README.md && cp LICENSE lib/LICENSE && cp -r distribution ./lib/distribution",
     "clean": "rm -rf ./lib/",
     "test": "jest --forceExit --coverage --verbose",
     "watch-test": "yarn test --watchAll",
@@ -42,8 +42,6 @@
     "getUserRewards": "ts-node src/scripts/getUserRewards.ts",
     "getMarketsDistribution": "ts-node src/scripts/getMarketsDistribution.ts",
     "distributeVaults": "ts-node src/scripts/distributeVaults.ts",
-    "syncAgeConfig": "ts-node src/scripts/syncAgeConfig.ts",
-    "updateAgesData": "ts-node src/scripts/updateAgesData.ts",
     "vaults:distribute": "ts-node src/vaults/script/distribute.ts",
     "markets:emissions": "ts-node src/scripts/computeMarketsEmissions.ts",
     "markets:emissions:subgraph": "ts-node src/scripts/generateGraphEmissions.ts",
@@ -51,7 +49,7 @@
     "ipfs:upload": "ts-node src/scripts/uploadProofsToPinata.ts",
     "prepublishOnly": "yarn build && yarn lint",
     "postpublish": "git clean -fd && git checkout -- .",
-    "preversion": "yarn build",
+    "preversion": "yarn build ",
     "postversion": "git push && git push --tags"
   },
   "devDependencies": {

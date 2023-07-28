@@ -6,12 +6,12 @@ import { formatUnits, parseUnits } from "ethers/lib/utils";
 import { computeMerkleTree } from "../utils";
 import { ProofsFetcherInterface } from "./ProofsFetcher";
 import { pow10 } from "@morpho-labs/ethers-utils/lib/utils";
-import { EpochConfig } from "../ages";
 import {
   DepositEvent,
   TransferEvent,
   WithdrawEvent,
 } from "@morpho-labs/morpho-ethers-contract/lib/aave-v2/mainnet/MorphoAaveV2SupplyVault";
+import { epochUtils } from "../ages";
 
 export enum VaultEventType {
   Deposit = "DEPOSIT",
@@ -41,19 +41,18 @@ export default class Distributor {
     this.vaultAddress = vaultAddress.toLowerCase();
   }
 
-  async distributeMorpho(epochToNumber?: number) {
+  async distributeMorpho(epochToId?: string) {
     this._clean();
-    const epochsProofs = await this.proofsFetcher.fetchProofs(this.vaultAddress, epochToNumber);
-    if (!epochsProofs.length)
-      throw Error(`No MORPHO distributed for the vault ${this.vaultAddress} in epoch ${epochToNumber}`);
+    const epochsProofs = await this.proofsFetcher.fetchProofs(this.vaultAddress, epochToId);
+    if (!epochsProofs.length) throw Error(`No MORPHO distributed for the vault ${this.vaultAddress} in ${epochToId}`);
 
-    const firstEpochNumber = epochsProofs[0].epochNumber;
+    const firstEpochId = epochsProofs[0].epochId;
 
     const trees: Record<string, MerkleTree> = {};
 
     for (const epochProofs of epochsProofs) {
-      console.log(`Distributing MORPHO for epoch ${epochProofs.epochNumber}...`);
-      const epochConfig = this.proofsFetcher.getEpochFromNumber(epochProofs.epochNumber);
+      console.log(`Distributing MORPHO for ${epochProofs.epochId}...`);
+      const epochConfig = await epochUtils.getEpoch(epochProofs.epochId);
 
       const totalMorphoDistributed = BigNumber.from(epochProofs.proofs[this.vaultAddress]!.amount).sub(
         this._morphoAccumulatedFromMainDistribution
@@ -65,17 +64,19 @@ export default class Distributor {
       // timeFrom is the timestamp of the first block with a transaction during the current epoch.
       const [allEvents, timeFrom] = await this.eventsFetcher.fetchSortedEventsForEpoch(epochConfig);
 
-      if (timeFrom.gt(this._lastTimestamp) && firstEpochNumber === epochConfig.epochNumber)
+      if (timeFrom.gt(this._lastTimestamp) && firstEpochId === epochConfig.id)
         // initiate the lastTimestamp to the first event timestamp
         this._lastTimestamp = timeFrom;
 
-      const duration = epochConfig.finalTimestamp.sub(this._lastTimestamp);
+      const duration = BigNumber.from(epochConfig.finalTimestamp).sub(this._lastTimestamp);
       if (duration.lte(constants.Zero)) {
         // throw an error
-        throw Error(`The duration of the epoch n ${epochConfig.epochNumber} is not positive`);
+        throw Error(
+          `The duration of the ${epochConfig.id} is not positive, from ${this._lastTimestamp} to ${epochConfig.finalTimestamp}`
+        );
       }
       const rate = totalMorphoDistributed.mul(Distributor.SCALING_FACTOR).div(duration);
-      console.log(`${allEvents.length} events to process for epoch ${epochConfig.epochNumber}...`);
+      console.log(`${allEvents.length} events to process for ${epochConfig.id}...`);
       for (const transaction of allEvents) await this._handleTransaction(transaction, rate);
 
       // Process the end of the epoch
@@ -84,7 +85,7 @@ export default class Distributor {
       this._processEndOfEpoch(rate, epochConfig);
 
       // process of the distribution and the merkle tree
-      trees[epochConfig.epochNumber] = this._computeCurrentMerkleTree();
+      trees[epochConfig.id] = this._computeCurrentMerkleTree();
     }
     const totalTokenEmitted = Object.values(this._usersConfigs).reduce((acc, user) => {
       if (!user) return acc;
@@ -95,10 +96,12 @@ export default class Distributor {
       throw Error(
         `Number of MORPHO remaining in the vault exceeds the threshold of ${formatUnits(
           Distributor.MORPHO_DUST
-        )} for the Vault ${this.vaultAddress} in epoch ${epochToNumber}`
+        )} for the Vault ${this.vaultAddress} in ${epochToId}: ${formatUnits(morphoRemaining)} remaining, ${formatUnits(
+          this._morphoAccumulatedFromMainDistribution
+        )} distributed`
       );
 
-    const lastEpochId = epochsProofs[epochsProofs.length - 1].epochNumber;
+    const lastEpochId = epochsProofs[epochsProofs.length - 1].epochId;
     return {
       lastMerkleTree: trees[lastEpochId],
       history: trees,
@@ -114,8 +117,8 @@ export default class Distributor {
     return morphoAccrued;
   }
 
-  private _processEndOfEpoch(rate: BigNumber, epochConfig: EpochConfig) {
-    if (this._totalSupply.gt(0)) this._updateMarketIndex(rate, epochConfig.finalTimestamp);
+  private _processEndOfEpoch(rate: BigNumber, epochConfig: epochUtils.ParsedAgeEpochConfig) {
+    if (this._totalSupply.gt(0)) this._updateMarketIndex(rate, BigNumber.from(epochConfig.finalTimestamp));
 
     Object.values(this._usersConfigs).forEach((userConfig) => {
       if (!userConfig) return;

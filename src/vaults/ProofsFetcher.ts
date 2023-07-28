@@ -1,29 +1,31 @@
-import { EpochConfig } from "../ages";
+import { epochUtils } from "../ages";
 import { Proofs } from "../ages/distributions/Proofs";
 import { StorageService } from "../utils/StorageService";
-import { getEpochFromNumber } from "../utils/timestampToEpoch";
 
 export interface ProofsFetcherInterface {
-  fetchProofs: (address: string, epochToNumber?: number) => Promise<Proofs[]>;
-  getEpochFromNumber: (epochNumber: number) => EpochConfig;
+  fetchProofs: (address: string, epochToId?: string) => Promise<Proofs[]>;
 }
 
 export default class ProofsFetcher implements ProofsFetcherInterface {
   constructor(private readonly storageService: StorageService) {}
 
-  async fetchProofs(address: string, epochToNumber?: number): Promise<Proofs[]> {
-    const allProofs = await this.storageService.readAllProofs();
-    const proofs = allProofs.reverse().filter((proofs) => !!proofs.proofs[address.toLowerCase()]?.amount);
-    if (epochToNumber) {
-      const ageEpoch = getEpochFromNumber(epochToNumber);
-      if (!ageEpoch) throw Error(`Invalid epoch id ${epochToNumber}`);
-      const epochIndex = proofs.findIndex((proof) => proof.epochNumber === ageEpoch.epoch.epochNumber);
+  async fetchProofs(address: string, epochToId?: string): Promise<Proofs[]> {
+    const [allProofs, epochs] = await Promise.all([this.storageService.readAllProofs(), epochUtils.allEpochs()]);
+    const proofs = allProofs
+      .sort((a, b) => {
+        const epochA = epochs.find((epoch) => epoch.id === a.epochId);
+        const epochB = epochs.find((epoch) => epoch.id === b.epochId);
+        if (!epochA || !epochB) throw Error(`Invalid epoch id ${a.epochId} or ${b.epochId}`);
+        return epochA.initialTimestamp - epochB.initialTimestamp;
+      })
+      .filter((proofs) => !!proofs.proofs[address.toLowerCase()]?.amount);
+
+    if (epochToId) {
+      const ageEpoch = await epochUtils.getEpoch(epochToId);
+      if (!ageEpoch) throw Error(`Invalid epoch id ${epochToId}`);
+      const epochIndex = proofs.findIndex((proof) => proof.epochId === ageEpoch.id);
       return proofs.slice(0, epochIndex + 1); // empty array if epochIndex === -1
     }
     return proofs;
-  }
-
-  getEpochFromNumber(epochNumber: number): EpochConfig {
-    return getEpochFromNumber(epochNumber)!.epoch;
   }
 }

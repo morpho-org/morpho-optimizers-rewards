@@ -1,13 +1,16 @@
 {
-  "age": "age2",
-  "epoch": "epoch3",
-  "epochNumber": 6,
+  "epochId": "age2-epoch3",
   "totalEmission": "3600000.0",
   "parameters": {
-    "snapshotBlock": "16061781",
-    "initialTimestamp": "1669561200",
-    "finalTimestamp": "1672326000",
-    "duration": "2764800"
+    "totalEmission": "3600000",
+    "protocolDistribution": {
+      "morphoCompound": 5000,
+      "morphoAaveV2": 5000
+    },
+    "snapshotBlock": 16061781,
+    "initialTimestamp": 1669561200,
+    "finalTimestamp": 1672326000,
+    "duration": 2764800
   },
   "markets": {
     "0x028171bca77440897b824ca71d1c56cac55b68a3": {

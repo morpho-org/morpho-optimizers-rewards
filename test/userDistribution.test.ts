@@ -1,75 +1,104 @@
-import { ages } from "../src";
-import {
-  computeMerkleTree,
-  fetchUsers,
-  getAccumulatedEmission,
-  timestampToEpoch,
-  UserBalances,
-  userBalancesToUnclaimedTokens,
-} from "../src/utils";
+import { computeMerkleTree, fetchUsers, UserBalances, userBalancesToUnclaimedTokens } from "../src/utils";
 import { SUBGRAPH_URL } from "../src/config";
 import { BigNumber, constants, providers } from "ethers";
 import { RootUpdatedEvent } from "@morpho-labs/morpho-ethers-contract/lib/RewardsDistributor";
 import { RewardsDistributor__factory } from "@morpho-labs/morpho-ethers-contract";
 import addresses from "@morpho-labs/morpho-ethers-contract/lib/addresses";
-import { MarketRewards, sumRewards, getPrevEpoch, getAccumulatedEmissionPerMarket } from "../src/utils";
-import { VERSION_2_TIMESTAMP } from "../src/constants/mechanismUpgrade";
+import { MarketRewards, sumRewards, getAccumulatedEmissionPerMarket } from "../src/utils";
 import { FileSystemStorageService } from "../src/utils/StorageService";
+import { epochUtils } from "../src";
+import rawEpochs from "../src/age-epochs.json";
+import { parseDate, now } from "../src/helpers";
+import { parseUnits } from "ethers/lib/utils";
 
 const storageService = new FileSystemStorageService();
 
-describe.each([...ages])("Age Users Distribution", (age) => {
-  const provider = new providers.JsonRpcProvider(process.env.RPC_URL);
+const EPOCH_DERIVATION_MAX = parseUnits("2");
+const EPOCH_PRECISION_PER_MARKET = parseUnits("4"); // TODO: to be refined
 
-  const now = Math.floor(Date.now() / 1000);
-
-  describe.each(age.epochs)("Epochs distribution for age", ({ finalTimestamp, finalBlock, epochNumber }) => {
-    if (finalTimestamp.gt(now)) return;
-    let usersBalances: UserBalances[];
-    let usersAccumulatedRewards: { address: string; accumulatedRewards: string; rewards: MarketRewards[] }[];
-
-    beforeAll(async () => {
-      usersBalances = await fetchUsers(SUBGRAPH_URL, finalBlock ?? undefined);
-      usersAccumulatedRewards = await Promise.all(
-        usersBalances.map(async ({ address, balances }) => {
-          const rewards = await userBalancesToUnclaimedTokens(balances, finalTimestamp, provider, storageService);
-          return {
-            address,
-            rewards,
-            accumulatedRewards: sumRewards(rewards).toString(), // with 18 * 2 decimals
-          };
-        })
-      );
-    });
-
-    it(`Should distribute the correct number of tokens over Morpho users for epoch ${epochNumber}`, async () => {
-      const totalEmitted = usersAccumulatedRewards.reduce((a, b) => a.add(b.accumulatedRewards), BigNumber.from(0));
-      const accumulatedEmission = getAccumulatedEmission(epochNumber); // we sum the emissions
-      expect(totalEmitted).toBnApproxEq(accumulatedEmission, linearPrecision(epochNumber));
-    });
-
-    it(`Should distribute the correct number of tokens per market for epoch ${epochNumber}`, async () => {
-      const markets = [...new Set(usersBalances.map((ub) => ub.balances.map((b) => b.market.address)).flat())];
-      await Promise.all(
-        markets.map(async (marketAddress) => {
-          const emissions = await getAccumulatedEmissionPerMarket(marketAddress, epochNumber, storageService);
-          const rewardsPerMarket = usersAccumulatedRewards.reduce(
-            (acc, b) => {
-              const marketRewards = b.rewards.find((r) => r.market.address === marketAddress);
-              if (!marketRewards) return acc;
-              return {
-                supply: acc.supply.add(marketRewards.accumulatedSupply),
-                borrow: acc.borrow.add(marketRewards.accumulatedBorrow),
-              };
-            },
-            { supply: constants.Zero, borrow: constants.Zero }
-          );
-          expect(emissions.supply).toBnApproxEq(rewardsPerMarket.supply, linearPrecision(epochNumber));
-          expect(emissions.borrow).toBnApproxEq(rewardsPerMarket.borrow, linearPrecision(epochNumber));
-        })
-      );
-    });
+const usersAccumulatedRewards: {
+  [epoch: string]: { address: string; accumulatedRewards: string; rewards: MarketRewards[] }[];
+} = {};
+describe("User distribution", () => {
+  beforeAll(async () => {
+    // fill the block cache
+    // TODO: find a better way to do this
+    await epochUtils.finishedEpochs();
   });
+
+  describe.each(rawEpochs.filter((e) => parseDate(e.finalTimestamp) < now()))(
+    "Epoch Users Distribution e2e",
+    (rawEpoch) => {
+      const { id: epochId } = rawEpoch;
+      let epoch: epochUtils.ParsedAgeEpochConfig;
+
+      const provider = new providers.JsonRpcProvider(process.env.RPC_URL);
+
+      let usersBalances: UserBalances[];
+
+      beforeAll(async () => {
+        epoch = await epochUtils.getEpoch(epochId);
+        usersBalances = await fetchUsers(SUBGRAPH_URL, epoch.finalBlock);
+        usersAccumulatedRewards[epochId] = await Promise.all(
+          usersBalances.map(async ({ address, balances }) => {
+            const rewards = await userBalancesToUnclaimedTokens(
+              balances,
+              epoch.finalTimestamp,
+              provider,
+              storageService
+            );
+            return {
+              address,
+              rewards,
+              accumulatedRewards: sumRewards(rewards).toString(), // with 18 * 2 decimals
+            };
+          })
+        );
+      });
+
+      it(`Should distribute the correct number of tokens over Morpho users for ${epochId}`, async () => {
+        const totalEmitted = usersAccumulatedRewards[epochId].reduce(
+          (a, b) => a.add(b.accumulatedRewards),
+          BigNumber.from(0)
+        );
+        const epochNumber = rawEpochs.indexOf(rawEpoch);
+        const totalEmittedPrev =
+          epochNumber === 0
+            ? constants.Zero
+            : usersAccumulatedRewards[rawEpochs[epochNumber - 1].id].reduce(
+                (a, b) => a.add(b.accumulatedRewards),
+                constants.Zero
+              );
+        const totalEpochEmitted = totalEmitted.sub(totalEmittedPrev);
+        expect(totalEpochEmitted).toBnApproxEq(
+          parseUnits(rawEpoch.distributionParameters.totalEmission),
+          EPOCH_DERIVATION_MAX
+        );
+      });
+
+      it(`Should distribute the correct number of tokens per market for epoch ${epochId}`, async () => {
+        const markets = [...new Set(usersBalances.map((ub) => ub.balances.map((b) => b.market.address)).flat())];
+        await Promise.all(
+          markets.map(async (marketAddress) => {
+            const emissions = await getAccumulatedEmissionPerMarket(marketAddress, epochId, storageService);
+            const rewardsPerMarket = usersAccumulatedRewards[epochId].reduce(
+              (acc, b) => {
+                const marketRewards = b.rewards.find((r) => r.market.address === marketAddress);
+                if (!marketRewards) return acc;
+                return {
+                  supply: acc.supply.add(marketRewards.accumulatedSupply),
+                  borrow: acc.borrow.add(marketRewards.accumulatedBorrow),
+                };
+              },
+              { supply: constants.Zero, borrow: constants.Zero }
+            );
+            expect(emissions.supply).toBnApproxEq(rewardsPerMarket.supply, EPOCH_PRECISION_PER_MARKET);
+            expect(emissions.borrow).toBnApproxEq(rewardsPerMarket.borrow, EPOCH_PRECISION_PER_MARKET);
+          })
+        );
+      });
+    }
+  );
 });
 
 describe("On chain roots update", () => {
@@ -87,84 +116,18 @@ describe("On chain roots update", () => {
     await Promise.all(
       rootUpdates.map(async (rootEvent) => {
         const block = await rootEvent.getBlock();
-        const epochConfig = getPrevEpoch(timestampToEpoch(block.timestamp)!.epoch.epochNumber);
+        const currentEpoch = await epochUtils.timestampToEpoch(block.timestamp);
+        expect(currentEpoch).not.toBeUndefined();
+
+        const epochConfig = await epochUtils.epochsBefore(currentEpoch.id, false).then((e) => e[e.length - 1]);
         expect(epochConfig).not.toBeUndefined();
 
-        if (epochConfig!.epoch.epochNumber === 2) return; // not check for root 2
-        const usersBalances = await fetchUsers(SUBGRAPH_URL, epochConfig!.epoch.finalBlock ?? undefined);
-        const usersAccumulatedRewards = await Promise.all(
-          usersBalances.map(async ({ address, balances }) => ({
-            address,
-            accumulatedRewards: sumRewards(
-              await userBalancesToUnclaimedTokens(balances, epochConfig!.epoch.finalTimestamp, provider, storageService)
-            ).toString(), // with 18 * 2 decimals
-          }))
+        if (epochConfig.id === "age1-epoch2") return; // not check for root 2
+        const merkleRoot = computeMerkleTree(
+          usersAccumulatedRewards[epochConfig.id].filter((r) => r.accumulatedRewards !== "0")
         );
-        const merkleRoot = computeMerkleTree(usersAccumulatedRewards.filter((r) => r.accumulatedRewards !== "0"));
         expect(merkleRoot.root.toLowerCase()).toEqual(rootEvent.args.newRoot);
       })
     );
   });
 });
-describe.skip("Version 2 rewards distribution mechanism", () => {
-  const provider = new providers.JsonRpcProvider(process.env.RPC_URL);
-  const version2Block = ages[2].epochs[0].finalBlock;
-  let usersBalancesMerge: UserBalances[];
-  beforeAll(async () => {
-    usersBalancesMerge = await fetchUsers(SUBGRAPH_URL, version2Block ?? undefined);
-  });
-  it("Should have a block corresponding to the update", () => expect(version2Block).not.toBeUndefined());
-  it("Should be equal to version one rewards at the moment of the switch on the subgraph", () => {
-    usersBalancesMerge.forEach(async (user) =>
-      user.balances.forEach((r) => {
-        expect(r.accumulatedSupplyMorpho).toBnEq(r.accumulatedSupplyMorphoV1);
-        expect(r.accumulatedBorrowMorpho).toBnEq(r.accumulatedBorrowMorphoV1);
-      })
-    );
-  });
-  it("Should be equal to version one rewards at the moment of the switch", async () => {
-    await Promise.all(
-      usersBalancesMerge.map(async (user) => {
-        const rewards = await userBalancesToUnclaimedTokens(
-          user.balances,
-          VERSION_2_TIMESTAMP,
-          provider,
-          storageService
-        );
-        rewards.forEach((r) => {
-          expect(r.accumulatedSupply).toBnEq(r.accumulatedSupplyV1);
-          expect(r.accumulatedBorrow).toBnEq(r.accumulatedBorrowV1);
-        });
-      })
-    );
-  });
-  it("Cannot be less than v1 rewards after the version 2 upgrade", async () => {
-    const upgradeRewards = await Promise.all(
-      usersBalancesMerge.map(async (user) => ({
-        userAddress: user.address,
-        rewards: await userBalancesToUnclaimedTokens(user.balances, VERSION_2_TIMESTAMP, provider, storageService),
-      }))
-    );
-    await Promise.all(
-      usersBalancesMerge.map(async (user) => {
-        const userUpgradeRewards = upgradeRewards.find((u) => u.userAddress === user.address);
-        expect(userUpgradeRewards).not.toBeUndefined();
-
-        const rewards = await userBalancesToUnclaimedTokens(
-          user.balances,
-          VERSION_2_TIMESTAMP.add(3600 * 24 * 7),
-          provider,
-          storageService
-        );
-        rewards.forEach((r) => {
-          const upgradeReward = userUpgradeRewards!.rewards.find((_r) => _r.market.address === r.market.address);
-          expect(upgradeReward).not.toBeUndefined();
-          expect(r.accumulatedSupply).toBnGte(upgradeReward!.accumulatedSupply);
-          expect(r.accumulatedBorrow).toBnGte(upgradeReward!.accumulatedBorrow);
-        });
-      })
-    );
-  });
-});
-
-const linearPrecision = (epochNumber: number) => (Math.ceil(epochNumber / 2) * 1e18).toString();

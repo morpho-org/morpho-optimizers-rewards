@@ -1,47 +1,43 @@
-import { ages, allEpochs } from "../ages";
+import { epochUtils } from "../ages";
 import { BigNumber, constants } from "ethers";
 import { parseUnits } from "ethers/lib/utils";
 import { StorageService } from "./StorageService";
 
 /**
  * Returns the total distributed rewards for the previous epochs including the current one
- * @param epochNumber The number of the epoch
+ * @param epochId The id of the epoch
  */
-export const getAccumulatedEmission = (epochNumber: number) => {
-  const epochEmissions = ages
-    .map((a) => a.epochs.map((epoch) => ({ number: epoch.epochNumber, distributed: epoch.totalEmission })))
-    .flat();
-  const currentEpoch = epochEmissions.find((e) => e.number === epochNumber);
-  if (!currentEpoch) throw Error(`Unknown epoch number ${epochNumber}`);
-  const currentEpochIndex = epochEmissions.indexOf(currentEpoch);
-  return epochEmissions
-    .filter((e, index) => index <= currentEpochIndex)
-    .reduce((acc, b) => acc.add(b.distributed), constants.Zero);
+export const getAccumulatedEmission = (epochId: string) => {
+  const epochIndex = epochUtils.rawEpochs.findIndex((epoch) => epoch.id === epochId);
+  if (epochIndex === -1) throw Error(`Unknown epoch id ${epochId}`);
+
+  return epochUtils.rawEpochs
+    .slice(0, epochIndex + 1)
+    .reduce((acc, epoch) => acc.add(parseUnits(epoch.distributionParameters.totalEmission)), constants.Zero);
 };
 
 /**
  * Returns the total distributed rewards for the previous epochs including the current one on one given market
  */
-export const getAccumulatedEmissionPerMarket = (
+export const getAccumulatedEmissionPerMarket = async (
   market: string,
-  epochNumber: number,
+  epochId: string,
   storageService: StorageService
-): Promise<{ supply: BigNumber; borrow: BigNumber }> =>
-  Promise.all(
-    allEpochs
-      .filter(({ epoch }) => epoch.epochNumber <= epochNumber)
-      .map(async ({ epoch }) => {
-        const distribution = await storageService.readMarketDistribution(epoch.epochNumber);
-        const marketContent = distribution?.markets[market];
-        return {
-          supply: marketContent?.morphoEmittedSupplySide
-            ? parseUnits(marketContent.morphoEmittedSupplySide)
-            : constants.Zero,
-          borrow: marketContent?.morphoEmittedBorrowSide
-            ? parseUnits(marketContent.morphoEmittedBorrowSide)
-            : constants.Zero,
-        };
-      })
+): Promise<{ supply: BigNumber; borrow: BigNumber }> => {
+  const epochs = await epochUtils.epochsBefore(epochId, true);
+  return Promise.all(
+    epochs.map(async (epoch) => {
+      const distribution = await storageService.readMarketDistribution(epoch.id);
+      const marketContent = distribution?.markets[market];
+      return {
+        supply: marketContent?.morphoEmittedSupplySide
+          ? parseUnits(marketContent.morphoEmittedSupplySide)
+          : constants.Zero,
+        borrow: marketContent?.morphoEmittedBorrowSide
+          ? parseUnits(marketContent.morphoEmittedBorrowSide)
+          : constants.Zero,
+      };
+    })
   ).then((r) =>
     r.reduce(
       (acc, market) => ({
@@ -51,3 +47,4 @@ export const getAccumulatedEmissionPerMarket = (
       { supply: constants.Zero, borrow: constants.Zero }
     )
   );
+};
