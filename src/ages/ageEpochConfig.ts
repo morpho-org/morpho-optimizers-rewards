@@ -59,7 +59,7 @@ export const allEpochs: () => Promise<ParsedAgeEpochConfig[]> = () =>
         finalTimestamp,
         finalBlock,
         snapshotBlock: epoch.snapshotBlock || snapshotBlock,
-        distributionScript: require(`./distributionScripts/${epoch.distributionScript}.ts`).default,
+        distributionScript: require(`./distributionScripts/${epoch.distributionScript}`).default,
         distributionParameters: {
           ...epoch.distributionParameters,
           totalEmission: parseUnits(epoch.distributionParameters.totalEmission),
