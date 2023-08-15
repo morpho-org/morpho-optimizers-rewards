@@ -242,11 +242,11 @@
           "symbol": "aWETHV3",
           "market": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
           "weight": 697,
-          "sizeDistribution": {
+          "sideDistribution": {
             "type": "static",
             "params": {
-              "supplySize": "10000",
-              "borrowSize": "0"
+              "supplySide": "10000",
+              "borrowSide": "0"
             }
           }
         }
@@ -271,11 +271,11 @@
           "symbol": "aWETH",
           "market": "0x030bA81f1c18d280636F32af80b9AAd02Cf0854e",
           "weight": 4610,
-          "sizeDistribution": {
+          "sideDistribution": {
             "type": "static",
             "params": {
-              "supplySize": 5000,
-              "borrowSize": 5000
+              "supplySide": 5000,
+              "borrowSide": 5000
             }
           }
         },
@@ -303,11 +303,11 @@
           "symbol": "aWETHV3",
           "market": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
           "weight": 788,
-          "sizeDistribution": {
+          "sideDistribution": {
             "type": "static",
             "params": {
-              "supplySize": "10000",
-              "borrowSize": "0"
+              "supplySide": "10000",
+              "borrowSide": "0"
             }
           }
         }
@@ -332,11 +332,11 @@
           "symbol": "aWETH",
           "market": "0x030bA81f1c18d280636F32af80b9AAd02Cf0854e",
           "weight": 4690,
-          "sizeDistribution": {
+          "sideDistribution": {
             "type": "static",
             "params": {
-              "supplySize": 5000,
-              "borrowSize": 5000
+              "supplySide": 5000,
+              "borrowSide": 5000
             }
           }
         },
@@ -364,11 +364,11 @@
           "symbol": "aWETHV3",
           "market": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
           "weight": 1996,
-          "sizeDistribution": {
+          "sideDistribution": {
             "type": "static",
             "params": {
-              "supplySize": 10000,
-              "borrowSize": 0
+              "supplySide": 10000,
+              "borrowSide": 0
             }
           }
         }
