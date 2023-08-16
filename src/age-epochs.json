@@ -44,6 +44,7 @@
     "initialTimestamp": "2022-09-20T15:00:00.000Z",
     "finalTimestamp": "2022-10-24T15:00:00.000Z",
     "distributionScript": "morphoWeightedDistribution",
+    "discussion": "https://forum.morpho.org/t/mip-age-2-model-for-morpho-rewards-discussion/116",
     "distributionParameters": {
       "totalEmission": "3000000",
       "protocolDistribution": {
@@ -58,6 +59,7 @@
     "initialTimestamp": "2022-10-24T15:00:00.000Z",
     "finalTimestamp": "2022-11-27T15:00:00.000Z",
     "distributionScript": "morphoWeightedDistribution",
+    "discussion": "https://forum.morpho.org/t/mip-age-2-model-for-morpho-rewards-discussion/116",
     "distributionParameters": {
       "totalEmission": "3400000",
       "protocolDistribution": {
@@ -71,6 +73,7 @@
     "initialTimestamp": "2022-11-27T15:00:00.000Z",
     "finalTimestamp": "2022-12-29T15:00:00.000Z",
     "distributionScript": "morphoWeightedDistribution",
+    "discussion": "https://forum.morpho.org/t/mip-age-2-model-for-morpho-rewards-discussion/116",
     "distributionParameters": {
       "totalEmission": "3600000",
       "protocolDistribution": {
@@ -84,6 +87,7 @@
     "initialTimestamp": "2022-12-29T15:00:00.000Z",
     "finalTimestamp": "2023-02-01T15:00:00.000Z",
     "distributionScript": "snapshotVoteDistribution",
+    "discussion": "https://forum.morpho.org/t/age3-epoch1-gauges-optimized-distribution/233",
     "distributionParameters": {
       "totalEmission": "3333333",
       "snapshotProposal": "0xf402161143c42ac5edf6589b7833eb760cbe556e18451a232e6be3d34d06f287"
@@ -95,6 +99,7 @@
     "initialTimestamp": "2023-02-01T15:00:00.000Z",
     "finalTimestamp": "2023-03-04T15:00:00.000Z",
     "distributionScript": "snapshotVoteDistribution",
+    "discussion": "https://forum.morpho.org/t/age3-epoch2-gauges-optimized-distribution/251",
     "distributionParameters": {
       "totalEmission": "3333333",
       "snapshotProposal": "0xa33106ba7eacd9ed97f1a5a5da6b5a9e7bec0085b0472ea0e8222c226c7acdca"
@@ -105,6 +110,7 @@
     "initialTimestamp": "2023-03-04T15:00:00.000Z",
     "finalTimestamp": "2023-04-07T15:00:00.000Z",
     "distributionScript": "snapshotVoteDistribution",
+    "discussion": "https://forum.morpho.org/t/age3-epoch3-gauges-optimized-distribution/277",
     "distributionParameters": {
       "totalEmission": "3333334",
       "snapshotProposal": "0x2c10391797a45353092ed220f41411d18a1a1cf82ded0a8d68452619e46b273e"
@@ -116,6 +122,7 @@
     "initialTimestamp": "2023-04-07T15:00:00.000Z",
     "finalTimestamp": "2023-05-22T15:00:00.000Z",
     "distributionScript": "simpleVoteDistribution",
+    "discussion": "https://forum.morpho.org/t/mip-morpho-rewards-age-4/281",
     "distributionParameters": {
       "totalEmission": "2000000",
       "marketsRepartition": [
@@ -193,10 +200,11 @@
     }
   },
   {
-  "id": "age5",
-  "initialTimestamp": "2023-05-22T15:00:00.000Z",
-  "finalTimestamp": "2023-07-06T15:00:00.000Z",
+    "id": "age5",
+    "initialTimestamp": "2023-05-22T15:00:00.000Z",
+    "finalTimestamp": "2023-07-06T15:00:00.000Z",
     "distributionScript": "simpleVoteDistribution",
+    "discussion": "https://forum.morpho.org/t/mip-morpho-rewards-age-5/303",
     "distributionParameters": {
       "totalEmission": "1100000",
       "marketsRepartition": [
@@ -234,11 +242,11 @@
           "symbol": "aWETHV3",
           "market": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
           "weight": 697,
-          "sizeDistribution": {
+          "sideDistribution": {
             "type": "static",
             "params": {
-              "supplySize": "10000",
-              "borrowSize": "0"
+              "supplySide": "10000",
+              "borrowSide": "0"
             }
           }
         }
@@ -246,10 +254,11 @@
     }
   },
   {
-  "id": "age6",
-  "initialTimestamp": "2023-07-06T15:00:00.000Z",
-  "finalTimestamp": "2023-08-20T15:00:00.000Z",
+    "id": "age6",
+    "initialTimestamp": "2023-07-06T15:00:00.000Z",
+    "finalTimestamp": "2023-08-20T15:00:00.000Z",
     "distributionScript": "simpleVoteDistribution",
+    "discussion": "https://forum.morpho.org/t/mip-morpho-rewards-age-6/329",
     "distributionParameters": {
       "totalEmission": "1000000",
       "marketsRepartition": [
@@ -262,11 +271,11 @@
           "symbol": "aWETH",
           "market": "0x030bA81f1c18d280636F32af80b9AAd02Cf0854e",
           "weight": 4610,
-          "sizeDistribution": {
+          "sideDistribution": {
             "type": "static",
             "params": {
-              "supplySize": 5000,
-              "borrowSize": 5000
+              "supplySide": 5000,
+              "borrowSide": 5000
             }
           }
         },
@@ -294,11 +303,72 @@
           "symbol": "aWETHV3",
           "market": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
           "weight": 788,
-          "sizeDistribution": {
+          "sideDistribution": {
             "type": "static",
             "params": {
-              "supplySize": "10000",
-              "borrowSize": "0"
+              "supplySide": "10000",
+              "borrowSide": "0"
+            }
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "age7",
+    "initialTimestamp": "2023-08-20T15:00:00.000Z",
+    "finalTimestamp": "2023-10-04T15:00:00.000Z",
+    "distributionScript": "simpleVoteDistribution",
+    "discussion": "https://forum.morpho.org/t/mip-morpho-rewards-age-7/348",
+    "distributionParameters": {
+      "totalEmission": "900000",
+      "marketsRepartition": [
+        {
+          "symbol": "aDAI",
+          "market": "0x028171bCA77440897B824Ca71D1c56caC55b68A3",
+          "weight": 228
+        },
+        {
+          "symbol": "aWETH",
+          "market": "0x030bA81f1c18d280636F32af80b9AAd02Cf0854e",
+          "weight": 4690,
+          "sideDistribution": {
+            "type": "static",
+            "params": {
+              "supplySide": 5000,
+              "borrowSide": 5000
+            }
+          }
+        },
+        {
+          "symbol": "aUSDC",
+          "market": "0xBcca60bB61934080951369a648Fb03DF4F96263C",
+          "weight": 1084
+        },
+        {
+          "symbol": "aUSDT",
+          "market": "0x3Ed3B47Dd13EC9a98b44e6204A523E766B225811",
+          "weight": 741
+        },
+        {
+          "symbol": "aWBTC",
+          "market": "0x9ff58f4fFB29fA2266Ab25e75e2A8b3503311656",
+          "weight": 774
+        },
+        {
+          "symbol": "cUSDT",
+          "market": "0xf650C3d88D12dB855b8bf7D11Be6C55A4e07dCC9",
+          "weight": 487
+        },
+        {
+          "symbol": "aWETHV3",
+          "market": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+          "weight": 1996,
+          "sideDistribution": {
+            "type": "static",
+            "params": {
+              "supplySide": 10000,
+              "borrowSide": 0
             }
           }
         }

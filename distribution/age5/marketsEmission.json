@@ -38,11 +38,11 @@
         "symbol": "aWETHV3",
         "market": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
         "weight": 697,
-        "sizeDistribution": {
+        "sideDistribution": {
           "type": "static",
           "params": {
-            "supplySize": "10000",
-            "borrowSize": "0"
+            "supplySide": "10000",
+            "borrowSide": "0"
           }
         }
       }

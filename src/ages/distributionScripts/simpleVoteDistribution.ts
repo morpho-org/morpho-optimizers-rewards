@@ -11,11 +11,11 @@ interface MarketWeight {
   symbol: string;
   market: string;
   weight: number;
-  sizeDistribution?: {
+  sideDistribution?: {
     type: string;
     params: {
-      supplySize: number;
-      borrowSize: number;
+      supplySide: number;
+      borrowSide: number;
     };
   };
 }
@@ -41,7 +41,7 @@ const simpleVoteDistribution = async ({
   const { markets } = await fetchMarketsData(snapshotBlock, provider);
 
   const marketsEmissions = Object.fromEntries(
-    marketsRepartition.map(({ market, weight, sizeDistribution }) => {
+    marketsRepartition.map(({ market, weight, sideDistribution }) => {
       const marketData = markets.find((m) => m.address.toLowerCase() === market.toLowerCase());
       if (!marketData) throw Error(`Unknown market ${market}`);
       const emissionRatePerEpoch = PercentMath.percentMul(totalEmission, weight);
@@ -54,13 +54,13 @@ const simpleVoteDistribution = async ({
         decimals,
       };
 
-      if (sizeDistribution) {
-        if (sizeDistribution.type !== "static") throw Error("Only static size distribution is supported for now");
-        const { supplySize, borrowSize } = sizeDistribution.params;
-        if (!supplySize || !borrowSize) throw Error("Missing supply or borrow size distribution params");
-        const morphoEmittedSupplySide = PercentMath.percentMul(emissionRatePerEpoch, supplySize);
+      if (sideDistribution) {
+        if (sideDistribution.type !== "static") throw Error("Only static size distribution is supported for now");
+        const { supplySide, borrowSide } = sideDistribution.params;
+        if (!supplySide || !borrowSide) throw Error("Missing supply or borrow size distribution params");
+        const morphoEmittedSupplySide = PercentMath.percentMul(emissionRatePerEpoch, supplySide);
         const morphoRatePerSecondSupplySide = morphoEmittedSupplySide.div(duration);
-        const morphoEmittedBorrowSide = PercentMath.percentMul(emissionRatePerEpoch, borrowSize);
+        const morphoEmittedBorrowSide = PercentMath.percentMul(emissionRatePerEpoch, borrowSide);
         const morphoRatePerSecondBorrowSide = morphoEmittedBorrowSide.div(duration);
         return [
           market.toLowerCase(),
