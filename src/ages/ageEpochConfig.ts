@@ -77,7 +77,10 @@ export const timestampToEpoch = async (timestamp: number) => {
 
 export const epochsBetweenTimestamps = async (initialTimestamp: number, finalTimestamp: number) => {
   const epochs = await allEpochs();
-  return epochs.filter((epoch) => epoch.finalTimestamp >= initialTimestamp && epoch.initialTimestamp <= finalTimestamp);
+  return epochs.filter(
+    (epoch) =>
+      epoch.finalTimestamp >= initialTimestamp && epoch.initialTimestamp <= finalTimestamp && !!epoch.snapshotBlock
+  );
 };
 
 export const finishedEpochs = () => allEpochs().then((a) => a.filter((epoch) => epoch.finalTimestamp <= now()));
