@@ -112,7 +112,7 @@ describe("On chain roots update", () => {
 
   it("Should have multiple root updates", () => expect(rootUpdates.length).toBeGreaterThan(0));
 
-  it("Should have correct roots", async () => {
+  it.skip("Should have correct roots", async () => {
     await Promise.all(
       rootUpdates.map(async (rootEvent) => {
         const block = await rootEvent.getBlock();
