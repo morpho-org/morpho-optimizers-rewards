@@ -367,8 +367,8 @@
           "sideDistribution": {
             "type": "static",
             "params": {
-              "supplySide": 10000,
-              "borrowSide": 0
+              "supplySide": "10000",
+              "borrowSide": "0"
             }
           }
         }
