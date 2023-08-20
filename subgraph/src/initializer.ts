@@ -3,7 +3,7 @@ import { Address, BigInt, Bytes } from "@graphprotocol/graph-ts";
 import { Balance, Market, MarketEpochDistribution, User } from "../generated/schema";
 
 import { WAD, initialIndex, SUPPLY } from "./constants";
-import { fetchDistributionFromDistributionId, ipfsJson } from "./distributions";
+import { fetchDistributionFromDistributionId } from "./distributions";
 
 export function getOrInitUser(userAddress: Address): User {
   let user = User.load(userAddress.toHexString());
@@ -110,9 +110,7 @@ export function getOrInitMarketEpoch(
   const id = epochNumber.toString() + "-" + poolTokenAddress.toHexString();
   let marketEpoch = MarketEpochDistribution.load(id);
   if (!marketEpoch) {
-    const obj = ipfsJson();
     const speed = fetchDistributionFromDistributionId(
-      obj,
       epochNumber.toString() + "-" + marketSide + "-" + poolTokenAddress.toHexString()
     );
     marketEpoch = new MarketEpochDistribution(id);

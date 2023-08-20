@@ -44,6 +44,25 @@ const generateGraphEmissions = async () => {
     allEpochsDefined.map(({ id, finalTimestamp }) => [getKey(id), finalTimestamp.toString()])
   );
 
+  const template = `import { BigInt } from "@graphprotocol/graph-ts";
+
+export const startTimestamps = new Map<i32, BigInt>();
+ ${Object.entries(startTimestamps)
+   .map(([key, value]) => `startTimestamps.set(${key} as i32, BigInt.fromI32(${value} as i32));`)
+   .join("\n")}
+ 
+ export const endTimestamps = new Map<i32, BigInt>();
+  ${Object.entries(endTimestamps)
+    .map(([key, value]) => `endTimestamps.set(${key} as i32, BigInt.fromI32(${value} as i32));`)
+    .join("\n")}
+  
+  export const formattedEmissions = new Map<string, BigInt>();
+  ${Object.entries(formattedEmissions)
+    .map(([key, value]) => `formattedEmissions.set("${key}", BigInt.fromI32(${value} as i32));`)
+    .join("\n")}
+
+`;
+
   const hash = await uploadToIPFS({
     name: "subgraph-distribution.json",
     body: { startTimestamps, endTimestamps, formattedEmissions },
@@ -53,11 +72,7 @@ const generateGraphEmissions = async () => {
 
   console.log("Override IPFS hash on the subgraph with", hash);
 
-  await fs.promises.writeFile(
-    "subgraph/src/ipfs.ts",
-    `export const IPFS_HASH = "${hash}";
-`
-  );
+  await fs.promises.writeFile("subgraph/src/distributionStore.ts", template);
 };
 
 generateGraphEmissions().catch((e) => {
