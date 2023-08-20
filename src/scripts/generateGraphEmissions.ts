@@ -58,7 +58,7 @@ export const startTimestamps = new Map<i32, BigInt>();
   
   export const formattedEmissions = new Map<string, BigInt>();
   ${Object.entries(formattedEmissions)
-    .map(([key, value]) => `formattedEmissions.set("${key}", BigInt.fromI32(${value} as i32));`)
+    .map(([key, value]) => `formattedEmissions.set("${key}", BigInt.fromString("${value}"));`)
     .join("\n")}
 
 `;
