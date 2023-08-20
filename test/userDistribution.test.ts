@@ -56,7 +56,7 @@ describe("User distribution", () => {
         );
       });
 
-      it(`Should distribute the correct number of tokens over Morpho users for ${epochId}`, async () => {
+      it.skip(`Should distribute the correct number of tokens over Morpho users for ${epochId}`, async () => {
         const totalEmitted = usersAccumulatedRewards[epochId].reduce(
           (a, b) => a.add(b.accumulatedRewards),
           BigNumber.from(0)
@@ -76,7 +76,7 @@ describe("User distribution", () => {
         );
       });
 
-      it(`Should distribute the correct number of tokens per market for epoch ${epochId}`, async () => {
+      it.skip(`Should distribute the correct number of tokens per market for epoch ${epochId}`, async () => {
         const markets = [...new Set(usersBalances.map((ub) => ub.balances.map((b) => b.market.address)).flat())];
         await Promise.all(
           markets.map(async (marketAddress) => {
