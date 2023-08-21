@@ -27,7 +27,7 @@ const generateGraphEmissions = async () => {
   const formattedEmissions: Record<string, string> = {};
 
   const allEpochsDefined = await epochUtils.allEpochs();
-  const getKey = (epochId: string) => allEpochsDefined.findIndex(({ id }) => id === epochId) + 1;
+  const getKey = (epochId: string) => `epoch-${allEpochsDefined.findIndex(({ id }) => id === epochId) + 1}`;
 
   distributions.forEach(({ epoch, distribution }) => {
     Object.entries(distribution.marketsEmissions).forEach(([market, distribution]) => {
