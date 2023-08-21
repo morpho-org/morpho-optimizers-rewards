@@ -1,9 +1,10 @@
-import { ethers, providers } from "ethers";
+import { BigNumber, ethers, providers } from "ethers";
 import { computeMerkleTree, fetchUsers, getAccumulatedEmission, userBalancesToUnclaimedTokens, sumRewards } from ".";
-import { commify, formatUnits } from "ethers/lib/utils";
+import { commify, formatUnits, parseUnits } from "ethers/lib/utils";
 import { epochUtils } from "../ages";
 import { SUBGRAPH_URL } from "../config";
 import { StorageService } from "./StorageService";
+import { allEpochs } from "../ages/ageEpochConfig";
 
 export enum DataProvider {
   Subgraph = "subgraph",
@@ -18,19 +19,36 @@ export const computeUsersDistributionsForEpoch = async (
 ) => {
   console.log(`Compute users distribution for ${epoch.id}`);
   if (!epoch.finalBlock) throw new Error(`Final block not found for ${epoch.id}`);
-
   const usersBalances = await fetchUsers(SUBGRAPH_URL, epoch.finalBlock);
+  const marketsRewards: Record<
+    string,
+    {
+      accumulatedSupply: BigNumber;
+      accumulatedBorrow: BigNumber;
+    }
+  > = {};
   const usersAccumulatedRewards = (
     await Promise.all(
-      usersBalances.map(async ({ address, balances }) => ({
-        address,
-        accumulatedRewards: sumRewards(
-          await userBalancesToUnclaimedTokens(balances, epoch.finalTimestamp, provider, storageService)
-        ).toString(),
-      }))
+      usersBalances.map(async ({ address, balances }) => {
+        const userPerMarkets = await userBalancesToUnclaimedTokens(
+          balances,
+          epoch.finalTimestamp,
+          provider,
+          storageService
+        );
+        userPerMarkets.forEach(({ market: { address }, accumulatedSupply, accumulatedBorrow }) => {
+          if (!marketsRewards[address])
+            marketsRewards[address] = { accumulatedSupply: BigNumber.from(0), accumulatedBorrow: BigNumber.from(0) };
+          marketsRewards[address].accumulatedSupply = marketsRewards[address].accumulatedSupply.add(accumulatedSupply);
+          marketsRewards[address].accumulatedBorrow = marketsRewards[address].accumulatedBorrow.add(accumulatedBorrow);
+        });
+        return {
+          address,
+          accumulatedRewards: sumRewards(userPerMarkets).toString(),
+        };
+      })
     )
   ).filter(({ accumulatedRewards }) => accumulatedRewards !== "0");
-
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { leaves, ...merkleTree } = computeMerkleTree(usersAccumulatedRewards);
 
@@ -52,6 +70,7 @@ export const computeUsersDistributionsForEpoch = async (
     epochId: epoch.id,
     nbUsers: usersAccumulatedRewards.length,
     totalEmission,
+    marketsRewards,
     merkleTree,
   };
 };
@@ -74,12 +93,57 @@ export const computeUsersDistributions = async (
 
   // Compute emissions for each epoch synchronously for throughput reasons
   for (const epoch of epochs) {
-    const { epochId, nbUsers, totalEmission, merkleTree } = await computeUsersDistributionsForEpoch(
+    const { epochId, nbUsers, totalEmission, merkleTree, marketsRewards } = await computeUsersDistributionsForEpoch(
       epoch,
       provider,
       storageService,
       force
     );
+    const allEpochsBefore = (await allEpochs()).filter((e) => e.finalTimestamp <= epoch.finalTimestamp);
+    const marketDistributionPerEpoch = await Promise.all(
+      allEpochsBefore.map((e) => storageService.readMarketDistribution(e.id))
+    );
+    const marketAccumulatedDistribution = Object.values(marketDistributionPerEpoch).reduce((acc, cur) => {
+      Object.entries(cur!.markets).forEach(([address, { morphoEmittedSupplySide, morphoEmittedBorrowSide }]) => {
+        if (!acc[address])
+          acc[address] = { morphoEmittedSupplySide: BigNumber.from(0), morphoEmittedBorrowSide: BigNumber.from(0) };
+        acc[address].morphoEmittedSupplySide = acc[address].morphoEmittedSupplySide.add(
+          parseUnits(morphoEmittedSupplySide)
+        );
+        acc[address].morphoEmittedBorrowSide = acc[address].morphoEmittedBorrowSide.add(
+          parseUnits(morphoEmittedBorrowSide)
+        );
+      });
+      return acc;
+    }, {} as Record<string, { morphoEmittedSupplySide: BigNumber; morphoEmittedBorrowSide: BigNumber }>);
+
+    const perMarketsDistribution = Object.entries(marketsRewards).map(
+      ([address, { accumulatedSupply, accumulatedBorrow }]) => {
+        return {
+          epochId,
+          address,
+          accumulatedSupply: formatUnits(accumulatedSupply),
+          estimatedAccumulatedSupply: formatUnits(
+            marketAccumulatedDistribution[address.toLowerCase()]?.morphoEmittedSupplySide ?? "0"
+          ),
+          diffAccumulatedSupply: formatUnits(
+            BigNumber.from(marketAccumulatedDistribution[address.toLowerCase()]?.morphoEmittedSupplySide ?? "0").sub(
+              accumulatedSupply
+            )
+          ),
+          accumulatedBorrow: formatUnits(accumulatedBorrow),
+          estimatedAccumulatedBorrow: formatUnits(
+            marketAccumulatedDistribution[address.toLowerCase()]?.morphoEmittedBorrowSide ?? "0"
+          ),
+          diffAccumulatedBorrow: formatUnits(
+            BigNumber.from(marketAccumulatedDistribution[address.toLowerCase()]?.morphoEmittedBorrowSide ?? "0").sub(
+              accumulatedBorrow
+            )
+          ),
+        };
+      }
+    );
+    console.table(perMarketsDistribution);
 
     recap.push({
       epochId,
