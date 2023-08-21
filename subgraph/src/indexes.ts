@@ -61,36 +61,47 @@ const computeUpdatedMorphoIndex = (
     return lastMorphoIndex.plus(accrualIndex);
   }
   if (prevEpochNumber && currentEpochNumber && prevEpochNumber !== currentEpochNumber) {
-    // need to tackle multiple speeds
-    log.warning("Prev epoch: {}, current epoch: {}", [prevEpochNumber.toString(), currentEpochNumber.toString()]);
-    const end = epochNumberToEndTimestamp(obj, prevEpochNumber);
+    let epochCounter = prevEpochNumber;
+    while (epochCounter !== currentEpochNumber) {
+      // need to tackle multiple speeds
+      log.warning("Prev epoch: {}, current epoch: {}, epochCounter: {}, lastUpdateBlockTimestamp: {}", [
+        prevEpochNumber.toString(),
+        currentEpochNumber.toString(),
+        epochCounter.toString(),
+        lastUpdateBlockTimestamp.toString(),
+      ]);
 
-    if (!end) {
-      log.critical("No end timestamp for epoch {}", [prevEpochNumber.toString()]);
-      return BigInt.zero();
-    }
-    lastMorphoIndex = lastMorphoIndex.plus(
-      computeOneEpochDistribuedRewards(
-        lastUpdateBlockTimestamp,
-        end,
-        lastTotalUnderlying,
-        fetchDistributionFromDistributionId(obj, getEpochMarketEmissionKey(marketAddress, prevEpochNumber, marketSide))
-      )
-    );
-    const snapshot = getOrInitMarketEpoch(marketAddress, prevEpochNumber, marketSide, end);
-    snapshot.index = lastMorphoIndex;
-    snapshot.timestamp = end;
-    snapshot.isFinished = true;
-    snapshot.save();
-    const startTimestamp = epochNumberToStartTimestamp(obj, currentEpochNumber);
+      const end = epochNumberToEndTimestamp(obj, epochCounter);
+      if (!end) {
+        log.critical("No end timestamp for epoch {}", [epochCounter.toString()]);
+        return BigInt.zero();
+      }
+      lastMorphoIndex = lastMorphoIndex.plus(
+        computeOneEpochDistribuedRewards(
+          lastUpdateBlockTimestamp,
+          end,
+          lastTotalUnderlying,
+          fetchDistributionFromDistributionId(obj, getEpochMarketEmissionKey(marketAddress, epochCounter, marketSide))
+        )
+      );
 
-    if (!startTimestamp) {
-      log.critical("No start timestamp for epoch {}", [currentEpochNumber.toString()]);
-      return BigInt.zero();
+      const snapshot = getOrInitMarketEpoch(marketAddress, epochCounter, marketSide, end);
+      snapshot.index = lastMorphoIndex;
+      snapshot.timestamp = end;
+      snapshot.isFinished = true;
+      snapshot.save();
+      epochCounter = epochCounter + 1;
+      const startTimestamp = epochNumberToStartTimestamp(obj, epochCounter);
+
+      if (!startTimestamp) {
+        log.critical("No start timestamp for epoch {}", [currentEpochNumber.toString()]);
+        return BigInt.zero();
+      }
+
+      lastUpdateBlockTimestamp = startTimestamp;
+      if (startTimestamp.ge(blockTimestamp)) return lastMorphoIndex;
+      // stop the distribution if it is the beginning of the current epoch, else start distribution
     }
-    lastUpdateBlockTimestamp = startTimestamp;
-    if (startTimestamp.ge(blockTimestamp)) return lastMorphoIndex;
-    // stop the distribution if it is the beginning of the current epoch, else start distribution
   }
   const id = getEpochMarketEmissionKey(marketAddress, currentEpochNumber, marketSide);
   const accrualIndex = computeOneEpochDistribuedRewards(
