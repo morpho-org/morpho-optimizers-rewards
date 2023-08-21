@@ -56,10 +56,10 @@ describe("User distribution", () => {
         );
       });
 
-      it.skip(`Should distribute the correct number of tokens over Morpho users for ${epochId}`, async () => {
+      it(`Should distribute the correct number of tokens over Morpho users for ${epochId}`, async () => {
         const totalEmitted = usersAccumulatedRewards[epochId].reduce(
           (a, b) => a.add(b.accumulatedRewards),
-          BigNumber.from(0)
+          constants.Zero
         );
         const epochNumber = rawEpochs.indexOf(rawEpoch);
         const totalEmittedPrev =
@@ -76,7 +76,7 @@ describe("User distribution", () => {
         );
       });
 
-      it.skip(`Should distribute the correct number of tokens per market for epoch ${epochId}`, async () => {
+      it(`Should distribute the correct number of tokens per market for epoch ${epochId}`, async () => {
         const markets = [...new Set(usersBalances.map((ub) => ub.balances.map((b) => b.market.address)).flat())];
         await Promise.all(
           markets.map(async (marketAddress) => {
@@ -112,7 +112,7 @@ describe("On chain roots update", () => {
 
   it("Should have multiple root updates", () => expect(rootUpdates.length).toBeGreaterThan(0));
 
-  it.skip("Should have correct roots", async () => {
+  it("Should have correct roots", async () => {
     await Promise.all(
       rootUpdates.map(async (rootEvent) => {
         const block = await rootEvent.getBlock();
