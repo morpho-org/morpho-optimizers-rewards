@@ -113,7 +113,7 @@ export function getOrInitMarketEpoch(
     const obj = ipfsJson();
     const speed = fetchDistributionFromDistributionId(
       obj,
-      epochNumber.toString() + "-" + marketSide + "-" + poolTokenAddress.toHexString()
+      "epoch-" + epochNumber.toString() + "-" + marketSide + "-" + poolTokenAddress.toHexString()
     );
     marketEpoch = new MarketEpochDistribution(id);
     const market = getOrInitMarket(poolTokenAddress, currentTimestamp);
