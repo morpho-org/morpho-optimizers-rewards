@@ -22,6 +22,8 @@ yarn install --frozen-lockfile
 
 - Create an `.env` file and refer to the `.env.example` for the required environment variables.
 
+All the scripts needs an `RPC_URL` and an `ETHERSCAN_API_KEY` to run.
+
 - Run the tests that are computing distribution and verifying the root on chain:
 
 ```
