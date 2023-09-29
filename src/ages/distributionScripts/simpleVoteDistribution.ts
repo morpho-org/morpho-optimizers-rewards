@@ -57,7 +57,8 @@ const simpleVoteDistribution = async ({
       if (sideDistribution) {
         if (sideDistribution.type !== "static") throw Error("Only static size distribution is supported for now");
         const { supplySide, borrowSide } = sideDistribution.params;
-        if (!supplySide || !borrowSide) throw Error("Missing supply or borrow size distribution params");
+        if (supplySide === undefined || borrowSide === undefined)
+          throw Error("Missing supply or borrow size distribution params");
         const morphoEmittedSupplySide = PercentMath.percentMul(emissionRatePerEpoch, supplySide);
         const morphoRatePerSecondSupplySide = morphoEmittedSupplySide.div(duration);
         const morphoEmittedBorrowSide = PercentMath.percentMul(emissionRatePerEpoch, borrowSide);
