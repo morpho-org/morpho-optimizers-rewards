@@ -374,5 +374,66 @@
         }
       ]
     }
+  },
+  {
+    "id": "age8",
+    "initialTimestamp": "2023-10-04T15:00:00.000Z",
+    "finalTimestamp": "2023-11-18T15:00:00.000Z",
+    "distributionScript": "simpleVoteDistribution",
+    "discussion": "https://forum.morpho.org/t/mip-morpho-rewards-age-8/354",
+    "distributionParameters": {
+      "totalEmission": "800000",
+      "marketsRepartition": [
+        {
+          "symbol": "aDAI",
+          "market": "0x028171bCA77440897B824Ca71D1c56caC55b68A3",
+          "weight": 250
+        },
+        {
+          "symbol": "aWETH",
+          "market": "0x030bA81f1c18d280636F32af80b9AAd02Cf0854e",
+          "weight": 4090,
+          "sideDistribution": {
+            "type": "static",
+            "params": {
+              "supplySide": 5000,
+              "borrowSide": 5000
+            }
+          }
+        },
+        {
+          "symbol": "aUSDC",
+          "market": "0xBcca60bB61934080951369a648Fb03DF4F96263C",
+          "weight": 1030
+        },
+        {
+          "symbol": "aUSDT",
+          "market": "0x3Ed3B47Dd13EC9a98b44e6204A523E766B225811",
+          "weight": 750
+        },
+        {
+          "symbol": "aWBTC",
+          "market": "0x9ff58f4fFB29fA2266Ab25e75e2A8b3503311656",
+          "weight": 730
+        },
+        {
+          "symbol": "cUSDT",
+          "market": "0xf650C3d88D12dB855b8bf7D11Be6C55A4e07dCC9",
+          "weight": 500
+        },
+        {
+          "symbol": "aWETHV3",
+          "market": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+          "weight": 2650,
+          "sideDistribution": {
+            "type": "static",
+            "params": {
+              "supplySide": "10000",
+              "borrowSide": "0"
+            }
+          }
+        }
+      ]
+    }
   }
 ]
