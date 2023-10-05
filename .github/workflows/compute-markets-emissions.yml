@@ -53,7 +53,7 @@ jobs:
           else
             git config --global user.name 'Distributor bot'
             git config --global user.email 'bot@morpho.org'
-            git commit -am "chore: compute market distribution from CI"
+            git commit -am "feat: compute market distribution from CI"
             git push
           exit
           fi
