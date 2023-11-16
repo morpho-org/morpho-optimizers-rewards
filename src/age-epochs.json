@@ -435,5 +435,67 @@
         }
       ]
     }
+  },
+  {
+    "id": "age9",
+    "initialTimestamp": "2023-11-18T15:00:00.000Z",
+    "finalTimestamp": "2024-01-02T15:00:00.000Z",
+    "distributionScript": "simpleVoteDistribution",
+    "discussion": "https://forum.morpho.org/t/mip-morpho-rewards-age-9/379",
+    "notes": "At the moment, we does not know the exact date of the end of the age 9. We know the daily rate (16k MORPHO/day), and we'll consider an epoch of 45 days for now, and adjust the end date and total distribution when reached.",
+    "distributionParameters": {
+      "totalEmission": "720000",
+      "marketsRepartition": [
+        {
+          "symbol": "aDAI",
+          "market": "0x028171bCA77440897B824Ca71D1c56caC55b68A3",
+          "weight": 230
+        },
+        {
+          "symbol": "aWETH",
+          "market": "0x030bA81f1c18d280636F32af80b9AAd02Cf0854e",
+          "weight": 3700,
+          "sideDistribution": {
+            "type": "static",
+            "params": {
+              "supplySide": 5000,
+              "borrowSide": 5000
+            }
+          }
+        },
+        {
+          "symbol": "aUSDC",
+          "market": "0xBcca60bB61934080951369a648Fb03DF4F96263C",
+          "weight": 990
+        },
+        {
+          "symbol": "aUSDT",
+          "market": "0x3Ed3B47Dd13EC9a98b44e6204A523E766B225811",
+          "weight": 520
+        },
+        {
+          "symbol": "aWBTC",
+          "market": "0x9ff58f4fFB29fA2266Ab25e75e2A8b3503311656",
+          "weight": 900
+        },
+        {
+          "symbol": "cUSDT",
+          "market": "0xf650C3d88D12dB855b8bf7D11Be6C55A4e07dCC9",
+          "weight": 430
+        },
+        {
+          "symbol": "aWETHV3",
+          "market": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+          "weight": 3230,
+          "sideDistribution": {
+            "type": "static",
+            "params": {
+              "supplySide": "10000",
+              "borrowSide": "0"
+            }
+          }
+        }
+      ]
+    }
   }
 ]
