@@ -1,0 +1,23 @@
+{
+  "epochId": "age8",
+  "root": "0xd57cb5194e804da42a5d7a4cc9814afebe511669bc9eb6b83c45a5d197ed87e9",
+  "total": "20566755884201443716",
+  "proofs": {
+    "0xd508f85f1511aaec63434e26aeb6d10be0188dc7": {
+      "amount": "19548116178477581305",
+      "proof": [
+        "0xd3ff3b1988c93a79583cf1cf2611ec32af029442c3b16eba1326c58a08089078"
+      ]
+    },
+    "0xc8884ede1ae44bdff60da4b9c542c34a69648a87": {
+      "amount": "1018639705723862411",
+      "proof": [
+        "0x48377a5fb492973a4681bd87ddb060c94139092edfd6bee306f7e2fb61576322"
+      ]
+    }
+  },
+  "leaves": [
+    "0x48377a5fb492973a4681bd87ddb060c94139092edfd6bee306f7e2fb61576322",
+    "0xd3ff3b1988c93a79583cf1cf2611ec32af029442c3b16eba1326c58a08089078"
+  ]
+}
