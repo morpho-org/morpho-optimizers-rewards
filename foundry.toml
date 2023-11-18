@@ -1,0 +1,4 @@
+[profile.default]
+test = 'test-forge'
+fs_permissions = [{access = "read", path= "./"}]
+match_contract = 'CheckerTest'

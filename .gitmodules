@@ -1,0 +1,3 @@
+[submodule "lib/morpho-optimizers"]
+	path = lib/morpho-optimizers
+	url = git@github.com:morpho-org/morpho-optimizers.git
