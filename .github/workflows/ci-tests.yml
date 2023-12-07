@@ -12,7 +12,7 @@ on:
       - "yarn.lock"
       - "tsconfig.json"
       - "package.json"
-      - ".github/workflows/ci-jest.yml"
+      - ".github/workflows/ci-test.yml"
 
 concurrency:
   group: ci-jest-${{ github.ref }}
