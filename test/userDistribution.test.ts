@@ -1,6 +1,6 @@
 import { computeMerkleTree, fetchUsers, UserBalances, userBalancesToUnclaimedTokens } from "../src/utils";
 import { SUBGRAPH_URL } from "../src/config";
-import { BigNumber, constants, providers } from "ethers";
+import { constants, providers } from "ethers";
 import { RootUpdatedEvent } from "@morpho-labs/morpho-ethers-contract/lib/RewardsDistributor";
 import { RewardsDistributor__factory } from "@morpho-labs/morpho-ethers-contract";
 import addresses from "@morpho-labs/morpho-ethers-contract/lib/addresses";
@@ -13,7 +13,7 @@ import { parseUnits } from "ethers/lib/utils";
 
 const storageService = new FileSystemStorageService();
 
-const EPOCH_DERIVATION_MAX = parseUnits("2");
+const EPOCH_DERIVATION_MAX = parseUnits("4"); // after age9, epochs are longer so precision is lower
 const EPOCH_PRECISION_PER_MARKET = parseUnits("4"); // TODO: to be refined
 
 const usersAccumulatedRewards: {
