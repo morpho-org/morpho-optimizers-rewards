@@ -442,7 +442,7 @@
     "finalTimestamp": "2024-01-10T14:03:59.000",
     "distributionScript": "simpleVoteDistribution",
     "discussion": "https://forum.morpho.org/t/mip-morpho-rewards-age-9/379",
-    "notes": "At the moment, we does not know the exact date of the end of the age 9. We know the daily rate (16k MORPHO/day), and we'll consider an epoch of 45 days for now, and adjust the end date and total distribution when reached.",
+    "notes": "At the moment, we do not know the exact date of the end of the age 9. We know the daily rate (16k MORPHO/day), and we'll consider an epoch of 45 days for now, and adjust the end date and total distribution when reached.",
     "distributionParameters": {
       "totalEmission": "846710.925925925925925925",
       "marketsRepartition": [
@@ -504,7 +504,7 @@
     "finalTimestamp": "2024-02-10T14:03:59.000",
     "distributionScript": "simpleVoteDistribution",
     "discussion": "https://forum.morpho.org/t/mip-morpho-rewards-on-optimizers-post-morpho-blue-launch/416",
-    "notes": "At the moment, we does not know the exact date of the end of the age 10. We know the daily rate (10k MORPHO/day), and we'll consider an epoch of 31 days for now, and adjust the end date and total distribution when reached.",
+    "notes": "At the moment, we do not know the exact date of the end of the age 10. We know the daily rate (10k MORPHO/day), and we'll consider an epoch of 31 days for now, and adjust the end date and total distribution when reached.",
     "distributionParameters": {
       "totalEmission": "310000",
       "marketsRepartition": [
