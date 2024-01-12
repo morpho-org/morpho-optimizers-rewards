@@ -13,7 +13,7 @@ import { parseUnits } from "ethers/lib/utils";
 
 const storageService = new FileSystemStorageService();
 
-const EPOCH_DERIVATION_MAX = parseUnits("4"); // after age9, epochs are longer so precision is lower
+const EPOCH_DERIVATION_MAX = parseUnits("2"); // after age9, epochs are longer so precision is lower
 const EPOCH_PRECISION_PER_MARKET = parseUnits("4"); // TODO: to be refined
 
 const usersAccumulatedRewards: {
