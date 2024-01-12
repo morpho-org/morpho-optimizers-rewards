@@ -1,0 +1,41 @@
+{
+  "epochId": "age9",
+  "root": "0x2e2f65ddaed6aedbea46cb21b5b8eb9f313e30373261bedf1d0f7f93950aa81d",
+  "total": "115636675064136245300",
+  "proofs": {
+    "0x490bbbc2485e99989ba39b34802fafa58e26aba4": {
+      "amount": "44292314587019126",
+      "proof": [
+        "0x70c59048e6be4ee8a1af40e073c50310d3bf37bb0dedd9d123be38f3ef2691c0",
+        "0xd5655026d39ac1b11b5eb5c098804a2831c9c2b2def27014a3aa961eb47ce354"
+      ]
+    },
+    "0xc8884ede1ae44bdff60da4b9c542c34a69648a87": {
+      "amount": "15820196679313813335",
+      "proof": [
+        "0x52ff22978d12565e05ef1575e7efe2f91be99ae8638051eac288ff33125eccdf",
+        "0xd5655026d39ac1b11b5eb5c098804a2831c9c2b2def27014a3aa961eb47ce354"
+      ]
+    },
+    "0x84d3e4ee550dd5f99e76a548ac59a6be1c8dcf79": {
+      "amount": "7499415639102189",
+      "proof": [
+        "0x90e6b31e73b9bf24ea8af2d0247b712420ab8dfa561b90d3b17d2a00f3bf4bdb",
+        "0xf96cb87b2b05bf07adb99b372ede6535de57dbda9c7ca4b58041dfc142144a59"
+      ]
+    },
+    "0xb3f717a5064d2cbe1b8999fdfd3f8f3da98339a6": {
+      "amount": "99764686654596310650",
+      "proof": [
+        "0x5216c0d7b0c28a25becaaafdd7f05c99018468f77b47b860e101cad12e127648",
+        "0xf96cb87b2b05bf07adb99b372ede6535de57dbda9c7ca4b58041dfc142144a59"
+      ]
+    }
+  },
+  "leaves": [
+    "0x52ff22978d12565e05ef1575e7efe2f91be99ae8638051eac288ff33125eccdf",
+    "0x70c59048e6be4ee8a1af40e073c50310d3bf37bb0dedd9d123be38f3ef2691c0",
+    "0x5216c0d7b0c28a25becaaafdd7f05c99018468f77b47b860e101cad12e127648",
+    "0x90e6b31e73b9bf24ea8af2d0247b712420ab8dfa561b90d3b17d2a00f3bf4bdb"
+  ]
+}
