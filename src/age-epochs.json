@@ -444,7 +444,7 @@
     "discussion": "https://forum.morpho.org/t/mip-morpho-rewards-age-9/379",
     "notes": "At the moment, we do not know the exact date of the end of the age 9. We know the daily rate (16k MORPHO/day), and we'll consider an epoch of 45 days for now, and adjust the end date and total distribution when reached.",
     "distributionParameters": {
-      "totalEmission": "846710.925925925925925925",
+      "totalEmission": "847377.592592592592592592",
       "marketsRepartition": [
         {
           "symbol": "aDAI",
