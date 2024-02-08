@@ -5,6 +5,7 @@ import { epochUtils } from "../ages";
 import { FileSystemStorageService } from "../utils/StorageService";
 import { mapValues } from "lodash";
 import { MarketsEmissionFs } from "../ages/distributions/MarketsEmissionFs";
+import { MulticallWrapper } from "ethers-multicall-provider";
 
 dotenv.config();
 
@@ -15,7 +16,7 @@ const computeMarketsEmissions = async (epochId?: string) => {
   if (epochId) console.log(`Compute markets emissions for ${epochId}`);
   else console.log("Compute markets emissions for all epochs");
 
-  const provider = new providers.JsonRpcProvider(process.env.RPC_URL);
+  const provider = MulticallWrapper.wrap(new providers.JsonRpcProvider(process.env.RPC_URL));
 
   const epochs = epochId ? [await epochUtils.getEpoch(epochId)] : await epochUtils.snapshotableEpochs();
   if (!epochId) console.log(`${epochs.length} epochs to compute, to ${epochs[epochs.length - 1].id}`);

@@ -6,12 +6,13 @@ import * as fs from "fs";
 dotenv.config();
 
 import { pinata, uploadToIPFS } from "../utils/ipfs/uploadToIPFS";
+import { MulticallWrapper } from "ethers-multicall-provider";
 const generateGraphEmissions = async () => {
   const canUse = await pinata.testAuthentication();
 
   if (!canUse.authenticated) throw new Error("Wrong Pinata Key");
 
-  const provider = new providers.JsonRpcProvider(process.env.RPC_URL);
+  const provider = MulticallWrapper.wrap(new providers.JsonRpcProvider(process.env.RPC_URL));
   const epochs = await epochUtils.snapshotableEpochs();
   const distributions = await Promise.all(
     epochs.map(async (epoch) => ({
