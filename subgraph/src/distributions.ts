@@ -1,9 +1,8 @@
 import { Address, BigInt, log } from "@graphprotocol/graph-ts";
+
 import { emissions, epochToEndTimestamps, epochToStartTimestamps } from "./generated-emissions";
 
-
 export const epochNumberToStartTimestamp = (epochNumber: i32): BigInt | null => {
-
   const ts = epochToStartTimestamps.get(`epoch-${epochNumber}`);
   if (!ts) return null;
   return BigInt.fromString(ts.toString());
@@ -23,11 +22,7 @@ export const timestampToEpochId = (timestamp: BigInt): i32 => {
     epoch++;
   }
 };
-export const fetchDistribution = (
-  timestamp: BigInt,
-  side: string,
-  market: Address
-): BigInt => {
+export const fetchDistribution = (timestamp: BigInt, side: string, market: Address): BigInt => {
   if (timestamp.lt(BigInt.fromI32(1654707606))) return BigInt.zero();
   const epochNumber = timestampToEpochId(timestamp);
   if (!epochNumber) {
@@ -38,8 +33,8 @@ export const fetchDistribution = (
   return fetchDistributionFromDistributionId(id);
 };
 
-export const fetchDistributionFromDistributionId = (id: string): BigInt => {
+export function fetchDistributionFromDistributionId(id: string): BigInt {
   const emission = emissions.get(id);
   if (!emission) return BigInt.zero();
   return emission;
-};
+}
