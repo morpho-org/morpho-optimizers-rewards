@@ -1,15 +1,14 @@
 import { Address, BigInt, log } from "@graphprotocol/graph-ts";
 
+import { BASIS_POINTS, WAD } from "./constants";
 import {
   epochNumberToEndTimestamp,
   epochNumberToStartTimestamp,
   fetchDistribution,
   fetchDistributionFromDistributionId,
-  ipfsJson,
   timestampToEpochId,
 } from "./distributions";
 import { getOrInitMarket, getOrInitMarketEpoch } from "./initializer";
-import { BASIS_POINTS, WAD } from "./constants";
 
 const getEpochMarketEmissionKey = (marketAddress: Address, epochNumber: i32, marketSide: string): string =>
   "epoch-" + epochNumber.toString() + "-" + marketSide + "-" + marketAddress.toHexString();
@@ -39,15 +38,14 @@ const computeUpdatedMorphoIndex = (
   lastTotalUnderlying: BigInt,
   marketSide: string
 ): BigInt => {
-  const obj = ipfsJson();
   // sync eventual previous epoch
-  const prevEpochNumber = timestampToEpochId(obj, lastUpdateBlockTimestamp);
-  const currentEpochNumber = timestampToEpochId(obj, blockTimestamp);
+  const prevEpochNumber = timestampToEpochId(lastUpdateBlockTimestamp);
+  const currentEpochNumber = timestampToEpochId(blockTimestamp);
   if (!currentEpochNumber) return lastMorphoIndex;
 
   if (!prevEpochNumber && currentEpochNumber) {
     // start of the first epoch
-    const start = epochNumberToStartTimestamp(obj, currentEpochNumber);
+    const start = epochNumberToStartTimestamp(currentEpochNumber);
     if (!start) {
       log.critical("No start timestamp for epoch {}", [currentEpochNumber.toString()]);
       return BigInt.zero();
@@ -56,7 +54,7 @@ const computeUpdatedMorphoIndex = (
       start,
       blockTimestamp,
       lastTotalUnderlying,
-      fetchDistribution(obj, blockTimestamp, marketSide, marketAddress)
+      fetchDistribution(blockTimestamp, marketSide, marketAddress)
     );
     return lastMorphoIndex.plus(accrualIndex);
   }
@@ -71,7 +69,7 @@ const computeUpdatedMorphoIndex = (
         lastUpdateBlockTimestamp.toString(),
       ]);
 
-      const end = epochNumberToEndTimestamp(obj, epochCounter);
+      const end = epochNumberToEndTimestamp(epochCounter);
       if (!end) {
         log.critical("No end timestamp for epoch {}", [epochCounter.toString()]);
         return BigInt.zero();
@@ -81,7 +79,7 @@ const computeUpdatedMorphoIndex = (
           lastUpdateBlockTimestamp,
           end,
           lastTotalUnderlying,
-          fetchDistributionFromDistributionId(obj, getEpochMarketEmissionKey(marketAddress, epochCounter, marketSide))
+          fetchDistributionFromDistributionId(getEpochMarketEmissionKey(marketAddress, epochCounter, marketSide))
         )
       );
 
@@ -91,7 +89,7 @@ const computeUpdatedMorphoIndex = (
       snapshot.isFinished = true;
       snapshot.save();
       epochCounter = epochCounter + 1;
-      const startTimestamp = epochNumberToStartTimestamp(obj, epochCounter);
+      const startTimestamp = epochNumberToStartTimestamp(epochCounter);
 
       if (!startTimestamp) {
         log.critical("No start timestamp for epoch {}", [currentEpochNumber.toString()]);
@@ -108,7 +106,7 @@ const computeUpdatedMorphoIndex = (
     lastUpdateBlockTimestamp,
     blockTimestamp,
     lastTotalUnderlying,
-    fetchDistributionFromDistributionId(obj, id)
+    fetchDistributionFromDistributionId(id)
   );
   const newIndex = lastMorphoIndex.plus(accrualIndex);
 
@@ -129,20 +127,19 @@ const computeUpdatedMorphoIndexV2 = (
   lastTotalScaled: BigInt,
   marketSide: string
 ): BigInt => {
-  const obj = ipfsJson();
   // sync eventual previous epoch
-  const prevEpochNumber = timestampToEpochId(obj, lastUpdateBlockTimestamp);
-  const currentEpochNumber = timestampToEpochId(obj, blockTimestamp);
+  const prevEpochNumber = timestampToEpochId(lastUpdateBlockTimestamp);
+  const currentEpochNumber = timestampToEpochId(blockTimestamp);
   if (!currentEpochNumber) return lastMorphoIndex;
 
   if (!prevEpochNumber && currentEpochNumber) {
     // start of the first epoch
-    const start = epochNumberToStartTimestamp(obj, currentEpochNumber);
+    const start = epochNumberToStartTimestamp(currentEpochNumber);
     if (!start) {
       log.critical("No start timestamp for epoch {}", [currentEpochNumber.toString()]);
       return BigInt.zero();
     }
-    const distribution = fetchDistribution(obj, blockTimestamp, marketSide, marketAddress);
+    const distribution = fetchDistribution(blockTimestamp, marketSide, marketAddress);
     // consider the speed between onPool & inP2P to be constant between 2 markets update.
     // That means that we consider that the difference of interest generated does not make changes between
     // on pool & in P2P repartition, i.e. lastPercentSpeed is constant.
@@ -154,14 +151,13 @@ const computeUpdatedMorphoIndexV2 = (
   if (prevEpochNumber && currentEpochNumber && prevEpochNumber !== currentEpochNumber) {
     // need to tackle multiple speeds
     log.warning("Prev epoch: {}, current epoch: {}", [prevEpochNumber.toString(), currentEpochNumber.toString()]);
-    const end = epochNumberToEndTimestamp(obj, prevEpochNumber);
+    const end = epochNumberToEndTimestamp(prevEpochNumber);
 
     if (!end) {
       log.critical("No end timestamp for epoch {}", [prevEpochNumber.toString()]);
       return BigInt.zero();
     }
     const distribution = fetchDistributionFromDistributionId(
-      obj,
       getEpochMarketEmissionKey(marketAddress, prevEpochNumber, marketSide)
     );
     const speed = distribution.times(lastPercentSpeed).div(BASIS_POINTS);
@@ -169,7 +165,7 @@ const computeUpdatedMorphoIndexV2 = (
     lastMorphoIndex = lastMorphoIndex.plus(
       computeOneEpochDistribuedRewards(lastUpdateBlockTimestamp, end, lastTotalScaled, speed)
     );
-    const startTimestamp = epochNumberToStartTimestamp(obj, currentEpochNumber);
+    const startTimestamp = epochNumberToStartTimestamp(currentEpochNumber);
 
     if (!startTimestamp) {
       log.critical("No start timestamp for epoch {}", [currentEpochNumber.toString()]);
@@ -181,7 +177,7 @@ const computeUpdatedMorphoIndexV2 = (
   }
   const id = getEpochMarketEmissionKey(marketAddress, currentEpochNumber, marketSide);
 
-  const distribution = fetchDistributionFromDistributionId(obj, id);
+  const distribution = fetchDistributionFromDistributionId(id);
   const speed = distribution.times(lastPercentSpeed).div(BASIS_POINTS);
   const accrualIndex = computeOneEpochDistribuedRewards(
     lastUpdateBlockTimestamp,
