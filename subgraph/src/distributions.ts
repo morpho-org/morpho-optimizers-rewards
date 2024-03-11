@@ -3,14 +3,20 @@ import { Address, BigInt, log } from "@graphprotocol/graph-ts";
 import { emissions, epochToEndTimestamps, epochToStartTimestamps } from "./generated-emissions";
 
 export const epochNumberToStartTimestamp = (epochNumber: i32): BigInt | null => {
-  const ts = epochToStartTimestamps.get(`epoch-${epochNumber}`);
-  if (!ts) return null;
-  return BigInt.fromString(ts.toString());
+  const epochId = `epoch-${epochNumber}`;
+  if (!epochToStartTimestamps.has(epochId)) {
+    log.debug("No epoch start timestamp found for epoch {}", [epochNumber.toString()]);
+    return null;
+  }
+  return epochToStartTimestamps.get(epochId);
 };
 export const epochNumberToEndTimestamp = (epochNumber: i32): BigInt | null => {
-  const ts = epochToEndTimestamps.get(`epoch-${epochNumber}`);
-  if (!ts) return null;
-  return BigInt.fromString(ts.toString());
+  const epochId = `epoch-${epochNumber}`;
+  if (!epochToEndTimestamps.has(epochId)) {
+    log.debug("No epoch end timestamp found for epoch {}", [epochNumber.toString()]);
+    return null;
+  }
+  return epochToEndTimestamps.get(epochId);
 };
 export const timestampToEpochId = (timestamp: BigInt): i32 => {
   if (timestamp.le(BigInt.fromI32(1654707606))) return 0;
@@ -34,7 +40,9 @@ export const fetchDistribution = (timestamp: BigInt, side: string, market: Addre
 };
 
 export function fetchDistributionFromDistributionId(id: string): BigInt {
-  const emission = emissions.get(id);
-  if (!emission) return BigInt.zero();
-  return emission;
+  if (!emissions.has(id)) {
+    log.debug("No distribution found for id {}", [id]);
+    return BigInt.zero();
+  }
+  return emissions.get(id);
 }
