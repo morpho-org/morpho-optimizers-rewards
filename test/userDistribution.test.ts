@@ -1,20 +1,22 @@
-import { computeMerkleTree, fetchUsers, UserBalances, userBalancesToUnclaimedTokens } from "../src/utils";
-import { SUBGRAPH_URL } from "../src/config";
 import { constants, providers } from "ethers";
-import { RootUpdatedEvent } from "@morpho-labs/morpho-ethers-contract/lib/RewardsDistributor";
+import { parseUnits } from "ethers/lib/utils";
+
 import { RewardsDistributor__factory } from "@morpho-labs/morpho-ethers-contract";
+import { RootUpdatedEvent } from "@morpho-labs/morpho-ethers-contract/lib/RewardsDistributor";
 import addresses from "@morpho-labs/morpho-ethers-contract/lib/addresses";
-import { MarketRewards, sumRewards, getAccumulatedEmissionPerMarket } from "../src/utils";
-import { FileSystemStorageService } from "../src/utils/StorageService";
+
 import { epochUtils } from "../src";
 import rawEpochs from "../src/age-epochs.json";
+import { SUBGRAPH_URL } from "../src/config";
 import { parseDate, now } from "../src/helpers";
-import { parseUnits } from "ethers/lib/utils";
+import { computeMerkleTree, fetchUsers, UserBalances, userBalancesToUnclaimedTokens } from "../src/utils";
+import { MarketRewards, sumRewards, getAccumulatedEmissionPerMarket } from "../src/utils";
+import { FileSystemStorageService } from "../src/utils/StorageService";
 
 const storageService = new FileSystemStorageService();
 
 const EPOCH_DERIVATION_MAX = parseUnits("2"); // after age9, epochs are longer so precision is lower
-const EPOCH_PRECISION_PER_MARKET = parseUnits("4"); // TODO: to be refined
+const EPOCH_PRECISION_PER_MARKET = parseUnits("5"); // TODO: to be refined
 
 const usersAccumulatedRewards: {
   [epoch: string]: { address: string; accumulatedRewards: string; rewards: MarketRewards[] }[];
