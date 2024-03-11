@@ -1,97 +1,48 @@
-import { Address, BigInt, ipfs, json, JSONValue, JSONValueKind, log, TypedMap } from "@graphprotocol/graph-ts";
-import { IPFS_HASH } from "./ipfs";
+import { Address, BigInt, log } from "@graphprotocol/graph-ts";
 
-export const ipfsJson = (): TypedMap<string, JSONValue> => {
-  const data = ipfs.cat(IPFS_HASH);
-  if (!data) {
-    log.critical("No IPFS file", []);
-    return new TypedMap<string, JSONValue>();
-  }
-  const jsonData = json.fromBytes(data);
-  if (jsonData.kind !== JSONValueKind.OBJECT) {
-    log.critical("Malformed IPFS file", []);
-    return new TypedMap<string, JSONValue>();
-  }
-  const obj = jsonData.toObject();
-  if (!obj) {
-    log.critical("Malformed IPFS file", []);
-    return new TypedMap<string, JSONValue>();
-  }
-  return obj;
-};
-export const epochNumberToStartTimestamp = (obj: TypedMap<string, JSONValue>, epochNumber: i32): BigInt | null => {
-  if (!obj) return null;
-  const startTimestamps = obj.get("startTimestamps");
-  if (!startTimestamps) {
-    log.critical("No startTimestamps", []);
+import { emissions, epochToEndTimestamps, epochToStartTimestamps } from "./generated-emissions";
+
+export const epochNumberToStartTimestamp = (epochNumber: i32): BigInt | null => {
+  const epochId = `epoch-${epochNumber}`;
+  if (!epochToStartTimestamps.has(epochId)) {
+    log.debug("No epoch start timestamp found for epoch {}", [epochNumber.toString()]);
     return null;
   }
-  const ts = startTimestamps.toObject().get(`epoch-${epochNumber}`);
-  if (!ts) return null;
-  return BigInt.fromString(ts.toString());
+  return epochToStartTimestamps.get(epochId);
 };
-export const epochNumberToEndTimestamp = (obj: TypedMap<string, JSONValue>, epochNumber: i32): BigInt | null => {
-  if (!obj) return null;
-  const endTimestamps = obj.get("endTimestamps");
-  if (!endTimestamps) {
-    log.critical("No endTimestamps", []);
+export const epochNumberToEndTimestamp = (epochNumber: i32): BigInt | null => {
+  const epochId = `epoch-${epochNumber}`;
+  if (!epochToEndTimestamps.has(epochId)) {
+    log.debug("No epoch end timestamp found for epoch {}", [epochNumber.toString()]);
     return null;
   }
-  const ts = endTimestamps.toObject().get(`epoch-${epochNumber}`);
-  if (!ts) return null;
-  return BigInt.fromString(ts.toString());
+  return epochToEndTimestamps.get(epochId);
 };
-export const timestampToEpochId = (obj: TypedMap<string, JSONValue>, timestamp: BigInt): i32 => {
-  if (!obj) return 0;
-  let ts = obj.get("startTimestamps");
-  if (!ts) {
-    log.critical("No startTimestamps", []);
-    return 0;
-  }
-  const tsRaws = ts.toObject();
-  if (!tsRaws) {
-    log.critical("No timestamps", []);
-    return 0;
-  }
+export const timestampToEpochId = (timestamp: BigInt): i32 => {
   if (timestamp.le(BigInt.fromI32(1654707606))) return 0;
   let epoch = 1;
   while (true) {
-    let endTimestamp = epochNumberToEndTimestamp(obj, epoch);
+    let endTimestamp = epochNumberToEndTimestamp(epoch);
     if (!endTimestamp) return epoch;
     if (timestamp.le(endTimestamp)) return epoch;
     epoch++;
   }
 };
-export const fetchDistribution = (
-  obj: TypedMap<string, JSONValue>,
-  timestamp: BigInt,
-  side: string,
-  market: Address
-): BigInt => {
+export const fetchDistribution = (timestamp: BigInt, side: string, market: Address): BigInt => {
   if (timestamp.lt(BigInt.fromI32(1654707606))) return BigInt.zero();
-  const epochNumber = timestampToEpochId(obj, timestamp);
+  const epochNumber = timestampToEpochId(timestamp);
   if (!epochNumber) {
-    log.debug("IPFS file: no epoch id at ts {}", [timestamp.toString()]);
+    log.debug("No epoch id at ts {}", [timestamp.toString()]);
     return BigInt.zero();
   }
   const id = `epoch-${epochNumber}-${side}-${market.toHexString()}`;
-  const formattedEmissions = obj.get("formattedEmissions");
-  if (!formattedEmissions) {
-    log.critical("No formattedEmissions", []);
-    return BigInt.zero();
-  }
-  const emission = formattedEmissions.toObject().get(id);
-  if (!emission) return BigInt.zero();
-  return BigInt.fromString(emission.toString());
+  return fetchDistributionFromDistributionId(id);
 };
 
-export const fetchDistributionFromDistributionId = (obj: TypedMap<string, JSONValue>, id: string): BigInt => {
-  const formattedEmissions = obj.get("formattedEmissions");
-  if (!formattedEmissions) {
-    log.critical("No formattedEmissions", []);
+export function fetchDistributionFromDistributionId(id: string): BigInt {
+  if (!emissions.has(id)) {
+    log.debug("No distribution found for id {}", [id]);
     return BigInt.zero();
   }
-  const emission = formattedEmissions.toObject().get(id);
-  if (!emission) return BigInt.zero();
-  return BigInt.fromString(emission.toString());
-};
+  return emissions.get(id);
+}

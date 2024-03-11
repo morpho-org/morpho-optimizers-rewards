@@ -129,7 +129,7 @@ this will output the users distribution in the [distribution](./distribution) di
 If you want to compute the users distribution for a specific epoch, you can use the `--epoch` flag:
 
 ```bash
-yarn users:distribute --epoch age3-epoch2
+yarn users:distribute --id age3-epoch2
 ```
 
 You can also choose the data provider for the users balances between `rpc` or `subgraph`.
