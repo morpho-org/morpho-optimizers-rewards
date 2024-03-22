@@ -2,13 +2,16 @@
 # NPM
 node_modules
 
+# forge
+out
+cache
+
 # IDE
 .idea
 .vscode
 
 # build
 dist
-lib
 
 # environement
 .env
