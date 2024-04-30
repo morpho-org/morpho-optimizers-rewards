@@ -18,7 +18,8 @@ export const epochToStartTimestamps = new Map<string, BigInt>()
 	.set("epoch-14", BigInt.fromString("1696431600"))
 	.set("epoch-15", BigInt.fromString("1700319600"))
 	.set("epoch-16", BigInt.fromString("1704895439"))
-	.set("epoch-17", BigInt.fromString("1710082679"));
+	.set("epoch-17", BigInt.fromString("1710082679"))
+	.set("epoch-18", BigInt.fromString("1714489079"));
       
 export const epochToEndTimestamps = new Map<string, BigInt>()
   .set("epoch-1", BigInt.fromString("1657731600"))
@@ -37,7 +38,8 @@ export const epochToEndTimestamps = new Map<string, BigInt>()
 	.set("epoch-14", BigInt.fromString("1700319600"))
 	.set("epoch-15", BigInt.fromString("1704895439"))
 	.set("epoch-16", BigInt.fromString("1710082679"))
-	.set("epoch-17", BigInt.fromString("1715353079"));
+	.set("epoch-17", BigInt.fromString("1714489079"))
+	.set("epoch-18", BigInt.fromString("1722351479"));
 
 export const emissions = new Map<string, BigInt>()
   .set("epoch-1-Supply-0x35a18000230da775cac24873d00ff85bccded550", BigInt.fromString("252003228310040"))
@@ -377,5 +379,17 @@ export const emissions = new Map<string, BigInt>()
 	.set("epoch-17-Supply-0x9ff58f4ffb29fa2266ab25e75e2a8b3503311656", BigInt.fromString("9598218987610825"))
 	.set("epoch-17-Borrow-0x9ff58f4ffb29fa2266ab25e75e2a8b3503311656", BigInt.fromString("586966197574359"))
 	.set("epoch-17-Supply-0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2", BigInt.fromString("44652777777777777"))
-	.set("epoch-17-Borrow-0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2", BigInt.fromString("0"));
+	.set("epoch-17-Borrow-0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2", BigInt.fromString("0"))
+	.set("epoch-18-Supply-0x028171bca77440897b824ca71d1c56cac55b68a3", BigInt.fromString("712696155986881"))
+	.set("epoch-18-Borrow-0x028171bca77440897b824ca71d1c56cac55b68a3", BigInt.fromString("774572362531637"))
+	.set("epoch-18-Supply-0x030ba81f1c18d280636f32af80b9aad02cf0854e", BigInt.fromString("10292245370370370"))
+	.set("epoch-18-Borrow-0x030ba81f1c18d280636f32af80b9aad02cf0854e", BigInt.fromString("10292245370370370"))
+	.set("epoch-18-Supply-0xbcca60bb61934080951369a648fb03df4f96263c", BigInt.fromString("3443521545114421"))
+	.set("epoch-18-Borrow-0xbcca60bb61934080951369a648fb03df4f96263c", BigInt.fromString("2187265491922615"))
+	.set("epoch-18-Supply-0x3ed3b47dd13ec9a98b44e6204a523e766b225811", BigInt.fromString("1826830681186944"))
+	.set("epoch-18-Borrow-0x3ed3b47dd13ec9a98b44e6204a523e766b225811", BigInt.fromString("922011911405647"))
+	.set("epoch-18-Supply-0x9ff58f4ffb29fa2266ab25e75e2a8b3503311656", BigInt.fromString("4803386058156783"))
+	.set("epoch-18-Borrow-0x9ff58f4ffb29fa2266ab25e75e2a8b3503311656", BigInt.fromString("289206534435809"))
+	.set("epoch-18-Supply-0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2", BigInt.fromString("22326388888888888"))
+	.set("epoch-18-Borrow-0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2", BigInt.fromString("0"));
   

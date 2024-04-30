@@ -1,0 +1,107 @@
+{
+  "epochId": "age12",
+  "totalEmission": "455000.0",
+  "parameters": {
+    "totalEmission": "455000",
+    "marketsRepartition": [
+      {
+        "symbol": "aDAI",
+        "market": "0x028171bCA77440897B824Ca71D1c56caC55b68A3",
+        "weight": 257
+      },
+      {
+        "symbol": "aWETH",
+        "market": "0x030bA81f1c18d280636F32af80b9AAd02Cf0854e",
+        "weight": 3557,
+        "sideDistribution": {
+          "type": "static",
+          "params": {
+            "supplySide": 5000,
+            "borrowSide": 5000
+          }
+        }
+      },
+      {
+        "symbol": "aUSDC",
+        "market": "0xBcca60bB61934080951369a648Fb03DF4F96263C",
+        "weight": 973
+      },
+      {
+        "symbol": "aUSDT",
+        "market": "0x3Ed3B47Dd13EC9a98b44e6204A523E766B225811",
+        "weight": 475
+      },
+      {
+        "symbol": "aWBTC",
+        "market": "0x9ff58f4fFB29fA2266Ab25e75e2A8b3503311656",
+        "weight": 880
+      },
+      {
+        "symbol": "aWETHV3",
+        "market": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+        "weight": 3858,
+        "sideDistribution": {
+          "type": "static",
+          "params": {
+            "supplySide": "10000",
+            "borrowSide": "0"
+          }
+        }
+      }
+    ],
+    "snapshotBlock": 19768570,
+    "initialTimestamp": 1714489079,
+    "finalTimestamp": 1722351479,
+    "duration": 7862400
+  },
+  "markets": {
+    "0x028171bca77440897b824ca71d1c56cac55b68a3": {
+      "morphoEmittedSupplySide": "5603.502256831255717166",
+      "morphoRatePerSecondSupplySide": "0.000712696155986881",
+      "morphoRatePerSecondBorrowSide": "0.000774572362531637",
+      "morphoEmittedBorrowSide": "6089.997743168744282833",
+      "totalMarketSizeSupplySide": "19076084.177629117482225123",
+      "totalMarketSizeBorrowSide": "20732267.83278812702165128"
+    },
+    "0x030ba81f1c18d280636f32af80b9aad02cf0854e": {
+      "morphoEmittedSupplySide": "80921.75",
+      "morphoRatePerSecondSupplySide": "0.01029224537037037",
+      "morphoRatePerSecondBorrowSide": "0.01029224537037037",
+      "morphoEmittedBorrowSide": "80921.75",
+      "totalMarketSizeSupplySide": "81607.578757983747712242",
+      "totalMarketSizeBorrowSide": "35281.184871415476964396"
+    },
+    "0xbcca60bb61934080951369a648fb03df4f96263c": {
+      "morphoEmittedSupplySide": "27074.343796307624539974",
+      "morphoRatePerSecondSupplySide": "0.003443521545114421",
+      "morphoRatePerSecondBorrowSide": "0.002187265491922615",
+      "morphoEmittedBorrowSide": "17197.156203692375460025",
+      "totalMarketSizeSupplySide": "44216134.902013",
+      "totalMarketSizeBorrowSide": "28085326.254044"
+    },
+    "0x3ed3b47dd13ec9a98b44e6204a523e766b225811": {
+      "morphoEmittedSupplySide": "14363.273547764234860853",
+      "morphoRatePerSecondSupplySide": "0.001826830681186944",
+      "morphoRatePerSecondBorrowSide": "0.000922011911405647",
+      "morphoEmittedBorrowSide": "7249.226452235765139146",
+      "totalMarketSizeSupplySide": "15082199.959126",
+      "totalMarketSizeBorrowSide": "7612072.731054"
+    },
+    "0x9ff58f4ffb29fa2266ab25e75e2a8b3503311656": {
+      "morphoEmittedSupplySide": "37766.142543651894982224",
+      "morphoRatePerSecondSupplySide": "0.004803386058156783",
+      "morphoRatePerSecondBorrowSide": "0.000289206534435809",
+      "morphoEmittedBorrowSide": "2273.857456348105017775",
+      "totalMarketSizeSupplySide": "1343.02795201",
+      "totalMarketSizeBorrowSide": "80.86221989"
+    },
+    "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2": {
+      "morphoEmittedSupplySide": "175539.0",
+      "morphoRatePerSecondSupplySide": "0.022326388888888888",
+      "morphoRatePerSecondBorrowSide": "0.0",
+      "morphoEmittedBorrowSide": "0.0",
+      "totalMarketSizeSupplySide": "87260.160839678534490208",
+      "totalMarketSizeBorrowSide": "129836.842251287906968968"
+    }
+  }
+}
