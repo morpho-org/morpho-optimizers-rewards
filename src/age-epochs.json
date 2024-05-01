@@ -558,12 +558,69 @@
   {
     "id": "age11",
     "initialTimestamp": "2024-03-10T14:57:59.000Z",
-    "finalTimestamp": "2024-05-10T14:57:59.000Z",
+    "finalTimestamp": "2024-04-30T14:57:59.000Z",
     "distributionScript": "simpleVoteDistribution",
     "discussion": "https://forum.morpho.org/t/mip-morpho-rewards-on-optimizers-post-morpho-blue-launch/416",
-    "notes": "At the moment, we do not know the exact date of the end of the age 11. We know the daily rate (10k MORPHO/day), and we'll consider an epoch of 61 days for now, and adjust the end date and total distribution when reached.",
+    "notes": "The age11 has a rate of 10k MORPHO/day for 51 days. The total distribution is 510k MORPHO.",
     "distributionParameters": {
-      "totalEmission": "610000",
+      "totalEmission": "510000",
+      "marketsRepartition": [
+        {
+          "symbol": "aDAI",
+          "market": "0x028171bCA77440897B824Ca71D1c56caC55b68A3",
+          "weight": 257
+        },
+        {
+          "symbol": "aWETH",
+          "market": "0x030bA81f1c18d280636F32af80b9AAd02Cf0854e",
+          "weight": 3557,
+          "sideDistribution": {
+            "type": "static",
+            "params": {
+              "supplySide": 5000,
+              "borrowSide": 5000
+            }
+          }
+        },
+        {
+          "symbol": "aUSDC",
+          "market": "0xBcca60bB61934080951369a648Fb03DF4F96263C",
+          "weight": 973
+        },
+        {
+          "symbol": "aUSDT",
+          "market": "0x3Ed3B47Dd13EC9a98b44e6204A523E766B225811",
+          "weight": 475
+        },
+        {
+          "symbol": "aWBTC",
+          "market": "0x9ff58f4fFB29fA2266Ab25e75e2A8b3503311656",
+          "weight": 880
+        },
+        {
+          "symbol": "aWETHV3",
+          "market": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+          "weight": 3858,
+          "sideDistribution": {
+            "type": "static",
+            "params": {
+              "supplySide": "10000",
+              "borrowSide": "0"
+            }
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "age12",
+    "initialTimestamp": "2024-04-30T14:57:59.000Z",
+    "finalTimestamp": "2024-07-30T14:57:59.000Z",
+    "distributionScript": "simpleVoteDistribution",
+    "discussion": "https://forum.morpho.org/t/mip-winding-down-low-usage-assets-on-optimizers/566",
+    "notes": "At the moment, we do not know the exact date of the end of the age 12. We know the daily rate (5k MORPHO/day), and we'll consider an epoch of 91 days for now, and adjust the end date and total distribution when reached.",
+    "distributionParameters": {
+      "totalEmission": "455000",
       "marketsRepartition": [
         {
           "symbol": "aDAI",
