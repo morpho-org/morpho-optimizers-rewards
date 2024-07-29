@@ -1,5 +1,7 @@
 # **Morpho Rewards emission**
 
+> Rewards on Morpho Optimizers are [now finished](https://forum.morpho.org/t/mip71-winding-down-optimizers-phase-2/643), and the distribution mechanism defined into this repository is no longer used. You should go on [Morpho Blue](https://app.morpho.org) to continue to accrue MORPHO rewards
+
 To understand the $MORPHO rewards mechanisms, you can take a look at the [documentation](https://docs.morpho.xyz/usdmorpho/ages-and-epochs).
 
 ## **Prerequisites**
