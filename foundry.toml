@@ -2,3 +2,4 @@
 test = 'test-forge'
 fs_permissions = [{access = "read", path= "./"}]
 match_contract = 'CheckerTest'
+gas_limit = "18446744073709551615" # 2^64 - 1, to remove the gas limit
