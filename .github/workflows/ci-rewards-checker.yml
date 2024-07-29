@@ -9,6 +9,7 @@ on:
       - "distribution/**"
       - "test-forge/**"
       - ".github/workflows/ci-rewards-checker.yml"
+      - "foundry.toml"
 
 concurrency:
   group: ci-rewards-checker-${{ github.ref }}
