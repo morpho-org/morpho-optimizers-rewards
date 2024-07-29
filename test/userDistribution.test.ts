@@ -40,7 +40,7 @@ describe("User distribution", () => {
 
       beforeAll(async () => {
         epoch = await epochUtils.getEpoch(epochId);
-        usersBalances = await fetchUsers(SUBGRAPH_URL, epoch.finalBlock);
+        usersBalances = await fetchUsers(SUBGRAPH_URL(), epoch.finalBlock);
         usersAccumulatedRewards[epochId] = await Promise.all(
           usersBalances.map(async ({ address, balances }) => {
             const rewards = await userBalancesToUnclaimedTokens(

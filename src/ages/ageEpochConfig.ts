@@ -1,9 +1,11 @@
 import { BigNumber } from "ethers";
 import { parseUnits } from "ethers/lib/utils";
-import { DistributionFn } from "./distributionScripts/common";
+
 import ageEpochConfig from "../age-epochs.json";
 import { now, parseDate } from "../helpers";
 import { blockFromTimestampWithRetry } from "../utils/etherscan/blockFromTimestamp";
+
+import { DistributionFn } from "./distributionScripts/common";
 
 export interface AgeEpochConfig {
   id: string;
