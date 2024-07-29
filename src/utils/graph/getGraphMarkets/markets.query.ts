@@ -1,4 +1,7 @@
-export const subgraphUrl = "https://api.thegraph.com/subgraphs/name/morpho-labs/morphocompoundmainnet";
+// Private fork of https://thegraph.com/hosted-service/subgraph/morpho-labs/morphocompoundmainnet
+export const subgraphUrl =
+  process.env.EPOCH_ONE_SUBGRAPH ??
+  `https://subgraph.satsuma-prod.com/${process.env.SATSUMA_API_KEY}/f0ca4a9fe1e73cae190fd171401794af36c918f81fcc8040ef85efb9628aa865/morphocompoundmainnet/api`;
 
 export const query = `query MarketsConfiguration($blockTag: Int!){
 markets(first: 128 block: {number: $blockTag}) {
