@@ -42,7 +42,3 @@ jobs:
 
       - name: Compile subgraph
         run: yarn build
-
-      - name: Deploy on push on main branch
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-        run: yarn graph auth --product hosted-service ${{ secrets.GRAPH_DEPLOYMENT_KEY }} && yarn deploy:prod

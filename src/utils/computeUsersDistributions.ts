@@ -1,10 +1,13 @@
 import { BigNumber, ethers, providers } from "ethers";
-import { computeMerkleTree, fetchUsers, getAccumulatedEmission, userBalancesToUnclaimedTokens, sumRewards } from ".";
+import { MulticallWrapper } from "ethers-multicall-provider";
 import { commify, formatUnits, parseUnits } from "ethers/lib/utils";
+
 import { epochUtils } from "../ages";
-import { SUBGRAPH_URL } from "../config";
-import { StorageService } from "./StorageService";
 import { allEpochs } from "../ages/ageEpochConfig";
+import { SUBGRAPH_URL } from "../config";
+
+import { computeMerkleTree, fetchUsers, getAccumulatedEmission, userBalancesToUnclaimedTokens, sumRewards } from ".";
+import { StorageService } from "./StorageService";
 
 export enum DataProvider {
   Subgraph = "subgraph",
@@ -19,7 +22,7 @@ export const computeUsersDistributionsForEpoch = async (
 ) => {
   console.log(`Compute users distribution for ${epoch.id}`);
   if (!epoch.finalBlock) throw new Error(`Final block not found for ${epoch.id}`);
-  const usersBalances = await fetchUsers(SUBGRAPH_URL, epoch.finalBlock);
+  const usersBalances = await fetchUsers(SUBGRAPH_URL(), epoch.finalBlock);
   const marketsRewards: Record<
     string,
     {
@@ -84,7 +87,7 @@ export const computeUsersDistributions = async (
   if (dataProvider === DataProvider.RPC) throw new Error("RPC not supported yet");
   if (epochId && !epochUtils.epochNames.includes(epochId)) throw new Error("Invalid epoch id");
 
-  const provider = new ethers.providers.JsonRpcProvider(process.env.RPC_URL);
+  const provider = MulticallWrapper.wrap(new ethers.providers.JsonRpcProvider(process.env.RPC_URL));
 
   const epochs = epochId ? [await epochUtils.getEpoch(epochId)] : await epochUtils.finishedEpochs();
   if (!epochId) console.log(`${epochs.length} epochs to compute, to epoch ${epochs[epochs.length - 1].id}`);

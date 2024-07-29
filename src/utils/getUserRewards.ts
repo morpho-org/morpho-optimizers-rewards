@@ -1,20 +1,23 @@
 import { BigNumber, BigNumberish, constants, providers } from "ethers";
-import { maxBN, minBN, now, WAD } from "../helpers";
-import { UserBalance } from "./graph";
-import { Market } from "./graph/getGraphMarkets/markets.types";
+import { getAddress, parseUnits } from "ethers/lib/utils";
+import { cloneDeep } from "lodash";
+
+import { Provider } from "@ethersproject/providers";
+import { PercentMath, WadRayMath } from "@morpho-labs/ethers-utils/lib/maths";
 import { RewardsDistributor__factory } from "@morpho-labs/morpho-ethers-contract";
 import addresses from "@morpho-labs/morpho-ethers-contract/lib/addresses";
+
+import { epochUtils } from "../ages";
+import { SUBGRAPH_URL } from "../config";
+import { MARKETS_UPGRADE_SNAPSHOTS, VERSION_2_TIMESTAMP } from "../constants/mechanismUpgrade";
+import { maxBN, minBN, now, WAD } from "../helpers";
+
+import { StorageService } from "./StorageService";
 import { getCurrentOnChainDistribution } from "./getCurrentOnChainDistribution";
 import { getEpochMarketsDistribution } from "./getEpochMarketsDistribution";
-import { SUBGRAPH_URL } from "../config";
-import { PercentMath, WadRayMath } from "@morpho-labs/ethers-utils/lib/maths";
-import { Provider } from "@ethersproject/providers";
-import { cloneDeep } from "lodash";
 import { getUserBalances } from "./getUserBalances";
-import { MARKETS_UPGRADE_SNAPSHOTS, VERSION_2_TIMESTAMP } from "../constants/mechanismUpgrade";
-import { StorageService } from "./StorageService";
-import { getAddress, parseUnits } from "ethers/lib/utils";
-import { epochUtils } from "../ages";
+import { UserBalance } from "./graph";
+import { Market } from "./graph/getGraphMarkets/markets.types";
 
 export const getUserRewards = async (
   address: string,
@@ -27,7 +30,7 @@ export const getUserRewards = async (
     const block = await provider.getBlock(blockNumber);
     timestampEnd = block.timestamp;
   }
-  const userBalances = await getUserBalances(SUBGRAPH_URL, address.toLowerCase(), blockNumber).then(
+  const userBalances = await getUserBalances(SUBGRAPH_URL(), address.toLowerCase(), blockNumber).then(
     (u) => u?.balances ?? []
   );
   const currentEpoch = await epochUtils.timestampToEpoch(timestampEnd);

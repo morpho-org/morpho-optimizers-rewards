@@ -1,7 +1,8 @@
-import balancesQuery from "./balances.query";
-import { formatGraphBalances } from "./graphBalances.formatter";
 import { providers } from "ethers";
+
+import balancesQuery from "./balances.query";
 import { GraphUserBalances, UserBalances } from "./balances.types";
+import { formatGraphBalances } from "./graphBalances.formatter";
 
 export const fetchUsers = async (graphUrl: string, block?: providers.BlockTag) => {
   let hasMore = true;
