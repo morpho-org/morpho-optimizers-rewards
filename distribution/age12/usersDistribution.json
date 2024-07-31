@@ -1,7 +1,7 @@
 {
   "epochId": "age12",
   "totalEmissionInitial": "33167648.483796296242592592",
-  "totalDistributed": "33167640.067634375774413163",
+  "totalDistributed": "33167640.067634375760329128",
   "distribution": [
     {
       "address": "0x000000005ebfb5a950f8fdf3248e99614a7ff220",
@@ -37,7 +37,7 @@
     },
     {
       "address": "0x00cb626f660f9ea1ec49d72c00b1d05f0cbac943",
-      "accumulatedRewards": "230482807399898194"
+      "accumulatedRewards": "230482807399898191"
     },
     {
       "address": "0x00e043300ebebd0f68e1373cc2167eebdb21516c",
@@ -73,7 +73,7 @@
     },
     {
       "address": "0x01327ca699949ca90b9dc330ea53ce299bf71795",
-      "accumulatedRewards": "90146223503622971"
+      "accumulatedRewards": "90146223503622970"
     },
     {
       "address": "0x013f42b94b828da22020f9e3208922acb4bd24b3",
@@ -97,11 +97,11 @@
     },
     {
       "address": "0x019ed608dd806b80193942f2a960e7ac8abb2ee3",
-      "accumulatedRewards": "39405727922730204"
+      "accumulatedRewards": "39405727922730203"
     },
     {
       "address": "0x01a1d2750b2c7aad954698c1e9596f5ccabdd265",
-      "accumulatedRewards": "17774069651640861"
+      "accumulatedRewards": "17774069651640860"
     },
     {
       "address": "0x01b002ac8c15de40eaee07fcbaa585400f7916fd",
@@ -137,11 +137,11 @@
     },
     {
       "address": "0x0250764421db92217ed476b1066d6e4b42325f8e",
-      "accumulatedRewards": "9342653011688570"
+      "accumulatedRewards": "9342653011688569"
     },
     {
       "address": "0x0274a704a6d9129f90a62ddc6f6024b33ecdad36",
-      "accumulatedRewards": "107514959710925885130330"
+      "accumulatedRewards": "107514959710925883946240"
     },
     {
       "address": "0x028abc03ce5f8ed61174512f8635929cc5bb7116",
@@ -153,7 +153,7 @@
     },
     {
       "address": "0x02c09575e587e2a53d302beae55d4e9c32806a92",
-      "accumulatedRewards": "20942830146912631265"
+      "accumulatedRewards": "20942830146912631028"
     },
     {
       "address": "0x02d75e7347d9f03dd96725531735a7c4105c7510",
@@ -229,11 +229,11 @@
     },
     {
       "address": "0x03d508858ce9af5d2911a9aeae12f0a254c23d9a",
-      "accumulatedRewards": "7192239091345740342131"
+      "accumulatedRewards": "7192239091345739945846"
     },
     {
       "address": "0x03dfb2340c59972065112ba39e296083257c5f6d",
-      "accumulatedRewards": "89493301619651286"
+      "accumulatedRewards": "89493301619651283"
     },
     {
       "address": "0x03f2d5745c461f72c2d3add110f0077886ef6da9",
@@ -249,11 +249,11 @@
     },
     {
       "address": "0x042b8c325dbbc25903f0a488038aebf280ffff6a",
-      "accumulatedRewards": "15012858972768791490284"
+      "accumulatedRewards": "15012858972768791490282"
     },
     {
       "address": "0x044a9c43e95aa9fd28eea25131a62b602d304f1f",
-      "accumulatedRewards": "10371893312799815301232"
+      "accumulatedRewards": "10371893312799815151446"
     },
     {
       "address": "0x046f601cbcbfa162228897ac75c9b61daf5cee5f",
@@ -313,7 +313,7 @@
     },
     {
       "address": "0x051d091b254ecdbbb4eb8e6311b7939829380b27",
-      "accumulatedRewards": "6255085206594001736916"
+      "accumulatedRewards": "6255085206594001021581"
     },
     {
       "address": "0x05251cd54b39eaa226739740a0c1de78381649c6",
@@ -377,7 +377,7 @@
     },
     {
       "address": "0x059f9b3eaeb183feb097a71a861b35ae6f22afde",
-      "accumulatedRewards": "1402232643822727423"
+      "accumulatedRewards": "1402232643822727399"
     },
     {
       "address": "0x05bb86aed46ba3f09bc3d0e8081b76e0cad1d2ee",
@@ -497,11 +497,11 @@
     },
     {
       "address": "0x074bbfa6932cdc3db0e4fcadc64f0d600ec9458f",
-      "accumulatedRewards": "45639638724094901"
+      "accumulatedRewards": "45639638724094900"
     },
     {
       "address": "0x074d3bcbc8387acedb4df66fbc0222d9dbea5c7b",
-      "accumulatedRewards": "114852695815637243"
+      "accumulatedRewards": "114852695815637242"
     },
     {
       "address": "0x074e2896bb22d506b1d3cf1ac3c138e058842c24",
@@ -537,7 +537,7 @@
     },
     {
       "address": "0x0818da8220cc6c2d020fa3d65d47e8bb4e2b8bd2",
-      "accumulatedRewards": "724259680977872723"
+      "accumulatedRewards": "724259680977872715"
     },
     {
       "address": "0x083ff38e1afc9094df389ab2faa5bc3773f21a76",
@@ -581,7 +581,7 @@
     },
     {
       "address": "0x090030cc85178dec10dd4acf11bd9981710a9191",
-      "accumulatedRewards": "540481928064664711"
+      "accumulatedRewards": "540481928064664704"
     },
     {
       "address": "0x0900f8b9dcc231606fb46638f4f0c52ecda2fd34",
@@ -601,7 +601,7 @@
     },
     {
       "address": "0x0944ef931ad2bfc2500463812d3e40ce5a770f66",
-      "accumulatedRewards": "96173285259190308"
+      "accumulatedRewards": "96173285259190288"
     },
     {
       "address": "0x094a3e9d8fb629af390c40c26d6b34650f2d1063",
@@ -613,11 +613,11 @@
     },
     {
       "address": "0x096913c0c00a9f94c85439458f0d85eabbfc4046",
-      "accumulatedRewards": "203346489501681762575"
+      "accumulatedRewards": "203346489501681762574"
     },
     {
       "address": "0x097116627fe9d707b1c571a7a1313ceaa99f11a4",
-      "accumulatedRewards": "89787157192239763"
+      "accumulatedRewards": "89787157192239761"
     },
     {
       "address": "0x097fa8abe56d69f95a8fa9e2c6629275a4767dcc",
@@ -625,7 +625,7 @@
     },
     {
       "address": "0x09b1806ebc05f6945f46f64161f520b4d49ca3d3",
-      "accumulatedRewards": "812831212355445041"
+      "accumulatedRewards": "812831212355444819"
     },
     {
       "address": "0x09d06dcef22051477cde12cfbfc674f60a53c66c",
@@ -657,7 +657,7 @@
     },
     {
       "address": "0x0a1196eb808dd2731431e314752b1ae8ae79e111",
-      "accumulatedRewards": "89794649546397155"
+      "accumulatedRewards": "89794649546397152"
     },
     {
       "address": "0x0a251df99a88a20a93876205fb7f5faf2e85a481",
@@ -665,7 +665,7 @@
     },
     {
       "address": "0x0a268ffb1ff561e79ad0915ede2e5ab303bbb37d",
-      "accumulatedRewards": "47975303693239764"
+      "accumulatedRewards": "47975303693239763"
     },
     {
       "address": "0x0a47fb0f408f4b29a4deac645e0338430ae395d8",
@@ -681,7 +681,7 @@
     },
     {
       "address": "0x0a74089362c233f9c1b300c26790e18f06574d9d",
-      "accumulatedRewards": "91942052737811423"
+      "accumulatedRewards": "91942052737811422"
     },
     {
       "address": "0x0a9ebc715565a278e18a2b2ed379ec507b422e0d",
@@ -741,7 +741,7 @@
     },
     {
       "address": "0x0b73eb1f053d53c321d1f6b7acbb40784c7fdfc8",
-      "accumulatedRewards": "479006685026963048569"
+      "accumulatedRewards": "479006685026963048562"
     },
     {
       "address": "0x0b8a1baf04f0e554a0f05b8f9f5368c3fdb0765a",
@@ -789,7 +789,7 @@
     },
     {
       "address": "0x0c6e9493c3c798a7288c535a0a0f66a2c30b8758",
-      "accumulatedRewards": "18089614704074646556"
+      "accumulatedRewards": "18089614704074643612"
     },
     {
       "address": "0x0c74e0e80b442cf74b1c515b642908b82a8878e7",
@@ -813,7 +813,7 @@
     },
     {
       "address": "0x0cb584c5cda6c048a4eb76bd114d6b8a128b0dde",
-      "accumulatedRewards": "124520100253108230"
+      "accumulatedRewards": "124520100253108229"
     },
     {
       "address": "0x0cd420966fce68bad79cd82c9a360636cf898c1e",
@@ -869,7 +869,7 @@
     },
     {
       "address": "0x0db0f4506f5de744052d90f04e3fca3d1dd3600d",
-      "accumulatedRewards": "15440999894645142712"
+      "accumulatedRewards": "15440999894645142700"
     },
     {
       "address": "0x0db50dbb54a0eb2eb527958092f12a2c469c2f8c",
@@ -889,7 +889,7 @@
     },
     {
       "address": "0x0df5283ba7e4ef17530bc4bd801d0aa7e97c8e9f",
-      "accumulatedRewards": "111571213089525920"
+      "accumulatedRewards": "111571213089525917"
     },
     {
       "address": "0x0df8c1cd57c2044c7eabc18254e42fb64a9c1994",
@@ -901,7 +901,7 @@
     },
     {
       "address": "0x0e119685190ca54b5bbf5e3504f447c5e40d2410",
-      "accumulatedRewards": "5314624777187565791347"
+      "accumulatedRewards": "5314624777187565753632"
     },
     {
       "address": "0x0e1ad0fefd3a7603e39db2a02e4e55bd54ec1c8b",
@@ -1001,7 +1001,7 @@
     },
     {
       "address": "0x0f8361ef329b43fa48ac66a7cd8f619c517274f1",
-      "accumulatedRewards": "18019268917186709"
+      "accumulatedRewards": "18019268917186708"
     },
     {
       "address": "0x0f9d8e81ad2716851f3b83b6768f917edc10c423",
@@ -1045,7 +1045,7 @@
     },
     {
       "address": "0x10b4123c9c5068506a0acd9c85a1cc72b4d575f0",
-      "accumulatedRewards": "88279634668753214"
+      "accumulatedRewards": "88279634668753212"
     },
     {
       "address": "0x10bf1dcb5ab7860bab1c3320163c6dddf8dcc0e4",
@@ -1137,7 +1137,7 @@
     },
     {
       "address": "0x12135a10b522fb2291fb00b7146c6fa8abbaadb4",
-      "accumulatedRewards": "167391028231959299"
+      "accumulatedRewards": "167391028231959296"
     },
     {
       "address": "0x121dd42384db6ad04851f7ac1e81bcd8bbb1876e",
@@ -1145,7 +1145,7 @@
     },
     {
       "address": "0x121e1573b7c6c15aa4c036d54bfd2974cf38a163",
-      "accumulatedRewards": "18100230688071361"
+      "accumulatedRewards": "18100230688071360"
     },
     {
       "address": "0x1220c5b1df7aad8066200fb83fd135d654b027ba",
@@ -1181,11 +1181,11 @@
     },
     {
       "address": "0x12651f27224dcefa41db255a2814959373829fd9",
-      "accumulatedRewards": "18210182020417681"
+      "accumulatedRewards": "18210182020417680"
     },
     {
       "address": "0x127d60193f08626e168099fc2277e31f5a89b1a7",
-      "accumulatedRewards": "44465511937549597"
+      "accumulatedRewards": "44465511937549596"
     },
     {
       "address": "0x127dac86e443763a6240c8f572331629ce6250a8",
@@ -1213,7 +1213,7 @@
     },
     {
       "address": "0x1326cfa027c77d5df1bbc3c2c8e602aca3d157e5",
-      "accumulatedRewards": "241443232400948648"
+      "accumulatedRewards": "241443232400948644"
     },
     {
       "address": "0x134046017c21c6afa2d1f0061e97c8febe668385",
@@ -1237,7 +1237,7 @@
     },
     {
       "address": "0x1384af7bb0279de1cdd1589ed452436fd18fafcc",
-      "accumulatedRewards": "348085586080741064"
+      "accumulatedRewards": "348085586080741063"
     },
     {
       "address": "0x13958f540111caa602d187a5001686ddf2306ff9",
@@ -1265,7 +1265,7 @@
     },
     {
       "address": "0x13d2fc5cdda0e984cbe9c23fa8758ab11a40ac7c",
-      "accumulatedRewards": "54176872410837263"
+      "accumulatedRewards": "54176872410837262"
     },
     {
       "address": "0x13d344afea0bf6cc70e21546ad1c12a6532b6785",
@@ -1273,7 +1273,7 @@
     },
     {
       "address": "0x13d46ef5a38716552d35a0840e7f884cacdccfa6",
-      "accumulatedRewards": "502005545720817354"
+      "accumulatedRewards": "502005545720817353"
     },
     {
       "address": "0x13dda63c28bb95fe9822fea43ad5feaa966636a9",
@@ -1289,7 +1289,7 @@
     },
     {
       "address": "0x13fec67da1cc769fe7293ceeb7a5a483424d0d17",
-      "accumulatedRewards": "36602695553910716"
+      "accumulatedRewards": "36602695553910715"
     },
     {
       "address": "0x142427f2ab757bcc0a4518cc6986af46cb63ab03",
@@ -1305,7 +1305,7 @@
     },
     {
       "address": "0x144d2c1aacc7c929d424a1c8eecca8326930bbf9",
-      "accumulatedRewards": "51737430860522824"
+      "accumulatedRewards": "51737430860522823"
     },
     {
       "address": "0x144e16c0414ed5cd35fb984a20f51015c82ec35c",
@@ -1325,7 +1325,7 @@
     },
     {
       "address": "0x14869c6bf40bbc73e45821f7c28fd792151b3f9a",
-      "accumulatedRewards": "779069928699114763"
+      "accumulatedRewards": "779069928699114739"
     },
     {
       "address": "0x149f2a7b16a1c9060280953a847f7e68d70b82b3",
@@ -1353,11 +1353,11 @@
     },
     {
       "address": "0x14d15f15f1151d82e0aa5f2443b7da68f981424c",
-      "accumulatedRewards": "1720104640916013848"
+      "accumulatedRewards": "1720104640916013845"
     },
     {
       "address": "0x14d607c20ff934b0d895577c6e80ab0cd6a8b322",
-      "accumulatedRewards": "90430808591901254"
+      "accumulatedRewards": "90430808591901253"
     },
     {
       "address": "0x14ef23fded5c5edfd3d93acbd5c960821d68706f",
@@ -1413,7 +1413,7 @@
     },
     {
       "address": "0x15dceee7fa0d406419dc68355bad76c22fe8751c",
-      "accumulatedRewards": "80967622569831681"
+      "accumulatedRewards": "80967622569831679"
     },
     {
       "address": "0x15e696e03cf87f23a2b864948eab5595797aca6a",
@@ -1429,7 +1429,7 @@
     },
     {
       "address": "0x15f8685e89e3f35bfd609072c0e1ee21ceaf0e96",
-      "accumulatedRewards": "196227866667629088903"
+      "accumulatedRewards": "196227866667629087151"
     },
     {
       "address": "0x15fab1cc5262d69853b1196f74d38c7fc96fc6d7",
@@ -1445,11 +1445,11 @@
     },
     {
       "address": "0x1647229f5dcac534efdc5e4c905d075f04065af2",
-      "accumulatedRewards": "113002560674756963286"
+      "accumulatedRewards": "113002560674756963219"
     },
     {
       "address": "0x164795d7b54c41ca1ba62a4e074095507390230b",
-      "accumulatedRewards": "30184181290641984024"
+      "accumulatedRewards": "30184181290641984013"
     },
     {
       "address": "0x16506e088a8efb19b99c1e6f818627f03c8435a6",
@@ -1461,7 +1461,7 @@
     },
     {
       "address": "0x166603c90030f0838f682496ced62793d9437521",
-      "accumulatedRewards": "160058474844348799"
+      "accumulatedRewards": "160058474844348797"
     },
     {
       "address": "0x166ed9f7a56053c7c4e77cb0c91a9e46bbc5e8b0",
@@ -1481,15 +1481,15 @@
     },
     {
       "address": "0x168fef2fd1af371625b2593468620185cea904ff",
-      "accumulatedRewards": "267755137487428648"
+      "accumulatedRewards": "267755137487428645"
     },
     {
       "address": "0x16912cc61c1ba4c7636437a569be8c49d43f8108",
-      "accumulatedRewards": "135024070869250806"
+      "accumulatedRewards": "135024070869250766"
     },
     {
       "address": "0x1695a8ba3f3313f9a9ed075df09c9fcc60840ba1",
-      "accumulatedRewards": "10336503566573705504742"
+      "accumulatedRewards": "10336503566573705492081"
     },
     {
       "address": "0x169cb3f7d1085d8ff5826209831d9edd5173a2ce",
@@ -1497,7 +1497,7 @@
     },
     {
       "address": "0x16a10d3d31b6201f766e393382885e184b36b354",
-      "accumulatedRewards": "1350584243593552896"
+      "accumulatedRewards": "1350584243593552878"
     },
     {
       "address": "0x16a703bee04c1ebbeee0fea4ac7d98be7319c699",
@@ -1537,7 +1537,7 @@
     },
     {
       "address": "0x1718cbbb004d7efcb7855b0da7bb9e3d4c999566",
-      "accumulatedRewards": "179524799455910580"
+      "accumulatedRewards": "179524799455910578"
     },
     {
       "address": "0x171c53d55b1bcb725f660677d9e8bad7fd084282",
@@ -1561,11 +1561,11 @@
     },
     {
       "address": "0x1737a9d297e00c04184f14c78f312c28d03d4686",
-      "accumulatedRewards": "457288772894912859"
+      "accumulatedRewards": "457288772894912853"
     },
     {
       "address": "0x174035104c93433be2975987dcf3681673440709",
-      "accumulatedRewards": "18000378664758489"
+      "accumulatedRewards": "18000378664758488"
     },
     {
       "address": "0x1744e5d9692d86d29b54d7ac435b665c036739a6",
@@ -1593,11 +1593,11 @@
     },
     {
       "address": "0x1778767436111ec0adb10f9ba4f51a329d0e7770",
-      "accumulatedRewards": "461625484950654984835582"
+      "accumulatedRewards": "461625484950654984835461"
     },
     {
       "address": "0x1778cb9fd8d489c740568a9bf16004d948d9b6bf",
-      "accumulatedRewards": "89726987338188688"
+      "accumulatedRewards": "89726987338188687"
     },
     {
       "address": "0x1795c5d51eadd1d85482467d25da72223c0d8413",
@@ -1665,7 +1665,7 @@
     },
     {
       "address": "0x18472dc4fffd19064f1a0650bfe2c8c04c40f5dd",
-      "accumulatedRewards": "35584247953567665"
+      "accumulatedRewards": "35584247953567664"
     },
     {
       "address": "0x1850ab1344493b8f66a0780c6806fe57ae7a13b4",
@@ -1757,7 +1757,7 @@
     },
     {
       "address": "0x19e284ff4701c93f0cc20b4b42d99d977b76f612",
-      "accumulatedRewards": "74502100713298004028"
+      "accumulatedRewards": "74502100713298003836"
     },
     {
       "address": "0x19fc6e835d5a96a786a44f69a06bc2757f7e9521",
@@ -1805,7 +1805,7 @@
     },
     {
       "address": "0x1a85b1c85f48ec10fde98cf3a50ee199d584ae3c",
-      "accumulatedRewards": "582097817368934297568"
+      "accumulatedRewards": "582097817368934297564"
     },
     {
       "address": "0x1a929b5d550c45ca8a0cfdb82f7c9c15fc278f31",
@@ -1881,7 +1881,7 @@
     },
     {
       "address": "0x1b72bac3772050fdcaf468cce7e20deb3cb02d89",
-      "accumulatedRewards": "8053291661963287498869"
+      "accumulatedRewards": "8053291661963287493990"
     },
     {
       "address": "0x1b8134e1864f34933d2fac905cb4c637082282c4",
@@ -1905,7 +1905,7 @@
     },
     {
       "address": "0x1bef2b8bf25c6ea2cb0d1d7f4050794b29fc42c7",
-      "accumulatedRewards": "176036121077842004"
+      "accumulatedRewards": "176036121077842001"
     },
     {
       "address": "0x1bf0b805683fdb363c25064afd9a444d438fe712",
@@ -1945,7 +1945,7 @@
     },
     {
       "address": "0x1c895edcf51015d8f3487909364c369be11c2a00",
-      "accumulatedRewards": "24919204367723786176"
+      "accumulatedRewards": "24919204367723779374"
     },
     {
       "address": "0x1c8e50709b5fdb66759c3ccb62f9484e2bde4726",
@@ -2001,7 +2001,7 @@
     },
     {
       "address": "0x1d73659a4fd7a4919061ec739d170703818ae724",
-      "accumulatedRewards": "90341618327204891"
+      "accumulatedRewards": "90341618327204890"
     },
     {
       "address": "0x1d73b73ce8076be2a457b04714faa97cfec80dff",
@@ -2009,7 +2009,7 @@
     },
     {
       "address": "0x1d7ad01ba1b4e1daa20bd4c0de4d495cceeb2442",
-      "accumulatedRewards": "137902865781440729"
+      "accumulatedRewards": "137902865781440727"
     },
     {
       "address": "0x1d844be30b5ef11746aaf35b453d141f2929dddd",
@@ -2029,7 +2029,7 @@
     },
     {
       "address": "0x1da9092f0af2b03eded85b7b22335399bf68f7b2",
-      "accumulatedRewards": "508195108036787435"
+      "accumulatedRewards": "508195108036787239"
     },
     {
       "address": "0x1dab8da475acce5ef82dc6a0ab21cf758f18a8b8",
@@ -2049,7 +2049,7 @@
     },
     {
       "address": "0x1dd2fb57f79593854685668d9e6cd6ef36fbeebd",
-      "accumulatedRewards": "546870472782755907908"
+      "accumulatedRewards": "546870472782755870946"
     },
     {
       "address": "0x1dd36c3e5eada829038c2ecb998697b481d8c6bd",
@@ -2077,7 +2077,7 @@
     },
     {
       "address": "0x1e25c2827c34616e20aaf67e71a0b47bdbcaffa9",
-      "accumulatedRewards": "147561510291462221854"
+      "accumulatedRewards": "147561510291462213416"
     },
     {
       "address": "0x1e572678738674481de656233e8456bbc4b3b0ab",
@@ -2121,7 +2121,7 @@
     },
     {
       "address": "0x1eac8207835d95c92ec3453f960ccd9ca5aa480f",
-      "accumulatedRewards": "87121360747628089"
+      "accumulatedRewards": "87121360747628088"
     },
     {
       "address": "0x1ead00a1dd980fa24810871d6064430c95537951",
@@ -2153,7 +2153,7 @@
     },
     {
       "address": "0x1f42e205f65efb0e7473d49ecac02e7fe4b4400c",
-      "accumulatedRewards": "614230043443184809486"
+      "accumulatedRewards": "614230043443184796116"
     },
     {
       "address": "0x1f4a0096986f5c44a4a2b9a0e21f848962f5b4c5",
@@ -2169,7 +2169,7 @@
     },
     {
       "address": "0x1f79c7a97d1d3befcc104a2d2518793957f63b03",
-      "accumulatedRewards": "15912252498837961"
+      "accumulatedRewards": "15912252498837960"
     },
     {
       "address": "0x1f7b953113f4dfcbf56a1688529cc812865840e1",
@@ -2213,7 +2213,7 @@
     },
     {
       "address": "0x204f22ae5195944d66417a8354a68a1b304412b2",
-      "accumulatedRewards": "77481788766506018"
+      "accumulatedRewards": "77481788766506017"
     },
     {
       "address": "0x2051cf81501afc3620834e8acffe9616334efcf7",
@@ -2301,7 +2301,7 @@
     },
     {
       "address": "0x21d90e6f18f3848d9e45f34bdb4dfdde3fa09d1a",
-      "accumulatedRewards": "43078897710162868"
+      "accumulatedRewards": "43078897710162867"
     },
     {
       "address": "0x21e4df42335c02d37023daf102b28c37189ab990",
@@ -2389,7 +2389,7 @@
     },
     {
       "address": "0x23abad8c65a9a93abcc343892aaf3d6e88b5ccc9",
-      "accumulatedRewards": "16155566685666737711"
+      "accumulatedRewards": "16155566685666737710"
     },
     {
       "address": "0x23b4c21e96bb213c1563f6f189131a570ba94718",
@@ -2449,7 +2449,7 @@
     },
     {
       "address": "0x24749aedf18208ab74a8110e07e820286bb5acf8",
-      "accumulatedRewards": "179453898187352008"
+      "accumulatedRewards": "179453898187352005"
     },
     {
       "address": "0x2481fef92f6358a410f4b42a7672f23cac514c2a",
@@ -2461,7 +2461,7 @@
     },
     {
       "address": "0x24878dc8aedeaf05c7097bbfe65a97c2fc13d15e",
-      "accumulatedRewards": "1232155034515413413"
+      "accumulatedRewards": "1232155034515413411"
     },
     {
       "address": "0x248d03a999679b69ab13d6d771223b3d730d9533",
@@ -2469,7 +2469,7 @@
     },
     {
       "address": "0x24a000804704b9557466382a806b6baa31cf574c",
-      "accumulatedRewards": "69151688364498125"
+      "accumulatedRewards": "69151688364498124"
     },
     {
       "address": "0x24b54e5d73982b579bf6d349a4e425154c799210",
@@ -2485,7 +2485,7 @@
     },
     {
       "address": "0x24ef89092ddcae34199774ac4e3ec6f36d9fbe4c",
-      "accumulatedRewards": "2410706401133719915"
+      "accumulatedRewards": "2410706401133719909"
     },
     {
       "address": "0x24f8d92794a283b454d1fc32722f51a4f3bc1ae5",
@@ -2521,7 +2521,7 @@
     },
     {
       "address": "0x2567d753e50159effccab3da32c960148c93e1a5",
-      "accumulatedRewards": "910695100716006812"
+      "accumulatedRewards": "910695100716006800"
     },
     {
       "address": "0x25a0dc5852b972e2e11752733db3a53e0928623b",
@@ -2529,11 +2529,11 @@
     },
     {
       "address": "0x25b5af8926297591b7ae8bbf88d087efb87fda40",
-      "accumulatedRewards": "81682340469942187"
+      "accumulatedRewards": "81682340469942186"
     },
     {
       "address": "0x25b99f078903f7702d3f44b1f8a4fe88bc5d1036",
-      "accumulatedRewards": "201001474828208269"
+      "accumulatedRewards": "201001474828208266"
     },
     {
       "address": "0x25bec8158b13394095aeb6412a5b06ca416eeb57",
@@ -2569,7 +2569,7 @@
     },
     {
       "address": "0x26199b5dd7637d8ddd76fcfe31ec1eadee25e275",
-      "accumulatedRewards": "79939651932407206"
+      "accumulatedRewards": "79939651932407205"
     },
     {
       "address": "0x262252af4868da6c5a6f6c5f0970f1c628616811",
@@ -2581,15 +2581,15 @@
     },
     {
       "address": "0x263ff94cdc4913cd36efda07f153ce43860873ad",
-      "accumulatedRewards": "96923477520783402502"
+      "accumulatedRewards": "96923477520783393517"
     },
     {
       "address": "0x264c86dbbd2e4165fbbf0c35b0ddf0e00aec6b31",
-      "accumulatedRewards": "1530715985901168492664"
+      "accumulatedRewards": "1530715985901168492616"
     },
     {
       "address": "0x26560857fb240b3941e41e16567bf81c9c2080f8",
-      "accumulatedRewards": "3961535341550889356"
+      "accumulatedRewards": "3961535341550889175"
     },
     {
       "address": "0x26697932fe6dcd2c363e66055b32004a9ea7403b",
@@ -2597,15 +2597,15 @@
     },
     {
       "address": "0x2669a7565899ab4bd7b7642aa2725e751de6035c",
-      "accumulatedRewards": "178399769453136537"
+      "accumulatedRewards": "178399769453136535"
     },
     {
       "address": "0x266f4f2778b36e03b4fdc19aa489301102e4f42f",
-      "accumulatedRewards": "779521602889199943"
+      "accumulatedRewards": "779521602889199925"
     },
     {
       "address": "0x267ed5f71ee47d3e45bb1569aa37889a2d10f91e",
-      "accumulatedRewards": "1644018889771393100765"
+      "accumulatedRewards": "1644018889771393100764"
     },
     {
       "address": "0x26863b84ea90a531d0ec53930d676dfa4e40f642",
@@ -2661,7 +2661,7 @@
     },
     {
       "address": "0x27462505c48409dee1e2c6f4d334d5f7039739f1",
-      "accumulatedRewards": "80352103982243372154"
+      "accumulatedRewards": "80352103982243372148"
     },
     {
       "address": "0x27646b1c8b488c68c67d83ba82351b70a3811718",
@@ -2673,7 +2673,7 @@
     },
     {
       "address": "0x277592f467ef25f314e2cca8c6577241f89b9d97",
-      "accumulatedRewards": "2125304003021923791"
+      "accumulatedRewards": "2125304003021923694"
     },
     {
       "address": "0x2778fdc3dbc3553f1f6f26d8d310f08db49abe4d",
@@ -2689,7 +2689,7 @@
     },
     {
       "address": "0x27a1319ac8435ad34f263f83dee2a14e519432db",
-      "accumulatedRewards": "21258342194882910697"
+      "accumulatedRewards": "21258342194882910641"
     },
     {
       "address": "0x27b0fc6c4a5a0cf213a570097279a5bde61214d2",
@@ -2757,11 +2757,11 @@
     },
     {
       "address": "0x28c380aa56d896a28411e2b3aafea2a76b4cccec",
-      "accumulatedRewards": "23637781459925838395"
+      "accumulatedRewards": "23637781459925838009"
     },
     {
       "address": "0x28c5a565770e2ef239d35e2590706b0a78a2fec3",
-      "accumulatedRewards": "10029691513165517223142"
+      "accumulatedRewards": "10029691513165517129129"
     },
     {
       "address": "0x28d59cdc5cb8bad8f348c05448e2fc090d8d9601",
@@ -2785,7 +2785,7 @@
     },
     {
       "address": "0x290f776d869d58ae11eac143914bb73ba3b7e2c7",
-      "accumulatedRewards": "25273950030568754"
+      "accumulatedRewards": "25273950030568753"
     },
     {
       "address": "0x291708901cc2058c315cfbf8c380bf809da3902a",
@@ -2817,7 +2817,7 @@
     },
     {
       "address": "0x2946b8816326950274b3bf29f9705f4c1393debe",
-      "accumulatedRewards": "872805982061942089"
+      "accumulatedRewards": "872805982061942080"
     },
     {
       "address": "0x294c2a8bd233fad3d9c29e9362a42f8881f4461b",
@@ -2849,7 +2849,7 @@
     },
     {
       "address": "0x299b3082b260d445ee32c3511102d0e3fb41cef0",
-      "accumulatedRewards": "15297140485896816582546"
+      "accumulatedRewards": "15297140485896816582254"
     },
     {
       "address": "0x29a0576637649fcd2c34939e7419a56dcd520778",
@@ -2893,7 +2893,7 @@
     },
     {
       "address": "0x2a0b6e68b2b282a80e4f4c4ae24db79792ea5fc4",
-      "accumulatedRewards": "74276347454210846"
+      "accumulatedRewards": "74276347454210845"
     },
     {
       "address": "0x2a381a41627de73c9285de8f5b74791ad18bd292",
@@ -2917,7 +2917,7 @@
     },
     {
       "address": "0x2ae08196c5323f5cd1a792de2124914ff4704e03",
-      "accumulatedRewards": "11110043439258351883"
+      "accumulatedRewards": "11110043439258349903"
     },
     {
       "address": "0x2b22c632ba4c4499626307dbf581d3efe9de57fb",
@@ -2937,7 +2937,7 @@
     },
     {
       "address": "0x2b605c2a76ee3f08a48b4b4a9d7d4dad3ed46bf3",
-      "accumulatedRewards": "17241655698232188247437"
+      "accumulatedRewards": "17241655698232188227350"
     },
     {
       "address": "0x2b65e70f0d0e3c19719abef9237e974a49fa1c82",
@@ -2949,7 +2949,7 @@
     },
     {
       "address": "0x2b794662176cce58a59c929d80c70d460047d08c",
-      "accumulatedRewards": "2195088349271894721"
+      "accumulatedRewards": "2195088349271894693"
     },
     {
       "address": "0x2b83ddb05570802ac45c7e078e7de4e5e13638ae",
@@ -3005,7 +3005,7 @@
     },
     {
       "address": "0x2c64a1d5d602e7fb6d21da6211dcecc6e17a0649",
-      "accumulatedRewards": "66432520815433300"
+      "accumulatedRewards": "66432520815433299"
     },
     {
       "address": "0x2c6e2e2eb9153631aa098d671df870a0f9026d74",
@@ -3029,7 +3029,7 @@
     },
     {
       "address": "0x2cde93ed0742d8fa73b9ae4460a71a52a36a4026",
-      "accumulatedRewards": "313000560749741865"
+      "accumulatedRewards": "313000560749741860"
     },
     {
       "address": "0x2cea91416b0a752bf9a4b407ff46206d67ccd413",
@@ -3049,7 +3049,7 @@
     },
     {
       "address": "0x2d1e0b4be4dd567726b55349d7acd0d26f5a5787",
-      "accumulatedRewards": "852338002196311"
+      "accumulatedRewards": "852338002196310"
     },
     {
       "address": "0x2d1ef4acf4cae6a38950971aaaa15f88d9b3f165",
@@ -3117,7 +3117,7 @@
     },
     {
       "address": "0x2e15d7aa0650de1009710fdd45c3468d75ae1392",
-      "accumulatedRewards": "3438491204493264851139"
+      "accumulatedRewards": "3438491204493264677489"
     },
     {
       "address": "0x2e18e493022737076e4e614486fd0e446543ce0d",
@@ -3125,7 +3125,7 @@
     },
     {
       "address": "0x2e1be65759af001035c184d66d536ab9aed21af7",
-      "accumulatedRewards": "848904778309239021962"
+      "accumulatedRewards": "848904778309239018326"
     },
     {
       "address": "0x2e1f01a9c31453961d01d7908954a39a96c6174d",
@@ -3145,7 +3145,7 @@
     },
     {
       "address": "0x2e4e64fef11742ff941ade4521e3821f7873c19c",
-      "accumulatedRewards": "6660938046126140673"
+      "accumulatedRewards": "6660938046126138756"
     },
     {
       "address": "0x2e5243c0527e8a2e896d9fb648330551a595351f",
@@ -3161,7 +3161,7 @@
     },
     {
       "address": "0x2e849db35d4e7753902414d466d97ad02d333f56",
-      "accumulatedRewards": "50350198635742284"
+      "accumulatedRewards": "50350198635742282"
     },
     {
       "address": "0x2e8914d7845b56db4bdb6c634e58560a9431b2c4",
@@ -3197,7 +3197,7 @@
     },
     {
       "address": "0x2f2f665974261c4129b1dc6c359bd259cd66f78a",
-      "accumulatedRewards": "160729702992493105"
+      "accumulatedRewards": "160729702992493102"
     },
     {
       "address": "0x2f34f997801bcb67e414edef514cec92254698a1",
@@ -3249,7 +3249,7 @@
     },
     {
       "address": "0x2fc2a04cd922c475dc29cfc9792127886ff02dfd",
-      "accumulatedRewards": "14075057716345981"
+      "accumulatedRewards": "14075057716345980"
     },
     {
       "address": "0x2ffe9e88863604e0d3b21969b44dd2bb875bc171",
@@ -3269,7 +3269,7 @@
     },
     {
       "address": "0x3021a59f56cae360183c40965d7059a4a73a7ba7",
-      "accumulatedRewards": "91354433452445751"
+      "accumulatedRewards": "91354433452445750"
     },
     {
       "address": "0x304a7c9a71c6ec90a373ae05e02b86b28685269c",
@@ -3337,7 +3337,7 @@
     },
     {
       "address": "0x310d5c8ee1512d5092ee4377061ae82e48973689",
-      "accumulatedRewards": "39333957246139509453691"
+      "accumulatedRewards": "39333957246139509390060"
     },
     {
       "address": "0x310f806e2d8cec1d9b57b75364b3a882d3fc4016",
@@ -3357,7 +3357,7 @@
     },
     {
       "address": "0x318aa87febc5d4eb1afa25b57002bb62a5cd1852",
-      "accumulatedRewards": "2146232923159318166"
+      "accumulatedRewards": "2146232923159318099"
     },
     {
       "address": "0x31b48d410003ab480bd66398f6e0712c55e11587",
@@ -3409,7 +3409,7 @@
     },
     {
       "address": "0x32580435829e8a1fec556276cd17b19a1b97e29c",
-      "accumulatedRewards": "2808500464308651548296"
+      "accumulatedRewards": "2808500464308651532144"
     },
     {
       "address": "0x32608a5ec0af0ff29331fabdca77432f424476d9",
@@ -3417,7 +3417,7 @@
     },
     {
       "address": "0x3264473150ead02a604812c7b5b70fef4a9b4503",
-      "accumulatedRewards": "573912436618780226"
+      "accumulatedRewards": "573912436618780218"
     },
     {
       "address": "0x327dd82e40047861cd8ebb9c975baee2ea23dbb4",
@@ -3465,7 +3465,7 @@
     },
     {
       "address": "0x32eab3e046246e5ca1da750afaefe9ee7bd3b6d3",
-      "accumulatedRewards": "7426652893357119863"
+      "accumulatedRewards": "7426652893357119862"
     },
     {
       "address": "0x32eb5f6939e490318fb913c67c6e4d9dfb51280c",
@@ -3473,7 +3473,7 @@
     },
     {
       "address": "0x330284e4285578200aed6073422d2faa610f95c7",
-      "accumulatedRewards": "1294121685234591367"
+      "accumulatedRewards": "1294121685234591358"
     },
     {
       "address": "0x33044e4c2089cba29e3b29109008b9f47dc181bf",
@@ -3513,7 +3513,7 @@
     },
     {
       "address": "0x3394832fd4069fd96105d08a1ad537df00f25b20",
-      "accumulatedRewards": "331489869521134204"
+      "accumulatedRewards": "331489869521134094"
     },
     {
       "address": "0x33a74ed005785a83295d3ebe7e9fee647c3b4246",
@@ -3569,7 +3569,7 @@
     },
     {
       "address": "0x3496cc53d6d8650ec936891038e656a85475126b",
-      "accumulatedRewards": "90777038192280505"
+      "accumulatedRewards": "90777038192280504"
     },
     {
       "address": "0x34ad23aea7b2e8413f7cf8dec4e59c0a385f086a",
@@ -3597,7 +3597,7 @@
     },
     {
       "address": "0x34e4451b1da7615e9897de4896f1645a8ef9ecfc",
-      "accumulatedRewards": "140241635408494329"
+      "accumulatedRewards": "140241635408494327"
     },
     {
       "address": "0x34f9c0b11e67d72ad65c41ff90a6989846f28c22",
@@ -3677,7 +3677,7 @@
     },
     {
       "address": "0x360b74a47f58405bdecf33811b1f2ca37dc66320",
-      "accumulatedRewards": "31720978329941691"
+      "accumulatedRewards": "31720978329941690"
     },
     {
       "address": "0x361042cb65a69efde49bf68ceca58e4f44d6ced1",
@@ -3685,7 +3685,7 @@
     },
     {
       "address": "0x362aa4fd06f8f540112dfed045e716bed6a56a8b",
-      "accumulatedRewards": "23691567039101549128"
+      "accumulatedRewards": "23691567039101549116"
     },
     {
       "address": "0x3645dff2e8ff9fb6075632ecf3a0097c16943f41",
@@ -3709,7 +3709,7 @@
     },
     {
       "address": "0x368d2789972a8e046fdc86668038e5b1ffc07019",
-      "accumulatedRewards": "657001933598076345"
+      "accumulatedRewards": "657001933598076343"
     },
     {
       "address": "0x3690b4079024a4c92cff96e06bd37ac5d41b641f",
@@ -3721,7 +3721,7 @@
     },
     {
       "address": "0x36a8f49a6d485794c0688e1ed70bc2948eeb1a09",
-      "accumulatedRewards": "102558032494774163377621"
+      "accumulatedRewards": "102558032494774163377618"
     },
     {
       "address": "0x36aab20c6b758b43431f144d6a43bae2e8cfde66",
@@ -3761,7 +3761,7 @@
     },
     {
       "address": "0x36f26e2e5bed062968c17fc770863fd740713205",
-      "accumulatedRewards": "180675900581340168"
+      "accumulatedRewards": "180675900581340165"
     },
     {
       "address": "0x36f8d0d0573ae92326827c4a82fe4ce4c244cab6",
@@ -3805,7 +3805,7 @@
     },
     {
       "address": "0x37798ae3af6d78ab37237cefb31c0572d5cfd7f9",
-      "accumulatedRewards": "3402651379882986707"
+      "accumulatedRewards": "3402651379882985737"
     },
     {
       "address": "0x378074a3c75562c89d423bf25b812597b4e68242",
@@ -3813,7 +3813,7 @@
     },
     {
       "address": "0x379f29c017ec33e145d1fe721971cc1b50a31253",
-      "accumulatedRewards": "242941467290615742"
+      "accumulatedRewards": "242941467290615741"
     },
     {
       "address": "0x37a530552ca9df0533d317a292dcc8a582776aa0",
@@ -3897,7 +3897,7 @@
     },
     {
       "address": "0x38430336153468dcf36af5cea7d6bc472425633a",
-      "accumulatedRewards": "365623025072683071"
+      "accumulatedRewards": "365623025072683067"
     },
     {
       "address": "0x3844597c2b75e8510d8895173addc28dd995fa45",
@@ -3921,7 +3921,7 @@
     },
     {
       "address": "0x3880ccbd20c568790560b94eacefd64e8dbcbc96",
-      "accumulatedRewards": "927355013308824019735"
+      "accumulatedRewards": "927355013308824019728"
     },
     {
       "address": "0x389fb5041ad37dfff4f99307c5182f73e4886b85",
@@ -3961,7 +3961,7 @@
     },
     {
       "address": "0x38fc02ddfd5e39136b170e807c324ace4180181e",
-      "accumulatedRewards": "1216158241046947590281"
+      "accumulatedRewards": "1216158241046947549755"
     },
     {
       "address": "0x391473f3e818e4b81ab0d1c58b7f5e827b780a86",
@@ -3993,7 +3993,7 @@
     },
     {
       "address": "0x3941b55a5f4075c189265c6bc76ecc57f6f7ee56",
-      "accumulatedRewards": "90120687818067407"
+      "accumulatedRewards": "90120687818067406"
     },
     {
       "address": "0x394e0fcdc194f9b24d6b3f7559d839d94745e66f",
@@ -4001,7 +4001,7 @@
     },
     {
       "address": "0x395012df0d443a7639e46fcb0daf756a9bbf3c6c",
-      "accumulatedRewards": "109211141276674342"
+      "accumulatedRewards": "109211141276674340"
     },
     {
       "address": "0x395bf242bda2677868633b8b839c9e22e0567d96",
@@ -4029,7 +4029,7 @@
     },
     {
       "address": "0x39c31a899662da8bba43862c82c8ba531dc61390",
-      "accumulatedRewards": "2344318510245971210"
+      "accumulatedRewards": "2344318510245971208"
     },
     {
       "address": "0x39c78ce4fbd59722f48a3271fe11f9ac5f933ba0",
@@ -4057,7 +4057,7 @@
     },
     {
       "address": "0x3a409eff50a47aeef294e3f0bb3874490dd99abc",
-      "accumulatedRewards": "36546063501709950"
+      "accumulatedRewards": "36546063501709949"
     },
     {
       "address": "0x3a7249b510add84a2196fb0fad9d8b745d807286",
@@ -4085,7 +4085,7 @@
     },
     {
       "address": "0x3a96ddaf838e2507074acf8d988dcf265fb47af3",
-      "accumulatedRewards": "65120521992096802"
+      "accumulatedRewards": "65120521992096801"
     },
     {
       "address": "0x3a99bda3c5c3ac6b96bf44ca3da25f89e9e3fcde",
@@ -4229,7 +4229,7 @@
     },
     {
       "address": "0x3c59bc4eabc523d14dc057ee7456ef169e3c1231",
-      "accumulatedRewards": "44683735334125271"
+      "accumulatedRewards": "44683735334125270"
     },
     {
       "address": "0x3c5c2f4bcec51a36494682f91dbc6ca7c63b514c",
@@ -4289,7 +4289,7 @@
     },
     {
       "address": "0x3ccb0f1f6cc0709f491a2d25b4fbca5fe78870e8",
-      "accumulatedRewards": "117787403413572804"
+      "accumulatedRewards": "117787403413572802"
     },
     {
       "address": "0x3cd70414461fe3cd33fed9ceda1a93280702c1bb",
@@ -4297,7 +4297,7 @@
     },
     {
       "address": "0x3cdc00a9a2e3c9443bec9942aa660d8a5f852161",
-      "accumulatedRewards": "144073584404884916083360"
+      "accumulatedRewards": "144073584404884914770154"
     },
     {
       "address": "0x3ce630f7bc2e9fd32fab844601795196e917dbda",
@@ -4309,7 +4309,7 @@
     },
     {
       "address": "0x3d076ea30b37787dc1bb9fd80d80fbccc9052fa9",
-      "accumulatedRewards": "144488540708283825374"
+      "accumulatedRewards": "144488540708283825112"
     },
     {
       "address": "0x3d3233156c7a58986f05b3f4c8c539c72502b107",
@@ -4337,7 +4337,7 @@
     },
     {
       "address": "0x3d7ae65dc60623b458754df8c9c8280313724942",
-      "accumulatedRewards": "2482400743049877842"
+      "accumulatedRewards": "2482400743049877830"
     },
     {
       "address": "0x3d7d8cc79c6170c2faf1be24b9a641238108d440",
@@ -4345,7 +4345,7 @@
     },
     {
       "address": "0x3d8f0c586ff01b75349a5757904d9ac46aae91a7",
-      "accumulatedRewards": "151163216556261034"
+      "accumulatedRewards": "151163216556261032"
     },
     {
       "address": "0x3da61e0091023aef38a2232baef1dcc1074d0d52",
@@ -4445,7 +4445,7 @@
     },
     {
       "address": "0x3f4113f86aa26c5e7d5dd8ba689e285ea0d8dc6e",
-      "accumulatedRewards": "287905265673761837"
+      "accumulatedRewards": "287905265673761834"
     },
     {
       "address": "0x3f436e96f7fbba9dbd764294c424b38e9ff3fff8",
@@ -4465,7 +4465,7 @@
     },
     {
       "address": "0x3f697532548f01dbcea792d191ee6eb0e15e3f13",
-      "accumulatedRewards": "3260055357157389892"
+      "accumulatedRewards": "3260055357157388973"
     },
     {
       "address": "0x3f6eaf6620da0d30b7b9eab6750183a85cdf1551",
@@ -4473,7 +4473,7 @@
     },
     {
       "address": "0x3f7167999518137b21a2f6f973cc81bf92333598",
-      "accumulatedRewards": "68019101642781600819"
+      "accumulatedRewards": "68019101642781600815"
     },
     {
       "address": "0x3fd391ac74f0569f73bacd1a798af04434be2dc0",
@@ -4509,7 +4509,7 @@
     },
     {
       "address": "0x40093c0156cd8d1daefb5a5465d17fcc6467aa31",
-      "accumulatedRewards": "4353893733745640786405"
+      "accumulatedRewards": "4353893733745640726837"
     },
     {
       "address": "0x40326059f14c9c23e3b9e76c37282b8798138e0f",
@@ -4517,7 +4517,7 @@
     },
     {
       "address": "0x404f583833d0a05156ff6003da652b6031ebcb55",
-      "accumulatedRewards": "90797478294330454"
+      "accumulatedRewards": "90797478294330453"
     },
     {
       "address": "0x405e6278a3bb5d4fcb5a135dbbd6bc1d3b810c06",
@@ -4569,11 +4569,11 @@
     },
     {
       "address": "0x40f404fe6c091b951576ecc7bcce5ecd56c985f7",
-      "accumulatedRewards": "17299803961242740474"
+      "accumulatedRewards": "17299803961242740236"
     },
     {
       "address": "0x40f815ec17f1fe5f36c4de5a6872a0531c355031",
-      "accumulatedRewards": "1147053483489505248184"
+      "accumulatedRewards": "1147053483489505220866"
     },
     {
       "address": "0x411fc4354d75c3ca6f6c7f370dc3ca7aadf51f61",
@@ -4617,7 +4617,7 @@
     },
     {
       "address": "0x41d00d74d03098dd982a02446dbe8ae3d509fe36",
-      "accumulatedRewards": "19321913163687096"
+      "accumulatedRewards": "19321913163687095"
     },
     {
       "address": "0x41e260e8f07615418968c5fc7d10e277cf7eab56",
@@ -4629,7 +4629,7 @@
     },
     {
       "address": "0x41f219c81722f3d2244f6f381e725e1f4875e796",
-      "accumulatedRewards": "71277746028038849"
+      "accumulatedRewards": "71277746028038848"
     },
     {
       "address": "0x4204fdd868ffe0e62f57e6a626f8c9530f7d5ad1",
@@ -4645,7 +4645,7 @@
     },
     {
       "address": "0x421a8a0c6388faa1550e2636538d8d7605a8cede",
-      "accumulatedRewards": "161050039747592463"
+      "accumulatedRewards": "161050039747592461"
     },
     {
       "address": "0x421cc7b6224accb6c12280e3b697c65d9d60ad70",
@@ -4677,7 +4677,7 @@
     },
     {
       "address": "0x426f605bfeb604835f7ef54845d4b06bd6d93c6b",
-      "accumulatedRewards": "183102391101818973"
+      "accumulatedRewards": "183102391101818970"
     },
     {
       "address": "0x4277525b274860b050129bf3d64e456ca3345bc7",
@@ -4689,7 +4689,7 @@
     },
     {
       "address": "0x4288d61f1d807fbc37378a581faf5b40a60d8802",
-      "accumulatedRewards": "2979136679632779523"
+      "accumulatedRewards": "2979136679632778663"
     },
     {
       "address": "0x429348fde3adf0771781b53f6dd84000fa629ad0",
@@ -4709,7 +4709,7 @@
     },
     {
       "address": "0x42bed7b2c2b7ff808f7ee64c64aa1fc6869d3bc6",
-      "accumulatedRewards": "8503096712026687092"
+      "accumulatedRewards": "8503096712026684666"
     },
     {
       "address": "0x42c6738ae11898048e18213e989f4c2aff09266f",
@@ -4729,7 +4729,7 @@
     },
     {
       "address": "0x431b5ddb0ace97ebc3d936403ea25831bad832b6",
-      "accumulatedRewards": "54871344832776696"
+      "accumulatedRewards": "54871344832776695"
     },
     {
       "address": "0x43238e0dbe4e69ce5691d86207dae2cffa352ce0",
@@ -4773,11 +4773,11 @@
     },
     {
       "address": "0x43beaaf55b402a7b59b8d2696ec040fd09f6c001",
-      "accumulatedRewards": "18296460486951720"
+      "accumulatedRewards": "18296460486951719"
     },
     {
       "address": "0x43c21cc46637ae611d2b3beead90a73ae56362b3",
-      "accumulatedRewards": "53228896553311429364"
+      "accumulatedRewards": "53228896553311428520"
     },
     {
       "address": "0x43ffe2f5e8beee10b6410fcd16b8e5362f74defb",
@@ -4789,11 +4789,11 @@
     },
     {
       "address": "0x44092cc102dbfcf538b768ab1f028ca3b1e12c50",
-      "accumulatedRewards": "6472353520608986303"
+      "accumulatedRewards": "6472353520608986291"
     },
     {
       "address": "0x4423d43b6ed5dc452321eb6463093fbf032c0086",
-      "accumulatedRewards": "5466451136338893452"
+      "accumulatedRewards": "5466451136338893223"
     },
     {
       "address": "0x4426023bbeac104ea9f6f816c979f4e39c174957",
@@ -4877,7 +4877,7 @@
     },
     {
       "address": "0x45946c7234838c4168e323ae7519f886e3a209fa",
-      "accumulatedRewards": "18287273983844927"
+      "accumulatedRewards": "18287273983844926"
     },
     {
       "address": "0x45b760cdf98890346282beddb613d887d63120e9",
@@ -4889,7 +4889,7 @@
     },
     {
       "address": "0x45c6c26c118eeae5bc756ef2f207dd7a6a096e2c",
-      "accumulatedRewards": "11356437981637656847772"
+      "accumulatedRewards": "11356437981637656788450"
     },
     {
       "address": "0x45d7795dd63c17a0fe72b567854eb8483ef33247",
@@ -4937,7 +4937,7 @@
     },
     {
       "address": "0x46cdd0e826f7f56547daab4d5756e65b1fde956c",
-      "accumulatedRewards": "159992303820246025"
+      "accumulatedRewards": "159992303820245969"
     },
     {
       "address": "0x46d1e55c818e7bcdead9c2554a9842b94382de4e",
@@ -4965,7 +4965,7 @@
     },
     {
       "address": "0x472d1ac3536c9e9c79a979eec1f32ebdc51b0f34",
-      "accumulatedRewards": "17899101177750971"
+      "accumulatedRewards": "17899101177750970"
     },
     {
       "address": "0x4730facc5abfa5507ea05be011d77d110fabf1c8",
@@ -4973,11 +4973,11 @@
     },
     {
       "address": "0x473108516b352c698843ea4c057eb666f370f166",
-      "accumulatedRewards": "482234775717016954"
+      "accumulatedRewards": "482234775717016943"
     },
     {
       "address": "0x4732ef96f60f38653d4754a44cd9cca365fac8e8",
-      "accumulatedRewards": "280720316137392636379"
+      "accumulatedRewards": "280720316137392622720"
     },
     {
       "address": "0x47512599bd98585f725cd098a2d9240cc1a1a381",
@@ -5025,11 +5025,11 @@
     },
     {
       "address": "0x47b023db19b34519aa34c39134b508cac2c1efcb",
-      "accumulatedRewards": "19419898539976463364331"
+      "accumulatedRewards": "19419898539976463364330"
     },
     {
       "address": "0x47b517225f39bb1853416d1d57da9afeb1460cdd",
-      "accumulatedRewards": "192871592331977402"
+      "accumulatedRewards": "192871592331977400"
     },
     {
       "address": "0x47b9a12e33ea26d583f56e7b53cabe89cc2a1212",
@@ -5113,7 +5113,7 @@
     },
     {
       "address": "0x499a7fcf0d72d8d16c4df3df62dfdf07c09f6802",
-      "accumulatedRewards": "1659509669446133321"
+      "accumulatedRewards": "1659509669446133297"
     },
     {
       "address": "0x49a1fed552ae0016c219d13d9a9230c1d9611efa",
@@ -5145,7 +5145,7 @@
     },
     {
       "address": "0x49e96e255ba418d08e66c35b588e2f2f3766e1d0",
-      "accumulatedRewards": "2344333716259839239144432"
+      "accumulatedRewards": "2344333716259839239022320"
     },
     {
       "address": "0x4a0f11a23dedb6722aae7aca4d582cf78bb1e6da",
@@ -5189,7 +5189,7 @@
     },
     {
       "address": "0x4aa92b19b50b1b27daa72a6f9f463f582babad82",
-      "accumulatedRewards": "18064536921045847"
+      "accumulatedRewards": "18064536921045846"
     },
     {
       "address": "0x4ab3d7f4c46e511ca09eecdac483e43ed96bd7aa",
@@ -5197,7 +5197,7 @@
     },
     {
       "address": "0x4abb08d8a702d5df336e6d0d0c440b583630b283",
-      "accumulatedRewards": "18010024072636649"
+      "accumulatedRewards": "18010024072636648"
     },
     {
       "address": "0x4acb134fc6a4595893c7070caa58eb392ccfbf1a",
@@ -5213,7 +5213,7 @@
     },
     {
       "address": "0x4b0120d1da89c7ed42919ad072fa2fd2a7ddf8fe",
-      "accumulatedRewards": "179313702662778277"
+      "accumulatedRewards": "179313702662778274"
     },
     {
       "address": "0x4b040a88cb4edd02b97f0ab8c97d3da540fc2cf0",
@@ -5265,7 +5265,7 @@
     },
     {
       "address": "0x4b7ec805ae47e8696c212ee1e259a291316440d4",
-      "accumulatedRewards": "175413234745909009"
+      "accumulatedRewards": "175413234745909007"
     },
     {
       "address": "0x4b89d407e366d948709df4c5cfcf86f78933c693",
@@ -5305,7 +5305,7 @@
     },
     {
       "address": "0x4c046bb14f0ae9623c940aa95a70aa384698e6bf",
-      "accumulatedRewards": "6361739503999483642026"
+      "accumulatedRewards": "6361739503999483592026"
     },
     {
       "address": "0x4c09dd7c598b12c781c4b5d74d245a1784a2e148",
@@ -5373,7 +5373,7 @@
     },
     {
       "address": "0x4d8c5de76e9754c57d1e958c380e6ee1c311051f",
-      "accumulatedRewards": "86542692960964671"
+      "accumulatedRewards": "86542692960964669"
     },
     {
       "address": "0x4d9ddbc622f571ab93c6491d958c4d8c14c55806",
@@ -5385,7 +5385,7 @@
     },
     {
       "address": "0x4dcbb1fe5983ad5b44dc661273a4f11ca812f8b8",
-      "accumulatedRewards": "4214324599123035629537"
+      "accumulatedRewards": "4214324599123035629536"
     },
     {
       "address": "0x4decd68e44d2b85a0d82b5d11fe01a9c10d893fc",
@@ -5485,7 +5485,7 @@
     },
     {
       "address": "0x4f285bbcfed9140ea4c15feb3348b227f6f35bea",
-      "accumulatedRewards": "2730475468721872072138"
+      "accumulatedRewards": "2730475468721872052138"
     },
     {
       "address": "0x4f2f9450a9015432f8ffd36219e88348e8555165",
@@ -5565,7 +5565,7 @@
     },
     {
       "address": "0x4ffda649a57a1540dc53c7b27184063778326d44",
-      "accumulatedRewards": "118302340850386663"
+      "accumulatedRewards": "118302340850386662"
     },
     {
       "address": "0x4ffee87e7ed395c698b190e513340b555bc82f87",
@@ -5605,7 +5605,7 @@
     },
     {
       "address": "0x50579f2b1cb065751c6900dfd61115055e71696c",
-      "accumulatedRewards": "97477944118909042"
+      "accumulatedRewards": "97477944118909040"
     },
     {
       "address": "0x50693e63a0abb825b1ba99564954d45b6e45a632",
@@ -5637,7 +5637,7 @@
     },
     {
       "address": "0x50d2dec635c48f5e8cede341df87c651c6cd5318",
-      "accumulatedRewards": "90762341000664501"
+      "accumulatedRewards": "90762341000664500"
     },
     {
       "address": "0x50e3449024632221562c6bd11e1d5d4a6cc06a3f",
@@ -5673,7 +5673,7 @@
     },
     {
       "address": "0x51a31150deb29534f14f1c610055424e88947667",
-      "accumulatedRewards": "178681759271275740"
+      "accumulatedRewards": "178681759271275739"
     },
     {
       "address": "0x51a37a5dcad4e7884ea251484e09ff9906db1035",
@@ -5689,11 +5689,11 @@
     },
     {
       "address": "0x51d0a5cbe5666ad3eee303f0d16fcde9c5cd3009",
-      "accumulatedRewards": "448346763028643048"
+      "accumulatedRewards": "448346763028643039"
     },
     {
       "address": "0x51da735729ccf8fc9855e97a71ecefc280611586",
-      "accumulatedRewards": "63935763911145322842395"
+      "accumulatedRewards": "63935763911145322806203"
     },
     {
       "address": "0x5200fde6ac4244aafc371b6fd91a2ca8e1c0b62a",
@@ -5701,7 +5701,7 @@
     },
     {
       "address": "0x5207948d16d4d78893692d369ae62888aa398f58",
-      "accumulatedRewards": "255383446918886757157962"
+      "accumulatedRewards": "255383446918886757157960"
     },
     {
       "address": "0x52432473144056fe91aeae9240ad21e6b8213440",
@@ -5757,7 +5757,7 @@
     },
     {
       "address": "0x52f5281eac802d694d9ca6107c0d84570336ad33",
-      "accumulatedRewards": "90424072903205025"
+      "accumulatedRewards": "90424072903205024"
     },
     {
       "address": "0x52f965d9c9c3cd15ec917c3abea0465ee0d2284c",
@@ -5773,7 +5773,7 @@
     },
     {
       "address": "0x5333c1d733794e02f34d5f0d88c65d03fd2e4db1",
-      "accumulatedRewards": "1988778756901966100587"
+      "accumulatedRewards": "1988778756901966100575"
     },
     {
       "address": "0x5334aea575c8bccfea58e489d9117ebdfbcea64e",
@@ -5929,7 +5929,7 @@
     },
     {
       "address": "0x54cd717a0f7f7e686d547b349af58c473e04db0b",
-      "accumulatedRewards": "2902434528953483728868"
+      "accumulatedRewards": "2902434528953483603116"
     },
     {
       "address": "0x54dbe0f95df628217c418f423d69aa70227cf9cc",
@@ -5973,7 +5973,7 @@
     },
     {
       "address": "0x555a457351906003d7fd58e9fa7fb3eec54f83c9",
-      "accumulatedRewards": "36021610014613622"
+      "accumulatedRewards": "36021610014613621"
     },
     {
       "address": "0x5574d6f75a59945a3d2e056d048816e11ce12bf8",
@@ -5981,7 +5981,7 @@
     },
     {
       "address": "0x5580ba66f8d6dc71adb0ca1d1c6b3d142ff7aaca",
-      "accumulatedRewards": "2765757015955782591378"
+      "accumulatedRewards": "2765757015955782591377"
     },
     {
       "address": "0x5581a2536f0ceb3500079c574dddeb515d8b027e",
@@ -5989,7 +5989,7 @@
     },
     {
       "address": "0x55826f7459236341ee817f0478ee7832cd6f2e7f",
-      "accumulatedRewards": "90976979554387442"
+      "accumulatedRewards": "90976979554387441"
     },
     {
       "address": "0x5584cf54ade7c81ab6d6bc870c714f87fc0a7721",
@@ -6025,7 +6025,7 @@
     },
     {
       "address": "0x562f019e21eff3dba7401a569fdc7676abfa4bc6",
-      "accumulatedRewards": "44373580068648593118"
+      "accumulatedRewards": "44373580068648593094"
     },
     {
       "address": "0x566bfc26636ee16676845e9f76b5905a776534bb",
@@ -6045,7 +6045,7 @@
     },
     {
       "address": "0x5693e8c4da39ed99b1574e6426f47b46e3c00c63",
-      "accumulatedRewards": "488797432835501306"
+      "accumulatedRewards": "488797432835501301"
     },
     {
       "address": "0x569b40176b075d84ee416d3f5375a32e03484fac",
@@ -6081,7 +6081,7 @@
     },
     {
       "address": "0x570faea82f317bdc4ccf9d4675920b32ef46ca4f",
-      "accumulatedRewards": "625772135026386615"
+      "accumulatedRewards": "625772135026386606"
     },
     {
       "address": "0x571b8500cfd439d38557079ab62337a5d84d317a",
@@ -6133,7 +6133,7 @@
     },
     {
       "address": "0x5805ec51c516e3aa9907d2dbffea7f267b1baa23",
-      "accumulatedRewards": "17458445588391977"
+      "accumulatedRewards": "17458445588391976"
     },
     {
       "address": "0x5834d49dde13ac31322bc8d9d564a431af8bcecd",
@@ -6149,7 +6149,7 @@
     },
     {
       "address": "0x5853ed4f26a3fcea565b3fbc698bb19cdf6deb85",
-      "accumulatedRewards": "922939409701117186"
+      "accumulatedRewards": "922939409701117185"
     },
     {
       "address": "0x58597681578f486323fa90fb08736cd26243022e",
@@ -6157,7 +6157,7 @@
     },
     {
       "address": "0x5859d38330dab5544c81168b5f9bef1a719a1556",
-      "accumulatedRewards": "1702585205172909779079"
+      "accumulatedRewards": "1702585205172909779078"
     },
     {
       "address": "0x585cb789edb5010f971160ac02d46617a6c47940",
@@ -6173,7 +6173,7 @@
     },
     {
       "address": "0x586b65610b4f2ebcc5d2a8ed5f2f683af762c849",
-      "accumulatedRewards": "18057975902392387"
+      "accumulatedRewards": "18057975902392386"
     },
     {
       "address": "0x58b2aed547d8d71a53ba36baa1443feb4cf2828c",
@@ -6185,7 +6185,7 @@
     },
     {
       "address": "0x58b9cd5835cba1e9c00cd5a7af8c9f8436fd4071",
-      "accumulatedRewards": "16864991271329544"
+      "accumulatedRewards": "16864991271329542"
     },
     {
       "address": "0x58c4f03a954e4cbb1b8e204a881a8e9a99d015dd",
@@ -6205,7 +6205,7 @@
     },
     {
       "address": "0x59070f02fa3693bb7af1a41e80cc0ae3f1509e4b",
-      "accumulatedRewards": "180494390815207751"
+      "accumulatedRewards": "180494390815207748"
     },
     {
       "address": "0x5913e954edf00332f025ace1a99d2ed5825980b1",
@@ -6229,7 +6229,7 @@
     },
     {
       "address": "0x597a9e4f7ba3fc548126427d589ddcc1bcf9b69f",
-      "accumulatedRewards": "111004339829894900085"
+      "accumulatedRewards": "111004339829894900084"
     },
     {
       "address": "0x598b014cbd88f3e131fb3b9341ba57e85d8febc6",
@@ -6241,15 +6241,15 @@
     },
     {
       "address": "0x59ac481c809d7e02154967bd4eb64845b854106c",
-      "accumulatedRewards": "163344534611479344083"
+      "accumulatedRewards": "163344534611479344060"
     },
     {
       "address": "0x59b550d787ec087a59a5690efb79630ac9f32108",
-      "accumulatedRewards": "88832920373967272"
+      "accumulatedRewards": "88832920373967271"
     },
     {
       "address": "0x59b7dbbdcc1ed1f48f18e9a5cb76f96f6fe00ffe",
-      "accumulatedRewards": "177463819310784708"
+      "accumulatedRewards": "177463819310784705"
     },
     {
       "address": "0x59baa94cefa5e584a39f8463b49bd55ed99f1d96",
@@ -6285,7 +6285,7 @@
     },
     {
       "address": "0x5a27d268e830655e908a0a2c3b24f572695af5e8",
-      "accumulatedRewards": "36543343894781723"
+      "accumulatedRewards": "36543343894781722"
     },
     {
       "address": "0x5a49158481df2e3c4c26f1c60a3f49e61cec6849",
@@ -6309,7 +6309,7 @@
     },
     {
       "address": "0x5a7a3c4658a5fd5423fc2ff6abb49cb2f827d9f3",
-      "accumulatedRewards": "3046763991156750551950"
+      "accumulatedRewards": "3046763991156750539115"
     },
     {
       "address": "0x5a805112171fea540cb85f851757e395751fb7c1",
@@ -6317,7 +6317,7 @@
     },
     {
       "address": "0x5a9b86708b7aa08e4a73f792f156d8a96e163136",
-      "accumulatedRewards": "23710987433457722"
+      "accumulatedRewards": "23710987433457721"
     },
     {
       "address": "0x5aa79c3b0648c916600c88f028c1911e3a7c3ed3",
@@ -6345,7 +6345,7 @@
     },
     {
       "address": "0x5ae36d7acd459302876b2d1c312d5c2b0507b794",
-      "accumulatedRewards": "387213074554473201512"
+      "accumulatedRewards": "387213074554473201501"
     },
     {
       "address": "0x5af12635675427ea85358ac42b8550027b10f491",
@@ -6353,7 +6353,7 @@
     },
     {
       "address": "0x5af1f3417edcfe32db4e2bad79e4e1a00d41110f",
-      "accumulatedRewards": "114310947651582130368404"
+      "accumulatedRewards": "114310947651582128814212"
     },
     {
       "address": "0x5aff8841f8138b80c418604f96873eaa99da4705",
@@ -6361,7 +6361,7 @@
     },
     {
       "address": "0x5b02da8420dd9f77a33c6e2b22dc87fe22c17a30",
-      "accumulatedRewards": "17647240004508074"
+      "accumulatedRewards": "17647240004508073"
     },
     {
       "address": "0x5b07bc894d6e55549abe730be004a86e2dc4d905",
@@ -6521,7 +6521,7 @@
     },
     {
       "address": "0x5d0bbdd2162a69b10a546bec6460d7f3893d95c9",
-      "accumulatedRewards": "14282466137617528224"
+      "accumulatedRewards": "14282466137617528195"
     },
     {
       "address": "0x5d15b6c8cd72e11fac72383a059a04453f3a2d35",
@@ -6533,7 +6533,7 @@
     },
     {
       "address": "0x5d1c90fc7f4ac5edefd58a8f2dc16f204f96497d",
-      "accumulatedRewards": "926479316623956099006"
+      "accumulatedRewards": "926479316623956082497"
     },
     {
       "address": "0x5d2e915003dd326d4ca7b1fb4bc0a9bdde2d3ed1",
@@ -6549,7 +6549,7 @@
     },
     {
       "address": "0x5d6ebeb0008807e59b23c55d0e7969d442fd28d3",
-      "accumulatedRewards": "1247681432983155051392"
+      "accumulatedRewards": "1247681432983155051391"
     },
     {
       "address": "0x5d7166ee0c633021cb502fa5302866316d86f701",
@@ -6577,7 +6577,7 @@
     },
     {
       "address": "0x5dbc6208cc2ecb91943355486987ab89b6e7dc2a",
-      "accumulatedRewards": "128952508935583803"
+      "accumulatedRewards": "128952508935583801"
     },
     {
       "address": "0x5dc72b3a302b4a8022351cb213a1f281bcd65897",
@@ -6597,7 +6597,7 @@
     },
     {
       "address": "0x5e395c998487d6447ab8242ed93abe89ec7d2a49",
-      "accumulatedRewards": "17889723180755269475277"
+      "accumulatedRewards": "17889723180755268028385"
     },
     {
       "address": "0x5e3b906074a29dd2fb1d9ab304bfd927f603b720",
@@ -6605,11 +6605,11 @@
     },
     {
       "address": "0x5e64d21c698791e08411b5ddf6aa4f453db8288e",
-      "accumulatedRewards": "16454958538891569"
+      "accumulatedRewards": "16454958538891568"
     },
     {
       "address": "0x5e67d0ad959bd09b265d5baca131a86df2d6c518",
-      "accumulatedRewards": "18310056785164438"
+      "accumulatedRewards": "18310056785164437"
     },
     {
       "address": "0x5e68434130372d76372e69e1e2ab7b4c55739aa4",
@@ -6617,7 +6617,7 @@
     },
     {
       "address": "0x5e687f547d26732a3f1213e1c31432c3ef6810bc",
-      "accumulatedRewards": "143557981661440128365"
+      "accumulatedRewards": "143557981661440115103"
     },
     {
       "address": "0x5e8482a212a83b03c9cd114d3d1075022be0c469",
@@ -6629,7 +6629,7 @@
     },
     {
       "address": "0x5e9d5e9708e795676de79eca0f2a85e7c22ef1a0",
-      "accumulatedRewards": "729862672570999623"
+      "accumulatedRewards": "729862672570999563"
     },
     {
       "address": "0x5e9db173843d4bd2d9e275627d20ca402a6259b3",
@@ -6653,7 +6653,7 @@
     },
     {
       "address": "0x5ec8cd4881eba87279f5f243eb89ea9383e677c6",
-      "accumulatedRewards": "18203663229374426"
+      "accumulatedRewards": "18203663229374425"
     },
     {
       "address": "0x5ecc25d1f658af69d9b59fcaedb2d9ee38254036",
@@ -6669,7 +6669,7 @@
     },
     {
       "address": "0x5ef31854bd27c308305e87cbb09af526203c2ba4",
-      "accumulatedRewards": "36560566700524069"
+      "accumulatedRewards": "36560566700524068"
     },
     {
       "address": "0x5f078b8316e07ae4de7fc83d7f51363caabfdbf0",
@@ -6693,7 +6693,7 @@
     },
     {
       "address": "0x5fb3eea7d572b3bf5306f4604fcb680ed1314499",
-      "accumulatedRewards": "42028920785389566975"
+      "accumulatedRewards": "42028920785389566856"
     },
     {
       "address": "0x5fb4276164d953e0a9d89c68af14af9ba15e19a8",
@@ -6705,11 +6705,11 @@
     },
     {
       "address": "0x6017b1d17f4d7547dc4aac88fbd0aa1826e7e6ce",
-      "accumulatedRewards": "55766198995637401"
+      "accumulatedRewards": "55766198995637399"
     },
     {
       "address": "0x603a5d8404a412dad3227fc3baacb505451fa5be",
-      "accumulatedRewards": "102142881196378906940"
+      "accumulatedRewards": "102142881196378906880"
     },
     {
       "address": "0x60426573b136c8e75a3fc37fb915ed6922dc428e",
@@ -6729,7 +6729,7 @@
     },
     {
       "address": "0x6058f8e21d7d736b574e80c2b57e73fdf360bae0",
-      "accumulatedRewards": "418538264096934119"
+      "accumulatedRewards": "418538264096934118"
     },
     {
       "address": "0x6076908d835ddaaef6baaa7e3e0afd5ea00de09c",
@@ -6753,7 +6753,7 @@
     },
     {
       "address": "0x60c63bbb27f1f49f63eacadc773c79bf0c17ac7a",
-      "accumulatedRewards": "1836636431192329143489"
+      "accumulatedRewards": "1836636431192329142561"
     },
     {
       "address": "0x60d90a2fd9afcf1eda3ecad19adfd8332dc0198d",
@@ -6765,7 +6765,7 @@
     },
     {
       "address": "0x60f0bf76913f5caa2e8eb85ebaf3ea39005a3941",
-      "accumulatedRewards": "12703336714791854493"
+      "accumulatedRewards": "12703336714791854374"
     },
     {
       "address": "0x610db2bedfdb76cda7e2e80e9d3b7824659a3765",
@@ -6777,7 +6777,7 @@
     },
     {
       "address": "0x6124a2c1865e183a798006bfcccb2affdf6e9ce7",
-      "accumulatedRewards": "86465059528094318"
+      "accumulatedRewards": "86465059528094316"
     },
     {
       "address": "0x6160c7d7ce3261defc98148ef16988668ad4db89",
@@ -6893,7 +6893,7 @@
     },
     {
       "address": "0x62f25d0944a1b512a1d77e4dede57f72ffc8ef25",
-      "accumulatedRewards": "86558033981521617"
+      "accumulatedRewards": "86558033981521615"
     },
     {
       "address": "0x62ffccd63c0980a2c338c102b02f742dd5690d02",
@@ -6937,7 +6937,7 @@
     },
     {
       "address": "0x63a0e4cb6c4c3f372bd21352a68b3fcd9790d4b8",
-      "accumulatedRewards": "4856007549328031298858"
+      "accumulatedRewards": "4856007549328031298857"
     },
     {
       "address": "0x63ad559c100374ee365fc3cdfc1f0865804af311",
@@ -6945,7 +6945,7 @@
     },
     {
       "address": "0x63cd5a1aa7d01d006e70722194dbf100a75a017c",
-      "accumulatedRewards": "550699600305211396130"
+      "accumulatedRewards": "550699600305211327877"
     },
     {
       "address": "0x63e0c99876c42f21d8a75e09e2704ce8c0d77b22",
@@ -7061,7 +7061,7 @@
     },
     {
       "address": "0x65d32728ef3c2eb0a9517e830f4aaabf5705e4e8",
-      "accumulatedRewards": "179419524909210095"
+      "accumulatedRewards": "179419524909210093"
     },
     {
       "address": "0x65ec3714f95f97be2f3aa4a56126fa8d6bedf615",
@@ -7097,11 +7097,11 @@
     },
     {
       "address": "0x665edf68fec3877d0051cbc494c14af6647288b5",
-      "accumulatedRewards": "130054391691470679"
+      "accumulatedRewards": "130054391691470643"
     },
     {
       "address": "0x666f1e50c0743f1894067bcd371f07f0e16558d7",
-      "accumulatedRewards": "176030457939534440"
+      "accumulatedRewards": "176030457939534438"
     },
     {
       "address": "0x66735ac5ae66f42328ea5980b458648f06f1e444",
@@ -7117,7 +7117,7 @@
     },
     {
       "address": "0x668aaa35e90ebb1410deb2a3299ba07e4dd80bbb",
-      "accumulatedRewards": "87122414744004372"
+      "accumulatedRewards": "87122414744004370"
     },
     {
       "address": "0x668fab5429f363f87c17b1d9f7eada702cadae1f",
@@ -7133,7 +7133,7 @@
     },
     {
       "address": "0x66a3b3ae9789581bb77d8650eabbc8df43e9dbbc",
-      "accumulatedRewards": "2102219780472829371"
+      "accumulatedRewards": "2102219780472829345"
     },
     {
       "address": "0x66ad6ca79ae559d768451c802e74e89390e8570c",
@@ -7141,7 +7141,7 @@
     },
     {
       "address": "0x66b870ddf78c975af5cd8edc6de25eca81791de1",
-      "accumulatedRewards": "5810627166576506755139"
+      "accumulatedRewards": "5810627166576506755130"
     },
     {
       "address": "0x66c6ad51ae7f7ae9f887568daa15d5cda1b28169",
@@ -7205,7 +7205,7 @@
     },
     {
       "address": "0x678904309ee580adf92b393f78663bc4035b4c4f",
-      "accumulatedRewards": "117684984544257274"
+      "accumulatedRewards": "117684984544257271"
     },
     {
       "address": "0x67a1357e6fa2e79e2184ef491c8411057346ccc2",
@@ -7273,11 +7273,11 @@
     },
     {
       "address": "0x6877654e79119a7f9a8182bb2389e797ca421d24",
-      "accumulatedRewards": "25996100394427050"
+      "accumulatedRewards": "25996100394427049"
     },
     {
       "address": "0x6877bb79f680216bbdf01704939037f22193e771",
-      "accumulatedRewards": "158795389518764"
+      "accumulatedRewards": "158795389518763"
     },
     {
       "address": "0x687f4304df62449dbc6c95fe9a8cb1153d40d42e",
@@ -7365,7 +7365,7 @@
     },
     {
       "address": "0x69f7b279b60bef967e1b2466c50f20a312005689",
-      "accumulatedRewards": "849604702659733316"
+      "accumulatedRewards": "849604702659733076"
     },
     {
       "address": "0x6a0f70a8fcb1346061310af3efc4e3db2879d403",
@@ -7393,7 +7393,7 @@
     },
     {
       "address": "0x6a9065271055e710116209c8032d2e18e42535a7",
-      "accumulatedRewards": "90913862565766141"
+      "accumulatedRewards": "90913862565766140"
     },
     {
       "address": "0x6aa7d5110a4b4ca0e19cd19eaba92a35458a0766",
@@ -7417,7 +7417,7 @@
     },
     {
       "address": "0x6b040f5f255c02323e9d6873f7276969b396c4e9",
-      "accumulatedRewards": "88568526187727625605845"
+      "accumulatedRewards": "88568526187727625492056"
     },
     {
       "address": "0x6b1009e2bb8ee7f36c21f5f38f4f25f1b79bc02d",
@@ -7437,11 +7437,11 @@
     },
     {
       "address": "0x6b759bf480407d19c8903c16023c706868c29a2a",
-      "accumulatedRewards": "30070442838846979"
+      "accumulatedRewards": "30070442838846978"
     },
     {
       "address": "0x6b76000f1c36cf9cb08c1e84db64294692aa2207",
-      "accumulatedRewards": "765004909111322778"
+      "accumulatedRewards": "765004909111322775"
     },
     {
       "address": "0x6b7aa5d572fbcb67252165def631305e00c49f7b",
@@ -7449,7 +7449,7 @@
     },
     {
       "address": "0x6b7f11e5fa6d003914a0a89601648f521f6ec479",
-      "accumulatedRewards": "133050947037606117"
+      "accumulatedRewards": "133050947037606115"
     },
     {
       "address": "0x6bbd83382e96cb6f6a934c34836a6db1d9d41633",
@@ -7525,7 +7525,7 @@
     },
     {
       "address": "0x6cc87c563694ce0c9ecc525d9acab7e4e279903c",
-      "accumulatedRewards": "18234249115732404"
+      "accumulatedRewards": "18234249115732403"
     },
     {
       "address": "0x6cd72b1e6e300340a48943d6af34ef5ae07d3577",
@@ -7537,7 +7537,7 @@
     },
     {
       "address": "0x6ce9928f0f080c7ed4ae1f5940e7bca770f723c6",
-      "accumulatedRewards": "19737840729547659"
+      "accumulatedRewards": "19737840729547658"
     },
     {
       "address": "0x6cf10a8639cac555953ce7cb84cff660d48172ca",
@@ -7601,7 +7601,7 @@
     },
     {
       "address": "0x6dc28076d3a1b2f27ba9d0489307ff72fca8bdd4",
-      "accumulatedRewards": "7199541440246129123740"
+      "accumulatedRewards": "7199541440246129093239"
     },
     {
       "address": "0x6df0336557f1f51b26ff89b2f76bbb74f1867e89",
@@ -7637,7 +7637,7 @@
     },
     {
       "address": "0x6e632701fd42a9b856294a2172dd63f03eb957c5",
-      "accumulatedRewards": "18233712399872066044408"
+      "accumulatedRewards": "18233712399872066044396"
     },
     {
       "address": "0x6e726745b61c9c78b6259fc550f23490ce9f3a52",
@@ -7669,7 +7669,7 @@
     },
     {
       "address": "0x6ed29609ddeadc9d314ecf2dbc935426caf9928e",
-      "accumulatedRewards": "82569122819822492"
+      "accumulatedRewards": "82569122819822491"
     },
     {
       "address": "0x6eeba00ee2a7d205564c1959f8afa9510a03d7ac",
@@ -7729,7 +7729,7 @@
     },
     {
       "address": "0x6f745bb328a35d81a021c3d38cecd381852aeaf1",
-      "accumulatedRewards": "208668577685075063"
+      "accumulatedRewards": "208668577685075059"
     },
     {
       "address": "0x6f9bb7e454f5b3eb2310343f0e99269dc2bb8a1d",
@@ -7741,7 +7741,7 @@
     },
     {
       "address": "0x6fb25fdd52f0375a7d0a1b248eedf84653dbaa57",
-      "accumulatedRewards": "73483988381913520"
+      "accumulatedRewards": "73483988381913519"
     },
     {
       "address": "0x6fb2e4bfc55613eba4b912ac1b436b1b6103eb89",
@@ -7825,7 +7825,7 @@
     },
     {
       "address": "0x70f8d6733c2daf385e4bbd9a965a06ca5ddf74bd",
-      "accumulatedRewards": "17662188543036479"
+      "accumulatedRewards": "17662188543036478"
     },
     {
       "address": "0x71097a0c58ddbfaeec9c7a373a4fc0d74582c6d0",
@@ -7861,7 +7861,7 @@
     },
     {
       "address": "0x7193259d8e0955480eef1980733d3c633c906db2",
-      "accumulatedRewards": "5779151175787776"
+      "accumulatedRewards": "5779151175787775"
     },
     {
       "address": "0x7193a98cc8a4ca99bd63bad75b0360861ceb0fa7",
@@ -7889,7 +7889,7 @@
     },
     {
       "address": "0x71ffa00cc5045be72b301dde8b4afa8a6ec44d8d",
-      "accumulatedRewards": "77773541892056175"
+      "accumulatedRewards": "77773541892056155"
     },
     {
       "address": "0x7206bc81e2c52441eeffe120118ac880f4528dda",
@@ -7901,7 +7901,7 @@
     },
     {
       "address": "0x72146a3ead3a256e8a2189e3cedc0b7bd61991ed",
-      "accumulatedRewards": "18558651854913090515354"
+      "accumulatedRewards": "18558651854913089621237"
     },
     {
       "address": "0x72153f1040bdfe6961bb73448f1af265b2bfdf0b",
@@ -7989,7 +7989,7 @@
     },
     {
       "address": "0x73384df5e469dd98f27edb0bc3b2d5415c95e651",
-      "accumulatedRewards": "31551998505995643973"
+      "accumulatedRewards": "31551998505995641867"
     },
     {
       "address": "0x7338afb07db145220849b04a45243956f20b14d9",
@@ -8005,7 +8005,7 @@
     },
     {
       "address": "0x736766b9a41aceea10c89aa93468d93b1aae1907",
-      "accumulatedRewards": "182270597375746949"
+      "accumulatedRewards": "182270597375746947"
     },
     {
       "address": "0x736dde3e0f5c588ddc53ad7f0f65667c0cca2801",
@@ -8193,7 +8193,7 @@
     },
     {
       "address": "0x76de3a7204e62f15ff6b106bcef8372d10045feb",
-      "accumulatedRewards": "273164717659698598"
+      "accumulatedRewards": "273164717659698594"
     },
     {
       "address": "0x76e059c6ff6bf9fffd5f33afdf4ab2fd511c9df4",
@@ -8217,7 +8217,7 @@
     },
     {
       "address": "0x771b36164c96991f3757fc3ad6e0ab972661d643",
-      "accumulatedRewards": "1048717521312251120"
+      "accumulatedRewards": "1048717521312251118"
     },
     {
       "address": "0x771fcb69f5210f47e10acf45e6b86036bf8b70be",
@@ -8225,7 +8225,7 @@
     },
     {
       "address": "0x7724d9dc4ff230740c762466c743887d42813beb",
-      "accumulatedRewards": "2602616872491795947079"
+      "accumulatedRewards": "2602616872491795947078"
     },
     {
       "address": "0x7729de7dad47e5c283c249f2c21a64f494946723",
@@ -8233,11 +8233,11 @@
     },
     {
       "address": "0x7743526ba3ae2798fa34f9957b0727e42966a209",
-      "accumulatedRewards": "175753462580995621"
+      "accumulatedRewards": "175753462580995618"
     },
     {
       "address": "0x775a74c50abb9c58545e6e4da71ba909f6f20e2a",
-      "accumulatedRewards": "4592258436085520541594"
+      "accumulatedRewards": "4592258436085520520106"
     },
     {
       "address": "0x777c94f5aa8efd3dcde73553adce1661e61ec98b",
@@ -8297,7 +8297,7 @@
     },
     {
       "address": "0x7889eb374e8d7d48ff6ebf005014a72fc2c35009",
-      "accumulatedRewards": "180376828495238148"
+      "accumulatedRewards": "180376828495238144"
     },
     {
       "address": "0x78a4c006ac85ccf41d71b804c2a6e00a3793cb77",
@@ -8373,7 +8373,7 @@
     },
     {
       "address": "0x79a71b809a5211e5d54380a484241b9e37375f71",
-      "accumulatedRewards": "169363670341340921"
+      "accumulatedRewards": "169363670341340920"
     },
     {
       "address": "0x79b5e2b16f30a02e5ae24ebb94211c548ccb8ed0",
@@ -8405,7 +8405,7 @@
     },
     {
       "address": "0x79f2188ef9350a1dc11a062cca0abe90684b0197",
-      "accumulatedRewards": "412337987460486149855616"
+      "accumulatedRewards": "412337987460486149034457"
     },
     {
       "address": "0x7a0819b5c64bc8c01009404f6a300792d11204a9",
@@ -8501,7 +8501,7 @@
     },
     {
       "address": "0x7c07162e7a709366c0f3b9953e71135acc1a18bc",
-      "accumulatedRewards": "15019166943546031"
+      "accumulatedRewards": "15019166943546030"
     },
     {
       "address": "0x7c1b4a9a223b5ab96244e2cd96192c8328e36a6f",
@@ -8549,7 +8549,7 @@
     },
     {
       "address": "0x7cc696a7734f459d55d1b4d716b1f56416f0c21f",
-      "accumulatedRewards": "3532698586857869"
+      "accumulatedRewards": "3532698586857868"
     },
     {
       "address": "0x7cd2d630acd401b0b1e79a9b25271c93bad0f23c",
@@ -8569,7 +8569,7 @@
     },
     {
       "address": "0x7d4053510c0e2ce0f127cf890fdb84f1a36cdc6d",
-      "accumulatedRewards": "3372020500745086"
+      "accumulatedRewards": "3372020500745085"
     },
     {
       "address": "0x7d55507f7d96b373706c0131fffbc4ffdcb3b6f6",
@@ -8649,11 +8649,11 @@
     },
     {
       "address": "0x7e911455fb8e091ec05b8c93a019c61c845a84a3",
-      "accumulatedRewards": "15882665041759032"
+      "accumulatedRewards": "15882665041759031"
     },
     {
       "address": "0x7e939785e4202d42d22187292328dc9ff3025d97",
-      "accumulatedRewards": "48277431231877476562"
+      "accumulatedRewards": "48277431231877476205"
     },
     {
       "address": "0x7e9463a9505bf728359d7d5498dea59d03b96a69",
@@ -8661,11 +8661,11 @@
     },
     {
       "address": "0x7e95da20083bcb74fecec9c77966c7d376b5a0d0",
-      "accumulatedRewards": "91178246721390349"
+      "accumulatedRewards": "91178246721390348"
     },
     {
       "address": "0x7e9ef520c25a7aaae7b516bc154a0e1b05bc4a4b",
-      "accumulatedRewards": "211603592433298165"
+      "accumulatedRewards": "211603592433298164"
     },
     {
       "address": "0x7ec1d91d2b32a976dc8cce1658b8e8e3faa2ab91",
@@ -8725,11 +8725,11 @@
     },
     {
       "address": "0x7f7a70b5b584c4033cafd52219a496df9afb1af7",
-      "accumulatedRewards": "599551457829605356"
+      "accumulatedRewards": "599551457829605354"
     },
     {
       "address": "0x7f7b77e49d5b30445f222764a794afe14af062eb",
-      "accumulatedRewards": "1939288181350583013580"
+      "accumulatedRewards": "1939288181350582983695"
     },
     {
       "address": "0x7f7ed74ba8d347640a0a4150751879efa6a5c8cf",
@@ -8745,11 +8745,11 @@
     },
     {
       "address": "0x7fb38b567d4c89523327a0353f54b26f5e4a92f4",
-      "accumulatedRewards": "91941290463402719"
+      "accumulatedRewards": "91941290463402717"
     },
     {
       "address": "0x7fbd2bf38983fa8ccc5b121d8d97aab1325121d8",
-      "accumulatedRewards": "88481020202212567041614"
+      "accumulatedRewards": "88481020202212565826904"
     },
     {
       "address": "0x7fdfde5c93424db1628ca72e85d1609cf7406fc3",
@@ -8877,7 +8877,7 @@
     },
     {
       "address": "0x81cb7a3b214af3c397575d175c29dc5b92211895",
-      "accumulatedRewards": "1794743956320292"
+      "accumulatedRewards": "1794743956320291"
     },
     {
       "address": "0x81cf5f80e6c9b9653155db40dc3176f3938f5d34",
@@ -8909,7 +8909,7 @@
     },
     {
       "address": "0x826ff512767debddb34830aa71eaec312fecbadd",
-      "accumulatedRewards": "18050207101088980"
+      "accumulatedRewards": "18050207101088979"
     },
     {
       "address": "0x8279332350a8ff7a6ef5811067715cc650568609",
@@ -9029,7 +9029,7 @@
     },
     {
       "address": "0x8450a7852495dafe063c3e436d0750698777965c",
-      "accumulatedRewards": "363010685216747125"
+      "accumulatedRewards": "363010685216747120"
     },
     {
       "address": "0x846976adde6f17afd4590312781dca81455c21d8",
@@ -9037,11 +9037,11 @@
     },
     {
       "address": "0x8493e14df08adcec9fcccc82309da73aad0ae163",
-      "accumulatedRewards": "170269544580193673762"
+      "accumulatedRewards": "170269544580193669984"
     },
     {
       "address": "0x84a6b0c091c57313e3350b1c9d59472517f60d41",
-      "accumulatedRewards": "178186596719953169"
+      "accumulatedRewards": "178186596719953167"
     },
     {
       "address": "0x84b81987f6ca3cde2a50daca42a58a132099c731",
@@ -9049,7 +9049,7 @@
     },
     {
       "address": "0x84d3e4ee550dd5f99e76a548ac59a6be1c8dcf79",
-      "accumulatedRewards": "3424355841676798922115"
+      "accumulatedRewards": "3424355841676798922097"
     },
     {
       "address": "0x84d7fc36d3808f37a2353bd8731aa14ab4d2d269",
@@ -9065,7 +9065,7 @@
     },
     {
       "address": "0x850fdab7c76cde1de8a0e4601cfd125cb28619ae",
-      "accumulatedRewards": "83718703385211567"
+      "accumulatedRewards": "83718703385211566"
     },
     {
       "address": "0x85215ed0e12633232c431cb83d28af4c02de1176",
@@ -9117,7 +9117,7 @@
     },
     {
       "address": "0x85b3f50e9d3e902123fa6d3469511029be7c51f2",
-      "accumulatedRewards": "86082832994814915"
+      "accumulatedRewards": "86082832994814913"
     },
     {
       "address": "0x85c1bbdc1b6a199e0964cb849deb59aef3045edd",
@@ -9125,7 +9125,7 @@
     },
     {
       "address": "0x85d267e1d13329015832db1d5ab5a091786e6abd",
-      "accumulatedRewards": "80726576144926360"
+      "accumulatedRewards": "80726576144926359"
     },
     {
       "address": "0x85d33380514aba3ae6cf1c58ad9717a2b1cf0272",
@@ -9133,7 +9133,7 @@
     },
     {
       "address": "0x86070222395d2035ec39d55aaf2d93170b12babf",
-      "accumulatedRewards": "15870004902469375"
+      "accumulatedRewards": "15870004902469374"
     },
     {
       "address": "0x861fbb19287ed2ac3efda31a4add660c5f19e10c",
@@ -9193,7 +9193,7 @@
     },
     {
       "address": "0x86d888c3fa8a7f67452ef2eccc1c5ee9751ec8d6",
-      "accumulatedRewards": "62586238663794150662991"
+      "accumulatedRewards": "62586238663794150289125"
     },
     {
       "address": "0x86ff9a5c9c2ce39f7a29468cb5e9e77aeb5a37a4",
@@ -9201,7 +9201,7 @@
     },
     {
       "address": "0x871f860f5afea55be0c5ea6db1ab942e4b7c871d",
-      "accumulatedRewards": "36301529997040172"
+      "accumulatedRewards": "36301529997040171"
     },
     {
       "address": "0x872fe504fd4dde50aaba66a1f3625b88db4133c3",
@@ -9277,7 +9277,7 @@
     },
     {
       "address": "0x886cf30e5f7c6f69ef1be1173a53a6dd04e76966",
-      "accumulatedRewards": "7124832880482707"
+      "accumulatedRewards": "7124832880482706"
     },
     {
       "address": "0x886f848121a30c06755621c1895b1c283140ebe8",
@@ -9309,11 +9309,11 @@
     },
     {
       "address": "0x88c3cdf79f47ab7af8efcb081771487ff13bf029",
-      "accumulatedRewards": "1796773005368639191"
+      "accumulatedRewards": "1796773005368639168"
     },
     {
       "address": "0x88d250d0b8aa228f04963dfba7d44d6a2812dc9a",
-      "accumulatedRewards": "793870246006650583833"
+      "accumulatedRewards": "793870246006650583808"
     },
     {
       "address": "0x88f2cf42df0bb1da7eefc022ba3a8fae23a3751c",
@@ -9325,7 +9325,7 @@
     },
     {
       "address": "0x890217f486ef6ff90071fae436045b64e96df080",
-      "accumulatedRewards": "140762563488950186"
+      "accumulatedRewards": "140762563488950184"
     },
     {
       "address": "0x891172c09f509abe701a81314865d74d942f0592",
@@ -9357,7 +9357,7 @@
     },
     {
       "address": "0x897e3bd5c79471c1ab6ec50eda572094ef0eb79c",
-      "accumulatedRewards": "1992731344332257921"
+      "accumulatedRewards": "1992731344332257898"
     },
     {
       "address": "0x899d383c124f31d6f6a738303b6f992a0ed78aa7",
@@ -9381,11 +9381,11 @@
     },
     {
       "address": "0x89d67eef9fec1df2403851dff42308d0bce3d6ce",
-      "accumulatedRewards": "13005822202357317"
+      "accumulatedRewards": "13005822202357316"
     },
     {
       "address": "0x89dddb1f6cb7746b9dd33270c44290d52db52eca",
-      "accumulatedRewards": "383245004688670083"
+      "accumulatedRewards": "383245004688670071"
     },
     {
       "address": "0x89fbe6875c932258b5541e2c1d3f64e597fb83c4",
@@ -9413,7 +9413,7 @@
     },
     {
       "address": "0x8a24c361542f9b3166c91198e6b3d239eb6026b0",
-      "accumulatedRewards": "149855807336920289"
+      "accumulatedRewards": "149855807336920285"
     },
     {
       "address": "0x8a259ac7276b58b49b9f2dcc8addd19cc3165943",
@@ -9425,7 +9425,7 @@
     },
     {
       "address": "0x8a382963114358b0cb650b4c922423ffdfd7af30",
-      "accumulatedRewards": "9674974230517026631"
+      "accumulatedRewards": "9674974230517026562"
     },
     {
       "address": "0x8a53078703c02e56025a7f69cdf5788c39f729ae",
@@ -9445,7 +9445,7 @@
     },
     {
       "address": "0x8a9e280520aca398c34f55666cb029774fa4e2c1",
-      "accumulatedRewards": "6110265837835559600498"
+      "accumulatedRewards": "6110265837835559600497"
     },
     {
       "address": "0x8ab60a95b492631ac6c2fb968271458dc6ef09d4",
@@ -9453,7 +9453,7 @@
     },
     {
       "address": "0x8ad6e07e29c9450c77f198001408dd1ceec46f53",
-      "accumulatedRewards": "60444431976497904"
+      "accumulatedRewards": "60444431976497902"
     },
     {
       "address": "0x8ae4c29c97a9dfba7a4440c6336a7d37eba0e12c",
@@ -9465,7 +9465,7 @@
     },
     {
       "address": "0x8aecbd84562a788ad6180779f081915d6a24db71",
-      "accumulatedRewards": "1827340427007490006"
+      "accumulatedRewards": "1827340427007489887"
     },
     {
       "address": "0x8af7e426af2ffcb939b9bb164a807dba76adc40d",
@@ -9497,7 +9497,7 @@
     },
     {
       "address": "0x8b5b1d02aab4e10e49507e89d2be10a382d52b57",
-      "accumulatedRewards": "258667021437883364"
+      "accumulatedRewards": "258667021437883290"
     },
     {
       "address": "0x8b6132da199fc59afc5ee1efa43074f39da3dd8a",
@@ -9509,7 +9509,7 @@
     },
     {
       "address": "0x8b6ed349546bfdd5a4f758a28b05cf29465904ec",
-      "accumulatedRewards": "1213747418633638873"
+      "accumulatedRewards": "1213747418633638527"
     },
     {
       "address": "0x8b82272422f2b51b5405dd9d30e60e901ce7f132",
@@ -9533,7 +9533,7 @@
     },
     {
       "address": "0x8bd431fff72b55231d562482e7661997a16e0a3b",
-      "accumulatedRewards": "448671641032919703317"
+      "accumulatedRewards": "448671641032919703316"
     },
     {
       "address": "0x8be67e95d9f4bf907b22f871f7133ca448d22e0a",
@@ -9569,11 +9569,11 @@
     },
     {
       "address": "0x8cc2af700d686e7e21135681511992c972dbd8ea",
-      "accumulatedRewards": "79754065232232326994839"
+      "accumulatedRewards": "79754065232232325757361"
     },
     {
       "address": "0x8ce0d9060263b1b5ad3eff2e1e21736b5ef36936",
-      "accumulatedRewards": "665232542810951685576"
+      "accumulatedRewards": "665232542810951614191"
     },
     {
       "address": "0x8cee01caf1def1ec0b3a3025b853f6f1f25b7ddd",
@@ -9585,7 +9585,7 @@
     },
     {
       "address": "0x8d0cf15d459b98fcc84a56d86737f44ff2204751",
-      "accumulatedRewards": "1829225515805994704"
+      "accumulatedRewards": "1829225515805994680"
     },
     {
       "address": "0x8d26c9dac7e16738752fa1446b956a97c63e2f39",
@@ -9601,7 +9601,7 @@
     },
     {
       "address": "0x8d810e81d10670da7acb54af4bb426aa53513265",
-      "accumulatedRewards": "89360604995702045"
+      "accumulatedRewards": "89360604995702042"
     },
     {
       "address": "0x8d85114de0e28d55ccc33162b265a2dcdffa3cc8",
@@ -9645,7 +9645,7 @@
     },
     {
       "address": "0x8e02247d3ee0e6153495c971ffd45aa131f4d7cb",
-      "accumulatedRewards": "43579230763619186932084"
+      "accumulatedRewards": "43579230763619186402109"
     },
     {
       "address": "0x8e037928ff9bf70c576a6137475d2d5f278622a6",
@@ -9689,11 +9689,11 @@
     },
     {
       "address": "0x8ed36ef9f066117203d1bb199d4d41fa2565e3e9",
-      "accumulatedRewards": "74142795624189027"
+      "accumulatedRewards": "74142795624189026"
     },
     {
       "address": "0x8ed591d1d1cdf23a988463b8c0eb2e155e92986c",
-      "accumulatedRewards": "109220328517431205"
+      "accumulatedRewards": "109220328517431203"
     },
     {
       "address": "0x8edc091f695a2508bb24164cf7ab8578911623a1",
@@ -9705,7 +9705,7 @@
     },
     {
       "address": "0x8ee8bec88c2e2b6d1c464f856f90ea9ea5dba947",
-      "accumulatedRewards": "62485559824811720"
+      "accumulatedRewards": "62485559824811719"
     },
     {
       "address": "0x8f226613d91be66e233b618d87c3dd0cc874a1c5",
@@ -9721,11 +9721,11 @@
     },
     {
       "address": "0x8f5915a19eb2ba78bc90ad0317d9ed0d161cbfec",
-      "accumulatedRewards": "54142739291108736"
+      "accumulatedRewards": "54142739291108735"
     },
     {
       "address": "0x8f60d79fe3df6cd0e3a44288ad2f41af134d813e",
-      "accumulatedRewards": "186636600318027841611"
+      "accumulatedRewards": "186636600318027841610"
     },
     {
       "address": "0x8f70f795ca5ca5cf8ffc2e9d1b8b621c2420df8d",
@@ -9741,7 +9741,7 @@
     },
     {
       "address": "0x8f7e9771c13772a68e4f2e30600f7387615dfbbc",
-      "accumulatedRewards": "110507530730112360"
+      "accumulatedRewards": "110507530730112358"
     },
     {
       "address": "0x8f88eae3e1c01d60bccdc3db3cbd5362dd55d707",
@@ -9757,7 +9757,7 @@
     },
     {
       "address": "0x8fa3aca9c712f3f582c8c6053e465c3f4db3cb83",
-      "accumulatedRewards": "88873454430520704"
+      "accumulatedRewards": "88873454430520703"
     },
     {
       "address": "0x8fa519aad116897b6df00c4d36b8c7f6ce7959dc",
@@ -9793,7 +9793,7 @@
     },
     {
       "address": "0x8ff46318cd4591152d4269c135f44d37e53882d2",
-      "accumulatedRewards": "89824047764460921"
+      "accumulatedRewards": "89824047764460919"
     },
     {
       "address": "0x9015046a8b30453b878b6109842cc832c34b8442",
@@ -9845,7 +9845,7 @@
     },
     {
       "address": "0x9109358674f1c9a1a945a1d9880fb7ef1ddc43a3",
-      "accumulatedRewards": "319469964009539816"
+      "accumulatedRewards": "319469964009539812"
     },
     {
       "address": "0x910e413dbf3f6276fe8213ff656726bdc142e08e",
@@ -9861,7 +9861,7 @@
     },
     {
       "address": "0x915188a790dcdd06447244196694c9f8a7d2b4c0",
-      "accumulatedRewards": "18920126813019888591"
+      "accumulatedRewards": "18920126813019888389"
     },
     {
       "address": "0x915628728ef96a9af839ef35c46813334c7967fb",
@@ -9893,11 +9893,11 @@
     },
     {
       "address": "0x91f10cffdeb9701f2a03d72ff309fb08857a9b49",
-      "accumulatedRewards": "124159616852732427"
+      "accumulatedRewards": "124159616852732425"
     },
     {
       "address": "0x91f82fd5259d839f4fd60bf7065d8ec812ad7304",
-      "accumulatedRewards": "621478467388749073"
+      "accumulatedRewards": "621478467388749066"
     },
     {
       "address": "0x91fe4e944355021337c871191cad18fb3eb80cdd",
@@ -9925,7 +9925,7 @@
     },
     {
       "address": "0x9241f27daffd0bb1df4f2a022584dd6c77843e64",
-      "accumulatedRewards": "90271457021086378"
+      "accumulatedRewards": "90271457021086377"
     },
     {
       "address": "0x925c4798df848fa2bf11f44c97d36c38c19560f4",
@@ -9945,7 +9945,7 @@
     },
     {
       "address": "0x92b41b1e7624acb020e17736cfee395f750734cd",
-      "accumulatedRewards": "867153625727406409"
+      "accumulatedRewards": "867153625727406397"
     },
     {
       "address": "0x92b52e6441a9e2e03d080e951249d93df222f855",
@@ -10009,7 +10009,7 @@
     },
     {
       "address": "0x9398563acd4539df8f2c613f964c2ecbe6020d6b",
-      "accumulatedRewards": "719686326756747788832"
+      "accumulatedRewards": "719686326756747785980"
     },
     {
       "address": "0x93b05fa4dbf106f90dc6d1c7d6a37c537ff93bef",
@@ -10017,7 +10017,7 @@
     },
     {
       "address": "0x93b4861ff43e923403a5fab829f51ad94abbc697",
-      "accumulatedRewards": "12831847611770949377"
+      "accumulatedRewards": "12831847611770949258"
     },
     {
       "address": "0x93cafc0a320db75a0d2f44093486af22f8a2d9cb",
@@ -10025,7 +10025,7 @@
     },
     {
       "address": "0x93cdb0a93fc36f6a53ed21ecf6305ab80d06beca",
-      "accumulatedRewards": "5501247633943674304"
+      "accumulatedRewards": "5501247633943674280"
     },
     {
       "address": "0x93ce6a68e27dea150202639a93bda83da6f82522",
@@ -10097,7 +10097,7 @@
     },
     {
       "address": "0x9540cef7ac93b3ba383de26c216bd4c835958db7",
-      "accumulatedRewards": "114724081140541558838"
+      "accumulatedRewards": "114724081140541558828"
     },
     {
       "address": "0x9542d56b89830c60082de0c976f2e72a633e24fd",
@@ -10161,7 +10161,7 @@
     },
     {
       "address": "0x96220ee15fae67ce74f83b845a5da277c994316f",
-      "accumulatedRewards": "687225072571335405849"
+      "accumulatedRewards": "687225072571335401377"
     },
     {
       "address": "0x9622ea8006df15c88e8e85bd00fe825b7d622c91",
@@ -10185,7 +10185,7 @@
     },
     {
       "address": "0x965658b4bd00dd1967cc4f8220462b6007f15860",
-      "accumulatedRewards": "91942009047046363"
+      "accumulatedRewards": "91942009047046361"
     },
     {
       "address": "0x9667fb9fce99ce1d0e6604cd518aed31796c771e",
@@ -10197,7 +10197,7 @@
     },
     {
       "address": "0x9680f3957510cf85751a096c2194520c36a4a003",
-      "accumulatedRewards": "182757122663645906"
+      "accumulatedRewards": "182757122663645904"
     },
     {
       "address": "0x968db69978f99339c5b31f2d0fe0b29666b494d5",
@@ -10213,11 +10213,11 @@
     },
     {
       "address": "0x96aeb73377aafae3453d4fb00b3834c26e773ef3",
-      "accumulatedRewards": "89453134500499610"
+      "accumulatedRewards": "89453134500499609"
     },
     {
       "address": "0x96b289aa02d0bb8137249fb0c73235fe1364e6b1",
-      "accumulatedRewards": "1573997637144703"
+      "accumulatedRewards": "1573997637144702"
     },
     {
       "address": "0x96be275ea2714b72b06e621e48c4bcb967478d59",
@@ -10257,7 +10257,7 @@
     },
     {
       "address": "0x97a1ca841b4792068932d4224681f6f6fa22c549",
-      "accumulatedRewards": "91200831136037931"
+      "accumulatedRewards": "91200831136037930"
     },
     {
       "address": "0x97b102e00d88f02debfd6b1e4b901dd6931bb982",
@@ -10277,7 +10277,7 @@
     },
     {
       "address": "0x97e6e0a40a3d02f12d1cec30ebfbae04e37c119e",
-      "accumulatedRewards": "11970404644849770133210"
+      "accumulatedRewards": "11970404644849770133209"
     },
     {
       "address": "0x97f7b2a3b4769c3a42cabbcaa3e1cd25e5cb0b71",
@@ -10285,7 +10285,7 @@
     },
     {
       "address": "0x97fec670e5de7ace9e4860dd70e1b85459ec5628",
-      "accumulatedRewards": "89791335938664120"
+      "accumulatedRewards": "89791335938664118"
     },
     {
       "address": "0x97ff9d7affdb6df77487dcbc9fab993a54739542",
@@ -10353,7 +10353,7 @@
     },
     {
       "address": "0x98df8f57deaceb3cda505c1682af669453b6bdae",
-      "accumulatedRewards": "51419394299390785"
+      "accumulatedRewards": "51419394299390783"
     },
     {
       "address": "0x98e1c01f7b034ba032a609951991598235b33fec",
@@ -10365,7 +10365,7 @@
     },
     {
       "address": "0x990f5d39c304e2fc6ece1d5242f32f317a21171d",
-      "accumulatedRewards": "677255224905987417"
+      "accumulatedRewards": "677255224905987415"
     },
     {
       "address": "0x9915c60340e773ba76cfb785d3f11c9511615529",
@@ -10457,7 +10457,7 @@
     },
     {
       "address": "0x9a80eaeb969002b40102e506c466f7a126a87623",
-      "accumulatedRewards": "307458793170746427788"
+      "accumulatedRewards": "307458793170746386588"
     },
     {
       "address": "0x9a82aa6edbc473a883b8906bf41084c9c1b760f2",
@@ -10549,7 +10549,7 @@
     },
     {
       "address": "0x9ba01dc4e5de13257e9dfd01fa68132b41d1e766",
-      "accumulatedRewards": "14270720676413036"
+      "accumulatedRewards": "14270720676413035"
     },
     {
       "address": "0x9ba961989dd6609ed091f512be947118c40f2291",
@@ -10589,11 +10589,11 @@
     },
     {
       "address": "0x9c2ead57d679abc42a5bbc8a14137c89d511842a",
-      "accumulatedRewards": "21091490937678180942"
+      "accumulatedRewards": "21091490937678180682"
     },
     {
       "address": "0x9c303de078c7252964059cb252d0dce2bdaa568f",
-      "accumulatedRewards": "34740652033880253"
+      "accumulatedRewards": "34740652033880252"
     },
     {
       "address": "0x9c3d2a3d1ef41faca89cbcbdf3e5a10cf8351e96",
@@ -10601,7 +10601,7 @@
     },
     {
       "address": "0x9c4dbed250c8be5b29356234ec77cf6ccd155b8d",
-      "accumulatedRewards": "28199248240957944"
+      "accumulatedRewards": "28199248240957943"
     },
     {
       "address": "0x9c7b84be5d69bb41a718a4af921e44730a277f90",
@@ -10633,11 +10633,11 @@
     },
     {
       "address": "0x9ca8f9f348614ec96ee2e77b44d9c90a0345f374",
-      "accumulatedRewards": "15027937917282248"
+      "accumulatedRewards": "15027937917282247"
     },
     {
       "address": "0x9cbef581b10b68f787ab27bfd22d765d3796f4c6",
-      "accumulatedRewards": "3412732699357137246761"
+      "accumulatedRewards": "3412732699357137225553"
     },
     {
       "address": "0x9cbf099ff424979439dfba03f00b5961784c06ce",
@@ -10705,7 +10705,7 @@
     },
     {
       "address": "0x9da0f35bfd20001d3e8ba4ca13040069a9529d4d",
-      "accumulatedRewards": "139693211791485561188"
+      "accumulatedRewards": "139693211791485555563"
     },
     {
       "address": "0x9da53d7bf084005b6e15ffaf583648518743a8a2",
@@ -10717,7 +10717,7 @@
     },
     {
       "address": "0x9dad44b936b219d8492b6b34ec5d388b9e70cd55",
-      "accumulatedRewards": "3266343438103928702831"
+      "accumulatedRewards": "3266343438103928691232"
     },
     {
       "address": "0x9dadcad82069252c9e1e404e3bd1c3a2853120c0",
@@ -10773,7 +10773,7 @@
     },
     {
       "address": "0x9e1e03b4e439c2126f42e7b92bbc75ca9173880f",
-      "accumulatedRewards": "81624931392765540"
+      "accumulatedRewards": "81624931392765538"
     },
     {
       "address": "0x9e1e303635910c2d398647313170b11fc41cb0dc",
@@ -10789,7 +10789,7 @@
     },
     {
       "address": "0x9e4d15e0ecb571e7e66831334519c76130f29636",
-      "accumulatedRewards": "90311901101875517"
+      "accumulatedRewards": "90311901101875516"
     },
     {
       "address": "0x9e5b0dc8a5495b897124e83270b388e894766cdf",
@@ -10813,7 +10813,7 @@
     },
     {
       "address": "0x9ed5194f7506d71eed9facb203b80ad03ae8f2ed",
-      "accumulatedRewards": "2785337035042442505286"
+      "accumulatedRewards": "2785337035042442505285"
     },
     {
       "address": "0x9ede98c53dcd36da231bf2b971f29782e31263b7",
@@ -10861,7 +10861,7 @@
     },
     {
       "address": "0x9f60699ce23f1ab86ec3e095b477ff79d4f409ad",
-      "accumulatedRewards": "930042221374180334"
+      "accumulatedRewards": "930042221374180329"
     },
     {
       "address": "0x9f620ccbcb854f15575bcefffc41dac3173f2b48",
@@ -10881,7 +10881,7 @@
     },
     {
       "address": "0x9f902e72bd7e58270e5c05349a0681fb89c71cfa",
-      "accumulatedRewards": "178949613097278962"
+      "accumulatedRewards": "178949613097278960"
     },
     {
       "address": "0x9fa23d27bc93533cd29e6038275611c829813147",
@@ -10905,7 +10905,7 @@
     },
     {
       "address": "0x9fdc7e37e25ee6cae836633bb7a519e1fdbc7d9e",
-      "accumulatedRewards": "97704765597370458"
+      "accumulatedRewards": "97704765597370419"
     },
     {
       "address": "0x9fe2617411adedf8d4067b0172ec5b17eec85de3",
@@ -10977,15 +10977,15 @@
     },
     {
       "address": "0xa0a7a7cd980070728a0ecf83d3769477e64d1605",
-      "accumulatedRewards": "456187404117970915164"
+      "accumulatedRewards": "456187404117970909344"
     },
     {
       "address": "0xa0bb9170b5b40c7e33b8c9e489f27844c7f05f18",
-      "accumulatedRewards": "201095666487747060"
+      "accumulatedRewards": "201095666487747058"
     },
     {
       "address": "0xa0caa6aede25309bfc03143168293f795364de0a",
-      "accumulatedRewards": "17035676320531959684286"
+      "accumulatedRewards": "17035676320531959684098"
     },
     {
       "address": "0xa0cfa4bdc4032c790ae1f517c9d6a22d8885d8af",
@@ -10993,7 +10993,7 @@
     },
     {
       "address": "0xa0f5348dc71bbc46a09bccbec0154577f1173b60",
-      "accumulatedRewards": "278985076718208955"
+      "accumulatedRewards": "278985076718208954"
     },
     {
       "address": "0xa10d11eb58c417b639fa977c297275e6db6acfcf",
@@ -11009,7 +11009,7 @@
     },
     {
       "address": "0xa12d9a7f58f4ff66798ee160037df13ec5360222",
-      "accumulatedRewards": "676514947795015084297"
+      "accumulatedRewards": "676514947795015082655"
     },
     {
       "address": "0xa142090def0fb59a2307fc097b01a78353a59ab8",
@@ -11025,7 +11025,7 @@
     },
     {
       "address": "0xa18453f015034d42d6c8169c3d88d2a01f52a180",
-      "accumulatedRewards": "360049820227675337"
+      "accumulatedRewards": "360049820227675333"
     },
     {
       "address": "0xa18da510f633cb665749a7566cef89b88dac4dd3",
@@ -11065,7 +11065,7 @@
     },
     {
       "address": "0xa242b590f63941749be337eed817af40b61fdd7c",
-      "accumulatedRewards": "1654581819440990714014"
+      "accumulatedRewards": "1654581819440990713968"
     },
     {
       "address": "0xa2490947b30258b522b7d6fd8fabec2d21c42d57",
@@ -11105,7 +11105,7 @@
     },
     {
       "address": "0xa30e48c7826eed00223224dfde038347b983f0f1",
-      "accumulatedRewards": "1809765652145077687"
+      "accumulatedRewards": "1809765652145077664"
     },
     {
       "address": "0xa3268edfd84415472d9c30ecdeba487f865ee063",
@@ -11117,7 +11117,7 @@
     },
     {
       "address": "0xa3379f3aaa46ec2f1633cec8c782b33ce7a0b4ff",
-      "accumulatedRewards": "4170139443676097312"
+      "accumulatedRewards": "4170139443676097193"
     },
     {
       "address": "0xa346706e9fc6ee214575b29105e80fd74027c8ad",
@@ -11205,7 +11205,7 @@
     },
     {
       "address": "0xa434eb11beba2b86f92d7b8b3f2174c8e8ac2891",
-      "accumulatedRewards": "88262052268962560"
+      "accumulatedRewards": "88262052268962559"
     },
     {
       "address": "0xa4517a2b21f85f6a6a63601cea7fa4e34da92856",
@@ -11213,7 +11213,7 @@
     },
     {
       "address": "0xa48130687f304fa383e247faea2f9ee3d2a03d31",
-      "accumulatedRewards": "412454801869700182190"
+      "accumulatedRewards": "412454801869700181156"
     },
     {
       "address": "0xa4a9c4a07b376694a2b8a51227722909db35a5e0",
@@ -11229,11 +11229,11 @@
     },
     {
       "address": "0xa51c0a9f2d688c8943f029fec00a3c9193aadf81",
-      "accumulatedRewards": "314599916997958956458"
+      "accumulatedRewards": "314599916997958932027"
     },
     {
       "address": "0xa5269a8e31b93ff27b887b56720a25f844db0529",
-      "accumulatedRewards": "4542993224066915672100"
+      "accumulatedRewards": "4542993224066915443271"
     },
     {
       "address": "0xa53346a1467831b4fa0f374f8e4f7001cac5a139",
@@ -11253,7 +11253,7 @@
     },
     {
       "address": "0xa54d6fd8143af647f49d57f98db806376040868a",
-      "accumulatedRewards": "15362919045722490"
+      "accumulatedRewards": "15362919045722489"
     },
     {
       "address": "0xa563297a92eed5b0c4908a74eab30efe98e762d2",
@@ -11269,7 +11269,7 @@
     },
     {
       "address": "0xa59d6996bdbfaef7b64eee436e5326869c9d8399",
-      "accumulatedRewards": "25567544058251221066"
+      "accumulatedRewards": "25567544058251221010"
     },
     {
       "address": "0xa5a5de531f63b636443e484c06f60640c2f98d3a",
@@ -11325,11 +11325,11 @@
     },
     {
       "address": "0xa6d0ccf39aed6d819ae12021784f06cb792f7388",
-      "accumulatedRewards": "522941666524975860"
+      "accumulatedRewards": "522941666524975758"
     },
     {
       "address": "0xa6e96dbb6b7d2c12062e70d3dec87c4fe23f961f",
-      "accumulatedRewards": "284846498501389215"
+      "accumulatedRewards": "284846498501389211"
     },
     {
       "address": "0xa6f0126b36291dc3bc9a8ef565a434b394e4b01e",
@@ -11361,7 +11361,7 @@
     },
     {
       "address": "0xa7679c33977d6f98cf5093da892eaa93ceeeb13e",
-      "accumulatedRewards": "6248029196834716"
+      "accumulatedRewards": "6248029196834715"
     },
     {
       "address": "0xa76b6df0f05266950f77577a6cb3eee906c3f647",
@@ -11369,7 +11369,7 @@
     },
     {
       "address": "0xa77ce92a601d504a6d64af843eb5a3994616969c",
-      "accumulatedRewards": "195978648296225224"
+      "accumulatedRewards": "195978648296225222"
     },
     {
       "address": "0xa7878a563b140a0a7e60a019cab49ac431f8baae",
@@ -11413,7 +11413,7 @@
     },
     {
       "address": "0xa7f2dfef34ed820aa790ce55e26925fd5a916d99",
-      "accumulatedRewards": "90778571196670678"
+      "accumulatedRewards": "90778571196670676"
     },
     {
       "address": "0xa7f3ad635ce1a56345a1c090e87fd90f822f3231",
@@ -11421,7 +11421,7 @@
     },
     {
       "address": "0xa819a27c5d2e7c07f7739fcf2b620ed6b597023f",
-      "accumulatedRewards": "340841258075387678"
+      "accumulatedRewards": "340841258075387676"
     },
     {
       "address": "0xa827150caaebabcb696b9b44d16c2367dd03828b",
@@ -11433,7 +11433,7 @@
     },
     {
       "address": "0xa8541e4b65bae5a703c333970be1bb85f2658591",
-      "accumulatedRewards": "17887236906578268"
+      "accumulatedRewards": "17887236906578267"
     },
     {
       "address": "0xa858ea02845071dbe09b4b5c3bbea49529beaadb",
@@ -11481,7 +11481,7 @@
     },
     {
       "address": "0xa8faf7868caec1cc7526a0692c95721d9c301bcd",
-      "accumulatedRewards": "26775097488486628354"
+      "accumulatedRewards": "26775097488486628116"
     },
     {
       "address": "0xa904a0f8b4f0292785ad610dae1084a916142a77",
@@ -11497,7 +11497,7 @@
     },
     {
       "address": "0xa9209088be05ff3f06613faf7b9689d0d3f5e52d",
-      "accumulatedRewards": "119883282431235926"
+      "accumulatedRewards": "119883282431235922"
     },
     {
       "address": "0xa922137a1430a136bd4416f26785cd5821f68618",
@@ -11601,7 +11601,7 @@
     },
     {
       "address": "0xaa8bdb60ee28e7616bfe4867f58bfe4edf858271",
-      "accumulatedRewards": "1826868910745007833"
+      "accumulatedRewards": "1826868910745007809"
     },
     {
       "address": "0xaa91d24c2f7dbb6487f61869cd8cd8afd5c5cab2",
@@ -11625,7 +11625,7 @@
     },
     {
       "address": "0xaae8f4b5bb56aac20dfbd50a0d01cd7425af5869",
-      "accumulatedRewards": "462813148954526152"
+      "accumulatedRewards": "462813148954526110"
     },
     {
       "address": "0xaaefc1a3d6225cbd3546c2a37a7437559769ac10",
@@ -11689,7 +11689,7 @@
     },
     {
       "address": "0xabcb83117c875419ab026d65b9a37978c6a87427",
-      "accumulatedRewards": "353146490217823370"
+      "accumulatedRewards": "353146490217823365"
     },
     {
       "address": "0xabd8cee5a93265fc7d1f9e45f0169294d01b8802",
@@ -11741,7 +11741,7 @@
     },
     {
       "address": "0xac77ae61f022ab2df8a852795a1b9bdd5ea962a7",
-      "accumulatedRewards": "73676492712380908889"
+      "accumulatedRewards": "73676492712380907614"
     },
     {
       "address": "0xac96e261ce1335e28eb26b993a988b8ef390e513",
@@ -11749,7 +11749,7 @@
     },
     {
       "address": "0xaca9b8af5ddb180d6ff6e4bce7533dd76820148c",
-      "accumulatedRewards": "91054955617777634"
+      "accumulatedRewards": "91054955617777633"
     },
     {
       "address": "0xacbda35d00419f46bbf9b525555eec217ca87ff7",
@@ -11805,7 +11805,7 @@
     },
     {
       "address": "0xad3998b4c3a0e374f2be2636995b4c71bb364d98",
-      "accumulatedRewards": "15729015348876186"
+      "accumulatedRewards": "15729015348876185"
     },
     {
       "address": "0xad451d0f19899ef59de39e6d3b068b8055110de8",
@@ -11833,7 +11833,7 @@
     },
     {
       "address": "0xadacba4cae9471c26d613f7a94014549a647783c",
-      "accumulatedRewards": "140013971705321198"
+      "accumulatedRewards": "140013971705321196"
     },
     {
       "address": "0xadae0cdb5b7fdbcdb6094b80af96869abf8ad394",
@@ -11921,7 +11921,7 @@
     },
     {
       "address": "0xaebb8fdbd5e52f99630cebb80d0a1c19892eb4c2",
-      "accumulatedRewards": "149488105433023692847189"
+      "accumulatedRewards": "149488105433023692847186"
     },
     {
       "address": "0xaecdde1672f3f121b3a6c43a2e0b5dfc28f6224c",
@@ -12009,7 +12009,7 @@
     },
     {
       "address": "0xafec180eb35f3fa19fd9fac7ef4fb25696c6fb98",
-      "accumulatedRewards": "50001304249984432"
+      "accumulatedRewards": "50001304249984431"
     },
     {
       "address": "0xb0122a3b9151d7e1f5b7e1649f998a6de30c831d",
@@ -12125,7 +12125,7 @@
     },
     {
       "address": "0xb1ab255d5e2c1c2fbebe3596629a513ba9ee57a3",
-      "accumulatedRewards": "17870569255620409"
+      "accumulatedRewards": "17870569255620408"
     },
     {
       "address": "0xb1abd733f367137667460eb821989beb77d60939",
@@ -12137,7 +12137,7 @@
     },
     {
       "address": "0xb1ce3b8cf673f4b5c318d7222aa0dc1308ed41af",
-      "accumulatedRewards": "88176341068186503"
+      "accumulatedRewards": "88176341068186501"
     },
     {
       "address": "0xb1d08db2721505b7e291c579998fe3090be01948",
@@ -12161,11 +12161,11 @@
     },
     {
       "address": "0xb1f2aedb2493ae882c5384ec008a771f9c4cf520",
-      "accumulatedRewards": "92965218509287878"
+      "accumulatedRewards": "92965218509287876"
     },
     {
       "address": "0xb1f72d694711fce55c62ea97bd3739ff11cef986",
-      "accumulatedRewards": "344745513980158647"
+      "accumulatedRewards": "344745513980158643"
     },
     {
       "address": "0xb21731d830b7e8460e5d6c66dc1ccc0a5d0a6b87",
@@ -12189,11 +12189,11 @@
     },
     {
       "address": "0xb26648a3264644f601fb3bbdcfef369573390f20",
-      "accumulatedRewards": "91941746902456842"
+      "accumulatedRewards": "91941746902456841"
     },
     {
       "address": "0xb270d5b781ef12d9e31d8fc8e7a7e4a079c92728",
-      "accumulatedRewards": "181062988072543997"
+      "accumulatedRewards": "181062988072543994"
     },
     {
       "address": "0xb2a5741a365c710267ec91a7da7eabedee1ac552",
@@ -12213,7 +12213,7 @@
     },
     {
       "address": "0xb300aa30dd33e1ae849cb69fa23d6ddaf90a69bc",
-      "accumulatedRewards": "35571705277348217"
+      "accumulatedRewards": "35571705277348216"
     },
     {
       "address": "0xb30983eb1abf4621e26302ecca2db6f41bd1732e",
@@ -12241,7 +12241,7 @@
     },
     {
       "address": "0xb35133d3e35c542f3861935b391f68fed6d6eee0",
-      "accumulatedRewards": "46822099691567790"
+      "accumulatedRewards": "46822099691567778"
     },
     {
       "address": "0xb35f768bf35d9e25ca48d647c9e91dd6ff2bb865",
@@ -12249,7 +12249,7 @@
     },
     {
       "address": "0xb36f9f412959f40ca65599bfd6ac67d5b883d1d6",
-      "accumulatedRewards": "32238962439753433"
+      "accumulatedRewards": "32238962439753432"
     },
     {
       "address": "0xb377d224fd1997bbb030268fc15116d7e62483fc",
@@ -12277,7 +12277,7 @@
     },
     {
       "address": "0xb420dacc3a5f85d75303e2fc0f6e64ca705aeec7",
-      "accumulatedRewards": "174565849688933622"
+      "accumulatedRewards": "174565849688933619"
     },
     {
       "address": "0xb42f5a41b62b52616598cfd1a0d3a01846bfa888",
@@ -12321,7 +12321,7 @@
     },
     {
       "address": "0xb4dc4c7460c58e7652cd615675a1f707ebb67e9a",
-      "accumulatedRewards": "2947324878438141323"
+      "accumulatedRewards": "2947324878438141281"
     },
     {
       "address": "0xb4e385afba84411e87611dbe8d6a1de4a49c61cf",
@@ -12333,7 +12333,7 @@
     },
     {
       "address": "0xb4e876a98c1655aef3e2a368bd7b22b24a9792cb",
-      "accumulatedRewards": "56282637161101311"
+      "accumulatedRewards": "56282637161101310"
     },
     {
       "address": "0xb50a4ccb146c4c4f9e4d11272cd820cbbbd84c58",
@@ -12349,7 +12349,7 @@
     },
     {
       "address": "0xb51bb387cefe689415b41fd6051ee7ea90abd16b",
-      "accumulatedRewards": "27694689262061768"
+      "accumulatedRewards": "27694689262061767"
     },
     {
       "address": "0xb521415683fda24d9dd6a4a582fae3063444712c",
@@ -12449,7 +12449,7 @@
     },
     {
       "address": "0xb664bc681761ed4c04f3fa10e81518fdd7d1473c",
-      "accumulatedRewards": "7442570653777748907"
+      "accumulatedRewards": "7442570653777748324"
     },
     {
       "address": "0xb67dc0160b8649b075b2784ed1254537d54f39ef",
@@ -12465,7 +12465,7 @@
     },
     {
       "address": "0xb683b0e3f4cf1cf12fe4799ec2920b88d8b6cd24",
-      "accumulatedRewards": "4983307907242906280"
+      "accumulatedRewards": "4983307907242906013"
     },
     {
       "address": "0xb696623b744a4cf33e23ff142642dda46e1a8dd1",
@@ -12481,11 +12481,11 @@
     },
     {
       "address": "0xb6c434bdccc00bee083092dad3cf294cecfde997",
-      "accumulatedRewards": "91460746502491605"
+      "accumulatedRewards": "91460746502491604"
     },
     {
       "address": "0xb6c5273e79e2add234ebc07d87f3824e0f94b2f7",
-      "accumulatedRewards": "50705153014649793"
+      "accumulatedRewards": "50705153014649791"
     },
     {
       "address": "0xb6e8b596d027da3c33d9c15eaf0522ef303ed508",
@@ -12493,7 +12493,7 @@
     },
     {
       "address": "0xb6e99dded4dae5217df45f5286de6b21f23e1e22",
-      "accumulatedRewards": "91402429772667241"
+      "accumulatedRewards": "91402429772667240"
     },
     {
       "address": "0xb6efa2ea408c563a8bdaf9ffdc5115ff5eb0e3e6",
@@ -12569,7 +12569,7 @@
     },
     {
       "address": "0xb7bff12c323fd4e610e186b991e01fdb7542e6b0",
-      "accumulatedRewards": "16162066451742849333081"
+      "accumulatedRewards": "16162066451742849302957"
     },
     {
       "address": "0xb7e163c290f1301adc7d37b42ed6d7067093516a",
@@ -12609,7 +12609,7 @@
     },
     {
       "address": "0xb85c651c8c6e82485f18ff0c02f45f5744c58031",
-      "accumulatedRewards": "85731353252046822"
+      "accumulatedRewards": "85731353252046820"
     },
     {
       "address": "0xb86a0ea069d156b7c1d25169d5b5bfe9f24fcccf",
@@ -12753,7 +12753,7 @@
     },
     {
       "address": "0xbaf4372857ea838a9693d86421d12a4c7af91985",
-      "accumulatedRewards": "87834848454494213"
+      "accumulatedRewards": "87834848454494212"
     },
     {
       "address": "0xbafa0473d874776a59c2542556c2022035eaf3ba",
@@ -12805,7 +12805,7 @@
     },
     {
       "address": "0xbb91327a65f618f71dafbb1cd1c46466169c0006",
-      "accumulatedRewards": "1179080919952675552241"
+      "accumulatedRewards": "1179080919952675529638"
     },
     {
       "address": "0xbb9d102786889a093c99b13f8b96c39496d7f02b",
@@ -12877,7 +12877,7 @@
     },
     {
       "address": "0xbc7436d4a9696e9843ed5c6b1bebbb0477f507e3",
-      "accumulatedRewards": "103679776617511713"
+      "accumulatedRewards": "103679776617511710"
     },
     {
       "address": "0xbc8744370bcb6d5abf5de8b4086ecfbb4c5629c3",
@@ -12893,7 +12893,7 @@
     },
     {
       "address": "0xbcdd57e3c746f7c2be57b9b3521a2462478415f8",
-      "accumulatedRewards": "103328124238013191"
+      "accumulatedRewards": "103328124238013188"
     },
     {
       "address": "0xbced456a6fd29c2a80510ae5518a56ba9b597ba6",
@@ -12901,7 +12901,7 @@
     },
     {
       "address": "0xbcf215f9e83c0dd405a772e23e1fb6dbfc449211",
-      "accumulatedRewards": "236340774150642213"
+      "accumulatedRewards": "236340774150642211"
     },
     {
       "address": "0xbcf2b05325f769609e6a44e63a08a442d466977d",
@@ -13025,7 +13025,7 @@
     },
     {
       "address": "0xbe73eec01669dc666c44921a448f829c302c0f76",
-      "accumulatedRewards": "36132068618670015"
+      "accumulatedRewards": "36132068618670014"
     },
     {
       "address": "0xbe78319f04d0eac01dba9bec544d3a36e592fde5",
@@ -13041,7 +13041,7 @@
     },
     {
       "address": "0xbe93d14c5defb8f41af8fb092f58e3c71c712b85",
-      "accumulatedRewards": "63359238114700907"
+      "accumulatedRewards": "63359238114700906"
     },
     {
       "address": "0xbe967fe18a7c8aee4b858bba75ca0df2d834ef7d",
@@ -13049,7 +13049,7 @@
     },
     {
       "address": "0xbe9e8ec25866b21ba34e97b9393bcabbcb4a5c86",
-      "accumulatedRewards": "70789608920708810548271"
+      "accumulatedRewards": "70789608920708810548267"
     },
     {
       "address": "0xbebc4acc37ab75ee11012ab9b496c5366c13f35f",
@@ -13069,7 +13069,7 @@
     },
     {
       "address": "0xbf110bec0ad59ce25faad8aea4e2671422996e31",
-      "accumulatedRewards": "15308381951370689"
+      "accumulatedRewards": "15308381951370688"
     },
     {
       "address": "0xbf14566a37d96d55485bd281f5e7c547883a54c8",
@@ -13197,7 +13197,7 @@
     },
     {
       "address": "0xc0dd880193e4d219c30d69d0806ce2720a77b231",
-      "accumulatedRewards": "155512391487394382"
+      "accumulatedRewards": "155512391487394380"
     },
     {
       "address": "0xc100c251bdd297a66795112f04356e6ba5f89d80",
@@ -13233,7 +13233,7 @@
     },
     {
       "address": "0xc1c4ec74429327bb3afd6c57da11771d1414739d",
-      "accumulatedRewards": "11638938029727270945"
+      "accumulatedRewards": "11638938029727268067"
     },
     {
       "address": "0xc1c736f2ac0e0019a188982c7c8c063976a4d8d9",
@@ -13249,7 +13249,7 @@
     },
     {
       "address": "0xc1eccb200494a359aafc05873b51d295f1525078",
-      "accumulatedRewards": "19326135843716749"
+      "accumulatedRewards": "19326135843716748"
     },
     {
       "address": "0xc1f3ebe56fe3a32adac585e7379882cf0e5a6d87",
@@ -13285,7 +13285,7 @@
     },
     {
       "address": "0xc25d35024dd497d3825115828994bb08d12a3aa7",
-      "accumulatedRewards": "21070535419631492917009"
+      "accumulatedRewards": "21070535419631492867624"
     },
     {
       "address": "0xc262ff039501350be0fe2d8f6cf9d55d72bb30c2",
@@ -13297,7 +13297,7 @@
     },
     {
       "address": "0xc27e87cfe1fd2ed6f43dfffbb9e9e46428497a24",
-      "accumulatedRewards": "64237874005275756846"
+      "accumulatedRewards": "64237874005275756843"
     },
     {
       "address": "0xc29ffb23abae4d7950d7f1e008019caf513f5078",
@@ -13349,7 +13349,7 @@
     },
     {
       "address": "0xc34e1e7ae15410b37db674955335e8fd722cb3e6",
-      "accumulatedRewards": "89872229506045878"
+      "accumulatedRewards": "89872229506045875"
     },
     {
       "address": "0xc385e224391c6776f4bcba5c65aca3ae9cb540db",
@@ -13385,7 +13385,7 @@
     },
     {
       "address": "0xc3fd2bcb524af31963b3e3bb670f28ba14718244",
-      "accumulatedRewards": "393571452548294890033"
+      "accumulatedRewards": "393571452548294874967"
     },
     {
       "address": "0xc40e6f48153079719fa1c93d399f10895f810504",
@@ -13425,7 +13425,7 @@
     },
     {
       "address": "0xc4f91cdd498a30f8ed1dea3883cba314a7a2a022",
-      "accumulatedRewards": "11104033591413632494"
+      "accumulatedRewards": "11104033591413632433"
     },
     {
       "address": "0xc4ff9c94b2b8a8dafd7557d547bff6aa777839b0",
@@ -13441,7 +13441,7 @@
     },
     {
       "address": "0xc59821cbf1a4590cf659e2ba74de9bbf7612e538",
-      "accumulatedRewards": "3210431312947906796"
+      "accumulatedRewards": "3210431312947906768"
     },
     {
       "address": "0xc598af80cf61539e2df1ed657afac2d7c76601c5",
@@ -13513,7 +13513,7 @@
     },
     {
       "address": "0xc65d9d875cad07ca8c6bb7d0ff1e148d5a16af0a",
-      "accumulatedRewards": "53637624593700008"
+      "accumulatedRewards": "53637624593700007"
     },
     {
       "address": "0xc667891581280551ad01a0feece6b925d9c9bb08",
@@ -13521,11 +13521,11 @@
     },
     {
       "address": "0xc66c26709fc9319ec3f346280a9641bd7f243c15",
-      "accumulatedRewards": "26486012798614198438"
+      "accumulatedRewards": "26486012798614196687"
     },
     {
       "address": "0xc67fbd493097fb241eeb8500e8d7ad412b0c463a",
-      "accumulatedRewards": "16227224993792162"
+      "accumulatedRewards": "16227224993792161"
     },
     {
       "address": "0xc696481349f868f720fa40af1514362ee87b7458",
@@ -13541,7 +13541,7 @@
     },
     {
       "address": "0xc6af47b30d8e4fe05339d5d89d75e4d7e545f96d",
-      "accumulatedRewards": "2885410359538213792"
+      "accumulatedRewards": "2885410359538213785"
     },
     {
       "address": "0xc6eeadf321fa3d1c2a15f650a6995ea0496de394",
@@ -13549,7 +13549,7 @@
     },
     {
       "address": "0xc6f1b92db5c7b82c3bc34c80706473f7f63db3dd",
-      "accumulatedRewards": "85778764379874532"
+      "accumulatedRewards": "85778764379874531"
     },
     {
       "address": "0xc6f5db2f5fe60cfd48edf4c803e027e99b9ba5d2",
@@ -13625,7 +13625,7 @@
     },
     {
       "address": "0xc851d1992b6bc065cf29a913f759c9829bd11029",
-      "accumulatedRewards": "132261805466590257164"
+      "accumulatedRewards": "132261805466590230984"
     },
     {
       "address": "0xc86c19bcb4a42f521de2f665bc0aaaaaec9a3b64",
@@ -13633,7 +13633,7 @@
     },
     {
       "address": "0xc875a15956b4a47c8e85791d9891577eec762bc2",
-      "accumulatedRewards": "20114925914562969"
+      "accumulatedRewards": "20114925914562968"
     },
     {
       "address": "0xc8b22b908c83f43590eb181b4e3ebb1887c6f8bc",
@@ -13653,15 +13653,15 @@
     },
     {
       "address": "0xc8d46eb7881975f9ae15216feeba2ff58e55803c",
-      "accumulatedRewards": "219113723153413391"
+      "accumulatedRewards": "219113723153413388"
     },
     {
       "address": "0xc8d9b774f920382e9b69900c9506e7126d3ee899",
-      "accumulatedRewards": "378324185041196789"
+      "accumulatedRewards": "378324185041196784"
     },
     {
       "address": "0xc8dad4333de7aba9f2aa8f5cbb0e727cac3bfdff",
-      "accumulatedRewards": "15277630231955652835"
+      "accumulatedRewards": "15277630231955652382"
     },
     {
       "address": "0xc8db440a9b03cdb005410747f569357df8e778b9",
@@ -13677,7 +13677,7 @@
     },
     {
       "address": "0xc8ec47f880a3a99878f9c96d3984ba96b206f3f7",
-      "accumulatedRewards": "54471528155687380906"
+      "accumulatedRewards": "54471528155687379906"
     },
     {
       "address": "0xc8fa4494718be9ee032675222ba4c75a2e9a29e2",
@@ -13709,7 +13709,7 @@
     },
     {
       "address": "0xc935b59c7f810cec91e46b45f03a4ac4cc0e915e",
-      "accumulatedRewards": "843240585058395200"
+      "accumulatedRewards": "843240585058395189"
     },
     {
       "address": "0xc938d416f43e00c8e27eb8eda7f25a9a123eefda",
@@ -13761,7 +13761,7 @@
     },
     {
       "address": "0xc9be6b7adc534ebeea7c27be4be559a03c82d206",
-      "accumulatedRewards": "59428378612530563"
+      "accumulatedRewards": "59428378612530546"
     },
     {
       "address": "0xc9d3c0acc22938d735d891ec20e84e76e7c030d7",
@@ -13833,7 +13833,7 @@
     },
     {
       "address": "0xcae11f36afb6ef51d68917f865362623ff1231c8",
-      "accumulatedRewards": "18064311532229851"
+      "accumulatedRewards": "18064311532229850"
     },
     {
       "address": "0xcae7d0dadafc547fd7b343d401afc0527478f76a",
@@ -13889,7 +13889,7 @@
     },
     {
       "address": "0xcb7958ddf673aa8f21614346d3e1c46182a9454d",
-      "accumulatedRewards": "176493783565039634"
+      "accumulatedRewards": "176493783565039631"
     },
     {
       "address": "0xcb7c51a63110f2669d33cadf593e838e7edd8007",
@@ -13905,7 +13905,7 @@
     },
     {
       "address": "0xcbc098bbdd681c52f5dda0b0fb1e9b72db148c41",
-      "accumulatedRewards": "17887783663383687"
+      "accumulatedRewards": "17887783663383686"
     },
     {
       "address": "0xcbc5cf551ba75496d10727e62dd660efc6a5b347",
@@ -13957,7 +13957,7 @@
     },
     {
       "address": "0xcc917ab28544c80e2f0e8effbd22551a3cb096be",
-      "accumulatedRewards": "88601681667845105"
+      "accumulatedRewards": "88601681667845104"
     },
     {
       "address": "0xcc9c8cd1091e83a1f433de1cd91b167a41594e6e",
@@ -13981,7 +13981,7 @@
     },
     {
       "address": "0xcd088e347ac400327ed62494fa274d5e69359fea",
-      "accumulatedRewards": "88928481176845971"
+      "accumulatedRewards": "88928481176845970"
     },
     {
       "address": "0xcd0b67a61e5e8f4616c19e421e929813b6d947df",
@@ -13989,7 +13989,7 @@
     },
     {
       "address": "0xcd0d4cdb238eec15fcf4ff9d13d5a59051e507d7",
-      "accumulatedRewards": "127839625291417740"
+      "accumulatedRewards": "127839625291417738"
     },
     {
       "address": "0xcd262b16421ac23d13d345e4e08875374d5235bf",
@@ -14037,7 +14037,7 @@
     },
     {
       "address": "0xcdcb2bb177b8008cf88ffbc274b5326bcdec7769",
-      "accumulatedRewards": "159900915177611977"
+      "accumulatedRewards": "159900915177611975"
     },
     {
       "address": "0xcde3725b25d6d9bc78cf0941cc15fd9710c764b9",
@@ -14057,7 +14057,7 @@
     },
     {
       "address": "0xce2a8c484606047c01a9f4e6233fe8cf0cd7f96a",
-      "accumulatedRewards": "976187826593466441"
+      "accumulatedRewards": "976187826593466397"
     },
     {
       "address": "0xce2f3600d79ea3608feb1ea0f51a88bfc7d485c7",
@@ -14077,7 +14077,7 @@
     },
     {
       "address": "0xce58ea3b5ae7056577c4e9efcdebfa7acae52026",
-      "accumulatedRewards": "91433803009684149"
+      "accumulatedRewards": "91433803009684148"
     },
     {
       "address": "0xce6b1bb435b55acd865923d5f92ca70796139be5",
@@ -14121,7 +14121,7 @@
     },
     {
       "address": "0xcf0b58d8f9a253854ea64c8ec94db2464e474dee",
-      "accumulatedRewards": "161054003459541121"
+      "accumulatedRewards": "161054003459541061"
     },
     {
       "address": "0xcf0da5852909d05de56158bbb419d102fe79e9e0",
@@ -14185,7 +14185,7 @@
     },
     {
       "address": "0xcf9631ec83ca364ac4b21276258ae0d3520e64d9",
-      "accumulatedRewards": "90624230466864049"
+      "accumulatedRewards": "90624230466864047"
     },
     {
       "address": "0xcfbd76ec9e6a545afdac1c3b7bc1bfc4eb50187c",
@@ -14193,7 +14193,7 @@
     },
     {
       "address": "0xcfc2fb5cf51d7f1b2090e5e64a7000ea327967be",
-      "accumulatedRewards": "435455919559811886094"
+      "accumulatedRewards": "435455919559811877607"
     },
     {
       "address": "0xcfc50541c3deaf725ce738ef87ace2ad778ba0c5",
@@ -14225,7 +14225,7 @@
     },
     {
       "address": "0xcff34f8efc521b45623e719b896673413cdd916a",
-      "accumulatedRewards": "87871804482562088"
+      "accumulatedRewards": "87871804482562087"
     },
     {
       "address": "0xd00162523aef114bb9be352e304d1e406bc82f9c",
@@ -14245,7 +14245,7 @@
     },
     {
       "address": "0xd01a7a028af963ea66665fcc7cdd92dd2668f8d8",
-      "accumulatedRewards": "159988661597802726"
+      "accumulatedRewards": "159988661597802723"
     },
     {
       "address": "0xd0292106b7d0ce779a53933eaacccfef97e55362",
@@ -14341,7 +14341,7 @@
     },
     {
       "address": "0xd1c9ab6166dead15b03b57b3224c5647272f0f82",
-      "accumulatedRewards": "260105661639476926"
+      "accumulatedRewards": "260105661639476923"
     },
     {
       "address": "0xd1d5da3763224b44a94eb16cfbbd94a3050c7cd1",
@@ -14397,7 +14397,7 @@
     },
     {
       "address": "0xd2c991cc5bdbb00195b8c814abc1cb195dbba910",
-      "accumulatedRewards": "17712794698600775"
+      "accumulatedRewards": "17712794698600774"
     },
     {
       "address": "0xd2d3bebbf5e41a159b8ecc90a0a02b1018dd0d70",
@@ -14485,7 +14485,7 @@
     },
     {
       "address": "0xd3b592d4ebb766f2095309a32fcefbe1aa90e8fc",
-      "accumulatedRewards": "82394189017978010"
+      "accumulatedRewards": "82394189017978008"
     },
     {
       "address": "0xd3bc75fcdecaa1a0ac8124fbc8e0ebc4c9e0e617",
@@ -14529,7 +14529,7 @@
     },
     {
       "address": "0xd44438fee6a32825fd775132fcf67c2a2dba6dc9",
-      "accumulatedRewards": "166944735220829686"
+      "accumulatedRewards": "166944735220829681"
     },
     {
       "address": "0xd44ddc5b2ae9158653040e0dd654354ccbcb71e1",
@@ -14541,7 +14541,7 @@
     },
     {
       "address": "0xd45ef8c9b9431298019fc15753609db2fb101aa5",
-      "accumulatedRewards": "5172556790486104612"
+      "accumulatedRewards": "5172556790486104588"
     },
     {
       "address": "0xd46d85f936c2c42ca8d93608e2e7c0cb28c5702b",
@@ -14581,7 +14581,7 @@
     },
     {
       "address": "0xd508f85f1511aaec63434e26aeb6d10be0188dc7",
-      "accumulatedRewards": "528959178472942558971"
+      "accumulatedRewards": "528959178472942529234"
     },
     {
       "address": "0xd545702db1d7b96ba5b3a44ba8a75ff237874a8f",
@@ -14589,7 +14589,7 @@
     },
     {
       "address": "0xd54fe353742723fab4169aaf8e6cc249f9f2ba4c",
-      "accumulatedRewards": "10106468130326967495"
+      "accumulatedRewards": "10106468130326967489"
     },
     {
       "address": "0xd552fb4361f214a73257a171fd2159d1c22bf29b",
@@ -14625,7 +14625,7 @@
     },
     {
       "address": "0xd5c02a39fa5f8e20ab787ce429c4d795ba5e5934",
-      "accumulatedRewards": "48836237028892043"
+      "accumulatedRewards": "48836237028892042"
     },
     {
       "address": "0xd5e089906d0c759f27403f3db7ae76007ca09dad",
@@ -14653,7 +14653,7 @@
     },
     {
       "address": "0xd620aadabaa20d2af700853c4504028cba7c3333",
-      "accumulatedRewards": "162227663557137362"
+      "accumulatedRewards": "162227663557137327"
     },
     {
       "address": "0xd625c7458da1a0758da8d3ac7f2c10180bf0e506",
@@ -14821,7 +14821,7 @@
     },
     {
       "address": "0xd89979b759a1b79753dc1cb833d3c82dac3732eb",
-      "accumulatedRewards": "1813806084551099"
+      "accumulatedRewards": "1813806084551098"
     },
     {
       "address": "0xd89d8c4247931dc0ae095cd1a223420d68da7247",
@@ -14877,7 +14877,7 @@
     },
     {
       "address": "0xd92145ebfc0892f7e8e6f99a8247fdc5b9b74ad6",
-      "accumulatedRewards": "28995562790313873"
+      "accumulatedRewards": "28995562790313872"
     },
     {
       "address": "0xd923de646d3f0bb9eb7f9169f259c79c3ede2188",
@@ -14897,7 +14897,7 @@
     },
     {
       "address": "0xd97ea9b07803098f6e214a3b56b74400c63d44ff",
-      "accumulatedRewards": "148646780876551541"
+      "accumulatedRewards": "148646780876551539"
     },
     {
       "address": "0xd98e8eab9da6167670a69c5d409ddb60631a566e",
@@ -14949,7 +14949,7 @@
     },
     {
       "address": "0xda46e3427ecdac2afd516814d7aaf0758d2a97ae",
-      "accumulatedRewards": "130082752354356845"
+      "accumulatedRewards": "130082752354356843"
     },
     {
       "address": "0xda47b9707a7b354af829297450772cdf8b23e22b",
@@ -15101,7 +15101,7 @@
     },
     {
       "address": "0xdc579a804fcdd4c1f4e8fb6ef38a11b0e5b6bbbb",
-      "accumulatedRewards": "216863726283282879551"
+      "accumulatedRewards": "216863726283282875094"
     },
     {
       "address": "0xdc68ff3e2ccf723eba0a33959de70406a176be95",
@@ -15325,15 +15325,15 @@
     },
     {
       "address": "0xe0a35b164f5c5e44e26d357e4ac88e1b8714090f",
-      "accumulatedRewards": "159396014258115556"
+      "accumulatedRewards": "159396014258115554"
     },
     {
       "address": "0xe0cfd0724ff53fc9064aba7944bf111d5633e31e",
-      "accumulatedRewards": "33714385056331902"
+      "accumulatedRewards": "33714385056331901"
     },
     {
       "address": "0xe0e1d3c6f09da01399e84699722b11308607bbfc",
-      "accumulatedRewards": "30934981960306514"
+      "accumulatedRewards": "30934981960306513"
     },
     {
       "address": "0xe0e31db3e84c10a7d8af24ac6a0c6b5548cf96e0",
@@ -15453,7 +15453,7 @@
     },
     {
       "address": "0xe2b3197e718a03e21cf13051088b06b04619cdf5",
-      "accumulatedRewards": "779061214386126149"
+      "accumulatedRewards": "779061214386126125"
     },
     {
       "address": "0xe2becdedf5abaec86d2a4ef24bc13437e98d841d",
@@ -15477,7 +15477,7 @@
     },
     {
       "address": "0xe310eabbbe5986499e335efec7365f004b3b2a65",
-      "accumulatedRewards": "24983088605175632"
+      "accumulatedRewards": "24983088605175631"
     },
     {
       "address": "0xe32917b4c68cc9697ca4aa7d472924086f2517cf",
@@ -15537,7 +15537,7 @@
     },
     {
       "address": "0xe431f7736784d033f7c981efa591e13affdb0408",
-      "accumulatedRewards": "17538601768090031"
+      "accumulatedRewards": "17538601768090030"
     },
     {
       "address": "0xe432a8314d971441ad7700e8b45d66cc326ce517",
@@ -15569,7 +15569,7 @@
     },
     {
       "address": "0xe48b80e9cb2d2aec812a777da90c365329d6c7cf",
-      "accumulatedRewards": "4490371652174655277"
+      "accumulatedRewards": "4490371652174655254"
     },
     {
       "address": "0xe495d8c21bb0c4ab9a627627a4016df40c6daa74",
@@ -15649,7 +15649,7 @@
     },
     {
       "address": "0xe53ee538b6ad601fa384c00deac8d07fa6eef3ce",
-      "accumulatedRewards": "54813208168105095"
+      "accumulatedRewards": "54813208168105094"
     },
     {
       "address": "0xe53f4d44c45dbc16a20ab64f8a8b4404ddbbefec",
@@ -15669,7 +15669,7 @@
     },
     {
       "address": "0xe58564b8ce8344afdfe3a111bc0b541ee7f5f7fa",
-      "accumulatedRewards": "54531165472966660"
+      "accumulatedRewards": "54531165472966659"
     },
     {
       "address": "0xe58c140284021e51024ed4196c1593628567bb6b",
@@ -15681,7 +15681,7 @@
     },
     {
       "address": "0xe5a597101438eeedbbeb642c6d1b20752a4b20c0",
-      "accumulatedRewards": "98479172786746110207"
+      "accumulatedRewards": "98479172786746097650"
     },
     {
       "address": "0xe5b0ab13cf4d739696002508ce5a13e0cb9f0d9c",
@@ -15689,7 +15689,7 @@
     },
     {
       "address": "0xe5b9d958153e46f55a29c2ddabdd1a94a4877d36",
-      "accumulatedRewards": "97676181273289961"
+      "accumulatedRewards": "97676181273289959"
     },
     {
       "address": "0xe5e4819bcac74a1f6df8f8b42dac0573059013f8",
@@ -15757,7 +15757,7 @@
     },
     {
       "address": "0xe6ed9bb7ae5e082cca6cc4e07c29c69c4a68ce04",
-      "accumulatedRewards": "885873657859127294"
+      "accumulatedRewards": "885873657859127283"
     },
     {
       "address": "0xe6f97c9e127eac5afa7293d14ab3b3652a1db608",
@@ -15769,7 +15769,7 @@
     },
     {
       "address": "0xe70f4c1eda8955f7306c25fe3fa1635297a7f95c",
-      "accumulatedRewards": "42076775318235830"
+      "accumulatedRewards": "42076775318235829"
     },
     {
       "address": "0xe730209f3cd085c5379d36d7552118bda427e785",
@@ -15845,7 +15845,7 @@
     },
     {
       "address": "0xe8210e4cf2f4d9478837099426b5cee9de2bfa47",
-      "accumulatedRewards": "13992701365711952"
+      "accumulatedRewards": "13992701365711951"
     },
     {
       "address": "0xe833dfbc5c88ceda2f164c960ee5125426694876",
@@ -15953,7 +15953,7 @@
     },
     {
       "address": "0xe9945b3acbdc2f9dcad8871f01aa9dabbb20d882",
-      "accumulatedRewards": "16109812496340234"
+      "accumulatedRewards": "16109812496340233"
     },
     {
       "address": "0xe9a7ef7f86a868677d8fc21111ff7d3bc096a1ec",
@@ -15989,7 +15989,7 @@
     },
     {
       "address": "0xea16d379883c83d4b2a5597431b15507145a124e",
-      "accumulatedRewards": "79931249932799720"
+      "accumulatedRewards": "79931249932799719"
     },
     {
       "address": "0xea25220caf98e0097fb8401d8a44e2d4f2cef093",
@@ -16017,7 +16017,7 @@
     },
     {
       "address": "0xea4d2cf1c9babfdd6c5463f473081ff232730685",
-      "accumulatedRewards": "91360794318172114"
+      "accumulatedRewards": "91360794318172113"
     },
     {
       "address": "0xea5d417a92950d9a4c02ce3e46a0fb8c6f6023b3",
@@ -16025,7 +16025,7 @@
     },
     {
       "address": "0xea9a2ad45cd7d801b07af132a43ab572c28026d7",
-      "accumulatedRewards": "9785460514017164"
+      "accumulatedRewards": "9785460514017163"
     },
     {
       "address": "0xeaa5f505353e6b32829aee70d0a94f8413d80086",
@@ -16033,7 +16033,7 @@
     },
     {
       "address": "0xeab3dfac400ff6438646de0ac4fcc7feb35e581e",
-      "accumulatedRewards": "6673817909719664010653"
+      "accumulatedRewards": "6673817909719663993649"
     },
     {
       "address": "0xeacf9649948f83775749a8bf15196a37c68a797a",
@@ -16057,7 +16057,7 @@
     },
     {
       "address": "0xeb1a7dabdc3c53c9607d9f864b367ab6727ff072",
-      "accumulatedRewards": "1459963499066387033254"
+      "accumulatedRewards": "1459963499066387033245"
     },
     {
       "address": "0xeb1fd48e0bec6b204a085ccd87b8ede81d105d81",
@@ -16065,7 +16065,7 @@
     },
     {
       "address": "0xeb28d14dc7bc48a630227fd8c09ca5af182d999f",
-      "accumulatedRewards": "2885169122180218623963"
+      "accumulatedRewards": "2885169122180218623962"
     },
     {
       "address": "0xeb2913edd64f88813c873bf4320fc03c4e49bdcd",
@@ -16089,7 +16089,7 @@
     },
     {
       "address": "0xeb6b02e459968ccc4fc17b7550223a5fe68102b6",
-      "accumulatedRewards": "1450210902805878338"
+      "accumulatedRewards": "1450210902805878336"
     },
     {
       "address": "0xeb6d8a006e1eaa71263fc5c88e2fc05c83ebb276",
@@ -16177,7 +16177,7 @@
     },
     {
       "address": "0xeca11c909d39f27262f41587f11f4047b20a0fb8",
-      "accumulatedRewards": "770699786836260942359"
+      "accumulatedRewards": "770699786836260799159"
     },
     {
       "address": "0xeca87562d692f41d53fb42e4b9804cc800c6d643",
@@ -16229,7 +16229,7 @@
     },
     {
       "address": "0xed4a59031e82296ed0ce0e3e1bf0020a5570150d",
-      "accumulatedRewards": "83695332594227367"
+      "accumulatedRewards": "83695332594227366"
     },
     {
       "address": "0xed728d70f19570dce971f271c787ef528c2df027",
@@ -16309,7 +16309,7 @@
     },
     {
       "address": "0xee945179f34374cefb6876c87602d6972da557a7",
-      "accumulatedRewards": "407797880906953722"
+      "accumulatedRewards": "407797880906953720"
     },
     {
       "address": "0xee99f3fb8744dd05cbbd87104b7f088d194992ae",
@@ -16345,7 +16345,7 @@
     },
     {
       "address": "0xef22a550eb632055e58c2f20487b1a9a12a66d29",
-      "accumulatedRewards": "5720235029242146590"
+      "accumulatedRewards": "5720235029242146418"
     },
     {
       "address": "0xef47003f0e276eb0fb60b626e80554dd7adcdd11",
@@ -16365,7 +16365,7 @@
     },
     {
       "address": "0xef5e7cd8e6ef8726904cfc24f3af5061f051d045",
-      "accumulatedRewards": "16246637959961616"
+      "accumulatedRewards": "16246637959961615"
     },
     {
       "address": "0xef695ffee67909448b267cbc044348a34e38b5df",
@@ -16393,7 +16393,7 @@
     },
     {
       "address": "0xef925403814062ba53257495fa950b2591b6bc41",
-      "accumulatedRewards": "4122181173850732747144"
+      "accumulatedRewards": "4122181173850732737077"
     },
     {
       "address": "0xefa845164e612fe623ac21380afc8ec78f22e3c3",
@@ -16513,7 +16513,7 @@
     },
     {
       "address": "0xf132ea4610d4f278d611e1a177aca5280f89fb99",
-      "accumulatedRewards": "18005378940381680"
+      "accumulatedRewards": "18005378940381679"
     },
     {
       "address": "0xf13723effab38be4cc98617cfdd32c827837d370",
@@ -16545,7 +16545,7 @@
     },
     {
       "address": "0xf18288d96dde32206e811871bdd5e274a32cfbe4",
-      "accumulatedRewards": "2586278410693948747"
+      "accumulatedRewards": "2586278410693948735"
     },
     {
       "address": "0xf1b6e2ca6c970c7ebe8c973af9b72b6544fb2b90",
@@ -16569,7 +16569,7 @@
     },
     {
       "address": "0xf1f407dcbb8d5d9eef7356f79c4964c84074274b",
-      "accumulatedRewards": "126962427612165617"
+      "accumulatedRewards": "126962427612165615"
     },
     {
       "address": "0xf1f9d03df15ad4168475dc7d8959fe7a6ae39ed9",
@@ -16661,7 +16661,7 @@
     },
     {
       "address": "0xf2f5da9a4bc63f9aa77ac67f8ca2700e8218deb1",
-      "accumulatedRewards": "17547762903041218"
+      "accumulatedRewards": "17547762903041217"
     },
     {
       "address": "0xf30534231501fcbc870340babb736781e09e9602",
@@ -16677,7 +16677,7 @@
     },
     {
       "address": "0xf331f8cbcd9100292258d2a1986a4a2e7435e453",
-      "accumulatedRewards": "15722559099049069"
+      "accumulatedRewards": "15722559099049068"
     },
     {
       "address": "0xf33fd427e695b63c81f238b5d8ea75aea31d15a4",
@@ -16725,7 +16725,7 @@
     },
     {
       "address": "0xf421f227bef170b36e5f875fb3400bc839063cf8",
-      "accumulatedRewards": "600948065370712429027"
+      "accumulatedRewards": "600948065370712429026"
     },
     {
       "address": "0xf4275a9964a438e0b435579c1a48151e2b10b0d1",
@@ -16737,7 +16737,7 @@
     },
     {
       "address": "0xf44308483897cc80c44e8c88a62cc4260c58262c",
-      "accumulatedRewards": "5817521636391417830"
+      "accumulatedRewards": "5817521636391417806"
     },
     {
       "address": "0xf443913c2bc40773c11315951b6a13b61434ea28",
@@ -16825,7 +16825,7 @@
     },
     {
       "address": "0xf53feaeb035361c046e5669745695e450ebb4028",
-      "accumulatedRewards": "310094958823130049347703"
+      "accumulatedRewards": "310094958823130049347605"
     },
     {
       "address": "0xf54b7f063b39090c97599139d88b7344a1562d3c",
@@ -16873,7 +16873,7 @@
     },
     {
       "address": "0xf5fe364d18f4a5a53badce9a046ba74cfc97f6fb",
-      "accumulatedRewards": "48702755421643180"
+      "accumulatedRewards": "48702755421643179"
     },
     {
       "address": "0xf61410cec750921ed5bd42dcc8d57f0e1a34d345",
@@ -16889,7 +16889,7 @@
     },
     {
       "address": "0xf6457a7f839621f9ca70ad98f06f0e222fe0c606",
-      "accumulatedRewards": "93252699325877081"
+      "accumulatedRewards": "93252699325877071"
     },
     {
       "address": "0xf64db6d105c7dea5a40c22593631de99a837db1e",
@@ -16917,7 +16917,7 @@
     },
     {
       "address": "0xf6bc0e3662a840dc1fd939652dcc793c3edfaa1e",
-      "accumulatedRewards": "53551288710438990"
+      "accumulatedRewards": "53551288710438989"
     },
     {
       "address": "0xf6da9e9d73d7893223578d32a95d6d7de5522767",
@@ -16929,7 +16929,7 @@
     },
     {
       "address": "0xf70756eb29a90350fef13ed82135d3c0acb8e570",
-      "accumulatedRewards": "523673479414321115443"
+      "accumulatedRewards": "523673479414321072572"
     },
     {
       "address": "0xf7146feccf5ac3fd8de63de129ae400cdfd30d7d",
@@ -16973,7 +16973,7 @@
     },
     {
       "address": "0xf79998ad9b7b61294a1726f11f4897cfd9ed20e7",
-      "accumulatedRewards": "57618907864584869"
+      "accumulatedRewards": "57618907864584868"
     },
     {
       "address": "0xf7a37305c9dce3130cd4e30ca3ee4d724d43eadc",
@@ -17005,7 +17005,7 @@
     },
     {
       "address": "0xf82288e4d3acdadbd40373fb079e32b2891ee8ab",
-      "accumulatedRewards": "268093303585548895873"
+      "accumulatedRewards": "268093303585548882135"
     },
     {
       "address": "0xf8318eee38a5a1da616e7268aec20ce7e46a11ab",
@@ -17049,7 +17049,7 @@
     },
     {
       "address": "0xf87694eeec1ced7c1136cba56dc21b414957d62b",
-      "accumulatedRewards": "592035232920172514735"
+      "accumulatedRewards": "592035232920172514734"
     },
     {
       "address": "0xf87809f81e30d59f7824066c19f74876f9254657",
@@ -17057,7 +17057,7 @@
     },
     {
       "address": "0xf882c1d73c9ec6d86858e349392e15d0d681b899",
-      "accumulatedRewards": "18125187361537875"
+      "accumulatedRewards": "18125187361537874"
     },
     {
       "address": "0xf88a055732fba525073bede9ebdf76f6051b07d9",
@@ -17089,7 +17089,7 @@
     },
     {
       "address": "0xf8ed7d4a2f35fc21f9aa4135bd443abd92f5d7c3",
-      "accumulatedRewards": "20477315763512065604"
+      "accumulatedRewards": "20477315763512060004"
     },
     {
       "address": "0xf8fa10b8580869568ae805fa3b2d085ceaec85bf",
@@ -17137,7 +17137,7 @@
     },
     {
       "address": "0xf970f5a72d47db95f7895799b908411762d44f83",
-      "accumulatedRewards": "3633425673074016202"
+      "accumulatedRewards": "3633425673074015032"
     },
     {
       "address": "0xf98b792d014dd28bb9eda7de6b5611e90a958c5c",
@@ -17165,11 +17165,11 @@
     },
     {
       "address": "0xf9c12c37269ef3de90e5830ee10508ea20079b04",
-      "accumulatedRewards": "392574312003257851"
+      "accumulatedRewards": "392574312003257846"
     },
     {
       "address": "0xf9c991e5e84954561a4625a0dc0d879fd7fbbebc",
-      "accumulatedRewards": "4019452759177603752"
+      "accumulatedRewards": "4019452759177603704"
     },
     {
       "address": "0xf9ed462c282a9c560e3e3ce21f3060c4bb6f5b99",
@@ -17277,7 +17277,7 @@
     },
     {
       "address": "0xfbf86959bae7be97e8743c61c96d7a46d1448bd5",
-      "accumulatedRewards": "87287245747047065"
+      "accumulatedRewards": "87287245747047062"
     },
     {
       "address": "0xfc11767a60df64dc7d4ade9efdcf0e3df7cec9ca",
@@ -17341,7 +17341,7 @@
     },
     {
       "address": "0xfd3eb54dbf0e7fac7aa234bb39983eb6d7dee82f",
-      "accumulatedRewards": "169209304735756361"
+      "accumulatedRewards": "169209304735756356"
     },
     {
       "address": "0xfd5cf3a11baf13f2cdb5b1de5cc77f5fc122820c",
@@ -17433,7 +17433,7 @@
     },
     {
       "address": "0xff180948d613baba1959b8d8c9e96b94959828f9",
-      "accumulatedRewards": "1168786548809638130"
+      "accumulatedRewards": "1168786548809638117"
     },
     {
       "address": "0xff1882511a5673194b252c35f2530562f74f47e4",
@@ -17441,11 +17441,11 @@
     },
     {
       "address": "0xff4b5045008dd51911eb466d7a60fce2f7b553e5",
-      "accumulatedRewards": "3088399256957686904"
+      "accumulatedRewards": "3088399256957686039"
     },
     {
       "address": "0xff4f584166ad206c99d2eb2b48bfe3cbbbe0eb34",
-      "accumulatedRewards": "146538783744519239"
+      "accumulatedRewards": "146538783744519236"
     },
     {
       "address": "0xff53492ebf717cc805429ee550ff747ecae4a2e3",
@@ -17485,7 +17485,7 @@
     },
     {
       "address": "0xffd92144cafd599a5a93e4805ca4d8f0e666d623",
-      "accumulatedRewards": "36025627274054752"
+      "accumulatedRewards": "36025627274054751"
     },
     {
       "address": "0xfffa889f71003f256f0e14b48e54fa2dad1f2ff0",
